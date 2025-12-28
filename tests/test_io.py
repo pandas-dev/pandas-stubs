@@ -336,35 +336,23 @@ def test_sas_xport() -> None:
         pass
 
 
-MESSAGE_PYTABLE_MISSING = (
-    r"Missing optional dependency 'pytables'.  Use pip or conda to install pytables."
+MESSAGE_PYTABLE_314 = (
+    "PyTables does not support Python 3.14+ yet, see PyTables/PyTables#1261"
 )
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
+@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
-    if sys.version_info < (3, 11) or sys.version_info >= (3, 14):
-        with pytest.raises(ImportError, match=MESSAGE_PYTABLE_MISSING):
-            _hdf(path_str)
-    else:
-        _hdf(path_str)
-
-
-def _hdf(path_str: str) -> None:
     check(assert_type(DF.to_hdf(path_str, key="df"), None), type(None))
     check(assert_type(read_hdf(path_str), DataFrame | Series), DataFrame)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
+@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdfstore(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
-    if sys.version_info < (3, 11) or sys.version_info >= (3, 14):
-        with pytest.raises(ImportError, match=MESSAGE_PYTABLE_MISSING):
-            _hdfstore(path_str)
-    else:
-        _hdfstore(path_str)
-
-
-def _hdfstore(path_str: str) -> None:
     store = HDFStore(path_str, model="w")
     check(assert_type(store, HDFStore), HDFStore)
     check(assert_type(store.put("df", DF, "table"), None), type(None))
@@ -397,16 +385,10 @@ def _hdfstore(path_str: str) -> None:
     store.close()
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
+@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_read_hdf_iterator(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
-    if sys.version_info < (3, 11) or sys.version_info >= (3, 14):
-        with pytest.raises(ImportError, match=MESSAGE_PYTABLE_MISSING):
-            _read_hdf_iterator(path_str)
-    else:
-        _read_hdf_iterator(path_str)
-
-
-def _read_hdf_iterator(path_str: str) -> None:
     check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
     ti = read_hdf(path_str, chunksize=1)
     check(assert_type(ti, TableIterator), TableIterator)
@@ -419,33 +401,21 @@ def _read_hdf_iterator(path_str: str) -> None:
     ti.close()
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
+@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_context_manager(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
-    if sys.version_info < (3, 11) or sys.version_info >= (3, 14):
-        with pytest.raises(ImportError, match=MESSAGE_PYTABLE_MISSING):
-            _hdf_context_manager(path_str)
-    else:
-        _hdf_context_manager(path_str)
-
-
-def _hdf_context_manager(path_str: str) -> None:
     check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
     with HDFStore(path_str, mode="r") as store:
         check(assert_type(store.is_open, bool), bool)
         check(assert_type(store.get("df"), DataFrame | Series), DataFrame)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
+@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_series(tmp_path: Path) -> None:
     s = DF["a"]
     path_str = str(tmp_path / str(uuid.uuid4()))
-    if sys.version_info < (3, 11) or sys.version_info >= (3, 14):
-        with pytest.raises(ImportError, match=MESSAGE_PYTABLE_MISSING):
-            _hdf_series(s, path_str)
-    else:
-        _hdf_series(s, path_str)
-
-
-def _hdf_series(s: pd.Series, path_str: str) -> None:
     check(assert_type(s.to_hdf(path_str, key="s"), None), type(None))
     check(assert_type(read_hdf(path_str, "s"), DataFrame | Series), Series)
 
