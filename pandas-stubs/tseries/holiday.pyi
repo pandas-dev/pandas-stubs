@@ -8,6 +8,7 @@ from typing import (
     overload,
 )
 
+from dateutil.relativedelta import relativedelta
 import numpy as np
 from pandas import (
     DatetimeIndex,
@@ -44,7 +45,7 @@ class Holiday:
         end_date: (
             np.integer | float | str | _date | datetime | np.datetime64 | None
         ) = None,
-        days_of_week: tuple[int, ...] | None = None,
+        days_of_week: tuple[int | relativedelta, ...] | None = None,
     ) -> None: ...
     @overload
     def dates(

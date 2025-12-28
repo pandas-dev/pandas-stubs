@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pandas.core.computation.ops import UndefinedVariableError as UndefinedVariableError
 
 from pandas._config.config import OptionError as OptionError
@@ -20,7 +22,13 @@ class MergeError(ValueError): ...
 class AccessorRegistrationWarning(Warning): ...
 
 class AbstractMethodError(NotImplementedError):
-    def __init__(self, class_instance: type, methodtype: str = "method") -> None: ...
+    def __init__(
+        self,
+        class_instance: type,
+        methodtype: Literal[
+            "method", "classmethod", "staticmethod", "property"
+        ] = "method",
+    ) -> None: ...
 
 class NumbaUtilError(Exception): ...
 class DuplicateLabelError(ValueError): ...

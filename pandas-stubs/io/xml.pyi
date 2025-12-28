@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Any
 
 from pandas.core.frame import DataFrame
@@ -12,6 +11,7 @@ from pandas._typing import (
     FilePath,
     ParseDatesArg,
     ReadBuffer,
+    SequenceNotStr,
     StorageOptions,
     XMLParsers,
 )
@@ -23,7 +23,7 @@ def read_xml(
     namespaces: dict[str, str] | None = None,
     elems_only: bool = False,
     attrs_only: bool = False,
-    names: Sequence[str] | None = None,
+    names: SequenceNotStr[str] | None = None,
     dtype: DtypeArg | None = None,
     converters: ConvertersArg | None = None,
     parse_dates: ParseDatesArg[Any, Any] | None = None,
