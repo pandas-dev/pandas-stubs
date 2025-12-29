@@ -63,6 +63,7 @@ def test_boolean_array() -> None:
     arr = pd.array([True], dtype="boolean")
     arr_bool = pd.array([True, False])
     arr_int = pd.array([3, 5])
+    check(assert_type(arr, BooleanArray), BooleanArray)
     arr_and = arr & arr
     check(assert_type(arr_and, BooleanArray), BooleanArray)
 
