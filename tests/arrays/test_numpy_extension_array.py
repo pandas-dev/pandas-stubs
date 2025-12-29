@@ -15,8 +15,6 @@ from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pytest
 from typing_extensions import assert_type
 
-from pandas._typing import np_ndarray
-
 from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
@@ -26,6 +24,7 @@ from tests import (
 from tests._typing import (
     BuiltinDtypeArg,
     NumpyNotTimeDtypeArg,
+    np_ndarray,
 )
 from tests.dtypes import (
     NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS,
@@ -274,11 +273,11 @@ def test_construction_dtype(
 
 @pytest.mark.parametrize("creator", [np.array, pd.array])
 def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -> None:
-    check(NumpyExtensionArray(creator([1])), NumpyExtensionArray)
+    check(NumpyExtensionArray(creator([None])), NumpyExtensionArray)
 
     if TYPE_CHECKING:
         assert_type(NumpyExtensionArray(np.array([1])), NumpyExtensionArray)
-        assert_type(NumpyExtensionArray(pd.array([b"1"])), NumpyExtensionArray)
+        assert_type(NumpyExtensionArray(pd.array([None])), NumpyExtensionArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
         _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
