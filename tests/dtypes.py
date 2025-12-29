@@ -2,7 +2,6 @@ from datetime import (
     date,
     datetime,
     timedelta,
-    timezone,
 )
 
 import numpy as np
@@ -40,6 +39,7 @@ from tests._typing import (
     ObjectDtypeArg,
     PandasAstypeTimedeltaDtypeArg,
     PandasAstypeTimestampDtypeArg,
+    PandasBaseStrDtypeArg,
     PandasBooleanDtypeArg,
     PandasFloatDtypeArg,
     PandasIntDtypeArg,
@@ -189,10 +189,9 @@ NUMPY_TIMESTAMP_ARGS = {
     # little endian
     **dict.fromkeys([f"<M8[{u}]" for u in NUMPY_UNITS], datetime),
 }
-PANDAS_TIMESTAMP_ARGS: dict[str | pd.DatetimeTZDtype, type[datetime]] = {
-    pd.DatetimeTZDtype(tz=timezone.utc): datetime,
-    **dict.fromkeys([f"datetime64[{u}, UTC]" for u in NUMPY_UNITS], datetime),
-}
+PANDAS_TIMESTAMP_ARGS = dict.fromkeys(
+    [f"datetime64[{u}, UTC]" for u in NUMPY_UNITS], datetime
+)
 PANDAS_ASTYPE_TIMESTAMP_ARGS = {
     # numpy datetime64
     **dict.fromkeys([f"datetime64[{u}]" for u in PANDAS_UNITS], datetime),
@@ -236,11 +235,17 @@ TYPE_TIMEDELTA_ARGS = NUMPY_TIMEDELTA_ARGS | PYARROW_TIMEDELTA_ARGS
 ASTYPE_TIMEDELTA_ARGS = TYPE_TIMEDELTA_ARGS | PANDAS_ASTYPE_TIMEDELTA_ARGS
 
 PYTHON_STRING_ARGS = dict.fromkeys((str, "str"), str)
-PANDAS_STRING_ARGS = dict.fromkeys((pd.StringDtype(), "string"), str)
+PANDAS_BASE_STRING_ARGS = dict.fromkeys((pd.StringDtype(), "string"), str)
+PANDAS_STRING_ARGS = dict.fromkeys((pd.StringDtype("python"), "string[python]"), str)
 NUMPY_STRING_ARGS = dict.fromkeys((np.str_, "str_", "unicode", "U"), str)
-PYARROW_STRING_ARGS = {"string[pyarrow]": str}
+PYARROW_STRING_ARGS = dict.fromkeys((pd.StringDtype("pyarrow"), "string[pyarrow]"), str)
 ASTYPE_STRING_ARGS = (
-    PYTHON_STRING_ARGS | PANDAS_STRING_ARGS | NUMPY_STRING_ARGS | PYARROW_STRING_ARGS
+    PYTHON_STRING_ARGS
+    | PANDAS_BASE_STRING_ARGS
+    | PANDAS_STRING_ARGS
+    | PYARROW_STRING_ARGS
+    | NUMPY_STRING_ARGS
+    | PYARROW_STRING_ARGS
 )
 
 PYTHON_BYTES_ARGS = dict.fromkeys((bytes, "bytes"), bytes)
@@ -316,6 +321,7 @@ DTYPE_ARG_ALIAS_MAPS = {
     ObjectDtypeArg: ASTYPE_OBJECT_ARGS,
     PandasAstypeTimedeltaDtypeArg: PANDAS_ASTYPE_TIMEDELTA_ARGS,
     PandasAstypeTimestampDtypeArg: PANDAS_ASTYPE_TIMESTAMP_ARGS,
+    PandasBaseStrDtypeArg: PANDAS_BASE_STRING_ARGS,
     PandasBooleanDtypeArg: PANDAS_BOOL_ARGS,
     PandasFloatDtypeArg: PANDAS_FLOAT_ARGS,
     PandasIntDtypeArg: PANDAS_INT_ARGS,

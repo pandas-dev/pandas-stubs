@@ -9,7 +9,11 @@ from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.numpy_ import NumpyExtensionArray
-from pandas.core.arrays.string_ import StringArray
+from pandas.core.arrays.string_ import (
+    BaseStringArray,
+    StringArray,
+)
+from pandas.core.arrays.string_arrow import ArrowStringArray
 from pandas.core.indexes.range import RangeIndex
 
 from pandas._libs.missing import NAType
@@ -18,11 +22,13 @@ from pandas._typing import (
     BuiltinNotStrDtypeArg,
     Just,
     NumpyNotTimeDtypeArg,
+    PandasBaseStrDtypeArg,
     PandasBooleanDtypeArg,
     PandasFloatDtypeArg,
     PandasIntDtypeArg,
     PandasStrDtypeArg,
     PandasUIntDtypeArg,
+    PyArrowStrDtypeArg,
     SequenceNotStr,
     np_ndarray,
     np_ndarray_anyint,
@@ -95,22 +101,42 @@ def array(
 ) -> FloatingArray: ...
 @overload
 def array(
-    data: SequenceNotStr[str | np.str_ | float | NAType | None],
+    data: (
+        SequenceNotStr[str | np.str_ | float | NAType | None]
+        | np_ndarray
+        | BaseStringArray
+    ),
+    dtype: PyArrowStrDtypeArg,
+    copy: bool = True,
+) -> ArrowStringArray: ...
+@overload
+def array(
+    data: (
+        SequenceNotStr[str | np.str_ | float | NAType | None]
+        | np_ndarray
+        | BaseStringArray
+    ),
     dtype: PandasStrDtypeArg,
     copy: bool = True,
 ) -> StringArray: ...
 @overload
 def array(
-    data: SequenceNotStr[str | np.str_ | NAType | None],
-    dtype: None = None,
+    data: (
+        SequenceNotStr[str | np.str_ | float | NAType | None]
+        | np_ndarray
+        | BaseStringArray
+    ),
+    dtype: PandasBaseStrDtypeArg,
     copy: bool = True,
-) -> StringArray: ...
+) -> BaseStringArray: ...
 @overload
 def array(
-    data: np_ndarray_str | StringArray,
-    dtype: PandasStrDtypeArg | None = None,
+    data: (
+        SequenceNotStr[str | np.str_ | NAType | None] | np_ndarray_str | BaseStringArray
+    ),
+    dtype: PandasBaseStrDtypeArg | None = None,
     copy: bool = True,
-) -> StringArray: ...
+) -> BaseStringArray: ...
 @overload
 def array(
     data: SequenceNotStr[Any],

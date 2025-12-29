@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from pandas.core.dtypes.base import ExtensionDtype
+
 from tests import get_dtype
 from tests.dtypes import DTYPE_ARG_ALIAS_MAPS
 
@@ -24,9 +26,13 @@ def test_get_dtype() -> None:
         pd.DatetimeTZDtype(tz="UTC"),
     ]
     for actual, expected in zip(get_dtype(alias_union), expected_values, strict=True):
-        assert actual == expected
+        assert actual == (
+            type(expected) if isinstance(expected, ExtensionDtype) else expected
+        )
 
 
 @pytest.mark.parametrize(("dtype_arg", "alias_map"), DTYPE_ARG_ALIAS_MAPS.items())
 def test_dtype_arg_aliases(dtype_arg: Any, alias_map: Mapping[Any, Any]) -> None:
-    assert set(get_dtype(dtype_arg)) == set(alias_map)
+    assert set(get_dtype(dtype_arg)) == {
+        type(t) if isinstance(t, ExtensionDtype) else t for t in alias_map
+    }

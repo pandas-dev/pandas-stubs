@@ -71,6 +71,7 @@ html5lib = ">=1.1"
 python-calamine = ">=0.2.0"
 pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
 fsspec = "^2025.10.0"
+tables = { version = ">=3.10.2", python = ">=3.11,<3.14" }  # TODO: add py314 when PyTables/PyTables#1261 is resolved
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -205,10 +206,6 @@ ignore = [
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "ERA001", "PLR0402", "PLC0105"
 ]
-"*window*" = [
-  # TODO: remove when window is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 
 "scripts/*" = [
   # The following rules are ignored permanently for good reasons
@@ -290,11 +287,8 @@ stubPath = "."
 include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false    # use pyright-specific ignores
 # disable subset of strict
-reportMissingParameterType = false
 reportUnnecessaryTypeIgnoreComment = true
-reportUnknownLambdaType = false
 reportUnknownMemberType = false
-reportUnknownParameterType = false
 reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true

@@ -1,11 +1,6 @@
-from collections import UserList
-from collections.abc import (
-    Callable,
-    Sequence,
-)
 from typing import (
     TYPE_CHECKING,
-    Any,
+    Literal,
 )
 
 import numpy as np
@@ -14,42 +9,73 @@ from pandas.core.arrays.string_ import StringArray
 import pytest
 from typing_extensions import assert_type
 
+from pandas._libs.missing import NAType
+
 from tests import check
+from tests._typing import PandasStrDtypeArg
+from tests.dtypes import PANDAS_STRING_ARGS
 from tests.utils import powerset
 
 
-@pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("data", powerset(["🐼", np.str_("🐼")], 1))
-@pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
-def test_construction_sequence(
-    data: tuple[str | np.str_, ...],
-    missing_values: tuple[Any, ...],
-    typ: Callable[[Sequence[Any]], Sequence[Any]],
+@pytest.mark.parametrize("data", powerset(["pd", np.str_("pd")]))
+@pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_STRING_ARGS.items())
+def test_construction_dtype(
+    data: tuple[str | np.str_, ...], dtype: PandasStrDtypeArg, target_dtype: type
 ) -> None:
-    check(pd.array(typ([*data, *missing_values])), StringArray)
+    dtype_notna = target_dtype if data else None
+    check(pd.array([*data], dtype=dtype), StringArray, dtype_notna)
+    check(pd.array([*data, *data], dtype=dtype), StringArray, dtype_notna)
+
+    dtype_na = target_dtype if data else NAType
+    check(pd.array([*data, np.nan], dtype=dtype), StringArray, dtype_na)
+    check(pd.array([*data, *data, np.nan], dtype=dtype), StringArray, dtype_na)
 
     if TYPE_CHECKING:
-        assert_type(pd.array(["🐼", np.str_("🐼")]), StringArray)
+        assert_type(pd.array([], dtype=pd.StringDtype("python")), StringArray)
+        assert_type(pd.array([], dtype="string[python]"), StringArray)
 
-        assert_type(pd.array(["🐼", np.str_("🐼"), None]), StringArray)
-        assert_type(pd.array(["🐼", np.str_("🐼"), pd.NA]), StringArray)
+        assert_type(pd.array([np.nan], dtype=pd.StringDtype("python")), StringArray)
+        assert_type(pd.array([np.nan], dtype="string[python]"), StringArray)
 
-        assert_type(pd.array(["🐼", np.str_("🐼"), None, pd.NA]), StringArray)
+        assert_type(pd.array(["1"], dtype=pd.StringDtype("python")), StringArray)
+        assert_type(pd.array(["1"], dtype="string[python]"), StringArray)
 
-        assert_type(pd.array(("🐼", np.str_("🐼"))), StringArray)
-        assert_type(pd.array(("🐼", np.str_("🐼"), pd.NA)), StringArray)
+        assert_type(pd.array(["1", "2"], dtype=pd.StringDtype("python")), StringArray)
+        assert_type(pd.array(["1", "2"], dtype="string[python]"), StringArray)
 
-        assert_type(pd.array(UserList(["🐼", np.str_("🐼")])), StringArray)
+        assert_type(
+            pd.array(["1", np.nan], dtype=pd.StringDtype("python")), StringArray
+        )
+        assert_type(pd.array(["1", np.nan], dtype="string[python]"), StringArray)
+
+        assert_type(
+            pd.array([np.str_("1")], dtype=pd.StringDtype("python")), StringArray
+        )
+        assert_type(pd.array([np.str_("1")], dtype="string[python]"), StringArray)
+
+        assert_type(
+            pd.array([np.str_("1"), np.str_("2")], dtype=pd.StringDtype("python")),
+            StringArray,
+        )
+        assert_type(
+            pd.array([np.str_("1"), np.str_("2")], dtype="string[python]"), StringArray
+        )
+
+        assert_type(
+            pd.array([np.str_("1"), np.nan], dtype=pd.StringDtype("python")),
+            StringArray,
+        )
+        assert_type(
+            pd.array([np.str_("1"), np.nan], dtype="string[python]"), StringArray
+        )
+
+        assert_type(
+            pd.array(["1", np.str_("2")], dtype=pd.StringDtype("python")), StringArray
+        )
+        assert_type(pd.array([np.str_("1"), "2"], dtype="string[python]"), StringArray)
 
 
-def test_construction_array_like() -> None:
-    np_arr = np.array(["🐼", np.str_("🐼")], np.str_)
-    check(assert_type(pd.array(np_arr), StringArray), StringArray)
-
-    check(
-        assert_type(pd.array(pd.array(["🐼", np.str_("🐼")])), StringArray), StringArray
-    )
-
-
-def test_construction_dtype_na() -> None:
-    check(assert_type(pd.array([np.nan], "string"), StringArray), StringArray)
+def test_dtype() -> None:
+    arr = pd.array(["a"], "string[python]")
+    check(assert_type(arr.dtype, "pd.StringDtype[Literal['python']]"), pd.StringDtype)
+    assert assert_type(arr.dtype.storage, Literal["python"]) == "python"
