@@ -28,15 +28,11 @@ StorageT = TypeVar(
 class StringDtype(ExtensionDtype, Generic[StorageT]):
     @overload
     def __new__(
-        cls,
-        storage: Literal["python"],
-        na_value: NAType | float = ...,
+        cls, storage: Literal["python"], na_value: NAType | float = ...
     ) -> StringDtype[Literal["python"]]: ...
     @overload
     def __new__(
-        cls,
-        storage: Literal["pyarrow"],
-        na_value: NAType | float = ...,
+        cls, storage: Literal["pyarrow"], na_value: NAType | float = ...
     ) -> StringDtype[Literal["pyarrow"]]: ...
     @overload
     def __new__(cls, storage: None = None, na_value: NAType | float = ...) -> Self: ...
