@@ -2,6 +2,7 @@ from typing import (
     Any,
     Generic,
     Literal,
+    TypeAlias,
 )
 
 from pandas.core.arrays.base import ExtensionArray
@@ -19,9 +20,8 @@ from pandas._typing import (
 
 from pandas.core.dtypes.base import ExtensionDtype
 
-StorageT = TypeVar(
-    "StorageT", bound=Literal["python", "pyarrow"], default=Literal["python", "pyarrow"]
-)
+Storage: TypeAlias = Literal["python", "pyarrow"]
+StorageT = TypeVar("StorageT", bound=Storage, default=Storage)
 
 class StringDtype(ExtensionDtype, Generic[StorageT]):
     def __new__(

@@ -15,7 +15,11 @@ from pandas.core.arrays.string_ import BaseStringArray
 import pytest
 from typing_extensions import assert_type
 
+from pandas._libs.missing import NAType
+
 from tests import check
+from tests._typing import PandasBaseStrDtypeArg
+from tests.dtypes import PANDAS_BASE_STRING_ARGS
 from tests.utils import powerset
 
 
@@ -58,8 +62,56 @@ def test_construction_array_like() -> None:
     )
 
 
-def test_construction_dtype_na() -> None:
-    check(assert_type(pd.array([np.nan], "string"), BaseStringArray), BaseStringArray)
+@pytest.mark.parametrize("data", powerset(["pd", np.str_("pd")]))
+@pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_BASE_STRING_ARGS.items())
+def test_construction_dtype(
+    data: tuple[str | np.str_, ...], dtype: PandasBaseStrDtypeArg, target_dtype: type
+) -> None:
+    dtype_notna = target_dtype if data else None
+    check(pd.array([*data], dtype=dtype), BaseStringArray, dtype_notna)
+    check(pd.array([*data, *data], dtype=dtype), BaseStringArray, dtype_notna)
+
+    dtype_na = target_dtype if data else NAType
+    check(pd.array([*data, np.nan], dtype=dtype), BaseStringArray, dtype_na)
+    check(pd.array([*data, *data, np.nan], dtype=dtype), BaseStringArray, dtype_na)
+
+    if TYPE_CHECKING:
+        # TODO: mypy does not support such incompatible overloads python/mypy#19952
+        assert_type(pd.array([], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array([], dtype="string"), BaseStringArray)
+
+        assert_type(pd.array([np.nan], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array([np.nan], dtype="string"), BaseStringArray)
+
+        assert_type(pd.array(["1"], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array(["1"], dtype="string"), BaseStringArray)
+
+        assert_type(pd.array(["1", "2"], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array(["1", "2"], dtype="string"), BaseStringArray)
+
+        assert_type(pd.array(["1", np.nan], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array(["1", np.nan], dtype="string"), BaseStringArray)
+
+        assert_type(pd.array([np.str_("1")], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array([np.str_("1")], dtype="string"), BaseStringArray)
+
+        assert_type(  # type: ignore[assert-type]
+            pd.array([np.str_("1"), np.str_("2")], dtype=pd.StringDtype()),
+            BaseStringArray,
+        )
+        assert_type(
+            pd.array([np.str_("1"), np.str_("2")], dtype="string"), BaseStringArray
+        )
+
+        assert_type(  # type: ignore[assert-type]
+            pd.array([np.str_("1"), np.nan], dtype=pd.StringDtype()), BaseStringArray
+        )
+        assert_type(pd.array([np.str_("1"), np.nan], dtype="string"), BaseStringArray)
+
+        assert_type(  # type: ignore[assert-type]
+            pd.array(["1", np.str_("2")], dtype=pd.StringDtype()), BaseStringArray
+        )
+        assert_type(pd.array([np.str_("1"), "2"], dtype="string"), BaseStringArray)
 
 
 def test_dtype() -> None:

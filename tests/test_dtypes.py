@@ -151,6 +151,7 @@ def test_string_dtype(
 
     if TYPE_CHECKING:
         assert_type(pd.StringDtype(), pd.StringDtype)
+        assert_type(pd.StringDtype(None), pd.StringDtype)
         assert_type(pd.StringDtype("pyarrow"), pd.StringDtype[Literal["pyarrow"]])
         assert_type(pd.StringDtype("python"), pd.StringDtype[Literal["python"]])
 
