@@ -2,7 +2,6 @@ from typing import (
     Any,
     Generic,
     Literal,
-    overload,
 )
 
 from pandas.core.arrays import PandasArray
@@ -26,16 +25,9 @@ StorageT = TypeVar(
 )
 
 class StringDtype(ExtensionDtype, Generic[StorageT]):
-    @overload
     def __new__(
-        cls, storage: Literal["python"], na_value: NAType | float = ...
-    ) -> StringDtype[Literal["python"]]: ...
-    @overload
-    def __new__(
-        cls, storage: Literal["pyarrow"], na_value: NAType | float = ...
-    ) -> StringDtype[Literal["pyarrow"]]: ...
-    @overload
-    def __new__(cls, storage: None = None, na_value: NAType | float = ...) -> Self: ...
+        cls, storage: StorageT | None = None, na_value: NAType | float = ...
+    ) -> Self: ...
     @property
     def storage(self) -> StorageT: ...
     @property
