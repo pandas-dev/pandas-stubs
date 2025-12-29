@@ -40,26 +40,21 @@ def test_construction_sequence(
         assert_type(pd.array([pd.NA]), NumpyExtensionArray)
         assert_type(pd.array([pd.NaT]), NumpyExtensionArray)
 
-        # mypy does not like the literal version pd.array([np.nan, pd.NaT])
-        _10 = [np.nan, pd.NaT]
-        assert_type(pd.array(_10), NumpyExtensionArray)
+        # mypy does not like the literal versions
+        assert_type(pd.array([np.nan, pd.NaT]), NumpyExtensionArray)  # type: ignore[assert-type]
         assert_type(pd.array([None, pd.NA]), NumpyExtensionArray)
         assert_type(pd.array([None, pd.NaT]), NumpyExtensionArray)
         assert_type(pd.array([pd.NA, pd.NaT]), NumpyExtensionArray)
 
-        _20 = [np.nan, None, pd.NaT]
-        assert_type(pd.array(_20), NumpyExtensionArray)
-        _21 = [np.nan, pd.NA, pd.NaT]
-        assert_type(pd.array(_21), NumpyExtensionArray)
+        assert_type(pd.array([np.nan, None, pd.NaT]), NumpyExtensionArray)  # type: ignore[assert-type]
+        assert_type(pd.array([np.nan, pd.NA, pd.NaT]), NumpyExtensionArray)  # type: ignore[assert-type]
         assert_type(pd.array([None, pd.NA, pd.NaT]), NumpyExtensionArray)
 
-        _30 = [np.nan, None, pd.NA, pd.NaT]
-        assert_type(pd.array(_30), NumpyExtensionArray)
+        assert_type(pd.array([np.nan, None, pd.NA, pd.NaT]), NumpyExtensionArray)  # type: ignore[assert-type]
 
         assert_type(pd.array((np.nan, None, pd.NA, pd.NaT)), NumpyExtensionArray)
 
-        _50 = UserList([np.nan, pd.NA, pd.NaT])
-        assert_type(pd.array(_50), NumpyExtensionArray)
+        assert_type(pd.array(UserList([np.nan, pd.NA, pd.NaT])), NumpyExtensionArray)  # type: ignore[assert-type]
 
 
 def test_construction_array_like() -> None:
