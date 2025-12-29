@@ -9,7 +9,6 @@ from contextlib import (
     nullcontext,
     suppress,
 )
-from datetime import timezone
 import sys
 from typing import (
     TYPE_CHECKING,
@@ -208,12 +207,7 @@ def get_dtype(dtype: object) -> Generator[Any, None, None]:
         yield dtype
     # isinstance(type[bool], type) is True in py310, but not in newer versions
     elif isinstance(dtype, type) and not str(dtype).startswith("type["):
-        if dtype is pd.DatetimeTZDtype:
-            yield dtype(tz=timezone.utc)
-        elif "pandas" in str(dtype):
-            yield dtype()
-        else:
-            yield dtype
+        yield dtype
     else:
         for arg in get_args(dtype):
             yield from get_dtype(arg)
