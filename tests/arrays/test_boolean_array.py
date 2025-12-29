@@ -27,8 +27,13 @@ def test_construction_sequence(
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
     check(pd.array(typ([*data, *missing_values])), BooleanArray)
+    check(pd.array(typ([False, *data, *missing_values])), BooleanArray)
+    check(pd.array(typ([np.bool_(False), *data, *missing_values])), BooleanArray)
 
     if TYPE_CHECKING:
+        assert_type(pd.array([False, True]), BooleanArray)
+        assert_type(pd.array([np.bool_(True), np.bool_(False)]), BooleanArray)
+
         assert_type(pd.array([True, np.bool_(True)]), BooleanArray)
 
         assert_type(pd.array([True, np.bool_(True), None]), BooleanArray)
