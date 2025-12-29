@@ -27,14 +27,19 @@ def test_construction_sequence(
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
     check(pd.array(typ([*data, *missing_values])), BaseStringArray)
+    check(pd.array(typ([*data, *data, *missing_values])), BaseStringArray)
 
     if TYPE_CHECKING:
         assert_type(pd.array(["pd", np.str_("pd")]), BaseStringArray)
+        assert_type(pd.array(["pa", "pd"]), BaseStringArray)
+        assert_type(pd.array([np.str_("pa"), np.str_("pd")]), BaseStringArray)
 
         assert_type(pd.array(["pd", np.str_("pd"), None]), BaseStringArray)
         assert_type(pd.array(["pd", np.str_("pd"), pd.NA]), BaseStringArray)
+        assert_type(pd.array([np.str_("pa"), np.str_("pd"), pd.NA]), BaseStringArray)
 
         assert_type(pd.array(["pd", np.str_("pd"), None, pd.NA]), BaseStringArray)
+        assert_type(pd.array(["pa", "pd", None, pd.NA]), BaseStringArray)
 
         assert_type(pd.array(("pd", np.str_("pd"))), BaseStringArray)
         assert_type(pd.array(("pd", np.str_("pd"), pd.NA)), BaseStringArray)
