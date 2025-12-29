@@ -14,6 +14,7 @@ from pandas.core.arrays.string_ import (
     BaseStringArray,
     StringArray,
 )
+from pandas.core.arrays.string_arrow import ArrowStringArray
 
 from pandas._libs.missing import NAType
 from pandas._typing import (
@@ -23,6 +24,7 @@ from pandas._typing import (
     PandasIntDtypeArg,
     PandasStrDtypeArg,
     PandasUIntDtypeArg,
+    PyArrowStrDtypeArg,
     SequenceNotStr,
     np_ndarray,
     np_ndarray_anyint,
@@ -53,6 +55,16 @@ def array(
     dtype: PandasFloatDtypeArg | None = None,
     copy: bool = True,
 ) -> FloatingArray: ...
+@overload
+def array(
+    data: (
+        SequenceNotStr[str | np.str_ | float | NAType | None]
+        | np_ndarray
+        | BaseStringArray
+    ),
+    dtype: PyArrowStrDtypeArg,
+    copy: bool = True,
+) -> ArrowStringArray: ...
 @overload
 def array(
     data: (

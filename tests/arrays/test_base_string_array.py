@@ -6,6 +6,7 @@ from collections.abc import (
 from typing import (
     TYPE_CHECKING,
     Any,
+    Literal,
 )
 
 import numpy as np
@@ -59,3 +60,12 @@ def test_construction_array_like() -> None:
 
 def test_construction_dtype_na() -> None:
     check(assert_type(pd.array([np.nan], "string"), BaseStringArray), BaseStringArray)
+
+
+def test_dtype() -> None:
+    arr = pd.array(["a"], "string")
+    check(assert_type(arr.dtype, pd.StringDtype), pd.StringDtype)
+    assert assert_type(arr.dtype.storage, Literal["python", "pyarrow"]) in {
+        "python",
+        "pyarrow",
+    }
