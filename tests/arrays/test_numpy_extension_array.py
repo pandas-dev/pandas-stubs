@@ -58,7 +58,7 @@ def test_construction_sequence(
 
 
 def test_construction_array_like() -> None:
-    data = [1, "🐼"]
+    data = [1, b"a"]
     np_arr = np.array(data, np.object_)
 
     check(assert_type(pd.array(data), NumpyExtensionArray), NumpyExtensionArray)
