@@ -80,7 +80,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
         cls,
         left: _OrderableT,
         right: _OrderableT,
-        closed: IntervalClosedType = ...,
+        closed: IntervalClosedType = "right",
     ) -> Self: ...
     def __hash__(self) -> int: ...
     @overload

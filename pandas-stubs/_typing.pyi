@@ -1,3 +1,4 @@
+# ruff: noqa: PYI002
 from builtins import type as type_t
 from collections.abc import (
     Callable,
@@ -88,7 +89,7 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 ArrayLike: TypeAlias = ExtensionArray | npt.NDArray[Any]
 AnyArrayLike: TypeAlias = ArrayLike | Index | Series
-if TYPE_CHECKING:  # noqa: PYI002
+if TYPE_CHECKING:
     AnyArrayLikeInt: TypeAlias = (
         IntegerArray | Index[int] | Series[int] | npt.NDArray[np.integer]
     )
@@ -423,15 +424,12 @@ PyArrowTimedeltaDtypeArg: TypeAlias = Literal[
 TimedeltaDtypeArg: TypeAlias = NumpyTimedeltaDtypeArg | PyArrowTimedeltaDtypeArg
 # Pandas timestamp type and its string alias
 # Not comprehensive
-PandasTimestampDtypeArg: TypeAlias = (
-    pd.DatetimeTZDtype
-    | Literal[
-        "datetime64[s, UTC]",
-        "datetime64[ms, UTC]",
-        "datetime64[us, UTC]",
-        "datetime64[ns, UTC]",
-    ]
-)
+PandasTimestampDtypeArg: TypeAlias = Literal[
+    "datetime64[s, UTC]",
+    "datetime64[ms, UTC]",
+    "datetime64[us, UTC]",
+    "datetime64[ns, UTC]",
+]
 PandasAstypeTimestampDtypeArg: TypeAlias = Literal[
     # numpy datetime64
     "datetime64[Y]",
@@ -499,14 +497,27 @@ TimestampDtypeArg: TypeAlias = (
 # Builtin str type and its string alias
 BuiltinStrDtypeArg: TypeAlias = type[str] | Literal["str"]
 # Pandas nullable string type and its string alias
-PandasStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string"]
+PandasBaseStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string"]
+if TYPE_CHECKING:
+    PandasStrDtypeArg: TypeAlias = (
+        pd.StringDtype[Literal["python"]] | Literal["string[python]"]
+    )
+    # PyArrow string type and its string alias
+    PyArrowStrDtypeArg: TypeAlias = (
+        pd.StringDtype[Literal["pyarrow"]] | Literal["string[pyarrow]"]
+    )
+else:
+    PandasStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string[python]"]
+    PyArrowStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string[pyarrow]"]
 # Numpy string type and its string alias
 # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.str_
 NumpyStrDtypeArg: TypeAlias = type[np.str_] | Literal["U", "str_", "unicode"]
-# PyArrow string type and its string alias
-PyArrowStrDtypeArg: TypeAlias = Literal["string[pyarrow]"]
 StrDtypeArg: TypeAlias = (
-    BuiltinStrDtypeArg | PandasStrDtypeArg | NumpyStrDtypeArg | PyArrowStrDtypeArg
+    BuiltinStrDtypeArg
+    | PandasBaseStrDtypeArg
+    | PandasStrDtypeArg
+    | NumpyStrDtypeArg
+    | PyArrowStrDtypeArg
 )
 # Builtin bytes type and its string alias
 BuiltinBytesDtypeArg: TypeAlias = type[bytes] | Literal["bytes"]
@@ -976,7 +987,7 @@ class SupportsDType(Protocol[GenericT_co]):
 # Similar to npt.DTypeLike but leaves out np.dtype and None for use in overloads
 DTypeLike: TypeAlias = type[Any] | tuple[Any, Any] | list[Any] | str
 
-if TYPE_CHECKING:  # noqa: PYI002
+if TYPE_CHECKING:
     IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
     MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
@@ -1051,7 +1062,7 @@ Function: TypeAlias = np.ufunc | Callable[..., Any]
 # shared HashableT and HashableT#. This one can be used if the identical
 # type is need in a function that uses GroupByObjectNonScalar
 _HashableTa = TypeVar("_HashableTa", bound=Hashable, default=Any)
-if TYPE_CHECKING:  # noqa: PYI002
+if TYPE_CHECKING:
     ByT = TypeVar(
         "ByT",
         bound=str

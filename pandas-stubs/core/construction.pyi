@@ -13,6 +13,7 @@ from pandas.core.arrays.string_ import (
     BaseStringArray,
     StringArray,
 )
+from pandas.core.arrays.string_arrow import ArrowStringArray
 from pandas.core.indexes.range import RangeIndex
 
 from pandas._libs.missing import NAType
@@ -21,11 +22,13 @@ from pandas._typing import (
     BuiltinDtypeArg,
     Just,
     NumpyNotTimeDtypeArg,
+    PandasBaseStrDtypeArg,
     PandasBooleanDtypeArg,
     PandasFloatDtypeArg,
     PandasIntDtypeArg,
     PandasStrDtypeArg,
     PandasUIntDtypeArg,
+    PyArrowStrDtypeArg,
     SequenceNotStr,
     np_ndarray,
     np_ndarray_anyint,
@@ -103,15 +106,35 @@ def array(
         | np_ndarray
         | BaseStringArray
     ),
+    dtype: PyArrowStrDtypeArg,
+    copy: bool = True,
+) -> ArrowStringArray: ...
+@overload
+def array(
+    data: (
+        SequenceNotStr[str | np.str_ | float | NAType | None]
+        | np_ndarray
+        | BaseStringArray
+    ),
     dtype: PandasStrDtypeArg,
     copy: bool = True,
 ) -> StringArray: ...
 @overload
 def array(
     data: (
+        SequenceNotStr[str | np.str_ | float | NAType | None]
+        | np_ndarray
+        | BaseStringArray
+    ),
+    dtype: PandasBaseStrDtypeArg,
+    copy: bool = True,
+) -> BaseStringArray: ...
+@overload
+def array(
+    data: (
         SequenceNotStr[str | np.str_ | NAType | None] | np_ndarray_str | BaseStringArray
     ),
-    dtype: None = None,
+    dtype: PandasBaseStrDtypeArg | None = None,
     copy: bool = True,
 ) -> BaseStringArray: ...
 @overload
