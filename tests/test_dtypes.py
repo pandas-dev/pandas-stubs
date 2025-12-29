@@ -5,7 +5,10 @@ from datetime import (
     timedelta,
     timezone,
 )
-from typing import Literal
+from typing import (
+    TYPE_CHECKING,
+    Literal,
+)
 
 import numpy as np
 import pandas as pd
@@ -142,9 +145,18 @@ def test_string_dtype(
     if na_value is pd.NA:
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
-        check(assert_type(s_dt, pd.StringDtype), pd.StringDtype)
+        check(s_dt, pd.StringDtype)
         check(assert_type(s_dt.storage, Literal["python", "pyarrow"]), str)
         check(assert_type(s_dt.na_value, NAType | float), type(na_value))
+
+    if TYPE_CHECKING:
+        assert_type(pd.StringDtype(), pd.StringDtype)
+        assert_type(pd.StringDtype("pyarrow"), pd.StringDtype[Literal["pyarrow"]])
+        assert_type(pd.StringDtype("python"), pd.StringDtype[Literal["python"]])
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _1 = pd.StringDtype(na_value="invalid_na")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_boolean_dtype() -> None:

@@ -10,19 +10,28 @@ from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
+from pandas.core.arrays.string_ import (
+    BaseStringArray,
+    StringArray,
+)
 
 from pandas._libs.missing import NAType
 from pandas._typing import (
+    PandasBaseStrDtypeArg,
     PandasBooleanDtypeArg,
     PandasFloatDtypeArg,
     PandasIntDtypeArg,
+    PandasStrDtypeArg,
     PandasUIntDtypeArg,
+    SequenceNotStr,
+    np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_float,
+    np_ndarray_str,
 )
 
-from pandas.core.dtypes.dtypes import ExtensionDtype
+from pandas.core.dtypes.base import ExtensionDtype
 
 @overload
 def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
@@ -44,6 +53,34 @@ def array(
     dtype: PandasFloatDtypeArg | None = None,
     copy: bool = True,
 ) -> FloatingArray: ...
+@overload
+def array(
+    data: (
+        SequenceNotStr[str | np.str_ | float | NAType | None]
+        | np_ndarray
+        | BaseStringArray
+    ),
+    dtype: PandasStrDtypeArg,
+    copy: bool = True,
+) -> StringArray: ...
+@overload
+def array(
+    data: (
+        SequenceNotStr[str | np.str_ | float | NAType | None]
+        | np_ndarray
+        | BaseStringArray
+    ),
+    dtype: PandasBaseStrDtypeArg,
+    copy: bool = True,
+) -> BaseStringArray: ...
+@overload
+def array(
+    data: (
+        SequenceNotStr[str | np.str_ | NAType | None] | np_ndarray_str | BaseStringArray
+    ),
+    dtype: PandasBaseStrDtypeArg | None = None,
+    copy: bool = True,
+) -> BaseStringArray: ...
 
 if sys.version_info >= (3, 11):
     @overload
