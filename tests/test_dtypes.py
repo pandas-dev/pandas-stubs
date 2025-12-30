@@ -146,7 +146,8 @@ def test_string_dtype(
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
         check(s_dt, pd.StringDtype)
-        check(assert_type(s_dt.storage, Literal["python", "pyarrow"]), str)
+        if storage:
+            assert s_dt.storage == storage
         check(assert_type(s_dt.na_value, NAType | float), type(na_value))
 
     if TYPE_CHECKING:
@@ -156,8 +157,8 @@ def test_string_dtype(
         assert_type(pd.StringDtype("python"), pd.StringDtype[Literal["python"]])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.StringDtype("invalid_storage")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _1 = pd.StringDtype(na_value="invalid_na")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _0 = pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _1 = pd.StringDtype(na_value="invalid_na")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_boolean_dtype() -> None:

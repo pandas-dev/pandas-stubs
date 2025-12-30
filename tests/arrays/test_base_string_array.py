@@ -76,26 +76,25 @@ def test_construction_dtype(
     check(pd.array([*data, *data, np.nan], dtype=dtype), BaseStringArray, dtype_na)
 
     if TYPE_CHECKING:
-        # TODO: mypy does not support such incompatible overloads python/mypy#19952
-        assert_type(pd.array([], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array([], dtype=pd.StringDtype()), BaseStringArray)
         assert_type(pd.array([], dtype="string"), BaseStringArray)
 
-        assert_type(pd.array([np.nan], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array([np.nan], dtype=pd.StringDtype()), BaseStringArray)
         assert_type(pd.array([np.nan], dtype="string"), BaseStringArray)
 
-        assert_type(pd.array(["1"], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array(["1"], dtype=pd.StringDtype()), BaseStringArray)
         assert_type(pd.array(["1"], dtype="string"), BaseStringArray)
 
-        assert_type(pd.array(["1", "2"], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array(["1", "2"], dtype=pd.StringDtype()), BaseStringArray)
         assert_type(pd.array(["1", "2"], dtype="string"), BaseStringArray)
 
-        assert_type(pd.array(["1", np.nan], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array(["1", np.nan], dtype=pd.StringDtype()), BaseStringArray)
         assert_type(pd.array(["1", np.nan], dtype="string"), BaseStringArray)
 
-        assert_type(pd.array([np.str_("1")], dtype=pd.StringDtype()), BaseStringArray)  # type: ignore[assert-type]
+        assert_type(pd.array([np.str_("1")], dtype=pd.StringDtype()), BaseStringArray)
         assert_type(pd.array([np.str_("1")], dtype="string"), BaseStringArray)
 
-        assert_type(  # type: ignore[assert-type]
+        assert_type(
             pd.array([np.str_("1"), np.str_("2")], dtype=pd.StringDtype()),
             BaseStringArray,
         )
@@ -103,12 +102,12 @@ def test_construction_dtype(
             pd.array([np.str_("1"), np.str_("2")], dtype="string"), BaseStringArray
         )
 
-        assert_type(  # type: ignore[assert-type]
+        assert_type(
             pd.array([np.str_("1"), np.nan], dtype=pd.StringDtype()), BaseStringArray
         )
         assert_type(pd.array([np.str_("1"), np.nan], dtype="string"), BaseStringArray)
 
-        assert_type(  # type: ignore[assert-type]
+        assert_type(
             pd.array(["1", np.str_("2")], dtype=pd.StringDtype()), BaseStringArray
         )
         assert_type(pd.array([np.str_("1"), "2"], dtype="string"), BaseStringArray)
