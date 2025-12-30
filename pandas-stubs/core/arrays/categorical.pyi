@@ -12,6 +12,7 @@ from typing import (
 import numpy as np
 from pandas import Series
 from pandas.core.accessor import PandasDelegate as PandasDelegate
+from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 from pandas.core.frame import DataFrame
@@ -37,7 +38,7 @@ from pandas._typing import (
 
 from pandas.core.dtypes.dtypes import CategoricalDtype as CategoricalDtype
 
-class Categorical(ExtensionArray):
+class Categorical(NDArrayBackedExtensionArray):
     __array_priority__: int = ...
     def __init__(
         self,
@@ -53,7 +54,6 @@ class Categorical(ExtensionArray):
     def ordered(self) -> Ordered: ...
     @property
     def dtype(self) -> CategoricalDtype: ...
-    def size(self) -> int: ...
     def tolist(self) -> list[Scalar]: ...
     to_list = ...
     @classmethod

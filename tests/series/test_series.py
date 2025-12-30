@@ -35,6 +35,7 @@ from pandas.api.extensions import (
 )
 from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.string_ import BaseStringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 from pandas.core.window.expanding import Expanding
@@ -1448,8 +1449,7 @@ def test_types_values() -> None:
         assert_type(
             pd.Series(list("aabc")).values, np_1darray | ExtensionArray | pd.Categorical
         ),
-        # TODO: BaseStringArray after pandas-dev/pandas-stubs#1469
-        np_1darray if PD_LTE_23 else ExtensionArray,
+        np_1darray if PD_LTE_23 else BaseStringArray,
         str,
     )
     check(

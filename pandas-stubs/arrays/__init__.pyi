@@ -7,6 +7,7 @@ from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.masked import BaseMaskedArray
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from pandas.core.arrays.period import PeriodArray
 from pandas.core.arrays.sparse import SparseArray
 from pandas.core.arrays.string_ import StringArray
@@ -24,6 +25,7 @@ __all__ = [
     "FloatingArray",
     "IntegerArray",
     "IntervalArray",
+    "NumpyExtensionArray",
     "PeriodArray",
     "SparseArray",
     "StringArray",
