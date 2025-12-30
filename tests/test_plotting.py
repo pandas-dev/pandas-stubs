@@ -15,12 +15,11 @@ from pandas import Series
 import pytest
 from typing_extensions import assert_type
 
-from pandas._typing import np_ndarray_object
-
 from tests import (
     PD_LTE_23,
     check,
 )
+from tests._typing import np_ndarray_object
 
 from pandas.plotting import (
     deregister_matplotlib_converters,
