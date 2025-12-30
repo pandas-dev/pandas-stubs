@@ -50,9 +50,7 @@ def unique(values: RangeIndex) -> np_1darray_int64: ...
 
 if sys.version_info >= (3, 11):
     @overload
-    def unique(
-        values: MultiIndex,
-    ) -> np_ndarray: ...
+    def unique(values: MultiIndex) -> np_ndarray: ...
 
 else:
     @overload
