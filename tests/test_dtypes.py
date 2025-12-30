@@ -146,6 +146,7 @@ def test_string_dtype(
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
         check(s_dt, pd.StringDtype)
+        check(assert_type(s_dt.storage, Literal["python", "pyarrow"]), str)
         if storage:
             assert s_dt.storage == storage
         check(assert_type(s_dt.na_value, NAType | float), type(na_value))
