@@ -20,17 +20,15 @@ from pandas._typing import (
 from pandas.core.dtypes.base import ExtensionDtype
 
 Storage: TypeAlias = Literal["python", "pyarrow"]
-_Unknown: TypeAlias = Literal["_unknown"]
-_Storage: TypeAlias = Storage | _Unknown
 StorageT = TypeVar("StorageT", bound=Storage)
-_StorageT = TypeVar("_StorageT", bound=_Storage, default=_Unknown)
+_StorageT = TypeVar("_StorageT", bound=Storage | None, default=None)
 
 # Trick to make mypy happy
 @type_check_only
 class _StringDtypeStorageDescriptor:
     @overload
     def __get__(
-        self, instance: StringDtype[_Unknown], owner: type[StringDtype[_Unknown]]
+        self, instance: StringDtype[None], owner: type[StringDtype[None]]
     ) -> Storage: ...
     @overload
     def __get__(
