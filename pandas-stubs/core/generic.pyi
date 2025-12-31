@@ -479,7 +479,7 @@ class NDFrame:
     def take(self, indices: TakeIndexer, axis: Axis = 0, **kwargs: Any) -> Self: ...
     def xs(
         self,
-        key: IndexLabel,
+        key: Hashable | tuple[Hashable, ...],
         axis: Axis = 0,
         level: IndexLabel | None = None,
         drop_level: _bool = True,

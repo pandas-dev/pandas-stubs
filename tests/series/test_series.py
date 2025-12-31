@@ -2679,6 +2679,10 @@ def test_check_xs() -> None:
     s4.xs(0, axis=0)
     check(assert_type(s4, "pd.Series[int]"), pd.Series, np.integer)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        s4.xs([0])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        s4.xs(0, axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+
 
 def test_types_apply_set() -> None:
     series_of_lists: pd.Series = pd.Series(
