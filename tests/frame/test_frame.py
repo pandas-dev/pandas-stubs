@@ -3413,6 +3413,9 @@ def test_xs_frame_new() -> None:
     check(assert_type(s1, pd.Series | pd.DataFrame), pd.DataFrame)
     check(assert_type(s2, pd.Series | pd.DataFrame), pd.Series)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.xs(["mammel"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+
 
 def test_align() -> None:
     df0 = pd.DataFrame(
