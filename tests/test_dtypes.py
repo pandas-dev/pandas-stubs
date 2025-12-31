@@ -146,17 +146,23 @@ def test_string_dtype(
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
         check(s_dt, pd.StringDtype)
-        check(assert_type(s_dt.storage, Literal["python", "pyarrow"]), str)
+        assert s_dt.storage in ({storage} if storage else {"python", "pyarrow"})
         check(assert_type(s_dt.na_value, NAType | float), type(na_value))
 
     if TYPE_CHECKING:
         assert_type(pd.StringDtype(), pd.StringDtype)
+        assert_type(pd.StringDtype(None), pd.StringDtype)
         assert_type(pd.StringDtype("pyarrow"), pd.StringDtype[Literal["pyarrow"]])
         assert_type(pd.StringDtype("python"), pd.StringDtype[Literal["python"]])
 
+        assert_type(pd.StringDtype().storage, Literal["python", "pyarrow"])
+        assert_type(pd.StringDtype(None).storage, Literal["python", "pyarrow"])
+        assert_type(pd.StringDtype("python").storage, Literal["python"])
+        assert_type(pd.StringDtype("pyarrow").storage, Literal["pyarrow"])
+
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.StringDtype("invalid_storage")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _1 = pd.StringDtype(na_value="invalid_na")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _0 = pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _1 = pd.StringDtype(na_value="invalid_na")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_boolean_dtype() -> None:

@@ -26,7 +26,7 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("data", powerset([1.0, np.float32(1)], 1))
+@pytest.mark.parametrize("data", powerset([1.15, np.float32(-2.3)], 1))
 @pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
 def test_construction_sequence(
     data: tuple[float | np.floating, ...],
@@ -34,24 +34,29 @@ def test_construction_sequence(
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
     check(pd.array(typ([*data, *missing_values])), FloatingArray)
+    check(pd.array(typ([-3.2, *data, *missing_values])), FloatingArray)
+    check(pd.array(typ([np.float16(-2e-4), *data, *missing_values])), FloatingArray)
 
     if TYPE_CHECKING:
-        assert_type(pd.array([1.0, np.float16(1)]), FloatingArray)
+        assert_type(pd.array([0.1, 1.2]), FloatingArray)
+        assert_type(pd.array([np.float64(0.1), np.float64(1.2)]), FloatingArray)
 
-        assert_type(pd.array([1.0, np.float32(1), np.nan]), FloatingArray)
-        assert_type(pd.array([1.0, np.float64(1), None]), FloatingArray)
-        assert_type(pd.array([1.0, np.float16(1), pd.NA]), FloatingArray)
+        assert_type(pd.array([1.1, np.float16(2.3)]), FloatingArray)
 
-        assert_type(pd.array([1.0, np.float32(1), None, pd.NA]), FloatingArray)
-        assert_type(pd.array([1.0, np.float64(1), np.nan, pd.NA]), FloatingArray)
-        assert_type(pd.array([1.0, np.float16(1), np.nan, None]), FloatingArray)
+        assert_type(pd.array([5.8, np.float32(9.8), np.nan]), FloatingArray)
+        assert_type(pd.array([7.6, np.float64(5.4), None]), FloatingArray)
+        assert_type(pd.array([3.2, -np.float16(0.1), pd.NA]), FloatingArray)
 
-        assert_type(pd.array([1.0, np.float32(1), np.nan, None, pd.NA]), FloatingArray)
+        assert_type(pd.array([-2.3, np.float32(4.5), None, pd.NA]), FloatingArray)
+        assert_type(pd.array([6.7, -np.float64(8.9), np.nan, pd.NA]), FloatingArray)
+        assert_type(pd.array([-0.1, -np.float16(2.3), np.nan, None]), FloatingArray)
 
-        assert_type(pd.array((1.0, np.float64(1))), FloatingArray)
-        assert_type(pd.array((1.0, np.float64(1), pd.NA)), FloatingArray)
+        assert_type(pd.array([4.5, np.float32(0), np.nan, None, pd.NA]), FloatingArray)
 
-        assert_type(pd.array(UserList([1.0, np.float32(1)])), FloatingArray)
+        assert_type(pd.array((0.0, np.float64(2.3e10))), FloatingArray)
+        assert_type(pd.array((-3.5e64, np.float64(7.2), pd.NA)), FloatingArray)
+
+        assert_type(pd.array(UserList([8.1, np.float32(9.2)])), FloatingArray)
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])

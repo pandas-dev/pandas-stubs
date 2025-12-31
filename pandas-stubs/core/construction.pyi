@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from typing import (
     Any,
+    TypeAlias,
     overload,
 )
 
@@ -12,9 +13,11 @@ from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from pandas.core.arrays.string_ import (
     BaseStringArray,
     StringArray,
+    StringDtype,
 )
 from pandas.core.arrays.string_arrow import ArrowStringArray
 from pandas.core.indexes.range import RangeIndex
+from typing_extensions import Never
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs.nattype import NaTType
@@ -35,6 +38,10 @@ from pandas._typing import (
     np_ndarray_bool,
     np_ndarray_float,
     np_ndarray_str,
+)
+
+_NaNNullableStrData: TypeAlias = (
+    SequenceNotStr[str | np.str_ | float | NAType | None] | np_ndarray | BaseStringArray
 )
 
 @overload
@@ -100,41 +107,27 @@ def array(
     copy: bool = True,
 ) -> FloatingArray: ...
 @overload
+def array(  # type: ignore[overload-overlap]
+    data: _NaNNullableStrData, dtype: StringDtype[Never], copy: bool = True
+) -> BaseStringArray: ...
+@overload
 def array(
-    data: (
-        SequenceNotStr[str | np.str_ | float | NAType | None]
-        | np_ndarray
-        | BaseStringArray
-    ),
-    dtype: PyArrowStrDtypeArg,
-    copy: bool = True,
+    data: _NaNNullableStrData, dtype: PyArrowStrDtypeArg, copy: bool = True
 ) -> ArrowStringArray: ...
 @overload
 def array(
-    data: (
-        SequenceNotStr[str | np.str_ | float | NAType | None]
-        | np_ndarray
-        | BaseStringArray
-    ),
-    dtype: PandasStrDtypeArg,
-    copy: bool = True,
+    data: _NaNNullableStrData, dtype: PandasStrDtypeArg, copy: bool = True
 ) -> StringArray: ...
 @overload
 def array(
-    data: (
-        SequenceNotStr[str | np.str_ | float | NAType | None]
-        | np_ndarray
-        | BaseStringArray
-    ),
-    dtype: PandasBaseStrDtypeArg,
-    copy: bool = True,
+    data: _NaNNullableStrData, dtype: PandasBaseStrDtypeArg, copy: bool = True
 ) -> BaseStringArray: ...
 @overload
 def array(
     data: (
         SequenceNotStr[str | np.str_ | NAType | None] | np_ndarray_str | BaseStringArray
     ),
-    dtype: PandasBaseStrDtypeArg | None = None,
+    dtype: None = None,
     copy: bool = True,
 ) -> BaseStringArray: ...
 @overload
