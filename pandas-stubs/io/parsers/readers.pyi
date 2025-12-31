@@ -1,6 +1,4 @@
-from collections import (
-    defaultdict,
-)
+from collections import defaultdict
 from collections.abc import (
     Callable,
     Hashable,
