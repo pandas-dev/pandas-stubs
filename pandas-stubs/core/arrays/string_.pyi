@@ -19,7 +19,6 @@ from pandas._libs.missing import NAType
 from pandas._typing import (
     DtypeArg,
     np_ndarray_object,
-    np_ndarray_str,
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
@@ -58,8 +57,6 @@ class BaseStringArray(ExtensionArray, Generic[_StorageT]):
     def dtype(self) -> StringDtype[_StorageT]: ...
 
 class StringArray(BaseStringArray[Literal["python"]], NumpyExtensionArray):
-    def __new__(
-        cls, values: np_ndarray_object | np_ndarray_str, copy: bool = False
-    ) -> Self: ...
+    def __new__(cls, values: np_ndarray_object, copy: bool = False) -> Self: ...
     def __arrow_array__(self, type: DtypeArg | None = None) -> pa.StringArray: ...
     def __setitem__(self, key: Any, value: Any) -> None: ...

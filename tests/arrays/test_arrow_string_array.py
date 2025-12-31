@@ -6,12 +6,16 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.string_arrow import ArrowStringArray
+import pyarrow as pa
 import pytest
 from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 from tests._typing import PyArrowStrDtypeArg
 from tests.dtypes import PYARROW_STRING_ARGS
 from tests.utils import powerset
@@ -81,6 +85,21 @@ def test_construction_dtype(
         assert_type(
             pd.array([np.str_("1"), "2"], dtype="string[pyarrow]"), ArrowStringArray
         )
+
+
+def test_constructor() -> None:
+    check(
+        assert_type(ArrowStringArray(pa.array(["1"])), ArrowStringArray),
+        ArrowStringArray,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _list = ArrowStringArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _tuple = ArrowStringArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _np_obj = ArrowStringArray(np.array(["1"], np.object_))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _pd_arr = ArrowStringArray(pd.array(["1"]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _i = ArrowStringArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _s = ArrowStringArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_dtype() -> None:

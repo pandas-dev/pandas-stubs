@@ -11,7 +11,10 @@ from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 from tests._typing import PandasStrDtypeArg
 from tests.dtypes import PANDAS_STRING_ARGS
 from tests.utils import powerset
@@ -73,6 +76,22 @@ def test_construction_dtype(
             pd.array(["1", np.str_("2")], dtype=pd.StringDtype("python")), StringArray
         )
         assert_type(pd.array([np.str_("1"), "2"], dtype="string[python]"), StringArray)
+
+
+def test_constructor() -> None:
+    check(
+        assert_type(StringArray(np.array(["1"], np.object_)), StringArray), StringArray
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _list = StringArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _tuple = StringArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _np_str = StringArray(
+            np.array(["1"], np.str_)  # pyright: ignore[reportArgumentType]
+        )
+        _pd_arr = StringArray(pd.array(["1"]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _i = StringArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _s = StringArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_dtype() -> None:
