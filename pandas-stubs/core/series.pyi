@@ -554,7 +554,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def name(self, value: Hashable | None) -> None: ...
     @property
     def values(self) -> np_1darray | ExtensionArray | Categorical: ...
-    def ravel(self, order: _str = ...) -> np_1darray: ...
     def __len__(self) -> int: ...
     @final
     def __array_ufunc__(
@@ -2426,17 +2425,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[int]: ...
-    if sys.version_info >= (3, 11):
-        @overload
-        def __rfloordiv__(  # type: ignore[overload-overlap]
-            self: Series[Never], other: ScalarArrayIndexSeriesReal
-        ) -> Series: ...
-    else:
-        @overload
-        def __rfloordiv__(
-            self: Series[Never], other: ScalarArrayIndexSeriesReal
-        ) -> Series: ...
-
+    @overload
+    def __rfloordiv__(  # type: ignore[overload-overlap]
+        self: Series[Never], other: ScalarArrayIndexSeriesReal
+    ) -> Series: ...
     @overload
     def __rfloordiv__(self, other: np_ndarray_complex | np_ndarray_dt) -> Never: ...
     @overload

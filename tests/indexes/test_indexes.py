@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Hashable
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 import datetime as dt
 import sys
 from typing import (
@@ -1751,3 +1754,39 @@ def test_index_drop() -> None:
         assert_type(ind.drop(np.array([1, 2])), "pd.Index[int]"), pd.Index, np.integer
     )
     check(assert_type(ind.drop(iter([1, 2])), "pd.Index[int]"), pd.Index, np.integer)
+
+
+@pytest.mark.parametrize(
+    ("data", "klass", "element_type"),
+    [
+        ([True, False, True], pd.Index, np.bool_),
+        ([1, 2, 3], pd.Index, np.integer),
+        ([1.0, 2.0, 3.0], pd.Index, np.floating),
+        ([1j, 2 + 2j, 3j], pd.Index, np.complexfloating),
+        (pd.RangeIndex(0, 3), pd.RangeIndex, int),
+        ([pd.Timestamp("2022-01-01")], pd.DatetimeIndex, pd.Timestamp),
+        ([pd.Timedelta(days=1)], pd.TimedeltaIndex, pd.Timedelta),
+        ([pd.Period("2022-01", freq="M")], pd.PeriodIndex, pd.Period),
+        (["a", "b", "c"], pd.Index, str),
+    ],
+)
+def test_ravel(
+    data: Sequence[Any] | pd.RangeIndex, klass: type[Index], element_type: type
+) -> None:
+    check(pd.Index(data).ravel(), klass, element_type)
+
+    if TYPE_CHECKING:
+        assert_type(pd.Index([True, False, True]).ravel(), "pd.Index[bool]")
+        assert_type(pd.Index([1, 2, 3]).ravel(), "pd.Index[int]")
+        assert_type(pd.Index([1.0, 2.0, 3.0]).ravel(), "pd.Index[float]")
+        assert_type(pd.Index([1j, 2 + 2j, 3j]).ravel(), "pd.Index[complex]")
+        assert_type(pd.RangeIndex(0, 3).ravel(), pd.RangeIndex)
+        assert_type(
+            pd.DatetimeIndex([pd.Timestamp("2022-01-01")]).ravel(), pd.DatetimeIndex
+        )
+        assert_type(
+            pd.TimedeltaIndex([pd.Timedelta(days=1)]).ravel(), pd.TimedeltaIndex
+        )
+        assert_type(
+            pd.PeriodIndex([pd.Period("2022-01", freq="M")]).ravel(), pd.PeriodIndex
+        )

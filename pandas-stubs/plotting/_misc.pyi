@@ -12,13 +12,12 @@ from matplotlib.axes import Axes
 from matplotlib.colors import Colormap
 from matplotlib.figure import Figure
 from matplotlib.table import Table
-import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
 from pandas._typing import (
     HashableT,
-    npt,
+    np_ndarray_object,
 )
 
 _Color: TypeAlias = str | Sequence[float]
@@ -42,7 +41,7 @@ def scatter_matrix(
     hist_kwds: dict[str, Any] | None = None,
     range_padding: float = 0.05,
     **kwargs: Any,
-) -> npt.NDArray[np.object_]: ...
+) -> np_ndarray_object: ...
 def radviz(
     frame: DataFrame,
     class_column: Hashable,
