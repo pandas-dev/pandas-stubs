@@ -93,7 +93,7 @@ def test_constructor(
         _list = ArrowStringArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         _tuple = ArrowStringArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         _np_obj = ArrowStringArray(np.array(["1"], np.object_))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _pa_arr = ArrowStringArray(pd.array([["1"]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _pa_arr = ArrowStringArray(pa.array([["1"]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         _pd_arr = ArrowStringArray(pd.array(["1"]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         _pd_str = ArrowStringArray(pd.array(["1"], "string[pyarrow]"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         _i = ArrowStringArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
