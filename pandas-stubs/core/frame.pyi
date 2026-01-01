@@ -171,6 +171,7 @@ from pandas._typing import (
     np_ndarray_bool,
     np_ndarray_float,
     np_ndarray_num,
+    np_ndarray_object,
 )
 
 from pandas.io.formats.style import Styler
@@ -1721,7 +1722,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         backend: _str | None = None,
         legend: bool = False,
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
 
     # Keep in sync with `pd.plotting.boxplot`
     @overload

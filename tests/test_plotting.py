@@ -10,7 +10,6 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib.table import Table
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 from pandas import Series
 import pytest
@@ -20,6 +19,7 @@ from tests import (
     PD_LTE_23,
     check,
 )
+from tests._typing import np_ndarray_object
 
 from pandas.plotting import (
     deregister_matplotlib_converters,
@@ -212,11 +212,8 @@ def test_bootstrap_plot(close_figures: None) -> None:
 
 def test_hist(close_figures: None) -> None:
     df = pd.DataFrame({"Col1": [1, 2], "Col4": [2, 1]})
-    check(assert_type(df.hist(), npt.NDArray[np.object_]), np.ndarray)
-    check(
-        assert_type(df.hist(by="Col4"), npt.NDArray[np.object_]),
-        np.ndarray,
-    )
+    check(assert_type(df.hist(), np_ndarray_object), np.ndarray)
+    check(assert_type(df.hist(by="Col4"), np_ndarray_object), np.ndarray)
 
 
 def test_boxplot(close_figures: None) -> None:
@@ -376,10 +373,7 @@ def test_radviz(close_figures: None) -> None:
 def test_scatter_matrix(close_figures: None) -> None:
     df = pd.DataFrame(np.random.randn(1000, 4), columns=["A", "B", "C", "D"])
     check(
-        assert_type(
-            pd.plotting.scatter_matrix(df, alpha=0.2),
-            npt.NDArray[np.object_],
-        ),
+        assert_type(pd.plotting.scatter_matrix(df, alpha=0.2), np_ndarray_object),
         np.ndarray,
     )
 
@@ -394,18 +388,9 @@ def test_plot_line() -> None:
     check(assert_type(IRIS_DF.plot(), Axes), Axes)
     check(assert_type(IRIS_DF.plot.line(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="line"), Axes), Axes)
+    check(assert_type(IRIS_DF.plot.line(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(
-            IRIS_DF.plot.line(subplots=True),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
-    )
-    check(
-        assert_type(
-            IRIS_DF.plot(kind="line", subplots=True),
-            npt.NDArray[np.object_],
-        ),
+        assert_type(IRIS_DF.plot(kind="line", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -413,18 +398,9 @@ def test_plot_line() -> None:
 def test_plot_area(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.area(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="area"), Axes), Axes)
+    check(assert_type(IRIS_DF.plot.area(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(
-            IRIS_DF.plot.area(subplots=True),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
-    )
-    check(
-        assert_type(
-            IRIS_DF.plot(kind="area", subplots=True),
-            npt.NDArray[np.object_],
-        ),
+        assert_type(IRIS_DF.plot(kind="area", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -432,18 +408,9 @@ def test_plot_area(close_figures: None) -> None:
 def test_plot_bar(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.bar(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="bar"), Axes), Axes)
+    check(assert_type(IRIS_DF.plot.bar(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(
-            IRIS_DF.plot.bar(subplots=True),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
-    )
-    check(
-        assert_type(
-            IRIS_DF.plot(kind="bar", subplots=True),
-            npt.NDArray[np.object_],
-        ),
+        assert_type(IRIS_DF.plot(kind="bar", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -451,18 +418,9 @@ def test_plot_bar(close_figures: None) -> None:
 def test_plot_barh(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.barh(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="barh"), Axes), Axes)
+    check(assert_type(IRIS_DF.plot.barh(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(
-            IRIS_DF.plot.barh(subplots=True),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
-    )
-    check(
-        assert_type(
-            IRIS_DF.plot(kind="barh", subplots=True),
-            npt.NDArray[np.object_],
-        ),
+        assert_type(IRIS_DF.plot(kind="barh", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -478,17 +436,10 @@ def test_plot_density(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.density(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="density"), Axes), Axes)
     check(
-        assert_type(
-            IRIS_DF.plot.density(subplots=True),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
+        assert_type(IRIS_DF.plot.density(subplots=True), np_ndarray_object), np.ndarray
     )
     check(
-        assert_type(
-            IRIS_DF.plot(kind="density", subplots=True),
-            npt.NDArray[np.object_],
-        ),
+        assert_type(IRIS_DF.plot(kind="density", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -505,14 +456,14 @@ def test_plot_hexbin(close_figures: None) -> None:
     check(
         assert_type(
             IRIS_DF.plot.hexbin(x="SepalLength", y="SepalWidth", subplots=True),
-            npt.NDArray[np.object_],
+            np_ndarray_object,
         ),
         np.ndarray,
     )
     check(
         assert_type(
             IRIS_DF.plot(kind="hexbin", x="SepalLength", y="SepalWidth", subplots=True),
-            npt.NDArray[np.object_],
+            np_ndarray_object,
         ),
         np.ndarray,
     )
@@ -521,18 +472,9 @@ def test_plot_hexbin(close_figures: None) -> None:
 def test_plot_hist(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.hist(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="hist"), Axes), Axes)
+    check(assert_type(IRIS_DF.plot.hist(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(
-            IRIS_DF.plot.hist(subplots=True),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
-    )
-    check(
-        assert_type(
-            IRIS_DF.plot(subplots=True, kind="hist"),
-            npt.NDArray[np.object_],
-        ),
+        assert_type(IRIS_DF.plot(subplots=True, kind="hist"), np_ndarray_object),
         np.ndarray,
     )
 
@@ -540,18 +482,9 @@ def test_plot_hist(close_figures: None) -> None:
 def test_plot_kde(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.kde(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="kde"), Axes), Axes)
+    check(assert_type(IRIS_DF.plot.kde(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(
-            IRIS_DF.plot.kde(subplots=True),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
-    )
-    check(
-        assert_type(
-            IRIS_DF.plot(subplots=True, kind="kde"),
-            npt.NDArray[np.object_],
-        ),
+        assert_type(IRIS_DF.plot(subplots=True, kind="kde"), np_ndarray_object),
         np.ndarray,
     )
 
@@ -561,16 +494,14 @@ def test_plot_pie(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot(kind="pie", y="SepalLength"), Axes), Axes)
     check(
         assert_type(
-            IRIS_DF.plot.pie(y="SepalLength", subplots=True),
-            npt.NDArray[np.object_],
+            IRIS_DF.plot.pie(y="SepalLength", subplots=True), np_ndarray_object
         ),
         np.ndarray,
     )
 
     check(
         assert_type(
-            IRIS_DF.plot(kind="pie", y="SepalLength", subplots=True),
-            npt.NDArray[np.object_],
+            IRIS_DF.plot(kind="pie", y="SepalLength", subplots=True), np_ndarray_object
         ),
         np.ndarray,
     )
@@ -590,7 +521,7 @@ def test_plot_scatter(close_figures: None) -> None:
     check(
         assert_type(
             IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth", subplots=True),
-            npt.NDArray[np.object_],
+            np_ndarray_object,
         ),
         np.ndarray,
     )
@@ -599,7 +530,7 @@ def test_plot_scatter(close_figures: None) -> None:
             IRIS_DF.plot(
                 x="SepalLength", y="SepalWidth", subplots=True, kind="scatter"
             ),
-            npt.NDArray[np.object_],
+            np_ndarray_object,
         ),
         np.ndarray,
     )
@@ -682,9 +613,7 @@ def test_plot_keywords(close_figures: None) -> None:
 def test_plot_subplot_changes_150() -> None:
     df = pd.DataFrame(np.random.standard_normal((25, 4)), columns=["a", "b", "c", "d"])
     check(
-        assert_type(
-            df.plot(subplots=[("a", "b"), ("c", "d")]), npt.NDArray[np.object_]
-        ),
+        assert_type(df.plot(subplots=[("a", "b"), ("c", "d")]), np_ndarray_object),
         np.ndarray,
     )
 

@@ -14,13 +14,12 @@ from typing import (
 
 from dateutil.relativedelta import weekday as WeekdayClass
 import numpy as np
-from numpy import typing as npt
 from pandas import Timestamp
 from typing_extensions import Self
 
 from pandas._typing import (
     ShapeT,
-    np_ndarray,
+    np_ndarray_object,
 )
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -42,8 +41,8 @@ class BaseOffset:
     def base(self) -> BaseOffset: ...
     @overload
     def __add__(
-        self, other: np_ndarray[ShapeT, np.object_]
-    ) -> np_ndarray[ShapeT, np.object_]: ...
+        self, other: np_ndarray_object[ShapeT]
+    ) -> np_ndarray_object[ShapeT]: ...
     @overload
     def __add__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
@@ -54,8 +53,8 @@ class BaseOffset:
     def __add__(self, other: _TimedeltaT) -> _TimedeltaT: ...
     @overload
     def __radd__(
-        self, other: np_ndarray[ShapeT, np.object_]
-    ) -> np_ndarray[ShapeT, np.object_]: ...
+        self, other: np_ndarray_object[ShapeT]
+    ) -> np_ndarray_object[ShapeT]: ...
     @overload
     def __radd__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
@@ -66,7 +65,9 @@ class BaseOffset:
     def __radd__(self, other: _TimedeltaT) -> _TimedeltaT: ...
     def __sub__(self, other: BaseOffset) -> Self: ...
     @overload
-    def __rsub__(self, other: npt.NDArray[np.object_]) -> npt.NDArray[np.object_]: ...
+    def __rsub__(
+        self, other: np_ndarray_object[ShapeT]
+    ) -> np_ndarray_object[ShapeT]: ...
     @overload
     def __rsub__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
@@ -77,14 +78,14 @@ class BaseOffset:
     def __rsub__(self, other: _TimedeltaT) -> _TimedeltaT: ...
     @overload
     def __mul__(
-        self, other: np_ndarray[ShapeT, np.object_]
-    ) -> np_ndarray[ShapeT, np.object_]: ...
+        self, other: np_ndarray_object[ShapeT]
+    ) -> np_ndarray_object[ShapeT]: ...
     @overload
     def __mul__(self, other: int) -> Self: ...
     @overload
     def __rmul__(
-        self, other: np_ndarray[ShapeT, np.object_]
-    ) -> np_ndarray[ShapeT, np.object_]: ...
+        self, other: np_ndarray_object[ShapeT]
+    ) -> np_ndarray_object[ShapeT]: ...
     @overload
     def __rmul__(self, other: int) -> Self: ...
     def __neg__(self) -> Self: ...

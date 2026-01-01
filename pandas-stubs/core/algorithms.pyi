@@ -1,10 +1,10 @@
+import sys
 from typing import (
     Any,
     Literal,
     overload,
 )
 
-from numpy import typing as npt
 from pandas.api.extensions import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
@@ -21,6 +21,7 @@ from pandas._typing import (
     T_EXTENSION_ARRAY,
     GenericT,
     IntervalT,
+    ShapeT,
     TakeIndexer,
     np_1darray,
     np_1darray_dt,
@@ -46,8 +47,17 @@ def unique(values: TimedeltaIndex) -> np_1darray_td: ...
 @overload
 # switch to Index[int] after Pandas 3.0
 def unique(values: RangeIndex) -> np_1darray_int64: ...
-@overload
-def unique(values: MultiIndex) -> np_ndarray: ...
+
+if sys.version_info >= (3, 11):
+    @overload
+    def unique(values: MultiIndex) -> np_ndarray: ...
+
+else:
+    @overload
+    def unique(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        values: MultiIndex,
+    ) -> np_ndarray: ...
+
 @overload
 def unique(values: Index) -> np_1darray | Index: ...  # switch to Index after Pandas 3.0
 @overload
@@ -63,12 +73,12 @@ def unique(values: Categorical) -> Categorical: ...
 @overload
 def unique(values: Series) -> np_1darray | ExtensionArray: ...
 @overload
-def unique(values: npt.NDArray[GenericT]) -> np_1darray[GenericT]: ...
+def unique(values: np_ndarray[ShapeT, GenericT]) -> np_1darray[GenericT]: ...
 @overload
 def unique(values: T_EXTENSION_ARRAY) -> T_EXTENSION_ARRAY: ...
 @overload
 def factorize(
-    values: npt.NDArray[GenericT],
+    values: np_ndarray[ShapeT, GenericT],
     sort: bool = False,
     use_na_sentinel: bool = True,
     size_hint: int | None = None,

@@ -79,6 +79,7 @@ from pandas._typing import (
     np_ndarray_int64,
     np_ndarray_intp,
     np_ndarray_num,
+    np_ndarray_object,
     np_ndarray_str,
     np_ndarray_td,
 )
@@ -156,6 +157,7 @@ __all__ = [
     "np_ndarray_int64",
     "np_ndarray_intp",
     "np_ndarray_num",
+    "np_ndarray_object",
     "np_ndarray_str",
     "np_ndarray_td",
 ]
