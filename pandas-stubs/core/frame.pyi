@@ -1374,12 +1374,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         index: IndexLabel = ...,
         values: IndexLabel = ...,
     ) -> Self: ...
+    # TODO: pandas-dev/pandas-stubs#1614 improve list of available functions for aggfunc
     def pivot_table(
         self,
         values: _PivotTableValuesTypes = None,
         index: _PivotTableIndexTypes = None,
         columns: _PivotTableColumnsTypes = None,
-        aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
+        aggfunc: _PivotAggFuncTypes[Scalar] | str = "mean",
         fill_value: Scalar | None = None,
         margins: _bool = False,
         dropna: _bool = True,
