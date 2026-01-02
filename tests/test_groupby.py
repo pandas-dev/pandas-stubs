@@ -39,7 +39,9 @@ from tests import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.groupby.groupby import _ResamplerGroupBy  # noqa: F401
+    from pandas.core.groupby.groupby import (  # noqa: F401 # isort: skip
+        _ResamplerGroupBy,  # pyright: ignore[reportPrivateUsage]
+    )
 
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)

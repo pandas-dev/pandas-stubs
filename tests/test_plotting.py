@@ -1,7 +1,6 @@
 import io
 import itertools
 from typing import (
-    TYPE_CHECKING,
     Any,
 )
 
@@ -19,15 +18,15 @@ from tests import (
     PD_LTE_23,
     check,
 )
-from tests._typing import np_ndarray_object
+from tests._typing import (
+    BoxPlotT,
+    np_ndarray_object,
+)
 
 from pandas.plotting import (
     deregister_matplotlib_converters,
     register_matplotlib_converters,
 )
-
-if TYPE_CHECKING:
-    from pandas.plotting._core import _BoxPlotT  # noqa: F401
 
 
 @pytest.fixture(autouse=True)
@@ -253,12 +252,12 @@ def test_boxplot(close_figures: None) -> None:
     # Return type: both
     check(
         assert_type(
-            pd.plotting.boxplot(df, column=["Col1"], return_type="both"), "_BoxPlotT"
+            pd.plotting.boxplot(df, column=["Col1"], return_type="both"), BoxPlotT
         ),
         tuple,
     )
     check(
-        assert_type(df.boxplot(column=["Col1"], return_type="both"), "_BoxPlotT"),
+        assert_type(df.boxplot(column=["Col1"], return_type="both"), BoxPlotT),
         tuple,
     )
 

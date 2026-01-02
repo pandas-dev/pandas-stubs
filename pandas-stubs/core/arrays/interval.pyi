@@ -9,18 +9,21 @@ from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 import pyarrow as pa
-from typing_extensions import Self
+from typing_extensions import (
+    Self,
+    TypeVar,
+)
 
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
-    _OrderableT,
 )
 from pandas._typing import (
     AnyArrayLike,
     DtypeArg,
     IntervalClosedType,
     NpDtype,
+    Orderables,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
@@ -33,6 +36,8 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import IntervalDtype
 
 IntervalOrNA: TypeAlias = Interval | float
+
+_OrderableT = TypeVar("_OrderableT", bound=Orderables, default=Any)
 
 class IntervalArray(IntervalMixin, ExtensionArray):
     can_hold_na: bool = True

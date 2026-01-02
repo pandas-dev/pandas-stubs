@@ -14,7 +14,7 @@ from pandas._libs.tslibs import (
     NaTType,
     Period,
 )
-from pandas._libs.tslibs.period import _PeriodAddSub
+from pandas._libs.tslibs.period import PeriodAddSub
 from pandas._typing import (
     AxesData,
     Dtype,
@@ -46,7 +46,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
     @overload
     def __sub__(self, other: Self) -> Index: ...
     @overload
-    def __sub__(self, other: _PeriodAddSub) -> Self: ...
+    def __sub__(self, other: PeriodAddSub) -> Self: ...
     @overload
     def __sub__(self, other: NaTType) -> NaTType: ...
     @overload

@@ -19,17 +19,18 @@ from typing_extensions import Self
 from pandas._typing import (
     IntervalClosedType,
     IntervalT,
+    Orderables,
+    OrderableScalars,
+    OrderableTimes,
     np_1darray_bool,
     np_ndarray,
 )
 
 VALID_CLOSED: frozenset[str]
 
-_OrderableScalarT = TypeVar("_OrderableScalarT", bound=int | float)
-_OrderableTimesT = TypeVar("_OrderableTimesT", bound=Timestamp | Timedelta)
-_OrderableT = TypeVar(
-    "_OrderableT", bound=int | float | Timestamp | Timedelta, default=Any
-)
+_OrderableScalarT = TypeVar("_OrderableScalarT", bound=OrderableScalars)
+_OrderableTimesT = TypeVar("_OrderableTimesT", bound=OrderableTimes)
+_OrderableT = TypeVar("_OrderableT", bound=Orderables, default=Any)
 
 @type_check_only
 class _LengthDescriptor:

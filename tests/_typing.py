@@ -6,6 +6,8 @@
 # pandas-stubs/_typing.pyi.
 # Do not commit this file if its content is identical to pandas-stubs/_typing.pyi.
 
+from pandas.core.frame import PandasNamedTuple
+
 from pandas._typing import (
     BooleanDtypeArg,
     BuiltinBooleanDtypeArg,
@@ -84,8 +86,11 @@ from pandas._typing import (
     np_ndarray_td,
 )
 
+from pandas.plotting._core import BoxPlotT
+
 __all__ = [
     "BooleanDtypeArg",
+    "BoxPlotT",
     "BuiltinBooleanDtypeArg",
     "BuiltinBytesDtypeArg",
     "BuiltinComplexDtypeArg",
@@ -119,6 +124,7 @@ __all__ = [
     "PandasBooleanDtypeArg",
     "PandasFloatDtypeArg",
     "PandasIntDtypeArg",
+    "PandasNamedTuple",
     "PandasStrDtypeArg",
     "PandasTimestampDtypeArg",
     "PandasUIntDtypeArg",

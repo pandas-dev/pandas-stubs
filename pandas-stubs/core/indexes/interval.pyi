@@ -4,6 +4,7 @@ from collections.abc import (
 )
 import datetime as dt
 from typing import (
+    Any,
     Literal,
     TypeAlias,
     overload,
@@ -14,13 +15,11 @@ import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
+from typing_extensions import TypeVar
 
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin,
-    _OrderableScalarT,
-    _OrderableT,
-    _OrderableTimesT,
 )
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -31,6 +30,9 @@ from pandas._typing import (
     IntervalT,
     Label,
     MaskType,
+    Orderables,
+    OrderableScalars,
+    OrderableTimes,
     np_1darray_bool,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -62,6 +64,10 @@ _EdgesTimedelta: TypeAlias = (
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
+
+_OrderableScalarT = TypeVar("_OrderableScalarT", bound=OrderableScalars)
+_OrderableTimesT = TypeVar("_OrderableTimesT", bound=OrderableTimes)
+_OrderableT = TypeVar("_OrderableT", bound=Orderables, default=Any)
 
 @type_check_only
 class _LengthDescriptor:

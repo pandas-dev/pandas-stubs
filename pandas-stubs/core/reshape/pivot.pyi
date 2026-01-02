@@ -29,16 +29,16 @@ from pandas._typing import (
     np_ndarray,
 )
 
-_PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
-_PivotAggFunc: TypeAlias = (
-    _PivotAggCallable[ScalarT]
+PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
+PivotAggFunc: TypeAlias = (
+    PivotAggCallable[ScalarT]
     | np.ufunc
     | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
 )
-_PivotAggFuncTypes: TypeAlias = (
-    _PivotAggFunc[ScalarT]
-    | Sequence[_PivotAggFunc[ScalarT]]
-    | Mapping[Any, _PivotAggFunc[ScalarT]]
+PivotAggFuncTypes: TypeAlias = (
+    PivotAggFunc[ScalarT]
+    | Sequence[PivotAggFunc[ScalarT]]
+    | Mapping[Any, PivotAggFunc[ScalarT]]
 )
 
 _NonIterableHashable: TypeAlias = (
@@ -54,11 +54,9 @@ _NonIterableHashable: TypeAlias = (
     | pd.Timedelta
 )
 
-_PivotTableIndexTypes: TypeAlias = Label | Sequence[Hashable] | Series | Grouper | None
-_PivotTableColumnsTypes: TypeAlias = (
-    Label | Sequence[Hashable] | Series | Grouper | None
-)
-_PivotTableValuesTypes: TypeAlias = Label | Sequence[Hashable] | None
+PivotTableIndexTypes: TypeAlias = Label | Sequence[Hashable] | Series | Grouper | None
+PivotTableColumnsTypes: TypeAlias = Label | Sequence[Hashable] | Series | Grouper | None
+PivotTableValuesTypes: TypeAlias = Label | Sequence[Hashable] | None
 
 _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 _CrossTabValues: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
@@ -66,10 +64,10 @@ _CrossTabValues: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes = None,
-    columns: _PivotTableColumnsTypes = None,
-    aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
+    values: PivotTableValuesTypes = None,
+    index: PivotTableIndexTypes = None,
+    columns: PivotTableColumnsTypes = None,
+    aggfunc: PivotAggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
@@ -82,11 +80,11 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
+    values: PivotTableValuesTypes = None,
     *,
     index: Grouper,
-    columns: _PivotTableColumnsTypes | np_ndarray | Index[Any] = None,
-    aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
+    columns: PivotTableColumnsTypes | np_ndarray | Index[Any] = None,
+    aggfunc: PivotAggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
@@ -97,11 +95,11 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes | np_ndarray | Index[Any] = None,
+    values: PivotTableValuesTypes = None,
+    index: PivotTableIndexTypes | np_ndarray | Index[Any] = None,
     *,
     columns: Grouper,
-    aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
+    aggfunc: PivotAggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,

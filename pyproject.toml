@@ -289,7 +289,6 @@ enableTypeIgnoreComments = false    # use pyright-specific ignores
 # disable subset of strict
 reportUnnecessaryTypeIgnoreComment = true
 reportUnknownMemberType = false
-reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false

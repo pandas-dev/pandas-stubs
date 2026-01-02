@@ -10,6 +10,7 @@ from typing import (
     NamedTuple,
     TypeAlias,
     overload,
+    type_check_only,
 )
 
 from matplotlib.axes import Axes
@@ -31,7 +32,8 @@ from pandas._typing import (
     np_ndarray_object,
 )
 
-class _BoxPlotT(NamedTuple):
+@type_check_only
+class BoxPlotT(NamedTuple):
     ax: Axes
     lines: dict[str, list[Line2D]]
 
@@ -88,7 +90,7 @@ def boxplot(
     return_type: Literal["both"],
     backend: str | None = None,
     **kwargs: Any,
-) -> _BoxPlotT: ...
+) -> BoxPlotT: ...
 @overload
 def boxplot(
     data: DataFrame,
