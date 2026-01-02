@@ -33,7 +33,20 @@ _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
 _PivotAggFunc: TypeAlias = (
     _PivotAggCallable[ScalarT]
     | np.ufunc
-    | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
+    | Literal[
+        "mean",
+        "sum",
+        "count",
+        "min",
+        "max",
+        "median",
+        "std",
+        "var",
+        "nunique",
+        "ohlc",
+        "quantile",
+        "rank",
+    ]
 )
 _PivotAggFuncTypes: TypeAlias = (
     _PivotAggFunc[ScalarT]
