@@ -22,7 +22,7 @@ from typing_extensions import Never
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
-    BuiltinNotStrDtypeArg,
+    BuiltinDtypeArg,
     Just,
     NumpyNotTimeDtypeArg,
     PandasBaseStrDtypeArg,
@@ -53,13 +53,13 @@ def array(  # empty data, [float("nan")]
 @overload
 def array(
     data: SequenceNotStr[Any],
-    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg,
+    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
 def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     data: Sequence[NAType | NaTType | None],
-    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg | None = None,
+    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
@@ -139,6 +139,6 @@ def array(
 @overload
 def array(
     data: np_ndarray | NumpyExtensionArray | RangeIndex,
-    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg | None = None,
+    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
