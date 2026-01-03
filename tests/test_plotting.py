@@ -1,7 +1,9 @@
 import io
 import itertools
 from typing import (
+    TYPE_CHECKING,
     Any,
+    TypeAlias,
 )
 
 from matplotlib.axes import Axes
@@ -18,15 +20,17 @@ from tests import (
     PD_LTE_23,
     check,
 )
-from tests._typing import (
-    BoxPlotT,
-    np_ndarray_object,
-)
+from tests._typing import np_ndarray_object
 
 from pandas.plotting import (
     deregister_matplotlib_converters,
     register_matplotlib_converters,
 )
+
+if TYPE_CHECKING:
+    from pandas.plotting._core import BoxPlotT
+else:
+    BoxPlotT: TypeAlias = tuple
 
 
 @pytest.fixture(autouse=True)

@@ -1,12 +1,11 @@
 # This file serves as a stub file for static type checkers
 # (pyright does not like it if I call the file tests/_typing.pyi).
+# It can only import from pandas._typing.
 # By tests/conftest.py, pytest copies this file to tests/_typing.pyi, and
 # pandas-stubs/_typing.pyi to tests/_typing.py.
 # After tests are done, pytest copies tests/_typing.pyi back to
 # pandas-stubs/_typing.pyi.
 # Do not commit this file if its content is identical to pandas-stubs/_typing.pyi.
-
-from pandas.core.frame import PandasNamedTuple
 
 from pandas._typing import (
     BooleanDtypeArg,
@@ -86,11 +85,8 @@ from pandas._typing import (
     np_ndarray_td,
 )
 
-from pandas.plotting._core import BoxPlotT
-
 __all__ = [
     "BooleanDtypeArg",
-    "BoxPlotT",
     "BuiltinBooleanDtypeArg",
     "BuiltinBytesDtypeArg",
     "BuiltinComplexDtypeArg",
@@ -124,7 +120,6 @@ __all__ = [
     "PandasBooleanDtypeArg",
     "PandasFloatDtypeArg",
     "PandasIntDtypeArg",
-    "PandasNamedTuple",
     "PandasStrDtypeArg",
     "PandasTimestampDtypeArg",
     "PandasUIntDtypeArg",

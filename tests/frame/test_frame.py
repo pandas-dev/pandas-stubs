@@ -55,7 +55,6 @@ from tests import (
     pytest_warns_bounded,
 )
 from tests._typing import (
-    PandasNamedTuple,
     np_1darray,
     np_2darray,
     np_ndarray,
@@ -71,6 +70,11 @@ from pandas.tseries.offsets import (
     Week,
     YearEnd,
 )
+
+if TYPE_CHECKING:
+    from pandas.core.frame import PandasNamedTuple
+else:
+    PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
