@@ -8,7 +8,7 @@ from typing import (
 
 import pandas as pd
 
-from pandas._libs.lib import _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
     DtypeBackend,
     RaiseCoerce,
@@ -26,26 +26,26 @@ def to_numeric(  # type: ignore[overload-overlap] # pyright: ignore[reportOverla
     arg: Scalar,
     errors: RaiseCoerce = "raise",
     downcast: _Downcast = None,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = "numpy_nullable",
 ) -> float: ...
 @overload
 def to_numeric(
     arg: Sequence[int],
     errors: RaiseCoerce = "raise",
     downcast: _Downcast = None,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = "numpy_nullable",
 ) -> np_1darray_anyint: ...
 @overload
 def to_numeric(
     arg: SequenceNotStr[Any] | np_ndarray,
     errors: RaiseCoerce = "raise",
     downcast: _Downcast = None,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = "numpy_nullable",
 ) -> np_1darray_float: ...
 @overload
 def to_numeric(
     arg: pd.Series,
     errors: RaiseCoerce = "raise",
     downcast: _Downcast = None,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = "numpy_nullable",
 ) -> pd.Series: ...

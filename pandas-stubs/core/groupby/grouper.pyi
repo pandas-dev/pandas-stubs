@@ -7,7 +7,7 @@ from typing import (
 from pandas.core.resample import TimeGrouper
 from typing_extensions import Self
 
-from pandas._libs.lib import _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
     Axis,
     Frequency,
@@ -30,7 +30,7 @@ class Grouper:
         cls,
         key: KeysArgType | None = ...,
         level: Level | ListLikeHashable[Level] | None = ...,
-        axis: Axis | _NoDefaultDoNotUse = ...,
+        axis: Axis | NoDefaultDoNotUse = ...,
         sort: bool = ...,
         dropna: bool = ...,
     ) -> Self: ...

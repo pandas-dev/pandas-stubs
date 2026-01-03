@@ -31,7 +31,7 @@ from typing_extensions import (
     Self,
 )
 
-from pandas._libs.lib import _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
     Axis,
     CompressionOptions,
@@ -466,7 +466,7 @@ class NDFrame:
     def resample(
         self,
         rule: Frequency | dt.timedelta,
-        axis: Axis | _NoDefaultDoNotUse = 0,
+        axis: Axis | NoDefaultDoNotUse = 0,
         closed: Literal["right", "left"] | None = None,
         label: Literal["right", "left"] | None = None,
         on: Level | None = None,
