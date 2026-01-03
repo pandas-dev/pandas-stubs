@@ -51,24 +51,20 @@ def test_construction_sequence(
         assert_type(pd.array([pd.NA]), NumpyExtensionArray)
         assert_type(pd.array([pd.NaT]), NumpyExtensionArray)
 
-        # mypy infers any list with np.nan, which is a float, and types like
-        # pd.NA and None to be list[object]
-        # It would be quite unusual for user code to be mixing np.nan with the
-        # other "NA"-like types.
-        assert_type(pd.array([np.nan, pd.NaT]), NumpyExtensionArray)  # type: ignore[assert-type]
+        assert_type(pd.array([np.nan, pd.NaT]), NumpyExtensionArray)
         assert_type(pd.array([None, pd.NA]), NumpyExtensionArray)
         assert_type(pd.array([None, pd.NaT]), NumpyExtensionArray)
         assert_type(pd.array([pd.NA, pd.NaT]), NumpyExtensionArray)
 
-        assert_type(pd.array([np.nan, None, pd.NaT]), NumpyExtensionArray)  # type: ignore[assert-type]
-        assert_type(pd.array([np.nan, pd.NA, pd.NaT]), NumpyExtensionArray)  # type: ignore[assert-type]
+        assert_type(pd.array([np.nan, None, pd.NaT]), NumpyExtensionArray)
+        assert_type(pd.array([np.nan, pd.NA, pd.NaT]), NumpyExtensionArray)
         assert_type(pd.array([None, pd.NA, pd.NaT]), NumpyExtensionArray)
 
-        assert_type(pd.array([np.nan, None, pd.NA, pd.NaT]), NumpyExtensionArray)  # type: ignore[assert-type]
+        assert_type(pd.array([np.nan, None, pd.NA, pd.NaT]), NumpyExtensionArray)
 
         assert_type(pd.array((np.nan, None, pd.NA, pd.NaT)), NumpyExtensionArray)
 
-        assert_type(pd.array(UserList([np.nan, pd.NA, pd.NaT])), NumpyExtensionArray)  # type: ignore[assert-type]
+        assert_type(pd.array(UserList([np.nan, pd.NA, pd.NaT])), NumpyExtensionArray)
 
 
 def test_construction_array_like() -> None:

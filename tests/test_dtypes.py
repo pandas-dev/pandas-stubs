@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime as dt
 from datetime import (
     timedelta,
     timezone,
@@ -9,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Literal,
 )
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -49,10 +49,27 @@ def test_datetimetz_dtype() -> None:
         ),
         pd.DatetimeTZDtype,
     )
-    check(assert_type(dttz_dt.unit, Literal["ns"]), str)
-    check(assert_type(dttz_dt.tz, dt.tzinfo), dt.tzinfo)
-    check(assert_type(dttz_dt.name, str), str)
+    assert assert_type(dttz_dt.unit, Literal["s", "ms", "us", "ns"]) == "ns"
+    check(assert_type(dttz_dt.tz, timezone), timezone)
+    assert assert_type(dttz_dt.name, str) == "datetime64[ns, UTC]"
     check(assert_type(dttz_dt.na_value, NaTType), NaTType)
+
+    assert (
+        assert_type(
+            pd.DatetimeTZDtype("ms", "Europe/London").unit,
+            Literal["s", "ms", "us", "ns"],
+        )
+        == "ms"
+    )
+
+    assert (
+        assert_type(pd.DatetimeTZDtype(tz=ZoneInfo("Asia/Chengdu")).name, str)
+        == "datetime64[ns, Asia/Chengdu]"
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _10 = pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_period_dtype() -> None:
