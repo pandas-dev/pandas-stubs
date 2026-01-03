@@ -11,11 +11,9 @@ from pandas._typing import (
     type_t,
 )
 
-from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
+from pandas.core.dtypes.dtypes import BaseMaskedDtype
 
-class BooleanDtype(ExtensionDtype):
-    @property
-    def na_value(self) -> NAType: ...
+class BooleanDtype(BaseMaskedDtype):
     @classmethod
     def construct_array_type(cls) -> type_t[BooleanArray]: ...
 
