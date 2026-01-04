@@ -92,7 +92,7 @@ def test_construction_dtype(
         target_dtype
         # TODO: pandas-dev/pandas#54466 drop `or is_numpy_extension_array` after Pandas 3.0
         if data or is_numpy_extension_array
-        # TODO: pandas-dev/pandas#63567 Pandas 3.0 gives StringDtype(na_value=nan) for some reason
+        # pandas-dev/pandas#63567 Pandas 3.0 gives StringDtype(na_value=nan) if dtype is str or "str"
         else float if is_builtin_str else NAType
     )
     check(pd.array([*data, np.nan], dtype), target_type, dtype_na)
