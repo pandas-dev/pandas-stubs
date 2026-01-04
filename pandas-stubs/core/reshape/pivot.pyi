@@ -30,24 +30,23 @@ from pandas._typing import (
 )
 
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
-_PivotAggFunc: TypeAlias = (
-    _PivotAggCallable[ScalarT]
-    | np.ufunc
-    | Literal[
-        "mean",
-        "sum",
-        "count",
-        "min",
-        "max",
-        "median",
-        "std",
-        "var",
-        "nunique",
-        "ohlc",
-        "quantile",
-        "rank",
-    ]
-)
+_PivotAggFunc: TypeAlias = _PivotAggCallable[ScalarT] | np.ufunc | str
+
+# TODO: pandas-dev/pandas-stubs#1614 improve list of available functions for aggfunc
+# | Literal[
+#     "mean",
+#     "sum",
+#     "count",
+#     "min",
+#     "max",
+#     "median",
+#     "std",
+#     "var",
+#     "nunique",
+#     "ohlc",
+#     "quantile",
+#     "rank",
+# ]
 
 _PivotAggFuncTypes: TypeAlias = (
     _PivotAggFunc[ScalarT]
