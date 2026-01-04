@@ -8,7 +8,10 @@ from typing import (
     TYPE_CHECKING,
     Literal,
 )
-from zoneinfo import ZoneInfo
+from zoneinfo import (
+    ZoneInfo,
+    available_timezones,
+)
 
 import numpy as np
 import pandas as pd
@@ -31,6 +34,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import TimeUnit
 
 from pandas.tseries.offsets import (
     BusinessDay,
@@ -49,27 +53,24 @@ def test_datetimetz_dtype() -> None:
         ),
         pd.DatetimeTZDtype,
     )
-    assert assert_type(dttz_dt.unit, Literal["s", "ms", "us", "ns"]) == "ns"
+    assert assert_type(dttz_dt.unit, TimeUnit) == "ns"
     check(assert_type(dttz_dt.tz, timezone), timezone)
     assert assert_type(dttz_dt.name, str) == "datetime64[ns, UTC]"
     check(assert_type(dttz_dt.na_value, NaTType), NaTType)
 
-    assert (
-        assert_type(
-            pd.DatetimeTZDtype("ms", "Europe/London").unit,
-            Literal["s", "ms", "us", "ns"],
-        )
-        == "ms"
-    )
-
-    assert (
-        assert_type(pd.DatetimeTZDtype(tz=ZoneInfo("Asia/Chengdu")).name, str)
-        == "datetime64[ns, Asia/Chengdu]"
-    )
+    assert assert_type(pd.DatetimeTZDtype("s", "PRC").unit, TimeUnit) == "s"
+    assert assert_type(pd.DatetimeTZDtype("ms", "CST6CDT").unit, TimeUnit) == "ms"
+    assert assert_type(pd.DatetimeTZDtype("us", "HST").unit, TimeUnit) == "us"
 
     if TYPE_CHECKING_INVALID_USAGE:
         _00 = pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
         _10 = pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+
+
+@pytest.mark.parametrize("key", available_timezones())
+def test_datetimetz_dtype_tz(key: str) -> None:
+    tz = ZoneInfo(key)
+    assert assert_type(pd.DatetimeTZDtype(tz=tz).name, str) == f"datetime64[ns, {key}]"
 
 
 def test_period_dtype() -> None:
