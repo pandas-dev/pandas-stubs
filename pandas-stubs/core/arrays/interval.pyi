@@ -82,7 +82,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @classmethod
     def from_tuples(
         cls,
-        data: Sequence[tuple[_OrderableT, _OrderableT]] | np_ndarray,
+        data: Sequence[tuple[_OrderableT, _OrderableT]],
         closed: IntervalClosedType = "right",
         copy: bool = False,
         dtype: DtypeArg | None = None,
@@ -135,4 +135,6 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def contains(
         self, other: Scalar | ExtensionArray | Index | np_ndarray
     ) -> np_1darray_bool: ...
-    def overlaps(self, other: Interval) -> bool: ...
+    def overlaps(self, other: Interval) -> np_1darray_bool: ...
+    @property
+    def is_empty(self) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
