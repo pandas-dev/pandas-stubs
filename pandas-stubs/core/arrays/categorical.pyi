@@ -55,11 +55,11 @@ class Categorical(NDArrayBackedExtensionArray):
     @property
     def dtype(self) -> CategoricalDtype: ...
     def tolist(self) -> list[Scalar]: ...
-    to_list = ...
+    to_list = tolist
     @classmethod
     def from_codes(
         cls,
-        codes: Sequence[int],
+        codes: AnyArrayLike | Sequence[int],
         categories: Index | None = ...,
         ordered: bool | None = ...,
         dtype: CategoricalDtype | None = ...,
