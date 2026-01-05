@@ -15,9 +15,9 @@ from pandas._typing import (
     DtypeArg,
     NpDtype,
     PeriodFrequency,
-    np_1darray,
     np_1darray_anyint,
     np_1darray_bool,
+    np_1darray_object,
     np_ndarray_anyint,
 )
 
@@ -33,7 +33,7 @@ class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
     def dtype(self) -> PeriodDtype: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
-    ) -> np_1darray: ...
+    ) -> np_1darray_object: ...
     def __arrow_array__(
         self, type: DtypeArg | None = None
     ) -> pa.ExtensionArray[Any]: ...

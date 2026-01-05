@@ -1,7 +1,5 @@
 """Test module for methods in pandas.core.arrays.categorical."""
 
-from typing import TYPE_CHECKING
-
 import numpy as np
 import pandas as pd
 from pandas import Categorical
@@ -10,27 +8,20 @@ from pandas.core.indexes.base import Index
 from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
-from pandas._typing import (
-    Ordered,
-)
+from pandas._typing import Ordered
 from pandas._typing import Scalar  # noqa: F401
 
 from tests import (
     check,
     pytest_warns_bounded,
 )
-
-if TYPE_CHECKING:
-    from pandas._typing import (
-        np_1darray,
-        np_1darray_bool,
-    )
-else:
-    np_1darray = np.ndarray
-    np_1darray_bool = np.ndarray
+from tests._typing import (
+    np_1darray,
+    np_1darray_bool,
+)
 
 
-def test_categorical_init() -> None:
+def test_constructor() -> None:
     """Test init method for Categorical."""
     cat = Categorical(["a", "b", "c", "a"])
     check(assert_type(cat, Categorical), Categorical)
@@ -86,18 +77,12 @@ def test_categorical_init() -> None:
     cat = Categorical(cat1)
     check(assert_type(cat, Categorical), Categorical)
 
-
-def test_categorical_init_series() -> None:
-    """Test init method for Categorical."""
-    values = pd.Series(["a", "b", "c", "a"])
-    cat = Categorical(values)
+    values_series = pd.Series(["a", "b", "c", "a"])
+    cat = Categorical(values_series)
     check(assert_type(cat, Categorical), Categorical)
 
-
-def test_categorical_init_index() -> None:
-    """Test init method for Categorical."""
-    values = pd.Index(["a", "b", "c", "a"])
-    cat = Categorical(values)
+    values_index = pd.Index(["a", "b", "c", "a"])
+    cat = Categorical(values_index)
     check(assert_type(cat, Categorical), Categorical)
 
 
@@ -109,9 +94,7 @@ def test_categorical_properties() -> None:
     check(assert_type(cat.ordered, Ordered), bool)
     check(assert_type(cat.dtype, CategoricalDtype), CategoricalDtype)
     check(assert_type(cat.nbytes, int), int)
-    check(
-        assert_type(cat.codes, "np_1darray[np.signedinteger]"), np.ndarray, np.integer
-    )
+    check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray, np.integer)
 
 
 def test_categorical_tolist() -> None:
@@ -290,10 +273,10 @@ def test_categorical_isna_isnull() -> None:
     """Test isna/isnull/notna/notnull for Categorical."""
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=None)
 
-    check(assert_type(cat.isna(), np_1darray_bool), np.ndarray, np.bool_)
-    check(assert_type(cat.isnull(), np_1darray_bool), np.ndarray, np.bool_)
-    check(assert_type(cat.notna(), np_1darray_bool), np.ndarray, np.bool_)
-    check(assert_type(cat.notnull(), np_1darray_bool), np.ndarray, np.bool_)
+    check(assert_type(cat.isna(), np_1darray_bool), np_1darray_bool)
+    check(assert_type(cat.isnull(), np_1darray_bool), np_1darray_bool)
+    check(assert_type(cat.notna(), np_1darray_bool), np_1darray_bool)
+    check(assert_type(cat.notnull(), np_1darray_bool), np_1darray_bool)
 
 
 def test_categorical_sort_values() -> None:
@@ -346,4 +329,4 @@ def test_categorical_isin() -> None:
     """Test isin for Categorical."""
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
 
-    check(assert_type(cat.isin(["b", 1]), np_1darray_bool), np_1darray, np.bool_)
+    check(assert_type(cat.isin(["b", 1]), np_1darray_bool), np_1darray_bool)
