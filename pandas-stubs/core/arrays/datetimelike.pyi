@@ -35,10 +35,10 @@ from pandas._typing import (
 
 DTScalarOrNaT: TypeAlias = DatetimeLikeScalar | NaTType
 
-class DatelikeOps:
+class DatelikeOps(DatetimeLikeArrayMixin):
     def strftime(self, date_format: str) -> np_1darray_str: ...
 
-class TimelikeOps:
+class TimelikeOps(DatetimeLikeArrayMixin):
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit) -> Self: ...

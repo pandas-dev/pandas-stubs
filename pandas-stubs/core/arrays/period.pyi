@@ -1,16 +1,16 @@
 from typing import Any
 
 from pandas import PeriodDtype
-from pandas.core.arrays.datetimelike import (
-    DatelikeOps,
-    DatetimeLikeArrayMixin,
-)
+from pandas.core.arrays.datetimelike import DatelikeOps
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
 import pyarrow as pa
 
 from pandas._libs.tslibs import Timestamp
-from pandas._libs.tslibs.period import Period
+from pandas._libs.tslibs.period import (
+    Period,
+    PeriodMixin,
+)
 from pandas._typing import (
     DtypeArg,
     NpDtype,
@@ -19,7 +19,7 @@ from pandas._typing import (
     np_ndarray_anyint,
 )
 
-class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
+class PeriodArray(DatelikeOps, PeriodMixin):
     __array_priority__: int = ...
     def __init__(
         self,

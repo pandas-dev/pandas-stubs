@@ -3,10 +3,7 @@ from datetime import timedelta
 from typing import Any
 
 import numpy as np
-from pandas.core.arrays.datetimelike import (
-    DatetimeLikeArrayMixin,
-    TimelikeOps,
-)
+from pandas.core.arrays.datetimelike import TimelikeOps
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -15,7 +12,7 @@ from pandas._typing import (
     Frequency,
 )
 
-class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
+class TimedeltaArray(TimelikeOps):
     __array_priority__: int = ...
     @property
     def dtype(self) -> np.dtypes.TimeDelta64DType: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
