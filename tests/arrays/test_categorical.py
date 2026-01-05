@@ -11,10 +11,7 @@ from pandas._libs.missing import NAType
 from pandas._typing import Ordered
 from pandas._typing import Scalar  # noqa: F401
 
-from tests import (
-    check,
-    pytest_warns_bounded,
-)
+from tests import check
 from tests._typing import (
     np_1darray,
     np_1darray_bool,
@@ -101,14 +98,6 @@ def test_categorical_tolist() -> None:
     """Test tolist method for Categorical."""
     cat = Categorical(["a", "b", "c", "a"])
     check(assert_type(cat.tolist(), "list[Scalar]"), list)
-
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"Categorical.to_list is deprecated and will.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(assert_type(cat.to_list(), "list[Scalar]"), list)
 
 
 def test_categorical_from_codes() -> None:

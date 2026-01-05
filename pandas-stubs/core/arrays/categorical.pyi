@@ -55,7 +55,6 @@ class Categorical(NDArrayBackedExtensionArray):
     @property
     def dtype(self) -> CategoricalDtype: ...
     def tolist(self) -> list[Scalar]: ...
-    to_list = tolist
     @classmethod
     def from_codes(
         cls,
@@ -63,7 +62,7 @@ class Categorical(NDArrayBackedExtensionArray):
         categories: Index | None = ...,
         ordered: bool | None = ...,
         dtype: CategoricalDtype | None = ...,
-        fastpath: bool = ...,
+        validate: bool = True,
     ) -> Categorical: ...
     @property
     def codes(self) -> np_1darray[np.signedinteger]: ...
