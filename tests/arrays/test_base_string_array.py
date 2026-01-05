@@ -11,15 +11,22 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from pandas.core.arrays.string_ import BaseStringArray
 import pytest
 from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
 
-from tests import check
+from tests import (
+    PD_LTE_23,
+    check,
+)
 from tests._typing import PandasBaseStrDtypeArg
-from tests.dtypes import PANDAS_BASE_STRING_ARGS
+from tests.dtypes import (
+    PANDAS_BASE_STRING_ARGS,
+    PYTHON_STRING_ARGS,
+)
 from tests.utils import powerset
 
 
@@ -63,54 +70,69 @@ def test_construction_array_like() -> None:
 
 
 @pytest.mark.parametrize("data", powerset(["pd", np.str_("pd")]))
-@pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_BASE_STRING_ARGS.items())
+@pytest.mark.parametrize(
+    ("dtype", "target_dtype"), (PYTHON_STRING_ARGS | PANDAS_BASE_STRING_ARGS).items()
+)
 def test_construction_dtype(
-    data: tuple[str | np.str_, ...], dtype: PandasBaseStrDtypeArg, target_dtype: type
+    data: tuple[str | np.str_, ...],
+    # TODO: pandas-dev/pandas#54466 add BuiltinStrDtypeArg after Pandas 3.0
+    dtype: PandasBaseStrDtypeArg,
+    target_dtype: type,
 ) -> None:
-    dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype=dtype), BaseStringArray, dtype_notna)
-    check(pd.array([*data, *data], dtype=dtype), BaseStringArray, dtype_notna)
+    is_builtin_str = dtype in PYTHON_STRING_ARGS
+    is_numpy_extension_array = PD_LTE_23 and is_builtin_str
+    # TODO: pandas-dev/pandas#54466 should give BaseStringArray or even ArrowStringAray after Pandas 3.0
+    target_type = NumpyExtensionArray if is_numpy_extension_array else BaseStringArray
 
-    dtype_na = target_dtype if data else NAType
-    check(pd.array([*data, np.nan], dtype=dtype), BaseStringArray, dtype_na)
-    check(pd.array([*data, *data, np.nan], dtype=dtype), BaseStringArray, dtype_na)
+    dtype_notna = target_dtype if data else None
+    check(pd.array([*data], dtype), target_type, dtype_notna)
+    check(pd.array([*data, *data], dtype), target_type, dtype_notna)
+
+    dtype_na = (
+        target_dtype
+        # TODO: pandas-dev/pandas#54466 drop `or is_numpy_extension_array` after Pandas 3.0
+        if data or is_numpy_extension_array
+        # pandas-dev/pandas#63567 Pandas 3.0 gives StringDtype(na_value=nan) if dtype is str or "str"
+        else float if is_builtin_str else NAType
+    )
+    check(pd.array([*data, np.nan], dtype), target_type, dtype_na)
+    check(pd.array([*data, *data, np.nan], dtype), target_type, dtype_na)
 
     if TYPE_CHECKING:
-        assert_type(pd.array([], dtype=pd.StringDtype()), BaseStringArray)
-        assert_type(pd.array([], dtype="string"), BaseStringArray)
+        # TODO: pandas-dev/pandas#54466 should give BaseStringArray or even ArrowStringAray after 3.0
+        # The following one still gives NumpyExtensionArray because issubclass(str, object),
+        # and pd.array([], object) gives NumpyExtensionArray
+        assert_type(pd.array([], str), NumpyExtensionArray)
+        pd.array([], "str")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-        assert_type(pd.array([np.nan], dtype=pd.StringDtype()), BaseStringArray)
-        assert_type(pd.array([np.nan], dtype="string"), BaseStringArray)
+        assert_type(pd.array([], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array([], "string"), BaseStringArray)
 
-        assert_type(pd.array(["1"], dtype=pd.StringDtype()), BaseStringArray)
-        assert_type(pd.array(["1"], dtype="string"), BaseStringArray)
+        assert_type(pd.array([np.nan], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array([np.nan], "string"), BaseStringArray)
 
-        assert_type(pd.array(["1", "2"], dtype=pd.StringDtype()), BaseStringArray)
-        assert_type(pd.array(["1", "2"], dtype="string"), BaseStringArray)
+        assert_type(pd.array(["1"], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array(["1"], "string"), BaseStringArray)
 
-        assert_type(pd.array(["1", np.nan], dtype=pd.StringDtype()), BaseStringArray)
-        assert_type(pd.array(["1", np.nan], dtype="string"), BaseStringArray)
+        assert_type(pd.array(["1", "2"], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array(["1", "2"], "string"), BaseStringArray)
 
-        assert_type(pd.array([np.str_("1")], dtype=pd.StringDtype()), BaseStringArray)
-        assert_type(pd.array([np.str_("1")], dtype="string"), BaseStringArray)
+        assert_type(pd.array(["1", np.nan], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array(["1", np.nan], "string"), BaseStringArray)
 
-        assert_type(
-            pd.array([np.str_("1"), np.str_("2")], dtype=pd.StringDtype()),
-            BaseStringArray,
-        )
-        assert_type(
-            pd.array([np.str_("1"), np.str_("2")], dtype="string"), BaseStringArray
-        )
+        assert_type(pd.array([np.str_("1")], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array([np.str_("1")], "string"), BaseStringArray)
 
         assert_type(
-            pd.array([np.str_("1"), np.nan], dtype=pd.StringDtype()), BaseStringArray
+            pd.array([np.str_("1"), np.str_("2")], pd.StringDtype()), BaseStringArray
         )
-        assert_type(pd.array([np.str_("1"), np.nan], dtype="string"), BaseStringArray)
+        assert_type(pd.array([np.str_("1"), np.str_("2")], "string"), BaseStringArray)
 
-        assert_type(
-            pd.array(["1", np.str_("2")], dtype=pd.StringDtype()), BaseStringArray
-        )
-        assert_type(pd.array([np.str_("1"), "2"], dtype="string"), BaseStringArray)
+        assert_type(pd.array([np.str_("1"), np.nan], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array([np.str_("1"), np.nan], "string"), BaseStringArray)
+
+        assert_type(pd.array(["1", np.str_("2")], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array([np.str_("1"), "2"], "string"), BaseStringArray)
 
 
 def test_dtype() -> None:
