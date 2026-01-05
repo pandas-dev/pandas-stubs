@@ -3,11 +3,13 @@
 from typing import Any  # noqa: F401
 
 import numpy as np
+import pandas as pd
 from pandas import (
     PeriodDtype,
     PeriodIndex,
     Series,
 )
+import pandas.arrays as pd_arr
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.period import PeriodArray
 import pyarrow as pa
@@ -17,7 +19,6 @@ from pandas._libs.tslibs.period import Period
 
 from tests import check
 from tests._typing import (
-    np_1darray_anyint,
     np_1darray_bool,
     np_1darray_int64,
     np_1darray_object,
@@ -51,6 +52,9 @@ def test_constructor() -> None:
     check(assert_type(arr, PeriodArray), PeriodArray)
 
     arr = PeriodArray(idx, copy=False)
+    check(assert_type(arr, PeriodArray), PeriodArray)
+
+    arr = pd_arr.PeriodArray([1, 2, 3], pd.PeriodDtype("D"))
     check(assert_type(arr, PeriodArray), PeriodArray)
 
 
@@ -88,112 +92,112 @@ def test_period_array_year() -> None:
     """Test year property for PeriodArray."""
     idx = PeriodIndex(["2020-01", "2021-02", "2022-03"], freq="M")
     arr = PeriodArray(idx)
-    check(assert_type(arr.year, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.year, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_month() -> None:
     """Test month property for PeriodArray."""
     idx = PeriodIndex(["2020-01", "2020-02", "2020-03"], freq="M")
     arr = PeriodArray(idx)
-    check(assert_type(arr.month, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.month, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_day() -> None:
     """Test day property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01", "2020-01-15", "2020-01-31"], freq="D")
     arr = PeriodArray(idx)
-    check(assert_type(arr.day, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.day, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_hour() -> None:
     """Test hour property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01 10:00", "2020-01-01 14:00"], freq="h")
     arr = PeriodArray(idx)
-    check(assert_type(arr.hour, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.hour, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_minute() -> None:
     """Test minute property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01 10:30", "2020-01-01 10:45"], freq="min")
     arr = PeriodArray(idx)
-    check(assert_type(arr.minute, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.minute, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_second() -> None:
     """Test second property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01 10:30:15", "2020-01-01 10:30:45"], freq="s")
     arr = PeriodArray(idx)
-    check(assert_type(arr.second, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.second, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_weekofyear() -> None:
     """Test weekofyear property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01", "2020-06-15", "2020-12-31"], freq="D")
     arr = PeriodArray(idx)
-    check(assert_type(arr.weekofyear, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.weekofyear, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_week() -> None:
     """Test week property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01", "2020-06-15", "2020-12-31"], freq="D")
     arr = PeriodArray(idx)
-    check(assert_type(arr.week, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.week, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_dayofweek() -> None:
     """Test dayofweek property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01", "2020-01-02", "2020-01-03"], freq="D")
     arr = PeriodArray(idx)
-    check(assert_type(arr.dayofweek, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.dayofweek, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_weekday() -> None:
     """Test weekday property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01", "2020-01-02", "2020-01-03"], freq="D")
     arr = PeriodArray(idx)
-    check(assert_type(arr.weekday, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.weekday, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_dayofyear() -> None:
     """Test dayofyear property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01", "2020-06-15", "2020-12-31"], freq="D")
     arr = PeriodArray(idx)
-    check(assert_type(arr.dayofyear, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.dayofyear, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_day_of_year() -> None:
     """Test day_of_year property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01", "2020-06-15", "2020-12-31"], freq="D")
     arr = PeriodArray(idx)
-    check(assert_type(arr.day_of_year, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.day_of_year, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_quarter() -> None:
     """Test quarter property for PeriodArray."""
     idx = PeriodIndex(["2020-01", "2020-04", "2020-07", "2020-10"], freq="M")
     arr = PeriodArray(idx)
-    check(assert_type(arr.quarter, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.quarter, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_qyear() -> None:
     """Test qyear property for PeriodArray."""
     idx = PeriodIndex(["2020-01", "2020-04", "2020-07", "2020-10"], freq="M")
     arr = PeriodArray(idx)
-    check(assert_type(arr.qyear, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.qyear, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_days_in_month() -> None:
     """Test days_in_month property for PeriodArray."""
     idx = PeriodIndex(["2020-01", "2020-02", "2020-03"], freq="M")
     arr = PeriodArray(idx)
-    check(assert_type(arr.days_in_month, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.days_in_month, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_daysinmonth() -> None:
     """Test daysinmonth property for PeriodArray."""
     idx = PeriodIndex(["2020-01", "2020-02", "2020-03"], freq="M")
     arr = PeriodArray(idx)
-    check(assert_type(arr.daysinmonth, np_1darray_anyint), np_1darray_int64)
+    check(assert_type(arr.daysinmonth, np_1darray_int64), np_1darray_int64)
 
 
 def test_period_array_is_leap_year() -> None:

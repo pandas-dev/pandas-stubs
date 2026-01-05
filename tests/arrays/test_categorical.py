@@ -83,6 +83,13 @@ def test_constructor() -> None:
     check(assert_type(cat, Categorical), Categorical)
 
 
+def test_categorical_dtype() -> None:
+    """Test dtype property for Categorical."""
+    values_index = pd.Index(["a", "b", "c", "a"])
+    cat = Categorical(values_index)
+    check(assert_type(cat.dtype, CategoricalDtype), CategoricalDtype)
+
+
 def test_categorical_properties() -> None:
     """Test properties for Categorical."""
     cat = Categorical(["a", "b", "c", "a"])
