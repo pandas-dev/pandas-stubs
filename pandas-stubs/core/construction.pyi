@@ -108,9 +108,7 @@ def array(
 ) -> FloatingArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
-    data: _NaNNullableStrData,
-    dtype: StringDtype[Never],
-    copy: bool = True,
+    data: _NaNNullableStrData, dtype: StringDtype[Never], copy: bool = True
 ) -> BaseStringArray: ...
 @overload
 def array(
@@ -120,15 +118,14 @@ def array(
 def array(
     data: _NaNNullableStrData, dtype: PandasStrDtypeArg, copy: bool = True
 ) -> StringArray: ...
+
+# TODO: pandas-dev/pandas#54466 add BuiltinStrDtypeArg after Pandas 3.0
+# Also PyArrow will become required in Pandas 3.0, so "string" will give
+# ArrowStringArray.
+# StringDtype[None] means unknown, so it will still give BaseStringArray
 @overload
 def array(
-    # TODO: pandas-dev/pandas#54466 add BuiltinStrDtypeArg after Pandas 3.0
-    # Also PyArrow will become required in Pandas 3.0, so "string" will give
-    # ArrowStringArray.
-    # StringDtype[None] means unknown, so it will still give BaseStringArray
-    data: _NaNNullableStrData,
-    dtype: PandasBaseStrDtypeArg,
-    copy: bool = True,
+    data: _NaNNullableStrData, dtype: PandasBaseStrDtypeArg, copy: bool = True
 ) -> BaseStringArray: ...
 @overload
 def array(
