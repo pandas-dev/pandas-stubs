@@ -41,7 +41,6 @@ from _typeshed import (
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
-    _T_contra,
 )
 from matplotlib.axes import (
     Axes as PlotAxes,
@@ -106,13 +105,11 @@ from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.indexing import (
-    _AtIndexer,
-    _iAtIndexer,
-    _iLocIndexer,
-    _IndexSliceTuple,
-    _LocIndexer,
-)
+from pandas.core.indexing import _AtIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.strings.accessor import StringMethods
 from pandas.core.window import (
     Expanding,
@@ -125,13 +122,11 @@ from pandas.core.window.rolling import (
 from typing_extensions import (
     Never,
     Self,
+    TypeVar,
 )
 import xarray as xr
 
-from pandas._libs.interval import (
-    Interval,
-    _OrderableT,
-)
+from pandas._libs.interval import Interval
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
@@ -191,6 +186,7 @@ from pandas._typing import (
     NsmallestNlargestKeep,
     NumpyStrDtypeArg,
     ObjectDtypeArg,
+    Orderables,
     PandasAstypeTimedeltaDtypeArg,
     PandasAstypeTimestampDtypeArg,
     PeriodFrequency,
@@ -221,7 +217,6 @@ from pandas._typing import (
     ValueKeyFunc,
     VoidDtypeArg,
     WriteBuffer,
-    _T_co,
     np_1darray,
     np_1darray_anyint,
     np_1darray_bool,
@@ -249,6 +244,10 @@ from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
+
+_T_co = TypeVar("_T_co", covariant=True)
+_T_contra = TypeVar("_T_contra", contravariant=True)
+_OrderableT = TypeVar("_OrderableT", bound=Orderables, default=Any)
 
 @type_check_only
 class _SupportsAdd(Protocol[_T_co]):

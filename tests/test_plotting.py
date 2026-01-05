@@ -3,6 +3,7 @@ import itertools
 from typing import (
     TYPE_CHECKING,
     Any,
+    TypeAlias,
 )
 
 from matplotlib.axes import Axes
@@ -27,7 +28,9 @@ from pandas.plotting import (
 )
 
 if TYPE_CHECKING:
-    from pandas.plotting._core import _BoxPlotT  # noqa: F401
+    from pandas.plotting._core import BoxPlotT
+else:
+    BoxPlotT: TypeAlias = tuple
 
 
 @pytest.fixture(autouse=True)
@@ -253,12 +256,12 @@ def test_boxplot(close_figures: None) -> None:
     # Return type: both
     check(
         assert_type(
-            pd.plotting.boxplot(df, column=["Col1"], return_type="both"), "_BoxPlotT"
+            pd.plotting.boxplot(df, column=["Col1"], return_type="both"), BoxPlotT
         ),
         tuple,
     )
     check(
-        assert_type(df.boxplot(column=["Col1"], return_type="both"), "_BoxPlotT"),
+        assert_type(df.boxplot(column=["Col1"], return_type="both"), BoxPlotT),
         tuple,
     )
 

@@ -14,7 +14,6 @@ from typing import (
     type_check_only,
 )
 
-from _typeshed import _T_contra
 import numpy as np
 import numpy.typing as npt
 from pandas.core.arraylike import OpsMixin
@@ -52,6 +51,7 @@ from pandas._typing import (
     np_ndarray_td,
 )
 
+_T_contra = TypeVar("_T_contra", contravariant=True)
 T_INTERVAL_NP = TypeVar("T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 
 class NoNewAttributesMixin:

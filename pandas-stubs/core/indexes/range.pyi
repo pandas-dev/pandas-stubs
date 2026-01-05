@@ -13,7 +13,7 @@ from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.base import IndexOpsMixin
 from pandas.core.indexes.base import (
     Index,
-    _IndexSubclassBase,
+    IndexSubclassBase,
 )
 from typing_extensions import Self
 
@@ -28,7 +28,7 @@ from pandas._typing import (
     np_ndarray_bool,
 )
 
-class RangeIndex(_IndexSubclassBase[int, np.int64]):
+class RangeIndex(IndexSubclassBase[int, np.int64]):
     def __new__(
         cls,
         start: int | RangeIndex | range | None = None,

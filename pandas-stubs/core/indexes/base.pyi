@@ -27,7 +27,6 @@ from _typeshed import (
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
-    _T_contra,
 )
 import numpy as np
 from pandas.core.arrays.boolean import BooleanArray
@@ -66,12 +65,10 @@ from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
     Self,
+    TypeVar,
 )
 
-from pandas._libs.interval import (
-    Interval,
-    _OrderableT,
-)
+from pandas._libs.interval import Interval
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -109,6 +106,7 @@ from pandas._typing import (
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
     NumpyTimestampDtypeArg,
+    Orderables,
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
     ReindexMethod,
@@ -143,6 +141,9 @@ FloatNotNumpy16DtypeArg: TypeAlias = (
     | NumpyFloatNot16DtypeArg
     | PyArrowFloatDtypeArg
 )
+
+_T_contra = TypeVar("_T_contra", contravariant=True)
+_OrderableT = TypeVar("_OrderableT", bound=Orderables, default=Any)
 
 class InvalidIndexError(Exception): ...
 
@@ -1217,10 +1218,10 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def infer_objects(self, copy: bool = True) -> Self: ...
 
 @type_check_only
-class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
+class IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
     @overload
     def to_numpy(
-        self: _IndexSubclassBase[Interval],
+        self: IndexSubclassBase[Interval],
         dtype: type[T_INTERVAL_NP],
         copy: bool = False,
         na_value: Scalar = ...,
