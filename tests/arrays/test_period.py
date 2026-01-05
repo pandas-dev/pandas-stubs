@@ -3,7 +3,6 @@
 from typing import (  # noqa: F401
     TYPE_CHECKING,
     Any,
-    assert_type,
 )
 
 import numpy as np
@@ -15,6 +14,7 @@ from pandas import (
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.period import PeriodArray
 import pyarrow as pa
+from typing_extensions import assert_type
 
 from pandas._libs.tslibs.period import Period
 
