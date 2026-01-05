@@ -20,7 +20,7 @@ from pandas.core.window import (
 )
 
 from pandas._libs import NaTType as NaTType
-from pandas._libs.lib import _NoDefaultDoNotUse as _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse as NoDefaultDoNotUse
 from pandas._libs.missing import NAType as NAType
 
 from pandas.io.json._json import JsonReader as JsonReader

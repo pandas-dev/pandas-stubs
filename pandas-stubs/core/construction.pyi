@@ -27,7 +27,7 @@ from typing_extensions import Never
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
-    BuiltinDtypeArg,
+    BuiltinNotStrDtypeArg,
     Just,
     NumpyNotTimeDtypeArg,
     NumpyTimestampDtypeArg,
@@ -70,13 +70,13 @@ def array(  # empty data, [float("nan")]
 @overload
 def array(
     data: tuple[Any, ...] | MutableSequence[Any],
-    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg,
+    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
 def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     data: Sequence[NAType | NaTType | None],
-    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
+    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
@@ -162,6 +162,11 @@ def array(
 def array(
     data: _NaNStrData, dtype: PandasStrDtypeArg, copy: bool = True
 ) -> StringArray: ...
+
+# TODO: pandas-dev/pandas#54466 add BuiltinStrDtypeArg after Pandas 3.0
+# Also PyArrow will become required in Pandas 3.0, so "string" will give
+# ArrowStringArray.
+# StringDtype[None] means unknown, so it will still give BaseStringArray
 @overload
 def array(
     data: _NaNStrData, dtype: PandasBaseStrDtypeArg, copy: bool = True
@@ -176,16 +181,17 @@ def array(  # pyright: ignore[reportOverlappingOverload]
     ),
     dtype: None = None,
     copy: bool = True,
+    # TODO: pandas-dev/pandas#54466
+    # PyArrow will become required in Pandas 3.0, so no dtype will give
+    # ArrowStringArray.
 ) -> BaseStringArray: ...
 @overload
 def array(
-    data: tuple[Any, ...] | MutableSequence[Any],
-    dtype: None = None,
-    copy: bool = True,
+    data: tuple[Any, ...] | MutableSequence[Any], dtype: None = None, copy: bool = True
 ) -> NumpyExtensionArray: ...
 @overload
 def array(
     data: np_ndarray | NumpyExtensionArray | RangeIndex,
-    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
+    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...

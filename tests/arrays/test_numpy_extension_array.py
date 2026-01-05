@@ -22,13 +22,13 @@ from tests import (
     exception_on_platform,
 )
 from tests._typing import (
-    BuiltinDtypeArg,
+    BuiltinNotStrDtypeArg,
     NumpyNotTimeDtypeArg,
     np_ndarray,
 )
 from tests.dtypes import (
     NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS,
-    PYTHON_DTYPE_ARGS,
+    PYTHON_NOT_STR_DTYPE_ARGS,
 )
 from tests.utils import powerset
 
@@ -94,10 +94,10 @@ def test_construction_dtype_nan() -> None:
 
 @pytest.mark.parametrize(
     ("dtype", "target_dtype"),
-    (PYTHON_DTYPE_ARGS | NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS).items(),
+    (PYTHON_NOT_STR_DTYPE_ARGS | NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS).items(),
 )
 def test_construction_dtype(
-    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg, target_dtype: type
+    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg, target_dtype: type
 ) -> None:
     exc = exception_on_platform(dtype)
     if exc:
@@ -121,9 +121,6 @@ def test_construction_dtype(
         # python complex
         assert_type(pd.array([1], dtype=complex), NumpyExtensionArray)
         assert_type(pd.array([1], dtype="complex"), NumpyExtensionArray)
-        # python string
-        assert_type(pd.array([1], dtype=str), NumpyExtensionArray)
-        assert_type(pd.array([1], dtype="str"), NumpyExtensionArray)
         # python bytes
         assert_type(pd.array([1], dtype=bytes), NumpyExtensionArray)
         assert_type(pd.array([1], dtype="bytes"), NumpyExtensionArray)

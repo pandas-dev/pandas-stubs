@@ -1901,6 +1901,60 @@ def test_pivot_table() -> None:
     check(
         assert_type(
             pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="nunique",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="ohlc",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="quantile",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="rank",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.pivot_table(
                 df, values="D", index=["A", "B"], columns="C", aggfunc="mean"
             ),
             pd.DataFrame,
