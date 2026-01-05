@@ -1,6 +1,7 @@
 from typing import (
     TYPE_CHECKING,
     Literal,
+    cast,
 )
 
 import numpy as np
@@ -13,6 +14,7 @@ from typing_extensions import assert_type
 from pandas._libs.missing import NAType
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -104,3 +106,9 @@ def test_dtype() -> None:
     arr = pd.array(["a"], "string[pyarrow]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['pyarrow']]"), pd.StringDtype)
     assert assert_type(arr.dtype.storage, Literal["pyarrow"]) == "pyarrow"
+
+    if not PD_LTE_23:
+        # pandas-dev/pandas#63567
+        arr_arrow = cast("ArrowStringArray", pd.array([pd.NA], str))
+        check(assert_type(arr_arrow, ArrowStringArray), ArrowStringArray, float)
+        assert pd.isna(assert_type(arr_arrow.dtype.na_value, NAType | float))
