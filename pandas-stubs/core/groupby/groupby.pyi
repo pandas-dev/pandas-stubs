@@ -39,7 +39,7 @@ from pandas.core.window import (
 )
 from typing_extensions import Self
 
-from pandas._libs.lib import _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
@@ -277,27 +277,27 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         ascending: bool = True,
         na_option: str = "keep",
         pct: bool = False,
-        axis: AxisInt | _NoDefaultDoNotUse = 0,
+        axis: AxisInt | NoDefaultDoNotUse = 0,
     ) -> NDFrameT: ...
     @final
     def cumprod(
-        self, axis: Axis | _NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
+        self, axis: Axis | NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cumsum(
-        self, axis: Axis | _NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
+        self, axis: Axis | NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cummin(
         self,
-        axis: AxisInt | _NoDefaultDoNotUse = ...,
+        axis: AxisInt | NoDefaultDoNotUse = ...,
         numeric_only: bool = ...,
         **kwargs: Any,
     ) -> NDFrameT: ...
     @final
     def cummax(
         self,
-        axis: AxisInt | _NoDefaultDoNotUse = ...,
+        axis: AxisInt | NoDefaultDoNotUse = ...,
         numeric_only: bool = ...,
         **kwargs: Any,
     ) -> NDFrameT: ...
@@ -306,22 +306,22 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
-        axis: Axis | _NoDefaultDoNotUse = 0,
+        axis: Axis | NoDefaultDoNotUse = 0,
         fill_value: Scalar | None = None,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
     def diff(
-        self, periods: int = 1, axis: AxisInt | _NoDefaultDoNotUse = 0
+        self, periods: int = 1, axis: AxisInt | NoDefaultDoNotUse = 0
     ) -> NDFrameT: ...
     @final
     def pct_change(
         self,
         periods: int = ...,
-        fill_method: Literal["bfill", "ffill"] | None | _NoDefaultDoNotUse = ...,
-        limit: int | None | _NoDefaultDoNotUse = ...,
+        fill_method: Literal["bfill", "ffill"] | None | NoDefaultDoNotUse = ...,
+        limit: int | None | NoDefaultDoNotUse = ...,
         freq: Frequency | None = None,
-        axis: Axis | _NoDefaultDoNotUse = ...,
+        axis: Axis | NoDefaultDoNotUse = ...,
     ) -> NDFrameT: ...
     @final
     def head(self, n: int = ...) -> NDFrameT: ...

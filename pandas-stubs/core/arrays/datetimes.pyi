@@ -12,9 +12,7 @@ from pandas.core.arrays.datetimelike import (
 from pandas.core.arrays.period import PeriodArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
-from typing_extensions import (
-    Self,
-)
+from typing_extensions import Self
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
