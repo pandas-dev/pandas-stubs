@@ -1535,7 +1535,6 @@ def test_types_pivot() -> None:
 
 
 def test_types_pivot_table() -> None:
-    # TODO: pandas-dev/pandas-stubs#1614 improve tests to cover more aggfunc
     df = pd.DataFrame(
         data={
             "col1": ["first", "second", "third", "fourth"],
@@ -1776,29 +1775,6 @@ def test_pivot_table_aggfunc_string_transformation(sample_df: pd.DataFrame) -> N
         ),
         pd.DataFrame,
     )
-
-    # TODO: pandas-dev/pandas-stubes#1614 check if we can write tests that work for those
-    # check(
-    #     assert_type(
-    #         sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="cumcount"),
-    #         pd.DataFrame,
-    #     ),
-    #     pd.DataFrame,
-    # )
-    # check(
-    #     assert_type(
-    #         sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="fillna"),
-    #         pd.DataFrame,
-    #     ),
-    #     pd.DataFrame,
-    # )
-    # check(
-    #     assert_type(
-    #         sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="ngroup"),
-    #         pd.DataFrame,
-    #     ),
-    #     pd.DataFrame,
-    # )
 
 
 def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
