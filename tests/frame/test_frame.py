@@ -1523,6 +1523,7 @@ def test_types_pivot() -> None:
 
 
 def test_types_pivot_table() -> None:
+    # TODO: pandas-dev/pandas-stubs#1614 improve tests to cover more aggfunc
     df = pd.DataFrame(
         data={
             "col1": ["first", "second", "third", "fourth"],
@@ -1544,6 +1545,45 @@ def test_types_pivot_table() -> None:
                 index=df["col1"].name,
                 columns=df["col3"].name,
                 values=[df["col2"].name, df["col4"].name],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.pivot_table(
+                index="col1", columns="col3", values=["col2", "col4"], aggfunc="sum"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.pivot_table(
+                index="col1", columns="col3", values=["col2", "col4"], aggfunc="nunique"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.pivot_table(
+                index="col1", columns="col3", values=["col2", "col4"], aggfunc="ohlc"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.pivot_table(
+                index="col1",
+                columns="col3",
+                values=["col2", "col4"],
+                aggfunc="quantile",
             ),
             pd.DataFrame,
         ),
