@@ -2350,6 +2350,123 @@ def test_pivot_table_aggfunc_string_reduction(sample_df: pd.DataFrame) -> None:
     )
 
 
+def test_pivot_table_aggfunc_string_transformation(sample_df: pd.DataFrame) -> None:
+    """Test string aggfunc with transformation functions from TransformationKernelType."""
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="bfill"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="cummax"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="cummin"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="cumprod"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="cumsum"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="diff"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="ffill"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="pct_change"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="rank"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="shift"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # TODO: pandas-dev/pandas-stubes#1614 check if we can write tests that work for those
+    # check(
+    #     assert_type(
+    #         pd.pivot_table(sample_df, values="C", index="A", columns="B", aggfunc="cumcount"),
+    #         pd.DataFrame,
+    #     ),
+    #     pd.DataFrame,
+    # )
+    # check(
+    #     assert_type(
+    #         pd.pivot_table(sample_df, values="C", index="A", columns="B", aggfunc="fillna"),
+    #         pd.DataFrame,
+    #     ),
+    #     pd.DataFrame,
+    # )
+    # check(
+    #     assert_type(
+    #         pd.pivot_table(sample_df, values="C", index="A", columns="B", aggfunc="ngroup"),
+    #         pd.DataFrame,
+    #     ),
+    #     pd.DataFrame,
+    # )
+
+
 def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using np.ufunc."""
     # Test with pd.pivot_table using np.ufunc
