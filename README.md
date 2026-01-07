@@ -9,6 +9,7 @@
 [![Powered by NumFOCUS](https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://numfocus.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Typing: stubs](https://img.shields.io/pypi/types/pandas-stubs)](https://pypi.org/project/pandas-stubs/)
 
 ## What is it?
 
@@ -44,7 +45,7 @@ mypy round.py
 we get the following error message:
 
 ```text
-round.py:6: error: Argument "decimals" to "round" of "DataFrame" has incompatible type "DataFrame"; expected "Union[int, Dict[Any, Any], Series[Any]]"  [arg-type]
+round.py:6: error: Argument "decimals" to "round" of "DataFrame" has incompatible type "DataFrame"; expected "Union[int, Dict[Any, Any], Series]"  [arg-type]
 Found 1 error in 1 file (checked 1 source file)
 ```
 

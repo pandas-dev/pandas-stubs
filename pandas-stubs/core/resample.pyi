@@ -4,30 +4,22 @@ from collections.abc import (
     Mapping,
 )
 from typing import (
+    Any,
     Literal,
+    TypeAlias,
+    final,
     overload,
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    DatetimeIndex,
-    Index,
-    PeriodIndex,
-    Series,
-    Timedelta,
-    TimedeltaIndex,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
-from pandas.core.groupby.ops import BinGrouper
-from typing_extensions import (
-    Self,
-    TypeAlias,
-)
+from pandas.core.series import Series
+from typing_extensions import Self
 
-from pandas._libs.lib import NoDefault
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     Axis,
@@ -36,7 +28,7 @@ from pandas._typing import (
     Scalar,
     TimeGrouperOrigin,
     TimestampConvention,
-    npt,
+    np_ndarray_float,
 )
 
 _FrameGroupByFunc: TypeAlias = (
@@ -63,118 +55,136 @@ _SeriesGroupByFuncArgs: TypeAlias = (
 )
 
 class Resampler(BaseGroupBy[NDFrameT]):
-    grouper: BinGrouper  # pyright: ignore[reportIncompatibleVariableOverride]  # variance incompatibility
-    binner: DatetimeIndex | TimedeltaIndex | PeriodIndex
-    exclusions: frozenset[Hashable]
-    ax: Index
-    def __getattr__(self, attr: str) -> SeriesGroupBy: ...
+    def __getattr__(self, attr: str) -> SeriesGroupBy[Any, Any]: ...
     @overload
     def aggregate(
         self: Resampler[DataFrame],
         func: _FrameGroupByFuncArgs | None = ...,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: Resampler[Series],
         func: _SeriesGroupByFuncArgs | None = ...,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> Series | DataFrame: ...
     agg = aggregate
     apply = aggregate
     @overload
     def transform(
-        self: Resampler[Series], arg: Callable[[Series], Series[S1]], *args, **kwargs
+        self: Resampler[Series],
+        arg: Callable[[Series], Series[S1]],
+        *args: Any,
+        **kwargs: Any,
     ) -> Series[S1]: ...
     @overload
     def transform(
-        self: Resampler[DataFrame], arg: Callable[[Series], Series[S1]], *args, **kwargs
+        self: Resampler[DataFrame],
+        arg: Callable[[Series], Series[S1]],
+        *args: Any,
+        **kwargs: Any,
     ) -> DataFrame: ...
+    @final
     def ffill(self, limit: int | None = ...) -> NDFrameT: ...
+    @final
     def nearest(self, limit: int | None = ...) -> NDFrameT: ...
+    @final
     def bfill(self, limit: int | None = ...) -> NDFrameT: ...
-    @overload
     def interpolate(
         self,
         method: InterpolateOptions = ...,
         *,
         axis: Axis = ...,
         limit: int | None = ...,
-        inplace: Literal[True],
+        inplace: Literal[False] = False,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None | NoDefault = ...,
-        **kwargs,
-    ) -> None: ...
-    @overload
-    def interpolate(
-        self,
-        method: InterpolateOptions = ...,
-        *,
-        axis: Axis = ...,
-        limit: int | None = ...,
-        inplace: Literal[False] = ...,
-        limit_direction: Literal["forward", "backward", "both"] = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None | NoDefault = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> NDFrameT: ...
+    @final
     def asfreq(self, fill_value: Scalar | None = ...) -> NDFrameT: ...
-    def sum(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
-    def prod(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
+    @final
+    def sum(self, numeric_only: bool = False, min_count: int = 0) -> NDFrameT: ...
+    @final
+    def prod(self, numeric_only: bool = False, min_count: int = 0) -> NDFrameT: ...
+    @final
     def min(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
+    @final
     def max(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
-    def first(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
-    def last(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
-    def median(self, numeric_only: bool = ...) -> NDFrameT: ...
-    def mean(self, numeric_only: bool = ...) -> NDFrameT: ...
-    def std(self, ddof: int = ..., numeric_only: bool = ...) -> NDFrameT: ...
-    def var(self, ddof: int = ..., numeric_only: bool = ...) -> NDFrameT: ...
-    def sem(self, ddof: int = ..., numeric_only: bool = ...) -> NDFrameT: ...
+    @final
+    def first(
+        self,
+        numeric_only: bool = False,
+        min_count: int = -1,
+        skipna: bool = True,
+    ) -> NDFrameT: ...
+    @final
+    def last(
+        self,
+        numeric_only: bool = False,
+        min_count: int = -1,
+        skipna: bool = True,
+    ) -> NDFrameT: ...
+    @final
+    def median(self, numeric_only: bool = False) -> NDFrameT: ...
+    @final
+    def mean(self, numeric_only: bool = False) -> NDFrameT: ...
+    @final
+    def std(self, ddof: int = 1, numeric_only: bool = False) -> NDFrameT: ...
+    @final
+    def var(self, ddof: int = 1, numeric_only: bool = False) -> NDFrameT: ...
+    @final
+    def sem(self, ddof: int = 1, numeric_only: bool = False) -> NDFrameT: ...
+    @final
     def ohlc(self) -> DataFrame: ...
     @overload
     def nunique(self: Resampler[Series]) -> Series[int]: ...
     @overload
     def nunique(self: Resampler[DataFrame]) -> DataFrame: ...
+    @final
     def size(self) -> Series[int]: ...
     @overload
     def count(self: Resampler[Series]) -> Series[int]: ...
     @overload
     def count(self: Resampler[DataFrame]) -> DataFrame: ...
+    @final
     def quantile(
         self,
-        q: float | list[float] | npt.NDArray[np.double] | Series[float] = ...,
-        **kwargs,
+        q: float | list[float] | np_ndarray_float | Series[float] = 0.5,
+        **kwargs: Any,
     ) -> NDFrameT: ...
 
 # We lie about inheriting from Resampler because at runtime inherits all Resampler
 # attributes via setattr
 class _GroupByMixin(Resampler[NDFrameT]):
     key: str | list[str] | None
-    def __getitem__(self, key) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(self, key: str | list[str] | None) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
 
 class DatetimeIndexResampler(Resampler[NDFrameT]): ...
 
 class DatetimeIndexResamplerGroupby(
     _GroupByMixin[NDFrameT], DatetimeIndexResampler[NDFrameT]
 ):
-    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @final
+    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
 
 class PeriodIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
 class PeriodIndexResamplerGroupby(
     _GroupByMixin[NDFrameT], PeriodIndexResampler[NDFrameT]
 ):
-    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @final
+    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
 
 class TimedeltaIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
 class TimedeltaIndexResamplerGroupby(
     _GroupByMixin[NDFrameT], TimedeltaIndexResampler[NDFrameT]
 ):
-    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @final
+    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
 
 class TimeGrouper(Grouper):
     closed: Literal["left", "right"]

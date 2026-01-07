@@ -135,3 +135,6 @@ dmypy.json
 .pyre/
 /poetry.lock
 .idea/**/*
+
+# duplication of stub specific objects upon testing
+tests/_typing.pyi

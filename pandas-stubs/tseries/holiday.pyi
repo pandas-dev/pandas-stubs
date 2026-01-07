@@ -8,6 +8,7 @@ from typing import (
     overload,
 )
 
+from dateutil.relativedelta import relativedelta
 import numpy as np
 from pandas import (
     DatetimeIndex,
@@ -32,19 +33,19 @@ class Holiday:
     def __init__(
         self,
         name: str,
-        year: int | None = ...,
-        month: int | None = ...,
-        day: int | None = ...,
-        offset: BaseOffset | list[BaseOffset] | None = ...,
-        observance: Callable[[datetime], datetime] | None = ...,
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        offset: BaseOffset | list[BaseOffset] | None = None,
+        observance: Callable[[datetime], datetime] | None = None,
         # Values accepted by Timestamp(), or None:
         start_date: (
             np.integer | float | str | _date | datetime | np.datetime64 | None
-        ) = ...,
+        ) = None,
         end_date: (
             np.integer | float | str | _date | datetime | np.datetime64 | None
-        ) = ...,
-        days_of_week: tuple[int, ...] | None = ...,
+        ) = None,
+        days_of_week: tuple[int | relativedelta, ...] | None = None,
     ) -> None: ...
     @overload
     def dates(
@@ -58,7 +59,7 @@ class Holiday:
         self,
         start_date: np.integer | float | str | _date | datetime | np.datetime64 | None,
         end_date: np.integer | float | str | _date | datetime | np.datetime64 | None,
-        return_name: Literal[True] = ...,
+        return_name: Literal[True] = True,
     ) -> Series: ...
 
 holiday_calendars: dict[str, type[AbstractHolidayCalendar]]
@@ -76,17 +77,17 @@ class AbstractHolidayCalendar:
     @overload
     def holidays(
         self,
-        start: datetime | None = ...,
-        end: datetime | None = ...,
+        start: datetime | None = None,
+        end: datetime | None = None,
         *,
         return_name: Literal[True],
     ) -> Series: ...
     @overload
     def holidays(
         self,
-        start: datetime | None = ...,
-        end: datetime | None = ...,
-        return_name: Literal[False] = ...,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        return_name: Literal[False] = False,
     ) -> DatetimeIndex: ...
     @staticmethod
     def merge_class(
@@ -103,7 +104,7 @@ class AbstractHolidayCalendar:
     def merge(
         self,
         other: AbstractHolidayCalendar | type[AbstractHolidayCalendar],
-        inplace: Literal[False] = ...,
+        inplace: Literal[False] = False,
     ) -> list[Holiday]: ...
 
 USMemorialDay: Holiday

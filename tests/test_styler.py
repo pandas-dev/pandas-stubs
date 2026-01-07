@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import os
-import pathlib
+from pathlib import Path
 from typing import TYPE_CHECKING
+import uuid
 
 from jinja2.environment import (
     Environment,
@@ -10,25 +10,23 @@ from jinja2.environment import (
 )
 from jinja2.loaders import PackageLoader
 import numpy as np
-import numpy.typing as npt
 from pandas import (
     DataFrame,
+    Index,
     Series,
 )
-from pandas._testing import ensure_clean
 import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    PD_LTE_23,
+    check,
+)
+from tests._typing import np_ndarray_str
 
 from pandas.io.formats.style import Styler
-
-DF = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
-
-
-PWD = pathlib.Path(os.path.split(os.path.abspath(__file__))[0])
 
 if TYPE_CHECKING:
     from pandas.io.formats.style_render import StyleExportDict
@@ -36,12 +34,17 @@ else:
     StyleExportDict = object
 
 
+DF = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
+
+PWD = Path(__file__).parent.resolve()
+
+
 @pytest.fixture(autouse=True)
-def reset_style():
+def reset_style() -> None:
     DF.style.clear()
 
 
-def test_apply():
+def test_apply() -> None:
     def f(s: Series) -> Series:
         return s
 
@@ -62,7 +65,7 @@ def test_apply():
 
 
 def test_apply_index() -> None:
-    def f(s: Series) -> npt.NDArray[np.str_]:
+    def f(s: Series) -> np_ndarray_str:
         return np.asarray(s, dtype=np.str_)
 
     check(assert_type(DF.style.apply_index(f), Styler), Styler)
@@ -139,7 +142,9 @@ def test_highlight_quantile() -> None:
 
 
 def test_loader() -> None:
-    check(assert_type(DF.style.loader, PackageLoader), PackageLoader)
+    if PD_LTE_23:
+        # see GH62123 for pandas main repo, type changes in pandas 3.0
+        check(assert_type(DF.style.loader, PackageLoader), PackageLoader)
 
 
 def test_pipe() -> None:
@@ -183,7 +188,7 @@ def test_set() -> None:
     check(assert_type(DF.style.set_uuid("r4nd0mc44r4c73r5"), Styler), Styler)
 
 
-def test_styler_templates():
+def test_styler_templates() -> None:
     check(assert_type(DF.style.template_html, Template), Template)
     check(assert_type(DF.style.template_html_style, Template), Template)
     check(assert_type(DF.style.template_html_table, Template), Template)
@@ -194,21 +199,21 @@ def test_text_gradient() -> None:
     check(assert_type(DF.style.text_gradient(), Styler), Styler)
 
 
-def test_to_excel() -> None:
-    with ensure_clean("test.xlsx") as path:
-        check(assert_type(DF.style.to_excel(path), None), type(None))
+def test_to_excel(tmp_path: Path) -> None:
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(DF.style.to_excel(path_str), None), type(None))
 
 
-def test_to_html() -> None:
+def test_to_html(tmp_path: Path) -> None:
     check(assert_type(DF.style.to_html(), str), str)
-    with ensure_clean("test.html") as path:
-        check(assert_type(DF.style.to_html(path), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.html")
+    check(assert_type(DF.style.to_html(path_str), None), type(None))
 
 
-def test_to_latex() -> None:
+def test_to_latex(tmp_path: Path) -> None:
     check(assert_type(DF.style.to_latex(), str), str)
-    with ensure_clean("test.tex") as path:
-        check(assert_type(DF.style.to_latex(path), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.tex")
+    check(assert_type(DF.style.to_latex(path_str), None), type(None))
 
 
 def test_export_use() -> None:
@@ -224,3 +229,30 @@ def test_subset() -> None:
     check(assert_type(DF.style.highlight_min(subset=IndexSlice[1:2]), Styler), Styler)
     check(assert_type(DF.style.highlight_min(subset=[1]), Styler), Styler)
     check(assert_type(DF.style.highlight_min(subset=DF.columns[1:]), Styler), Styler)
+
+
+def test_styler_columns_and_index() -> None:
+    styler = DF.style
+    check(assert_type(styler.columns, Index), Index)
+    check(assert_type(styler.index, Index), Index)
+
+
+def test_styler_map() -> None:
+    """Test type returned with Styler.map GH1226."""
+    df = DataFrame(data={"col1": [1, -2], "col2": [-3, 4]})
+    check(
+        assert_type(
+            df.style.map(
+                lambda v: "color: red;" if isinstance(v, float) and v < 0 else None
+            ),
+            Styler,
+        ),
+        Styler,
+    )
+
+    def color_negative(v: Scalar, /, color: str) -> str | None:
+        return f"color: {color};" if isinstance(v, float) and v < 0 else None
+
+    df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
+
+    check(assert_type(df.style.map(color_negative, color="red"), Styler), Styler)

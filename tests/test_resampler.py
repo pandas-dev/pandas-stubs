@@ -1,31 +1,32 @@
+# pyright: reportMissingTypeArgument=false
 from collections.abc import (
     Hashable,
     Iterator,
 )
-from typing import Union
+from typing import TypeAlias
 
 import numpy as np
-import pandas as pd
-from pandas import (
-    DataFrame,
-    DatetimeIndex,
-    Index,
-    Series,
-    date_range,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import (
     DataFrameGroupBy,
     SeriesGroupBy,
 )
+from pandas.core.indexes.datetimes import date_range
 from pandas.core.resample import DatetimeIndexResampler
+from pandas.core.series import Series
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
 )
+
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
@@ -33,12 +34,7 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S})
 
 
-_AggRetType = Union[DataFrame, Series]
-
-
-def test_props() -> None:
-    check(assert_type(DF.resample("ME").obj, DataFrame), DataFrame)
-    check(assert_type(DF.resample("ME").ax, Index), DatetimeIndex)
+_AggRetType = DataFrame | Series
 
 
 def test_iter() -> None:
@@ -53,7 +49,9 @@ def test_agg_funcs() -> None:
     check(assert_type(DF.resample("ME").min(), DataFrame), DataFrame)
     check(assert_type(DF.resample("ME").max(), DataFrame), DataFrame)
     check(assert_type(DF.resample("ME").first(), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").first(skipna=False), DataFrame), DataFrame)
     check(assert_type(DF.resample("ME").last(), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").last(skipna=False), DataFrame), DataFrame)
     check(assert_type(DF.resample("ME").mean(), DataFrame), DataFrame)
     check(assert_type(DF.resample("ME").sum(), DataFrame), DataFrame)
     check(assert_type(DF.resample("ME").median(), DataFrame), DataFrame)
@@ -89,14 +87,14 @@ def test_filling() -> None:
 def test_fillna() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").fillna("pad")  # type: ignore[operator]  # pyright: ignore
+        DF.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore
 
 
 def test_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
         check(assert_type(DF.resample("ME").agg(np.sum), DataFrame), DataFrame)
@@ -148,12 +146,19 @@ def test_interpolate() -> None:
     )
 
 
+# TODO: remove the whole test function when the warning and ValueError in pandas-dev/pandas#62847 are removed
 def test_interpolate_inplace() -> None:
-    if PD_LTE_22:
-        # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"The 'inplace' keyword in DatetimeIndexResampler.interpolate is deprecated and will be removed in a future version. resample\(...\).interpolate is never inplace.",
+        lower="2.99",
+    ):
         check(
-            assert_type(DF.resample("ME").interpolate(inplace=True), None), type(None)
+            assert_type(DF.resample("ME").interpolate(inplace=False), DataFrame),
+            DataFrame,
         )
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_pipe() -> None:
@@ -191,7 +196,7 @@ def test_pipe() -> None:
         kw: tuple[int],
     ) -> DataFrame:
         assert isinstance(res, DatetimeIndexResampler)
-        return res.obj
+        return DataFrame({"a": [1, 2, 3]})
 
     check(
         assert_type(DF.resample("ME").pipe(j, 1, [1.0], arg2="hi", kw=(1,)), DataFrame),
@@ -251,7 +256,7 @@ def test_pipe() -> None:
 
     def k(x: int, t: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
         assert isinstance(x, int)
-        return t.obj
+        return DataFrame({"a": [1, 2, 3]})
 
     check(assert_type(DF.resample("ME").pipe((k, "t"), 1), DataFrame), DataFrame)
 
@@ -267,11 +272,6 @@ def test_transform() -> None:
         return -1 * val
 
     check(assert_type(DF.resample("ME").transform(f), DataFrame), DataFrame)
-
-
-def test_props_series() -> None:
-    check(assert_type(S.resample("ME").obj, Series), Series)
-    check(assert_type(S.resample("ME").ax, Index), DatetimeIndex)
 
 
 def test_iter_series() -> None:
@@ -321,14 +321,14 @@ def test_filling_series() -> None:
 def test_fillna_series() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        S.resample("ME").fillna("pad")  # type: ignore[operator]  # pyright: ignore
+        S.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore
 
 
 def test_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(S.resample("ME").aggregate(np.sum), _AggRetType), Series)
         check(assert_type(S.resample("ME").agg(np.sum), _AggRetType), Series)
@@ -364,12 +364,6 @@ def test_interpolate_series() -> None:
     check(assert_type(S.resample("ME").interpolate(method="time"), Series), Series)
 
 
-def test_interpolate_inplace_series() -> None:
-    if PD_LTE_22:
-        # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
-        check(assert_type(S.resample("ME").interpolate(inplace=True), None), type(None))
-
-
 def test_pipe_series() -> None:
     def f(val: "DatetimeIndexResampler[Series]") -> Series:
         assert isinstance(val, DatetimeIndexResampler)
@@ -399,7 +393,7 @@ def test_transform_series() -> None:
 
 def test_aggregate_series_combinations() -> None:
     def s2series(val: Series) -> Series:
-        return pd.Series(val)
+        return Series(val)
 
     def s2scalar(val: Series) -> float:
         return float(val.mean())
@@ -407,7 +401,7 @@ def test_aggregate_series_combinations() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(S.resample("ME").aggregate(np.sum), Series)
         check(S.resample("ME").aggregate([np.mean]), DataFrame)
@@ -421,7 +415,7 @@ def test_aggregate_series_combinations() -> None:
 
 def test_aggregate_frame_combinations() -> None:
     def df2frame(val: DataFrame) -> DataFrame:
-        return pd.DataFrame(val)
+        return DataFrame(val)
 
     def df2series(val: DataFrame) -> Series:
         return val.mean()
@@ -432,7 +426,7 @@ def test_aggregate_frame_combinations() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(DF.resample("ME").aggregate(np.sum), DataFrame)
         check(DF.resample("ME").aggregate([np.mean]), DataFrame)

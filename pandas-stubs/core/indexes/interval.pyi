@@ -5,34 +5,39 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Literal,
+    TypeAlias,
     overload,
+    type_check_only,
 )
 
 import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
-from pandas.core.series import (
-    TimedeltaSeries,
-    TimestampSeries,
-)
-from typing_extensions import TypeAlias
 
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin,
+    _OrderableScalarT,
+    _OrderableT,
+    _OrderableTimesT,
 )
-from pandas._libs.tslibs.offsets import BaseOffset
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     DatetimeLike,
     DtypeArg,
-    FillnaOptions,
+    Frequency,
     IntervalClosedType,
     IntervalT,
     Label,
     MaskType,
+    np_1darray_bool,
     np_ndarray_anyint,
     np_ndarray_bool,
+    np_ndarray_dt,
+    np_ndarray_int64,
+    np_ndarray_intp,
+    np_ndarray_td,
     npt,
 )
 
@@ -40,9 +45,9 @@ from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 
 _EdgesInt: TypeAlias = (
     Sequence[int]
-    | npt.NDArray[np.int64]
+    | np_ndarray_int64
     | npt.NDArray[np.int32]
-    | npt.NDArray[np.intp]
+    | np_ndarray_intp
     | pd.Series[int]
     | Index[int]
 )
@@ -50,71 +55,95 @@ _EdgesFloat: TypeAlias = (
     Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | Index[float]
 )
 _EdgesTimestamp: TypeAlias = (
-    Sequence[DatetimeLike]
-    | npt.NDArray[np.datetime64]
-    | TimestampSeries
-    | pd.DatetimeIndex
+    Sequence[DatetimeLike] | np_ndarray_dt | pd.Series[pd.Timestamp] | pd.DatetimeIndex
 )
 _EdgesTimedelta: TypeAlias = (
-    Sequence[pd.Timedelta]
-    | npt.NDArray[np.timedelta64]
-    | TimedeltaSeries
-    | pd.TimedeltaIndex
+    Sequence[pd.Timedelta] | np_ndarray_td | pd.Series[pd.Timedelta] | pd.TimedeltaIndex
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
 
-class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
+@type_check_only
+class _LengthDescriptor:
+    @overload
+    def __get__(
+        self,
+        instance: IntervalIndex[Interval[_OrderableScalarT]],
+        owner: type[IntervalIndex],
+    ) -> Index[_OrderableScalarT]: ...
+    @overload
+    def __get__(
+        self,
+        instance: IntervalIndex[Interval[_OrderableTimesT]],
+        owner: type[IntervalIndex],
+    ) -> Index[Timedelta]: ...
+
+@type_check_only
+class _MidDescriptor:
+    @overload
+    def __get__(
+        self,
+        instance: IntervalIndex[Interval[int]],
+        owner: type[IntervalIndex],
+    ) -> Index[float]: ...
+    @overload
+    def __get__(
+        self,
+        instance: IntervalIndex[Interval[_OrderableT]],
+        owner: type[IntervalIndex],
+    ) -> Index[_OrderableT]: ...
+
+class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     closed: IntervalClosedType
 
     def __new__(
         cls,
         data: Sequence[IntervalT],
-        closed: IntervalClosedType = ...,
-        dtype: IntervalDtype | None = ...,
-        copy: bool = ...,
-        name: Hashable = ...,
-        verify_integrity: bool = ...,
+        closed: IntervalClosedType | None = None,
+        dtype: IntervalDtype | None = None,
+        copy: bool = False,
+        name: Hashable = None,
+        verify_integrity: bool = True,
     ) -> IntervalIndex[IntervalT]: ...
     @overload
     @classmethod
     def from_breaks(  # pyright: ignore[reportOverlappingOverload]
         cls,
         breaks: _EdgesInt,
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType | None = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[Interval[int]]: ...
     @overload
     @classmethod
     def from_breaks(
         cls,
         breaks: _EdgesFloat,
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType | None = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[Interval[float]]: ...
     @overload
     @classmethod
     def from_breaks(
         cls,
         breaks: _EdgesTimestamp,
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType | None = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
     @overload
     @classmethod
     def from_breaks(
         cls,
         breaks: _EdgesTimedelta,
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType | None = None,
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
     @overload
     @classmethod
@@ -122,10 +151,10 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
         cls,
         left: _EdgesInt,
         right: _EdgesInt,
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[Interval[int]]: ...
     @overload
     @classmethod
@@ -133,10 +162,10 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
         cls,
         left: _EdgesFloat,
         right: _EdgesFloat,
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[Interval[float]]: ...
     @overload
     @classmethod
@@ -144,10 +173,10 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
         cls,
         left: _EdgesTimestamp,
         right: _EdgesTimestamp,
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
     @overload
     @classmethod
@@ -155,20 +184,20 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
         cls,
         left: _EdgesTimedelta,
         right: _EdgesTimedelta,
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
     @overload
     @classmethod
     def from_tuples(  # pyright: ignore[reportOverlappingOverload]
         cls,
         data: Sequence[tuple[int, int]],
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[pd.Interval[int]]: ...
     # Ignore misc here due to intentional overlap between int and float
     @overload
@@ -176,10 +205,10 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     def from_tuples(
         cls,
         data: Sequence[tuple[float, float]],
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[pd.Interval[float]]: ...
     @overload
     @classmethod
@@ -190,10 +219,10 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
             | tuple[dt.datetime, dt.datetime]
             | tuple[np.datetime64, np.datetime64]
         ],
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[pd.Interval[pd.Timestamp]]: ...
     @overload
     @classmethod
@@ -204,50 +233,31 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
             | tuple[dt.timedelta, dt.timedelta]
             | tuple[np.timedelta64, np.timedelta64]
         ],
-        closed: IntervalClosedType = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-        dtype: IntervalDtype | None = ...,
+        closed: IntervalClosedType = "right",
+        name: Hashable = None,
+        copy: bool = False,
+        dtype: IntervalDtype | None = None,
     ) -> IntervalIndex[pd.Interval[pd.Timedelta]]: ...
-    def to_tuples(self, na_tuple: bool = ...) -> pd.Index: ...
+    def to_tuples(self, na_tuple: bool = True) -> pd.Index: ...
     @overload
     def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __contains__(self, key: object) -> Literal[False]: ...
-    def astype(self, dtype: DtypeArg, copy: bool = ...) -> IntervalIndex: ...
+    def astype(self, dtype: DtypeArg, copy: bool = True) -> IntervalIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
     @property
     def inferred_type(self) -> str: ...
-    def memory_usage(self, deep: bool = ...) -> int: ...
+    def memory_usage(self, deep: bool = False) -> int: ...
     @property
     def is_overlapping(self) -> bool: ...
-    # Note: tolerance no effect. It is included in all get_loc so
-    # that signatures are consistent with base even though it is usually not used
-    def get_loc(
-        self,
-        key: Label,
-        method: FillnaOptions | Literal["nearest"] | None = ...,
-        tolerance=...,
-    ) -> int | slice | npt.NDArray[np.bool_]: ...
-    def get_indexer(
-        self,
-        target: Index,
-        method: FillnaOptions | Literal["nearest"] | None = ...,
-        limit: int | None = ...,
-        tolerance=...,
-    ) -> npt.NDArray[np.intp]: ...
-    def get_indexer_non_unique(
-        self, target: Index
-    ) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.intp]]: ...
+    def get_loc(self, key: Label) -> int | slice | np_1darray_bool: ...
     @property
-    def left(self) -> Index: ...
+    def left(self: IntervalIndex[Interval[_OrderableT]]) -> Index[_OrderableT]: ...
     @property
-    def right(self) -> Index: ...
-    @property
-    def mid(self) -> Index: ...
-    @property
-    def length(self) -> Index: ...
+    def right(self: IntervalIndex[Interval[_OrderableT]]) -> Index[_OrderableT]: ...
+    mid = _MidDescriptor()
+    length = _LengthDescriptor()
     @overload  # type: ignore[override]
-    def __getitem__(
+    def __getitem__(  # pyrefly: ignore[bad-override]
         self,
         idx: (
             slice
@@ -259,47 +269,55 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
         ),
     ) -> IntervalIndex[IntervalT]: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, idx: int
     ) -> IntervalT: ...
     @overload  # type: ignore[override]
     def __gt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
-    ) -> np_ndarray_bool: ...
+    ) -> np_1darray_bool: ...
     @overload
-    def __gt__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
+    def __gt__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+        self, other: pd.Series[IntervalT]
+    ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
     def __ge__(
         self, other: IntervalT | IntervalIndex[IntervalT]
-    ) -> np_ndarray_bool: ...
+    ) -> np_1darray_bool: ...
     @overload
-    def __ge__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
+    def __ge__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+        self, other: pd.Series[IntervalT]
+    ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
     def __le__(
         self, other: IntervalT | IntervalIndex[IntervalT]
-    ) -> np_ndarray_bool: ...
+    ) -> np_1darray_bool: ...
     @overload
-    def __le__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
+    def __le__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+        self, other: pd.Series[IntervalT]
+    ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
     def __lt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
-    ) -> np_ndarray_bool: ...
+    ) -> np_1darray_bool: ...
     @overload
-    def __lt__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
+    def __lt__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+        self, other: pd.Series[IntervalT]
+    ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
-    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: object
     ) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
     @overload
     def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: object
     ) -> Literal[True]: ...
 
@@ -307,119 +325,75 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
 # int gets hit first and so the correct type is returned
 @overload
 def interval_range(  # pyright: ignore[reportOverlappingOverload]
-    start: int = ...,
-    end: int = ...,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[int]]: ...
-
-# Overlaps since int is a subclass of float
-@overload
-def interval_range(  # pyright: ignore[reportOverlappingOverload]
-    start: int,
-    *,
-    end: None = ...,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[int]]: ...
-@overload
-def interval_range(  # pyright: ignore[reportOverlappingOverload]
-    *,
-    start: None = ...,
-    end: int,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
+    start: int | None = None,
+    end: int | None = None,
+    periods: int | None = None,
+    freq: int | None = None,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[int]]: ...
 @overload
 def interval_range(
-    start: float = ...,
-    end: float = ...,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[float]]: ...
-@overload
-def interval_range(
-    start: float,
-    *,
-    end: None = ...,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[float]]: ...
-@overload
-def interval_range(
-    *,
-    start: None = ...,
-    end: float,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
+    start: float | None = None,
+    end: float | None = None,
+    periods: int | None = None,
+    freq: int | None = None,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[float]]: ...
 @overload
 def interval_range(
     start: _TimestampLike,
-    end: _TimestampLike = ...,
-    periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
+    end: _TimestampLike | None = None,
+    periods: int | None = None,
+    freq: Frequency | dt.timedelta | None = None,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
 @overload
 def interval_range(
+    start: None = None,
     *,
-    start: None = ...,
     end: _TimestampLike,
-    periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
+    periods: int | None = None,
+    freq: Frequency | dt.timedelta | None = None,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
 @overload
 def interval_range(
-    start: _TimestampLike,
-    *,
-    end: None = ...,
-    periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
+    start: None,
+    end: _TimestampLike,
+    periods: int,
+    freq: Frequency | dt.timedelta,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
 @overload
 def interval_range(
     start: _TimedeltaLike,
-    end: _TimedeltaLike = ...,
-    periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
+    end: _TimedeltaLike | None = None,
+    periods: int | None = None,
+    freq: Frequency | dt.timedelta | None = None,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
 @overload
 def interval_range(
-    *,
-    start: None = ...,
+    start: None,
     end: _TimedeltaLike,
-    periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
+    periods: int,
+    freq: Frequency | dt.timedelta,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
 @overload
 def interval_range(
-    start: _TimedeltaLike,
+    start: None = None,
     *,
-    end: None = ...,
-    periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
+    end: _TimedeltaLike,
+    periods: int | None = None,
+    freq: Frequency | dt.timedelta | None = None,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[pd.Timedelta]]: ...

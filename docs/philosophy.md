@@ -29,13 +29,16 @@ lt = s < 3
 
 In the pandas source, `lt` is a `Series` with a `dtype` of `bool`.  In the pandas-stubs,
 the type of `lt` is `Series[bool]`.  This allows further type checking to occur in other
-pandas methods.  Note that in the above example, `s` is typed as `Series[Any]` because
-its type cannot be statically inferred.
+pandas methods.  Note that in the above example, `s` is just typed as `Series` (which
+defaults to `Series[Any]`) because its type cannot be statically inferred.
 
 This also allows type checking for operations on series that contain date/time data.  Consider
 the following example that creates two series of datetimes with corresponding arithmetic.
 
 ```python
+import pandas as pd
+from typing import reveal_type
+
 s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
 reveal_type(s1)
 s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
@@ -43,23 +46,60 @@ reveal_type(s2)
 td = s1 - s2
 reveal_type(td)
 ssum = s1 + s2
-reveal_type(ssum)
 ```
 
-The above code (without the `reveal_type()` statements) will raise an `Exception` on the computation of `ssum` because it is
+The above code (without the `reveal_type()` statements) will get an error on the computation of `ssum` because it is
 inappropriate to add two series containing `Timestamp` values.  The types will be
-revealed as follows:
+revealed by `mypy` as follows:
 
 ```text
-ttest.py:4: note: Revealed type is "pandas.core.series.TimestampSeries"
-ttest.py:6: note: Revealed type is "pandas.core.series.TimestampSeries"
-ttest.py:8: note: Revealed type is "pandas.core.series.TimedeltaSeries"
-ttest.py:10: note: Revealed type is "builtins.Exception"
+ttest.py:5: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
+ttest.py:7: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
+ttest.py:9: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timedelta]"
+ttest.py:10: error: Unsupported operand types for + ("Series[Timestamp]" and "Series[Timestamp]")  [operator]
 ```
 
-The type `TimestampSeries` is the result of creating a series from `pd.to_datetime()`, while
-the type `TimedeltaSeries` is the result of subtracting two `TimestampSeries` as well as
+The type `Series[Timestamp]` is the result of creating a series from `pd.to_datetime()`, while
+the type `Series[Timedelta]` is the result of subtracting two `Series[Timestamp]` as well as
 the result of `pd.to_timedelta()`.
+
+### Progressive arithmetic typing for generic Series
+
+Consider the following Series from a DataFrame:
+
+```python
+import pandas as pd
+from typing_extensions import reveal_type
+
+
+frame = pd.DataFrame({"timestamp": [pd.Timestamp(2025, 9, 15)], "tag": ["one"], "value": [1.0]})
+values = frame["value"]
+reveal_type(values)  # type checker: Series[Any], runtime: Series
+new_values = values + 2
+
+timestamps = frame["timestamp"]
+reveal_type(timestamps - pd.Timestamp(2025, 7, 12))  # type checker: TimedeltaSeries, runtime: Series
+
+tags = frame["tag"]
+reveal_type("suffix" + tags)  # type checker: Series[str], runtime: Series
+```
+
+Since these Series are taken from a DataFrame, all three of them, `values`, `timestamps`
+and `tags`, are recognized by type checkers as `Series[Any]`.  The code snippet
+runs fine at runtime.  In the stub for type checking, when there is only one
+valid outcome, we provide the typing of this outcome as the result.  For
+example, if a `Timestamp` is subtracted from a `Series[Any]`, or a `str`
+is added to a `Series[Any]`, valid outcomes can only be `TimedeltaSeries` and
+`Series[str]`, respectively, which will be realized when the left operands
+are actually `Series[Timestamp]` and `Series[str]`, respectively.
+
+Note that static type checkers cannot determine the contents of a `Series[Any]`
+at runtime.  Users are invited to verify the results provided progressivly by the
+type checkers and be warned if they are unreasonable.
+
+When there are several possible valid outcomes of an arithmetic expression,
+for example numeric types `Series[bool]`, `Series[int]`, etc., `Series[Any]` 
+will be given as the resulting type of the arithmetic operation.
 
 ### Interval is Generic
 

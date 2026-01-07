@@ -1,10 +1,11 @@
+from collections.abc import Generator
 import gc
 
 import pytest
 
 
 @pytest.fixture
-def mpl_cleanup():
+def mpl_cleanup() -> Generator[None, None, None]:
     """
     Ensure Matplotlib is cleaned up around a test.
 

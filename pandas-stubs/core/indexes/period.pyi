@@ -11,29 +11,38 @@ from pandas.core.indexes.timedeltas import TimedeltaIndex
 from typing_extensions import Self
 
 from pandas._libs.tslibs import (
-    BaseOffset,
     NaTType,
     Period,
 )
 from pandas._libs.tslibs.period import _PeriodAddSub
+from pandas._typing import (
+    AxesData,
+    Dtype,
+    Frequency,
+    np_1darray_intp,
+    np_1darray_object,
+    np_ndarray_bool,
+)
 
-class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
+class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexFieldOps):
     def __new__(
         cls,
-        data=...,
-        ordinal=...,
-        freq=...,
-        tz=...,
-        dtype=...,
-        copy: bool = ...,
-        name=...,
-        **fields,
-    ): ...
+        data: AxesData | None = None,
+        freq: Frequency | None = None,
+        dtype: Dtype | None = None,
+        copy: bool = False,
+        name: Hashable | None = None,
+    ) -> Self: ...
     @property
-    def values(self): ...
-    def __contains__(self, key) -> bool: ...
-    @overload
-    def __sub__(self, other: Period) -> Index: ...
+    def values(self) -> np_1darray_object: ...
+    def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+        self, other: datetime.timedelta
+    ) -> Self: ...
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+        self, other: datetime.timedelta
+    ) -> Self: ...
+    @overload  # type: ignore[override]
+    def __sub__(self, other: Period) -> Index: ...  # pyrefly: ignore[bad-override]
     @overload
     def __sub__(self, other: Self) -> Index: ...
     @overload
@@ -41,49 +50,36 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
     @overload
     def __sub__(self, other: NaTType) -> NaTType: ...
     @overload
-    def __sub__(self, other: TimedeltaIndex | pd.Timedelta) -> Self: ...
+    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+        self, other: TimedeltaIndex | pd.Timedelta
+    ) -> Self: ...
     @overload  # type: ignore[override]
-    def __rsub__(self, other: Period) -> Index: ...
+    def __rsub__(self, other: Period) -> Index: ...  # pyrefly: ignore[bad-override]
     @overload
     def __rsub__(self, other: Self) -> Index: ...
     @overload
-    def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: NaTType
     ) -> NaTType: ...
-    def __array__(self, dtype=...) -> np.ndarray: ...
-    def __array_wrap__(self, result, context=...): ...
-    def asof_locs(self, where, mask): ...
-    def astype(self, dtype, copy: bool = ...): ...
-    def searchsorted(self, value, side: str = ..., sorter=...): ...
+    def asof_locs(
+        self, where: pd.DatetimeIndex | Self, mask: np_ndarray_bool
+    ) -> np_1darray_intp: ...
     @property
     def is_full(self) -> bool: ...
     @property
     def inferred_type(self) -> str: ...
-    def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
-    def get_indexer_non_unique(self, target): ...
-    def insert(self, loc, item): ...
-    def join(
-        self,
-        other,
-        *,
-        how: str = ...,
-        level=...,
-        return_indexers: bool = ...,
-        sort: bool = ...,
-    ): ...
-    def difference(self, other, sort=...): ...
-    def memory_usage(self, deep: bool = ...): ...
     @property
     def freqstr(self) -> str: ...
+    def shift(self, periods: int = 1, freq: Frequency | None = None) -> Self: ...
 
 def period_range(
     start: (
         str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
-    ) = ...,
+    ) = None,
     end: (
         str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
-    ) = ...,
-    periods: int | None = ...,
-    freq: str | BaseOffset | None = ...,
-    name: Hashable | None = ...,
+    ) = None,
+    periods: int | None = None,
+    freq: Frequency | None = None,
+    name: Hashable | None = None,
 ) -> PeriodIndex: ...

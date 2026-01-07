@@ -8,16 +8,26 @@ from pandas import (
     Timedelta,
     date_range,
 )
+from pandas.core.indexers.objects import (
+    FixedForwardWindowIndexer,
+    VariableOffsetWindowIndexer,
+)
 from pandas.core.window import (
     Rolling,
     Window,
 )
 from typing_extensions import assert_type
 
+from pandas._libs.tslibs.offsets import BaseOffset
+
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     check,
     pytest_warns_bounded,
+)
+from tests._typing import (
+    np_1darray_intp,
+    np_ndarray,
 )
 
 from pandas.tseries.frequencies import to_offset
@@ -56,7 +66,7 @@ def test_rolling_basic_math() -> None:
 
 def test_rolling_datetime_index() -> None:
     offset_1d = to_offset("1D")
-    assert offset_1d is not None
+    check(assert_type(offset_1d, BaseOffset), BaseOffset)
 
     check(assert_type(DF_DTI.rolling("1D"), "Rolling[DataFrame]"), Rolling, DataFrame)
     check(
@@ -86,7 +96,7 @@ def test_rolling_apply() -> None:
 
     check(assert_type(DF.rolling(10).apply(_mean), DataFrame), DataFrame)
 
-    def _mean2(df: DataFrame) -> np.ndarray:
+    def _mean2(df: DataFrame) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(DF.rolling(10).apply(_mean2, raw=True), DataFrame), DataFrame)
@@ -101,7 +111,7 @@ def test_rolling_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(DF.rolling(10).aggregate(np.mean), DataFrame), DataFrame)
         check(
@@ -126,7 +136,7 @@ def test_rolling_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
         check(
@@ -147,7 +157,7 @@ def test_rolling_aggregate() -> None:
             DataFrame,
         )
 
-    # func: np.ufunc | Callable | str | list[Callable | str, np.ufunc] | dict[Hashable, Callable | str | np.ufunc| list[Callable | str]]
+    # func: np.ufunc | Callable[..., Any] | str | list[Callable[..., Any] | str, np.ufunc] | dict[Hashable, Callable[..., Any] | str | np.ufunc | list[Callable[..., Any] | str]]
     check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
 
 
@@ -179,7 +189,7 @@ def test_rolling_apply_series() -> None:
 
     check(assert_type(S.rolling(10).apply(_mean), Series), Series)
 
-    def _mean2(df: Series) -> np.ndarray:
+    def _mean2(df: Series) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(S.rolling(10).apply(_mean2, raw=True), Series), Series)
@@ -196,7 +206,7 @@ def test_rolling_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function mean .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
 
@@ -245,7 +255,7 @@ def test_expanding_apply() -> None:
 
     check(assert_type(DF.expanding(10).apply(_mean), DataFrame), DataFrame)
 
-    def _mean2(df: DataFrame) -> np.ndarray:
+    def _mean2(df: DataFrame) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(DF.expanding(10).apply(_mean2, raw=True), DataFrame), DataFrame)
@@ -260,7 +270,7 @@ def test_expanding_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(DF.expanding(10).aggregate(np.mean), DataFrame), DataFrame)
         check(
@@ -304,7 +314,7 @@ def test_expanding_apply_series() -> None:
 
     check(assert_type(S.expanding(10).apply(_mean), Series), Series)
 
-    def _mean2(df: Series) -> np.ndarray:
+    def _mean2(df: Series) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(S.expanding(10).apply(_mean2, raw=True), Series), Series)
@@ -314,7 +324,7 @@ def test_expanding_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(S.expanding(10).aggregate(np.mean), Series), Series)
         check(
@@ -340,11 +350,11 @@ def test_ewm_basic_math() -> None:
 
 
 def test_ewm_aggregate() -> None:
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest_warns_bounded(
             FutureWarning,
             r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
             check(assert_type(DF.ewm(span=10).aggregate(np.mean), DataFrame), DataFrame)
             check(
@@ -371,11 +381,11 @@ def test_ewm_basic_math_series() -> None:
 
 
 def test_ewm_aggregate_series() -> None:
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest_warns_bounded(
             FutureWarning,
             r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
             check(assert_type(S.ewm(span=10).aggregate(np.mean), Series), Series)
             check(
@@ -412,7 +422,7 @@ def test_rolling_window() -> None:
         ],
     )
 
-    indexer = pd.api.indexers.FixedForwardWindowIndexer(window_size=2)
+    indexer = FixedForwardWindowIndexer(window_size=2)
     check(
         assert_type(df_time.rolling(window=indexer, min_periods=1).sum(), DataFrame),
         DataFrame,
@@ -421,4 +431,28 @@ def test_rolling_window() -> None:
     check(
         assert_type(s.rolling(window=indexer, min_periods=1).sum(), Series),
         Series,
+    )
+
+
+def test_indexer_variable_offset() -> None:
+    indexer = VariableOffsetWindowIndexer(index=IDX, offset=pd.offsets.BDay(1))
+    check(
+        assert_type(
+            indexer.get_window_bounds(2, None, None),
+            tuple[np_1darray_intp, np_1darray_intp],
+        ),
+        tuple,
+        np.ndarray,
+    )
+
+
+def test_indexer_fixed_forward() -> None:
+    indexer = FixedForwardWindowIndexer([1, float("nan")], 2)
+    check(
+        assert_type(
+            indexer.get_window_bounds(2, None, None),
+            tuple[np_1darray_intp, np_1darray_intp],
+        ),
+        tuple,
+        np.ndarray,
     )

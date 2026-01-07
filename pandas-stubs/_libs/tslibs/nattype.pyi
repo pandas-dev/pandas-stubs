@@ -1,17 +1,24 @@
+# pyright: strict
 from datetime import (
     datetime,
     timedelta,
     tzinfo as _tzinfo,
 )
-
-import numpy as np
-from typing_extensions import (
-    Self,
+from typing import (
+    Literal,
     TypeAlias,
 )
 
+import numpy as np
+from typing_extensions import Self
+
 from pandas._libs.tslibs.period import Period
-from pandas._typing import TimeUnit
+from pandas._typing import (
+    Frequency,
+    NpDtype,
+    TimestampNonexistent,
+    TimeUnit,
+)
 
 NaT: NaTType
 iNaT: int
@@ -30,7 +37,7 @@ class NaTType:
     def asm8(self) -> np.datetime64: ...
     def to_datetime64(self) -> np.datetime64: ...
     def to_numpy(
-        self, dtype: np.dtype | str | None = ..., copy: bool = ...
+        self, dtype: NpDtype | None = None, copy: bool = False
     ) -> np.datetime64 | np.timedelta64: ...
     @property
     def is_leap_year(self) -> bool: ...
@@ -67,27 +74,47 @@ class NaTType:
     def weekday(self) -> float: ...
     def isoweekday(self) -> float: ...
     def total_seconds(self) -> float: ...
-    def today(self, *args, **kwargs) -> NaTType: ...
-    def now(self, *args, **kwargs) -> NaTType: ...
+    def today(self, tz: _tzinfo | str | None = None) -> NaTType: ...
+    def now(self, tz: _tzinfo | str | None = None) -> NaTType: ...
     def to_pydatetime(self) -> NaTType: ...
     def date(self) -> NaTType: ...
-    def round(self) -> NaTType: ...
-    def floor(self) -> NaTType: ...
-    def ceil(self) -> NaTType: ...
+    def round(
+        self,
+        freq: Frequency,
+        ambiguous: bool | Literal["raise"] | NaTType = "raise",
+        nonexistent: TimestampNonexistent = "raise",
+    ) -> NaTType: ...
+    def floor(
+        self,
+        freq: Frequency,
+        ambiguous: bool | Literal["raise"] | NaTType = "raise",
+        nonexistent: TimestampNonexistent = "raise",
+    ) -> NaTType: ...
+    def ceil(
+        self,
+        freq: Frequency,
+        ambiguous: bool | Literal["raise"] | NaTType = "raise",
+        nonexistent: TimestampNonexistent = "raise",
+    ) -> NaTType: ...
     def tz_convert(self) -> NaTType: ...
-    def tz_localize(self) -> NaTType: ...
+    def tz_localize(
+        self,
+        tz: _tzinfo | str | None,
+        ambiguous: bool | Literal["raise"] | NaTType = "raise",
+        nonexistent: TimestampNonexistent = "raise",
+    ) -> NaTType: ...
     def replace(
         self,
-        year: int | None = ...,
-        month: int | None = ...,
-        day: int | None = ...,
-        hour: int | None = ...,
-        minute: int | None = ...,
-        second: int | None = ...,
-        microsecond: int | None = ...,
-        nanosecond: int | None = ...,
-        tzinfo: _tzinfo | None = ...,
-        fold: int | None = ...,
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        microsecond: int | None = None,
+        nanosecond: int | None = None,
+        tzinfo: _tzinfo | None = None,
+        fold: int | None = None,
     ) -> NaTType: ...
     @property
     def year(self) -> float: ...
@@ -127,4 +154,4 @@ class NaTType:
     __ge__: _NatComparison
     @property
     def unit(self) -> TimeUnit: ...
-    def as_unit(self, unit: TimeUnit, round_ok: bool = ...) -> Self: ...
+    def as_unit(self, unit: TimeUnit, round_ok: bool = True) -> Self: ...

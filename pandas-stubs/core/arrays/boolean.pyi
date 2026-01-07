@@ -1,8 +1,15 @@
+from collections.abc import Sequence
+
 import numpy as np
+from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
+from typing_extensions import Self
 
 from pandas._libs.missing import NAType
-from pandas._typing import type_t
+from pandas._typing import (
+    np_ndarray_bool,
+    type_t,
+)
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
@@ -12,16 +19,33 @@ class BooleanDtype(ExtensionDtype):
     @classmethod
     def construct_array_type(cls) -> type_t[BooleanArray]: ...
 
-def coerce_to_array(values, mask=..., copy: bool = ...): ...
-
 class BooleanArray(BaseMaskedArray):
     def __init__(
-        self, values: np.ndarray, mask: np.ndarray, copy: bool = ...
+        self, values: np_ndarray_bool, mask: np_ndarray_bool, copy: bool = False
     ) -> None: ...
     @property
-    def dtype(self): ...
-    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs): ...
-    def __setitem__(self, key, value) -> None: ...
-    def astype(self, dtype, copy: bool = ...): ...
-    def any(self, *, skipna: bool = ..., **kwargs): ...
-    def all(self, *, skipna: bool = ..., **kwargs): ...
+    def dtype(self) -> BooleanDtype: ...
+    def __and__(
+        self,
+        other: (
+            bool
+            | np.bool
+            | NAType
+            | Sequence[bool | np.bool]
+            | np_ndarray_bool
+            | IntegerArray
+            | Self
+        ),
+    ) -> Self: ...
+    def __rand__(
+        self,
+        other: (
+            bool
+            | np.bool
+            | NAType
+            | Sequence[bool | np.bool]
+            | np_ndarray_bool
+            | IntegerArray
+            | Self
+        ),
+    ) -> Self: ...

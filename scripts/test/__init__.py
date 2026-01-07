@@ -5,7 +5,14 @@ from typing import Literal
 from scripts._job import run_job
 from scripts.test import _step
 
-_SRC_STEPS = [_step.mypy_src, _step.pyright_src, _step.pytest, _step.style]
+_SRC_STEPS = [
+    _step.mypy_src,
+    _step.ty_src,
+    _step.pyrefly_src,
+    _step.pyright_src,
+    _step.pytest,
+    _step.style,
+]
 _DIST_STEPS = [
     _step.build_dist,
     _step.install_dist,
@@ -15,11 +22,11 @@ _DIST_STEPS = [
 ]
 
 
-def test(
+def run_tests(
     src: bool = False,
     dist: bool = False,
     type_checker: Literal["", "mypy", "pyright"] = "",
-):
+) -> None:
     steps = []
     if src:
         steps.extend(_SRC_STEPS)
@@ -45,7 +52,7 @@ def stubtest(allowlist: str, check_missing: bool, nightly: bool) -> None:
     steps = _DIST_STEPS[:2]
     if nightly:
         steps.append(_step.nightly)
-    run_job(steps + [stubtest])
+    run_job([*steps, stubtest])
 
 
 def pytest(nightly: bool) -> None:
@@ -53,9 +60,9 @@ def pytest(nightly: bool) -> None:
     pytest_step = _step.pytest
     if nightly:
         setup_steps = [_step.nightly]
-    run_job(setup_steps + [pytest_step])
+    run_job([*setup_steps, pytest_step])
 
 
 def mypy_src(mypy_nightly: bool) -> None:
     steps = [_step.mypy_nightly] if mypy_nightly else []
-    run_job(steps + [_step.mypy_src])
+    run_job([*steps, _step.mypy_src])

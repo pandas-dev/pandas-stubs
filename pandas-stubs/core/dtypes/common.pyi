@@ -1,15 +1,16 @@
+from typing import TypeAlias
+
 import pandas as pd
 from pandas.api.extensions import ExtensionDtype
-from typing_extensions import TypeAlias
 
 from pandas._typing import (
     ArrayLike,
+    Dtype,
     DtypeObj,
     npt,
 )
 
 from pandas.core.dtypes.inference import (
-    is_array_like as is_array_like,
     is_bool as is_bool,
     is_complex as is_complex,
     is_dict_like as is_dict_like,
@@ -33,7 +34,7 @@ _ArrayOrDtype: TypeAlias = (
 def is_object_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_datetime64_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_timedelta64_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
-def is_dtype_equal(source, target) -> bool: ...
+def is_dtype_equal(source: Dtype, target: Dtype) -> bool: ...
 def is_string_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_integer_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_signed_integer_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...

@@ -1,10 +1,13 @@
 from collections.abc import (
     Callable,
+    Hashable,
     Iterator,
+    Sequence,
 )
 import datetime as dt
 from typing import (
     Any,
+    Generic,
     overload,
 )
 
@@ -13,7 +16,6 @@ from pandas import (
     Index,
     Series,
 )
-from pandas.core.base import SelectionMixin
 from pandas.core.indexers import BaseIndexer
 from typing_extensions import Self
 
@@ -32,7 +34,7 @@ from pandas._typing import (
     WindowingRankType,
 )
 
-class BaseWindow(SelectionMixin[NDFrameT]):
+class BaseWindow(Generic[NDFrameT]):
     on: str | Index | None
     closed: IntervalClosedType | None
     step: int | None
@@ -42,24 +44,27 @@ class BaseWindow(SelectionMixin[NDFrameT]):
     win_type: str | None
     axis: AxisInt
     method: CalculationMethod
-    def __getitem__(self, key) -> Self: ...
+    def __getitem__(self, key: Hashable | Sequence[Hashable]) -> Self: ...
     def __getattr__(self, attr: str) -> Self: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
     @overload
-    def aggregate(
-        self: BaseWindow[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
+    def aggregate(  # pyright: ignore[reportOverlappingOverload]
+        self: BaseWindow[Series],
+        func: AggFuncTypeBase[...],
+        *args: Any,
+        **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self: BaseWindow[Series],
-        func: AggFuncTypeSeriesToFrame,
+        func: AggFuncTypeSeriesToFrame[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: BaseWindow[DataFrame],
-        func: AggFuncTypeFrame,
+        func: AggFuncTypeFrame[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
@@ -68,13 +73,13 @@ class BaseWindow(SelectionMixin[NDFrameT]):
 class BaseWindowGroupby(BaseWindow[NDFrameT]): ...
 
 class Window(BaseWindow[NDFrameT]):
-    def sum(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...
-    def mean(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...
+    def sum(self, numeric_only: bool = False, **kwargs: Any) -> NDFrameT: ...
+    def mean(self, numeric_only: bool = False, **kwargs: Any) -> NDFrameT: ...
     def var(
-        self, ddof: int = ..., numeric_only: bool = ..., **kwargs: Any
+        self, ddof: int = ..., numeric_only: bool = False, **kwargs: Any
     ) -> NDFrameT: ...
     def std(
-        self, ddof: int = ..., numeric_only: bool = ..., **kwargs: Any
+        self, ddof: int = ..., numeric_only: bool = False, **kwargs: Any
     ) -> NDFrameT: ...
 
 class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
@@ -97,6 +102,7 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def max(
         self,
         numeric_only: bool = ...,
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...

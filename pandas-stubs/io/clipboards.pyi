@@ -12,7 +12,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
-from pandas._libs.lib import NoDefault
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
@@ -30,13 +30,13 @@ from pandas.io.parsers import TextFileReader
 def read_clipboard(
     sep: str | None = ...,
     *,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | defaultdict | None = ...,
+    dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -59,7 +59,7 @@ def read_clipboard(
     ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
-    date_parser: Callable = ...,
+    date_parser: Callable[..., Any] = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
     iterator: Literal[True],
@@ -89,13 +89,13 @@ def read_clipboard(
 def read_clipboard(
     sep: str | None = ...,
     *,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | defaultdict | None = ...,
+    dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -118,7 +118,7 @@ def read_clipboard(
     ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
-    date_parser: Callable = ...,
+    date_parser: Callable[..., Any] = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
     iterator: bool = ...,
@@ -148,13 +148,13 @@ def read_clipboard(
 def read_clipboard(
     sep: str | None = ...,
     *,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | defaultdict | None = ...,
+    dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -177,11 +177,11 @@ def read_clipboard(
     ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
-    date_parser: Callable = ...,
+    date_parser: Callable[..., Any] = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
-    iterator: Literal[False] = ...,
-    chunksize: None = ...,
+    iterator: Literal[False] = False,
+    chunksize: None = None,
     compression: CompressionOptions = ...,
     thousands: str | None = ...,
     decimal: str = ...,
@@ -203,6 +203,3 @@ def read_clipboard(
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
 ) -> DataFrame: ...
-def to_clipboard(
-    obj, excel: bool = ..., sep: str | None = ..., **kwargs: Any
-) -> None: ...

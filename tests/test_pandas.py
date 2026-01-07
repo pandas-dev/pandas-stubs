@@ -5,47 +5,73 @@ import random
 from typing import (
     TYPE_CHECKING,
     Any,
-    Union,
 )
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
-from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
+from pandas.core.arrays.integer import IntegerArray
+from pandas.core.groupby.grouper import Grouper
 import pandas.util as pdutil
 
-# TODO: github.com/pandas-dev/pandas/issues/55023
+# TODO: pandas-dev/pandas#55023
 import pytest
 from typing_extensions import (
     Never,
-    TypeAlias,
     assert_type,
 )
 
-from pandas._libs.missing import NAType
-from pandas._libs.tslibs import NaTType
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
 )
+from tests._typing import (
+    np_1darray,
+    np_1darray_anyint,
+    np_1darray_bool,
+    np_1darray_dt,
+    np_1darray_float,
+    np_1darray_int64,
+    np_1darray_intp,
+    np_1darray_td,
+    np_2darray,
+    np_ndarray,
+    np_ndarray_bool,
+)
 
-if TYPE_CHECKING:
-    from pandas.core.series import TimestampSeries
-else:
-    TimestampSeries: TypeAlias = pd.Series
+
+@pytest.fixture
+def sample_df() -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "A": ["foo", "foo", "foo", "bar", "bar", "bar"],
+            "B": ["one", "one", "two", "two", "one", "one"],
+            "C": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+            "D": [10.0, 20.0, 30.0, 40.0, 50.0, 60.0],
+        }
+    )
 
 
 def test_types_to_datetime() -> None:
     df = pd.DataFrame({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]})
-    check(assert_type(pd.to_datetime(df), TimestampSeries), pd.Series, pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(df), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
 
     check(
-        assert_type(pd.to_datetime(df, unit="s", origin="unix"), TimestampSeries),
+        assert_type(
+            pd.to_datetime(df, unit="s", origin="unix"), "pd.Series[pd.Timestamp]"
+        ),
         pd.Series,
         pd.Timestamp,
     )
@@ -54,7 +80,7 @@ def test_types_to_datetime() -> None:
             pd.to_datetime(
                 df, unit="ns", dayfirst=True, utc=False, format="%M:%D", exact=False
             ),
-            TimestampSeries,
+            "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
         pd.Timestamp,
@@ -67,30 +93,23 @@ def test_types_to_datetime() -> None:
         pd.DatetimeIndex,
     )
     check(
-        assert_type(
-            pd.to_datetime([1, 2], unit="D", origin=3),
-            pd.DatetimeIndex,
-        ),
+        assert_type(pd.to_datetime([1, 2], unit="D", origin=3), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(["2022-01-03", "2022-02-22"]), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
     check(
         assert_type(
-            pd.to_datetime(["2022-01-03", "2022-02-22"]),
-            pd.DatetimeIndex,
-        ),
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(
-            pd.to_datetime(pd.Index(["2022-01-03", "2022-02-22"])),
-            pd.DatetimeIndex,
+            pd.to_datetime(pd.Index(["2022-01-03", "2022-02-22"])), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
     )
     check(
         assert_type(
             pd.to_datetime({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]}),
-            TimestampSeries,
+            "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
         pd.Timestamp,
@@ -102,14 +121,20 @@ def test_types_concat_none() -> None:
     series = pd.Series([7, -5, 10])
     df = pd.DataFrame({"a": [7, -5, 10]})
 
-    check(assert_type(pd.concat([None, series]), pd.Series), pd.Series)
+    check(
+        assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
+    )
     check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
     )
     check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(pd.concat({"a": None, "b": series}), pd.Series), pd.Series)
+    check(
+        assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
     check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
@@ -120,9 +145,10 @@ def test_types_concat_none() -> None:
         pd.DataFrame,
     )
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        # using assert_type as otherwise the second call would not be type-checked
+    def _0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(pd.concat({"a": None}), Never)
+
+    def _1() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(pd.concat([None]), Never)
 
 
@@ -130,49 +156,62 @@ def test_types_concat() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
 
-    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series)
+    check(assert_type(pd.concat([s, s2]), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(pd.concat([s, s2], axis=1), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat([s, s2], keys=["first", "second"], sort=True), pd.Series),
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], sort=True), "pd.Series[int]"
+        ),
         pd.Series,
+        np.integer,
     )
     check(
         assert_type(
             pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
-            pd.Series,
+            "pd.Series[int]",
         ),
         pd.Series,
+        np.integer,
     )
     check(
         assert_type(
             pd.concat([s, s2], keys=["first", "second"], names=None),
-            pd.Series,
+            "pd.Series[int]",
         ),
         pd.Series,
+        np.integer,
     )
 
     # Depends on the axis
     check(
-        assert_type(pd.concat({"a": s, "b": s2}), pd.Series),
+        assert_type(pd.concat({"a": s, "b": s2}), "pd.Series[int]"),
         pd.Series,
+        np.integer,
     )
     check(
         assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(pd.concat({1: s, 2: s2}), pd.Series), pd.Series)
+    check(
+        assert_type(pd.concat({1: s, 2: s2}), "pd.Series[int]"), pd.Series, np.integer
+    )
     check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat({1: s, None: s2}), pd.Series),
+        assert_type(pd.concat({1: s, None: s2}), "pd.Series[int]"),
         pd.Series,
+        np.integer,
     )
-    check(
-        assert_type(
-            pd.concat({1: s, None: s2}, axis=1),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+
+    # https://github.com/microsoft/python-type-stubs/issues/69
+    s1 = pd.Series([1, 2, 3])
+    s2 = pd.Series([4, 5, 6])
+    df = pd.concat([s1, s2], axis=1)
+    ts1 = pd.concat([s1, s2], axis=0)
+    ts2 = pd.concat([s1, s2])
+
+    check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(pd.concat({1: s, None: s2}, axis=1), pd.DataFrame), pd.DataFrame)
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
@@ -223,7 +262,8 @@ def test_types_concat() -> None:
 
     check(
         assert_type(
-            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1), pd.DataFrame
+            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1),  # noqa: C417
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )
@@ -232,6 +272,36 @@ def test_types_concat() -> None:
 
     data: pd.DataFrame | pd.Series = pd.Series()
     check(assert_type(pd.concat([pd.DataFrame(), data]), pd.DataFrame), pd.DataFrame)
+
+
+def test_concat_series_mixed_numeric() -> None:
+    """Test concatenation of Series with mixed numeric types.
+
+    Derived from test_types_concat."""
+    s = pd.Series([0, 1, -10])
+    s2 = pd.Series([7.0, -5, 10])
+
+    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series, np.floating)
+    check(
+        assert_type(pd.concat([s, s2], keys=["first", "second"], sort=True), pd.Series),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
+            pd.Series,
+        ),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], names=None), pd.Series
+        ),
+        pd.Series,
+        np.floating,
+    )
 
 
 def test_concat_args() -> None:
@@ -291,7 +361,7 @@ def test_concat_args() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "The copy keyword is deprecated and will be removed in a future version.",
-        lower="2.2.99",
+        lower="2.3.99",
     ):
         check(assert_type(pd.concat([df, df2], copy=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
@@ -380,20 +450,47 @@ def test_types_json_normalize() -> None:
 
 def test_isna() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/264
-    s1 = pd.Series([1, np.nan, 3.2])
-    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, np.bool_)
+    s = pd.Series([1, np.nan, 3.2])
+    check(assert_type(pd.isna(s), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(pd.notna(s), "pd.Series[bool]"), pd.Series, np.bool_)
 
-    s2 = pd.Series([1, 3.2])
-    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, np.bool_)
+    df = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
+    check(assert_type(pd.isna(df), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(pd.notna(df), "pd.DataFrame"), pd.DataFrame)
 
-    df1 = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
-    check(assert_type(pd.isna(df1), "pd.DataFrame"), pd.DataFrame)
+    idx = pd.Index([1, 2, np.nan, float("nan")])
+    check(assert_type(pd.isna(idx), np_1darray_bool), np_1darray_bool)
+    check(assert_type(pd.notna(idx), np_1darray_bool), np_1darray_bool)
 
-    idx1 = pd.Index([1, 2, np.nan])
-    check(assert_type(pd.isna(idx1), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    # ExtensionArray
+    ext_arr = idx.array
+    check(assert_type(pd.isna(ext_arr), np_1darray_bool), np_1darray_bool)
+    check(assert_type(pd.notna(ext_arr), np_1darray_bool), np_1darray_bool)
 
-    idx2 = pd.Index([1, 2])
-    check(assert_type(pd.notna(idx2), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    # 1-D numpy array
+    arr_1d = idx.to_numpy()
+    check(assert_type(pd.isna(arr_1d), np_1darray_bool), np_1darray_bool)
+    check(assert_type(pd.notna(arr_1d), np_1darray_bool), np_1darray_bool)
+
+    # 2-D numpy array
+    arr_2d = idx.to_numpy().reshape(2, 2)
+    check(assert_type(pd.isna(arr_2d), np_2darray[np.bool]), np_2darray[np.bool])
+    check(assert_type(pd.notna(arr_2d), np_2darray[np.bool]), np_2darray[np.bool])
+
+    # N-D numpy array
+    arr_nd = idx.to_numpy().reshape([2, 2])
+    check(assert_type(pd.isna(arr_nd), np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(pd.notna(arr_nd), np_ndarray_bool), np_ndarray_bool)
+
+    # List of scalars
+    l_sca = [1, 2.5, float("nan")]
+    check(assert_type(pd.isna(l_sca), np_1darray_bool), np_1darray_bool)
+    check(assert_type(pd.notna(l_sca), np_1darray_bool), np_1darray_bool)
+
+    # List of unknown members
+    l_any: list[object] = [arr_1d, ext_arr]
+    check(assert_type(pd.isna(l_any), np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(pd.notna(l_any), np_ndarray_bool), np_ndarray_bool)
 
     assert check(assert_type(pd.isna(pd.NA), bool), bool)
     assert not check(assert_type(pd.notna(pd.NA), bool), bool)
@@ -437,11 +534,11 @@ def test_isna() -> None:
     if not pd.isna(nullable1):
         check(assert_type(nullable1, str), str)
     if pd.isna(nullable1):
-        assert_type(nullable1, Union[NaTType, NAType, None])
+        assert_type(nullable1, NaTType | NAType | None)
     if not pd.notna(nullable1):
-        assert_type(nullable1, Union[NaTType, NAType, None])
+        assert_type(nullable1, NaTType | NAType | None)
 
-    nullable2: int | None = random.choice([2, None])
+    nullable2 = random.choice([2, None])
     if pd.notna(nullable2):
         check(assert_type(nullable2, int), int)
     if not pd.isna(nullable2):
@@ -457,9 +554,9 @@ def test_isna() -> None:
     if not pd.isna(nullable3):
         check(assert_type(nullable3, bool), bool)
     if pd.isna(nullable3):
-        assert_type(nullable3, Union[NAType, None])
+        assert_type(nullable3, NAType | None)
     if not pd.notna(nullable3):
-        assert_type(nullable3, Union[NAType, None])
+        assert_type(nullable3, NAType | None)
 
 
 # GH 55
@@ -478,70 +575,55 @@ def test_read_xml() -> None:
 
 def test_unique() -> None:
     # Taken from the docs
+    ints = [2, 1, 3, 3]
+    check(
+        assert_type(pd.unique(pd.Series(ints)), np_1darray | ExtensionArray),
+        np_1darray_int64,
+    )
     check(
         assert_type(
-            pd.unique(pd.Series([2, 1, 3, 3])), Union[np.ndarray, ExtensionArray]
+            pd.unique(pd.Series(ints, dtype="Int64")), np_1darray | ExtensionArray
         ),
-        np.ndarray,
+        IntegerArray,
+        np.integer,
     )
 
     check(
-        assert_type(
-            pd.unique(pd.Series([2] + [1] * 5)), Union[np.ndarray, ExtensionArray]
-        ),
-        np.ndarray,
+        assert_type(pd.unique(pd.Series([2] + [1] * 5)), np_1darray | ExtensionArray),
+        np_1darray_int64,
     )
 
+    unzoned_timestamps = [pd.Timestamp("20160101"), pd.Timestamp("20160101")]
     check(
         assert_type(
-            pd.unique(pd.Series([pd.Timestamp("20160101"), pd.Timestamp("20160101")])),
-            Union[np.ndarray, ExtensionArray],
+            pd.unique(pd.Series(unzoned_timestamps)), np_1darray | ExtensionArray
         ),
-        np.ndarray,
+        np_1darray,
+        np.datetime64,
     )
 
+    zoned_timestamps = [ts.tz_localize("US/Eastern") for ts in unzoned_timestamps]
     check(
         assert_type(
-            pd.unique(
-                pd.Series(
-                    [
-                        pd.Timestamp("20160101", tz="US/Eastern"),
-                        pd.Timestamp("20160101", tz="US/Eastern"),
-                    ]
-                )
-            ),
-            Union[np.ndarray, ExtensionArray],
+            pd.unique(pd.Series(zoned_timestamps)), np_1darray | ExtensionArray
         ),
         pd.arrays.DatetimeArray,
-    )
-    check(
-        assert_type(
-            pd.unique(
-                pd.Index(
-                    [
-                        pd.Timestamp("20160101", tz="US/Eastern"),
-                        pd.Timestamp("20160101", tz="US/Eastern"),
-                    ]
-                )
-            ),
-            np.ndarray,
-        ),
-        pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
-    check(assert_type(pd.unique(np.array(list("baabc"))), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(np.array(list("baabc"))), np_1darray), np_1darray)
 
     check(
         assert_type(
             pd.unique(pd.Series(pd.Categorical(list("baabc")))),
-            Union[np.ndarray, ExtensionArray],
+            np_1darray | ExtensionArray,
         ),
         pd.Categorical,
     )
     check(
         assert_type(
             pd.unique(pd.Series(pd.Categorical(list("baabc"), categories=list("abc")))),
-            Union[np.ndarray, ExtensionArray],
+            np_1darray | ExtensionArray,
         ),
         pd.Categorical,
     )
@@ -552,35 +634,9 @@ def test_unique() -> None:
                     pd.Categorical(list("baabc"), categories=list("abc"), ordered=True)
                 )
             ),
-            Union[np.ndarray, ExtensionArray],
+            np_1darray | ExtensionArray,
         ),
         pd.Categorical,
-    )
-    check(
-        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
-        np.ndarray if PD_LTE_22 else pd.Index,
-    )
-    check(
-        assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
-        np.ndarray if PD_LTE_22 else pd.Index,
-    )
-    check(
-        assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
-        pd.Categorical,
-    )
-    check(
-        assert_type(
-            pd.unique(pd.period_range("2001Q1", periods=10, freq="D")),
-            pd.PeriodIndex,
-        ),
-        pd.PeriodIndex,
-    )
-    check(
-        assert_type(
-            pd.unique(pd.timedelta_range(start="1 day", periods=4)),
-            np.ndarray,
-        ),
-        np.ndarray if PD_LTE_22 else pd.Index,
     )
 
 
@@ -615,40 +671,55 @@ def test_arrow_dtype() -> None:
     )
 
 
-def test_hashing():
+def test_hashing() -> None:
     a = np.array([1, 2, 3])
-    check(assert_type(pdutil.hash_array(a), npt.NDArray[np.uint64]), np.ndarray)
+    check(
+        assert_type(pdutil.hash_array(a), np_1darray[np.uint64]), np_1darray[np.uint64]
+    )
     check(
         assert_type(
             pdutil.hash_array(a, encoding="latin1", hash_key="1", categorize=True),
-            npt.NDArray[np.uint64],
+            np_1darray[np.uint64],
         ),
-        np.ndarray,
+        np_1darray[np.uint64],
     )
 
     b = pd.Series(a)
     c = pd.DataFrame({"a": a, "b": a})
     d = pd.Index(b)
-    check(assert_type(pdutil.hash_pandas_object(b), pd.Series), pd.Series)
-    check(assert_type(pdutil.hash_pandas_object(c), pd.Series), pd.Series)
-    check(assert_type(pdutil.hash_pandas_object(d), pd.Series), pd.Series)
+    check(
+        assert_type(pdutil.hash_pandas_object(b), "pd.Series[int]"),
+        pd.Series,
+        np.uint64,
+    )
+    check(
+        assert_type(pdutil.hash_pandas_object(c), "pd.Series[int]"),
+        pd.Series,
+        np.uint64,
+    )
+    check(
+        assert_type(pdutil.hash_pandas_object(d), "pd.Series[int]"),
+        pd.Series,
+        np.uint64,
+    )
     check(
         assert_type(
             pdutil.hash_pandas_object(
                 d, index=True, encoding="latin1", hash_key="apple", categorize=True
             ),
-            pd.Series,
+            "pd.Series[int]",
         ),
         pd.Series,
+        np.uint64,
     )
 
 
-def test_eval():
+def test_eval() -> None:
     df = pd.DataFrame({"animal": ["dog", "pig"], "age": [10, 20]})
     check(
         assert_type(
             pd.eval("double_age = df.age * 2", target=df),
-            Union[npt.NDArray, Scalar, pd.DataFrame, pd.Series, None],
+            Scalar | np_ndarray | pd.DataFrame | pd.Series | None,
         ),
         pd.DataFrame,
     )
@@ -666,61 +737,47 @@ def test_to_numeric_scalar() -> None:
 
 def test_to_numeric_array_like() -> None:
     check(
-        assert_type(
-            pd.to_numeric([1, 2, 3]),
-            npt.NDArray,
-        ),
-        np.ndarray,
+        assert_type(pd.to_numeric([1, 2, 3]), np_1darray_anyint), np_1darray, np.integer
     )
     check(
-        assert_type(
-            pd.to_numeric([1.0, 2.0, 3.0]),
-            npt.NDArray,
-        ),
-        np.ndarray,
+        assert_type(pd.to_numeric([1.0, 2.0, 3.0]), np_1darray_float),
+        np_1darray,
+        np.floating,
     )
     check(
-        assert_type(
-            pd.to_numeric([1.0, 2.0, "3.0"]),
-            npt.NDArray,
-        ),
-        np.ndarray,
+        assert_type(pd.to_numeric([1.0, 2.0, "3.0"]), np_1darray_float),
+        np_1darray,
+        np.floating,
     )
     check(
         assert_type(
             pd.to_numeric(np.array([1.0, 2.0, "3.0"], dtype=object)),
-            npt.NDArray,
+            np_1darray_float,
         ),
-        np.ndarray,
+        np_1darray,
+        np.floating,
     )
     check(
         assert_type(
-            pd.to_numeric([1.0, 2.0, "blerg"], errors="coerce"),
-            npt.NDArray,
+            pd.to_numeric([1.0, 2.0, "blerg"], errors="coerce"), np_1darray_float
         ),
-        np.ndarray,
+        np_1darray,
+        np.floating,
     )
     check(
-        assert_type(
-            pd.to_numeric((1.0, 2.0, 3.0)),
-            npt.NDArray,
-        ),
-        np.ndarray,
+        assert_type(pd.to_numeric((1.0, 2.0, 3.0)), np_1darray_float),
+        np_1darray,
+        np.floating,
     )
     check(
-        assert_type(pd.to_numeric([1, 2, 3], downcast="unsigned"), npt.NDArray),
-        np.ndarray,
+        assert_type(pd.to_numeric([1, 2, 3], downcast="unsigned"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
     )
 
 
 def test_to_numeric_array_series() -> None:
-    check(
-        assert_type(
-            pd.to_numeric(pd.Series([1, 2, 3])),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(pd.to_numeric(pd.Series([1, 2, 3])), pd.Series), pd.Series)
     check(
         assert_type(
             pd.to_numeric(pd.Series([1, 2, "blerg"]), errors="coerce"),
@@ -748,7 +805,7 @@ def test_to_numeric_array_series() -> None:
     )
 
 
-def test_wide_to_long():
+def test_wide_to_long() -> None:
     df = pd.DataFrame(
         {
             "A1970": {0: "a", 1: "b", 2: "c"},
@@ -772,7 +829,7 @@ def test_wide_to_long():
     )
 
 
-def test_melt():
+def test_melt() -> None:
     df = pd.DataFrame(
         {
             "A": {0: "a", 1: "b", 2: "c"},
@@ -853,41 +910,43 @@ def test_lreshape() -> None:
 
 def test_factorize() -> None:
     codes, uniques = pd.factorize(np.array(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
+    check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, uniques = pd.factorize(np.recarray((1,), dtype=[("x", int)]))
-    check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
+    check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(cat_uniques, pd.Categorical), pd.Categorical)
 
     codes, idx_uniques = pd.factorize(pd.Index(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
     codes, idx_uniques = pd.factorize(pd.Series(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
     codes, uniques = pd.factorize(np.array(list("bbacb")))
-    check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
+    check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, uniques = pd.factorize(
         np.array(["b", "b", "a", "c", "b"]), use_na_sentinel=True, size_hint=10
     )
-    check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
+    check(assert_type(uniques, np_1darray), np_1darray)
 
 
 def test_index_unqiue() -> None:
     ci = pd.CategoricalIndex(["a", "b", "a", "c"])
     dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
+    dti_zoned = pd.Index([dt.tz_localize("Europe/Prague") for dt in dti])
 
     i = pd.Index(["a", "b", "c", "a"])
+    ii_pd = pd.Index([1, 2, 3, 3], dtype="Int64")
 
     pi = pd.period_range("2000Q1", periods=2, freq="Q")
     ri = pd.RangeIndex(0, 10)
@@ -898,18 +957,35 @@ def test_index_unqiue() -> None:
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
     check(
-        assert_type(pd.unique(dti), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index
+        assert_type(pd.unique(dti), np_1darray_dt | pd.DatetimeIndex),
+        np_1darray if PD_LTE_23 else pd.DatetimeIndex,
     )
-    check(assert_type(pd.unique(i), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
-    check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
     check(
-        assert_type(pd.unique(tdi), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index
+        assert_type(pd.unique(dti_zoned), np_1darray_dt | pd.DatetimeIndex),
+        pd.DatetimeIndex,
     )
-    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
+    check(
+        assert_type(pd.unique(i), np_1darray | pd.Index),
+        np_1darray if PD_LTE_23 else pd.Index,
+    )
+    check(assert_type(pd.unique(ii_pd), np_1darray | pd.Index), pd.Index)
+    check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
+    check(
+        assert_type(pd.unique(ri), np_1darray_int64),
+        np_1darray_int64 if PD_LTE_23 else pd.Index,
+    )
+    check(
+        assert_type(pd.unique(tdi), np_1darray_td),
+        np_1darray if PD_LTE_23 else pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(pd.unique(mi), np_ndarray),
+        np_ndarray if PD_LTE_23 else pd.MultiIndex,
+    )
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
+        pd.Interval,
     )
 
 
@@ -919,7 +995,7 @@ def test_cut() -> None:
     b = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=False, duplicates="raise")
     c = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"])
     check(assert_type(a, pd.Categorical), pd.Categorical)
-    check(assert_type(b, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(b, np_1darray_intp), np_1darray_intp)
     check(assert_type(c, pd.Categorical), pd.Categorical)
 
     d0, d1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, retbins=True)
@@ -928,11 +1004,11 @@ def test_cut() -> None:
         [1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"], retbins=True
     )
     check(assert_type(d0, pd.Categorical), pd.Categorical)
-    check(assert_type(d1, npt.NDArray), np.ndarray)
-    check(assert_type(e0, npt.NDArray[np.intp]), np.ndarray)
-    check(assert_type(e1, npt.NDArray), np.ndarray)
+    check(assert_type(d1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(e0, np_1darray_intp), np_1darray_intp)
+    check(assert_type(e1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(f0, pd.Categorical), pd.Categorical)
-    check(assert_type(f1, npt.NDArray), np.ndarray)
+    check(assert_type(f1, np_1darray_float), np_1darray, np.floating)
 
     g = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, precision=1, duplicates="drop")
     h = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=False, duplicates="raise")
@@ -961,19 +1037,15 @@ def test_cut() -> None:
         labels=["1", "2", "3", "4"],
         retbins=True,
     )
-    m0, m1 = pd.cut(
-        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
-        intval_idx,
-        retbins=True,
-    )
+    m0, m1 = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), intval_idx, retbins=True)
     check(assert_type(j0, pd.Series), pd.Series)
-    check(assert_type(j1, npt.NDArray), np.ndarray)
+    check(assert_type(j1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(k0, pd.Series), pd.Series)
-    check(assert_type(k1, npt.NDArray), np.ndarray)
+    check(assert_type(k1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(l0, pd.Series), pd.Series)
-    check(assert_type(l1, npt.NDArray), np.ndarray)
+    check(assert_type(l1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(m0, pd.Series), pd.Series)
-    check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex)
+    check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex, pd.Interval)
 
     n0, n1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], intval_idx, retbins=True)
     check(assert_type(n0, pd.Categorical), pd.Categorical)
@@ -1044,10 +1116,10 @@ def test_qcut() -> None:
     check(assert_type(c0, pd.Categorical), pd.Categorical)
     check(assert_type(d0, pd.Series), pd.Series)
 
-    check(assert_type(a1, npt.NDArray[np.double]), np.ndarray)
-    check(assert_type(b1, npt.NDArray[np.double]), np.ndarray)
-    check(assert_type(c1, npt.NDArray[np.double]), np.ndarray)
-    check(assert_type(d1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(a1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(b1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(c1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(d1, np_1darray_float), np_1darray, np.floating)
 
     e0, e1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True)
     f0, f1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True)
@@ -1058,17 +1130,18 @@ def test_qcut() -> None:
 
     check(assert_type(e0, pd.Categorical), pd.Categorical)
     check(assert_type(f0, pd.Categorical), pd.Categorical)
-    check(assert_type(g0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(g0, np_1darray_intp | np_1darray_float), np_1darray_intp)
     check(assert_type(h0, pd.Series), pd.Series)
-    check(assert_type(i0, npt.NDArray[np.intp]), np.ndarray)
-    check(assert_type(j0, npt.NDArray[np.intp]), np.ndarray)
+    # because of nans
+    check(assert_type(i0, np_1darray_intp | np_1darray_float), np_1darray, np.floating)
+    check(assert_type(j0, np_1darray_intp | np_1darray_float), np_1darray, np.floating)
 
-    check(assert_type(e1, npt.NDArray[np.double]), np.ndarray)
-    check(assert_type(f1, npt.NDArray[np.double]), np.ndarray)
-    check(assert_type(g1, npt.NDArray[np.double]), np.ndarray)
-    check(assert_type(h1, npt.NDArray[np.double]), np.ndarray)
-    check(assert_type(i1, npt.NDArray[np.double]), np.ndarray)
-    check(assert_type(j1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(e1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(f1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(g1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(h1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(i1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(j1, np_1darray_float), np_1darray, np.floating)
 
 
 def test_merge() -> None:
@@ -1336,7 +1409,7 @@ def test_merge_ordered() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             ls,
             rs,
             left_on="left",
@@ -1344,7 +1417,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="right",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             ls,
             rf,
             left_on="left",
@@ -1352,7 +1425,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="b",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             lf,
             rs,
             left_on="a",
@@ -1545,7 +1618,7 @@ def test_merge_asof() -> None:
 
 def test_crosstab_args() -> None:
     a = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2]
-    b: list = [4, 5, 6, 3, 4, 3, 5, 6, 5, 5]
+    b: list[Any] = [4, 5, 6, 3, 4, 3, 5, 6, 5, 5]
     c = [1, 3, 2, 3, 1, 2, 3, 1, 3, 2]
     check(assert_type(pd.crosstab(a, b), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.crosstab(a, [b, c]), pd.DataFrame), pd.DataFrame)
@@ -1586,7 +1659,7 @@ def test_crosstab_args() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
@@ -1646,12 +1719,11 @@ def test_crosstab_args() -> None:
         assert_type(pd.crosstab(a, b, colnames=["a"], rownames=["b"]), pd.DataFrame),
         pd.DataFrame,
     )
-    rownames: list[tuple] = [("b", 1)]
-    colnames: list[tuple] = [("a",)]
+    rownames: list[tuple[str, int]] = [("b", 1)]
+    colnames: list[tuple[str]] = [("a",)]
     check(
         assert_type(
-            pd.crosstab(a, b, colnames=colnames, rownames=rownames),
-            pd.DataFrame,
+            pd.crosstab(a, b, colnames=colnames, rownames=rownames), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -1814,7 +1886,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -1841,6 +1913,60 @@ def test_pivot_table() -> None:
     check(
         assert_type(
             pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="nunique",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="ohlc",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="quantile",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="rank",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.pivot_table(
                 df, values="D", index=["A", "B"], columns="C", aggfunc="mean"
             ),
             pd.DataFrame,
@@ -1850,7 +1976,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -1900,7 +2026,7 @@ def test_pivot_table() -> None:
     )
 
     def g(x: pd.Series) -> int:
-        return int(np.round(x.sum()))
+        return int(np.round(x.sum()))  # pyright: ignore[reportUnknownArgumentType]
 
     check(
         assert_type(
@@ -1918,7 +2044,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -1945,7 +2071,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -2046,7 +2172,7 @@ def test_pivot_table() -> None:
         FutureWarning,
         "'M' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         check(
@@ -2062,7 +2188,7 @@ def test_pivot_table() -> None:
         FutureWarning,
         "'(M|A)' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         check(
@@ -2096,6 +2222,470 @@ def test_pivot_table() -> None:
             assert_type(
                 pd.pivot_table(
                     df, index=Grouper(freq="YE"), columns=Grouper(key="dt", freq="M")
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+
+def test_pivot_table_aggfunc_string_reduction(sample_df: pd.DataFrame) -> None:
+    """Test string aggfunc with reduction functions from ReductionKernelType."""
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="sum"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="mean"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="count"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="min"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="max"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="median"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="std"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="var"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="prod"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="first"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="last"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="sem"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="nunique"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_pivot_table_aggfunc_string_transformation(sample_df: pd.DataFrame) -> None:
+    """Test string aggfunc with transformation functions from TransformationKernelType."""
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="bfill"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="cummax"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="cummin"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="cumprod"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="cumsum"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="diff"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="ffill"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="pct_change"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="rank"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc="shift"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
+    """Test with df.pivot_table using np.ufunc."""
+    # Test with pd.pivot_table using np.ufunc
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df, values="C", index="A", columns="B", aggfunc=np.sum
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df, values="C", index="A", columns="B", aggfunc=np.mean
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df, values="C", index="A", columns="B", aggfunc=np.min
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df, values="C", index="A", columns="B", aggfunc=np.max
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df, values="C", index="A", columns="B", aggfunc=np.std
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df, values="C", index="A", columns="B", aggfunc=np.var
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df, values="C", index="A", columns="B", aggfunc=np.prod
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df, values="C", index="A", columns="B", aggfunc=np.median
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+
+def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
+    """Test with df.pivot_table using list of strings."""
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=["sum", "mean"]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df,
+                values="C",
+                index="A",
+                columns="B",
+                aggfunc=["min", "max", "count"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df,
+                    values="C",
+                    index="A",
+                    columns="B",
+                    aggfunc=[np.sum, np.mean],
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df,
+                    values="C",
+                    index="A",
+                    columns="B",
+                    aggfunc=["sum", np.mean],
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+
+def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
+    """Test dict of aggfuncs mapping columns to functions."""
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df,
+                values=["C", "D"],
+                index="A",
+                columns="B",
+                aggfunc={"C": "sum", "D": "mean"},
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df,
+                values=["C", "D"],
+                index="A",
+                columns="B",
+                aggfunc={"C": "min", "D": "max"},
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df,
+                    values=["C", "D"],
+                    index="A",
+                    columns="B",
+                    aggfunc={"C": np.sum, "D": np.mean},
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    sample_df,
+                    values=["C", "D"],
+                    index="A",
+                    columns="B",
+                    aggfunc={"C": "sum", "D": np.mean},
                 ),
                 pd.DataFrame,
             ),

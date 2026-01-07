@@ -1,12 +1,33 @@
-from pandas.core.arrays import (
-    BooleanArray as BooleanArray,
-    Categorical as Categorical,
-    DatetimeArray as DatetimeArray,
-    IntegerArray as IntegerArray,
-    IntervalArray as IntervalArray,
-    PandasArray as PandasArray,
-    PeriodArray as PeriodArray,
-    SparseArray as SparseArray,
-    StringArray as StringArray,
-    TimedeltaArray as TimedeltaArray,
-)
+from pandas.core.arrays.arrow import ArrowExtensionArray
+from pandas.core.arrays.base import ExtensionArray
+from pandas.core.arrays.boolean import BooleanArray
+from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.floating import FloatingArray
+from pandas.core.arrays.integer import IntegerArray
+from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.masked import BaseMaskedArray
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
+from pandas.core.arrays.period import PeriodArray
+from pandas.core.arrays.sparse import SparseArray
+from pandas.core.arrays.string_ import StringArray
+from pandas.core.arrays.string_arrow import ArrowStringArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
+
+__all__ = [
+    "ArrowExtensionArray",
+    "ArrowStringArray",
+    "BaseMaskedArray",
+    "BooleanArray",
+    "Categorical",
+    "DatetimeArray",
+    "ExtensionArray",
+    "FloatingArray",
+    "IntegerArray",
+    "IntervalArray",
+    "NumpyExtensionArray",
+    "PeriodArray",
+    "SparseArray",
+    "StringArray",
+    "TimedeltaArray",
+]

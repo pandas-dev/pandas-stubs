@@ -1,9 +1,12 @@
-from collections import abc
-from collections.abc import Sequence
+from collections.abc import (
+    Iterator,
+    Sequence,
+)
 import datetime
 from io import BytesIO
 from types import TracebackType
 from typing import (
+    Any,
     Literal,
     overload,
 )
@@ -67,8 +70,8 @@ def read_stata(
     preserve_dtypes: bool = ...,
     columns: list[HashableT] | None = ...,
     order_categoricals: bool = ...,
-    chunksize: None = ...,
-    iterator: Literal[False] = ...,
+    chunksize: None = None,
+    iterator: Literal[False] = False,
     compression: CompressionOptions = ...,
     storage_options: StorageOptions = ...,
 ) -> DataFrame: ...
@@ -76,7 +79,7 @@ def read_stata(
 class StataParser:
     def __init__(self) -> None: ...
 
-class StataReader(StataParser, abc.Iterator):
+class StataReader(StataParser, Iterator[Any]):
     col_sizes: list[int] = ...
     path_or_buf: BytesIO = ...
     def __init__(
@@ -101,18 +104,6 @@ class StataReader(StataParser, abc.Iterator):
         traceback: TracebackType | None,
     ) -> None: ...
     def __next__(self) -> DataFrame: ...
-    def get_chunk(self, size: int | None = ...) -> DataFrame: ...
-    def read(
-        self,
-        nrows: int | None = ...,
-        convert_dates: bool | None = ...,
-        convert_categoricals: bool | None = ...,
-        index_col: str | None = ...,
-        convert_missing: bool | None = ...,
-        preserve_dtypes: bool | None = ...,
-        columns: list[str] | None = ...,
-        order_categoricals: bool | None = ...,
-    ): ...
     @property
     def data_label(self) -> str: ...
     def variable_labels(self) -> dict[str, str]: ...

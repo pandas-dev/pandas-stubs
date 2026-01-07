@@ -1,11 +1,10 @@
 import datetime as dt
+import sys
 from typing import (
     Any,
     Literal,
-    TypeVar,
 )
 
-from _typing import TimeZones
 import numpy as np
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -18,14 +17,14 @@ from pandas._libs.tslibs.offsets import (
 )
 from pandas._typing import (
     Ordered,
+    TimeZones,
     npt,
 )
 
-from .base import ExtensionDtype as ExtensionDtype
-
-_ExtensionDtypeT = TypeVar("_ExtensionDtypeT", bound=ExtensionDtype)
-
-def register_extension_dtype(cls: type[_ExtensionDtypeT]) -> type[_ExtensionDtypeT]: ...
+from pandas.core.dtypes.base import (
+    ExtensionDtype as ExtensionDtype,
+    register_extension_dtype as register_extension_dtype,
+)
 
 class BaseMaskedDtype(ExtensionDtype): ...
 class PandasExtensionDtype(ExtensionDtype): ...
@@ -61,5 +60,11 @@ class PeriodDtype(PandasExtensionDtype):
 
 class IntervalDtype(PandasExtensionDtype):
     def __init__(self, subtype: str | npt.DTypeLike | None = ...) -> None: ...
-    @property
-    def subtype(self) -> np.dtype | None: ...
+    if sys.version_info >= (3, 11):
+        @property
+        def subtype(self) -> np.dtype | None: ...
+    else:
+        @property
+        def subtype(self) -> np.dtype[Any] | None: ...
+
+class SparseDtype(ExtensionDtype): ...
