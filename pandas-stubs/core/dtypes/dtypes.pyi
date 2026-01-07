@@ -17,6 +17,7 @@ from pandas._libs.tslibs.offsets import (
     SingleConstructorOffset,
 )
 from pandas._typing import (
+    Dtype,
     Ordered,
     TimeZones,
     npt,
@@ -71,4 +72,5 @@ class IntervalDtype(PandasExtensionDtype):
         @property
         def subtype(self) -> np.dtype[Any] | None: ...
 
-class SparseDtype(ExtensionDtype): ...
+class SparseDtype(ExtensionDtype):
+    def __init__(self, dtype: Dtype = ..., fill_value: Any = None) -> None: ...

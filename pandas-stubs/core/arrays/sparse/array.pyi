@@ -1,5 +1,5 @@
+from collections.abc import Sequence
 from enum import Enum
-import sys
 from typing import (
     Any,
     Literal,
@@ -10,7 +10,6 @@ from typing import (
     type_check_only,
 )
 
-import numpy as np
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.series import Series
@@ -22,6 +21,7 @@ from pandas._typing import (
     Axis,
     AxisInt,
     NpDtype,
+    NpDtypeNoStr,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
@@ -44,27 +44,15 @@ class ellipsis(Enum):
     Ellipsis = "..."
 
 class SparseArray(OpsMixin, ExtensionArray):
-    if sys.version_info >= (3, 11):
-        def __new__(
-            cls,
-            data: AnyArrayLike | Scalar,
-            sparse_index: SparseIndex | None = None,
-            fill_value: Scalar | None = None,
-            kind: SparseIndexKind = "integer",
-            dtype: np.dtype | SparseDtype | None = None,
-            copy: bool = False,
-        ) -> Self: ...
-    else:
-        def __new__(
-            cls,
-            data: AnyArrayLike | Scalar,
-            sparse_index: SparseIndex | None = None,
-            fill_value: Scalar | None = None,
-            kind: SparseIndexKind = "integer",
-            dtype: np.dtype[Any] | SparseDtype | None = None,
-            copy: bool = False,
-        ) -> Self: ...
-
+    def __new__(
+        cls,
+        data: AnyArrayLike | Sequence[int | float | complex] | Scalar,
+        sparse_index: SparseIndex | None = None,
+        fill_value: Scalar | None = None,
+        kind: SparseIndexKind = "integer",
+        dtype: NpDtypeNoStr | SparseDtype | None = None,
+        copy: bool = False,
+    ) -> Self: ...
     @classmethod
     def from_spmatrix(cls, data: _SparseMatrixLike) -> Self: ...
     def __array__(
