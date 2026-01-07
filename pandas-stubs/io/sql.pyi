@@ -14,7 +14,7 @@ from typing import (
 )
 
 from pandas.core.frame import DataFrame
-import sqlalchemy.engine
+from sqlalchemy.engine import Connectable
 from sqlalchemy.orm import FromStatement
 import sqlalchemy.sql.expression
 
@@ -27,7 +27,7 @@ from pandas._typing import (
     np_ndarray,
 )
 
-_SQLConnection: TypeAlias = str | sqlalchemy.engine.Connectable | sqlite3.Connection
+_SQLConnection: TypeAlias = str | Connectable | sqlite3.Connection
 
 _SQLStatement: TypeAlias = (
     str
