@@ -15,6 +15,7 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
+from pandas.core.groupby.base import ReductionKernelType
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -30,23 +31,25 @@ from pandas._typing import (
 )
 
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
-_PivotAggFunc: TypeAlias = _PivotAggCallable[ScalarT] | np.ufunc | str
-
-# TODO: pandas-dev/pandas-stubs#1614 improve list of available functions for aggfunc
-# | Literal[
-#     "mean",
-#     "sum",
-#     "count",
-#     "min",
-#     "max",
-#     "median",
-#     "std",
-#     "var",
-#     "nunique",
-#     "ohlc",
-#     "quantile",
-#     "rank",
-# ]
+_PivotAggFunc: TypeAlias = (
+    _PivotAggCallable[ScalarT]
+    | np.ufunc
+    | ReductionKernelType
+    | Literal[
+        "ohlc",
+        "quantile",
+        "bfill",
+        "cummax",
+        "cummin",
+        "cumprod",
+        "cumsum",
+        "diff",
+        "ffill",
+        "pct_change",
+        "rank",
+        "shift",
+    ]
+)
 
 _PivotAggFuncTypes: TypeAlias = (
     _PivotAggFunc[ScalarT]
