@@ -10,6 +10,7 @@ from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 
 from pandas._libs import NaTType
+from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import (
     RelativeDeltaOffset,
@@ -26,7 +27,10 @@ from pandas.core.dtypes.base import (
     register_extension_dtype as register_extension_dtype,
 )
 
-class BaseMaskedDtype(ExtensionDtype): ...
+class BaseMaskedDtype(ExtensionDtype):
+    @property
+    def na_value(self) -> NAType: ...
+
 class PandasExtensionDtype(ExtensionDtype): ...
 
 class CategoricalDtype(PandasExtensionDtype, ExtensionDtype):
