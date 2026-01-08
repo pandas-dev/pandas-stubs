@@ -16,7 +16,12 @@ from typing import (
 from pandas.core.frame import DataFrame
 from sqlalchemy.engine import Connectable
 from sqlalchemy.orm import FromStatement
-import sqlalchemy.sql.expression
+from sqlalchemy.sql import Select
+from sqlalchemy.sql.expression import (
+    Selectable,
+    TextClause,
+    UpdateBase,
+)
 
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
@@ -30,12 +35,7 @@ from pandas._typing import (
 _SQLConnection: TypeAlias = str | Connectable | sqlite3.Connection
 
 _SQLStatement: TypeAlias = (
-    str
-    | sqlalchemy.sql.expression.Selectable
-    | sqlalchemy.sql.expression.TextClause
-    | sqlalchemy.sql.Select[Any]
-    | FromStatement[Any]
-    | sqlalchemy.sql.expression.UpdateBase
+    str | Selectable | TextClause | Select[Any] | FromStatement[Any] | UpdateBase
 )
 
 @overload
