@@ -1,15 +1,24 @@
-"""type_completeness
+"""Ensure that pandas' public API is type-complete, using Pyright.
 
-Create a temporary virtual environment, install pandas, copy the local
-stubs into the venv site-packages as the ``pandas`` package, run
-``pyright --verifytypes pandas --ignoreexternal --outputjson`` and parse the
-resulting JSON to compute type-completeness.
+We run Pyright's `--verifytypes` to ensure that type-completeness is at 100%.
+
+Rather than running the command as-is, we need to make some adjustments:
+
+- Use `--ignoreexternal` to ignore untyped symbols in dependent libraries:
+  https://github.com/microsoft/pyright/discussions/9911#discussioncomment-12192388.
+- We exclude symbols which are technically public (accordinging to Pyright) but which
+  aren't in pandas' documented API and not considered public by pandas. There is no
+  CLI flag for this in Pyright, but we can parse the output json and exclude paths ourselves:
+  https://github.com/microsoft/pyright/discussions/10614#discussioncomment-13543475.
+- We create a temporary virtual environment with pandas installed in it, as Pyright
+  needs that to run its `--verifytypes` command.
 """
 
 from __future__ import annotations
 
 from fnmatch import fnmatch
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -46,7 +55,7 @@ EXCLUDE = [
     "pandas.io.formats.string.*",
     "pandas.io.formats.xml.*",
 ]
-THRESHOLD = 0.9
+THRESHOLD = 1
 
 
 def venv_site_packages(venv_python: str) -> Path:
@@ -61,12 +70,20 @@ def venv_site_packages(venv_python: str) -> Path:
 
 
 def run_pyright(venv_path: str) -> dict[str, Any]:
-    # change command based on platform?
-    out = subprocess.run(  # noqa: S602
-        f"source {venv_path}/bin/activate && pyright --verifytypes pandas --ignoreexternal --outputjson",
+    env = os.environ.copy()
+    venv = Path(venv_path)
+    bin_dir = venv / ("Scripts" if sys.platform == "win32" else "bin")
+    env["PATH"] = f"{bin_dir}{os.pathsep}{env['PATH']}"
+    out = subprocess.run(
+        [  # noqa: S607
+            "pyright",
+            "--verifytypes",
+            "pandas",
+            "--ignoreexternal",
+            "--outputjson",
+        ],
         check=False,
-        shell=True,
-        executable="/bin/bash",
+        env=env,
         text=True,
         capture_output=True,
     ).stdout
@@ -126,22 +143,18 @@ def main() -> int:
         # Pyright requires `py.typed` to exist.
         (dest / "py.typed").write_text("\n")
 
-        sys.stdout.write("Running pyright --verifytypes (may take a while)...")
+        sys.stdout.write("Running pyright --verifytypes (may take a while)...\n")
         out = run_pyright(str(venv_dir))
 
         completeness = parse_pyright_json(out)
 
-        sys.stdout.write("--- Results ---")
-        sys.stdout.write(f"Completeness: {completeness:.4%}")
+        sys.stdout.write("--- Results ---\n")
+        sys.stdout.write(f"Completeness: {completeness:.4%}\n")
 
-        if completeness < THRESHOLD:
-            sys.stdout.write(
-                f"Completeness {completeness:.1%} below threshold {THRESHOLD:.1%}"
-            )
+        if completeness < 1:
+            sys.stdout.write(f"Completeness {completeness:.1%} below threshold 100%\n")
             return 1
-        sys.stdout.write(
-            f"Completeness {completeness:.1%} at or above threshold {THRESHOLD:.1%}"
-        )
+        sys.stdout.write("Completeness is at 100% threshold\n")
         return 0
 
     finally:
