@@ -25,7 +25,6 @@ import subprocess
 import sys
 import tempfile
 from typing import Any
-import venv
 
 EXCLUDE = [
     # pandas distributes (untyped) tests with the package
@@ -109,17 +108,19 @@ def main() -> int:
     tmpdir = Path(tempfile.mkdtemp(prefix="pandas-stubs-venv-"))
     venv_dir = tmpdir / "venv"
     try:
-        builder = venv.EnvBuilder(with_pip=True)
-        builder.create(str(venv_dir.absolute()))
+        subprocess.run([sys.executable, "-m", "venv", venv_dir], check=True)
 
-        venv_python = str(venv_dir / "bin" / "python")
+        if sys.platform == "win32":
+            venv_python = (venv_dir / "Scripts") / "python.exe"
+        else:
+            venv_python = (venv_dir / "bin") / "python"
 
         subprocess.check_call([venv_python, "-m", "pip", "install", "-U", "pip"])
         subprocess.check_call(
             [venv_python, "-m", "pip", "install", "-U", "pyright", "pandas"]
         )
 
-        site_packages = venv_site_packages(venv_python)
+        site_packages = venv_site_packages(str(venv_python))
 
         # Copy stubs into site-packages/pandas.
         dest = site_packages / "pandas"

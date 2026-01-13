@@ -166,3 +166,8 @@ def ty() -> None:
 def pyrefly() -> None:
     cmd = ["pyrefly", "check", "pandas-stubs"]
     subprocess.run(cmd, check=True)
+
+
+def type_completeness() -> None:
+    cmd = ["python", "-m", "scripts.type_completeness"]
+    subprocess.run(cmd, check=True)
