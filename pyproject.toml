@@ -34,16 +34,16 @@ exclude = [ "pandas-stubs/__init__.py" ]
 [tool.poetry.dependencies]
 python = ">=3.10"
 types-pytz = ">=2022.1.1"
-numpy = ">=1.23.5, <= 2.3.5"
+numpy = ">=1.23.5, <= 2.4.1"
 
 [tool.poetry.group.dev.dependencies]
 mypy = ">=1.19.1"
 pandas = "2.3.3"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
-pyright = ">=1.1.407"
-ty = ">=0.0.2"
-pyrefly = ">=0.46.0"
+pyright = ">=1.1.408"
+ty = ">=0.0.11"
+pyrefly = ">=0.48.0"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.5.0"
@@ -328,3 +328,6 @@ python-version = "3.10"
 
 [tool.ty.rules]
 possibly-unresolved-reference = "error"
+
+[tool.ty.analysis]
+respect-type-ignore-comments = false

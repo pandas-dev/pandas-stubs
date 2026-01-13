@@ -126,7 +126,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     ) -> Series: ...
     def nunique(self, dropna: bool = ...) -> Series[int]: ...
     # describe delegates to super() method but here it has keyword-only parameters
-    def describe(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def describe(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self,
         *,
         percentiles: Iterable[float] | None = ...,
@@ -458,9 +458,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
     def dtypes(self) -> Series: ...
-    def __getattr__(
-        self, attr: str
-    ) -> SeriesGroupBy[Any, ByT]: ...  # ty: ignore[invalid-method-override]
+    def __getattr__(self, attr: str) -> SeriesGroupBy[Any, ByT]: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[override-of-final-method] # pyrefly: ignore[bad-override]
