@@ -65,7 +65,7 @@ def venv_site_packages(venv_python: str) -> Path:
         "-c",
         "import sysconfig, json; print(sysconfig.get_paths()['purelib'])",
     ]
-    out = subprocess.check_output(cmd, text=True).strip()  # noqa: S603
+    out = subprocess.check_output(cmd, text=True).strip()
     return Path(out)
 
 
@@ -87,7 +87,6 @@ def run_pyright(venv_path: str) -> dict[str, Any]:
         text=True,
         capture_output=True,
     ).stdout
-    Path("out.json").write_text(out)
     return json.loads(out)
 
 
@@ -115,10 +114,8 @@ def main() -> int:
 
         venv_python = str(venv_dir / "bin" / "python")
 
-        subprocess.check_call(  # noqa: S603
-            [venv_python, "-m", "pip", "install", "-U", "pip"]
-        )
-        subprocess.check_call(  # noqa: S603
+        subprocess.check_call([venv_python, "-m", "pip", "install", "-U", "pip"])
+        subprocess.check_call(
             [venv_python, "-m", "pip", "install", "-U", "pyright", "pandas"]
         )
 

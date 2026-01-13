@@ -58,3 +58,19 @@ jobs:
       - uses: actions/checkout@v5
 
       - uses: pre-commit/action@v3.0.1
+
+  type-completeness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install project dependencies
+        uses: ./.github/setup
+        with:
+          os: ubuntu-latest
+          python-version: 3.13
+      
+      - name: Verify type compelteness
+        run: python scripts/type_completeness.py
