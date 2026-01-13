@@ -1,10 +1,11 @@
 from typing import Any
 
+import numpy as np
 from typing_extensions import Self
 
 class OpsMixin:
-    def __eq__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-    def __ne__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __eq__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __ne__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     def __lt__(self, other: Any) -> Self: ...
     def __le__(self, other: Any) -> Self: ...
     def __gt__(self, other: Any) -> Self: ...
@@ -25,3 +26,13 @@ class OpsMixin:
     def __rdivmod__(self, other: Any) -> tuple[Self, Self]: ...
     def __pow__(self, other: Any) -> Self: ...
     def __rpow__(self, other: Any) -> Self: ...
+
+# The following unpublished function is added to reduce type checking ignores
+def dispatch_ufunc_with_out(
+    self: Any, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
+) -> Any: ...
+
+# The following unpublished function is added to reduce type checking ignores
+def dispatch_reduction_ufunc(
+    self: Any, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
+) -> Any: ...

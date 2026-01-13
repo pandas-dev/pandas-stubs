@@ -1,3 +1,4 @@
+# pyright: reportUnknownArgumentType=false,reportUnknownLambdaType=false
 from __future__ import annotations
 
 from collections.abc import (
@@ -12,7 +13,6 @@ from decimal import Decimal
 from enum import Enum
 import io
 from pathlib import Path
-import platform
 import re
 from typing import (
     TYPE_CHECKING,
@@ -24,6 +24,7 @@ from typing import (
     TypeVar,
     cast,
 )
+import uuid
 
 import numpy as np
 import pandas as pd
@@ -33,6 +34,7 @@ from pandas.api.extensions import (
 )
 from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.string_ import BaseStringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 from pandas.core.window.expanding import Expanding
@@ -50,34 +52,14 @@ from pandas._typing import (
     Scalar,
 )
 
-from pandas.core.dtypes.dtypes import CategoricalDtype  # noqa F401
-
 from tests import (
-    ASTYPE_FLOAT_ARGS,
-    LINUX,
-    MAC,
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
-    ensure_clean,
     pytest_warns_bounded,
 )
 from tests._typing import (
-    BooleanDtypeArg,
-    BytesDtypeArg,
-    CategoryDtypeArg,
-    ComplexDtypeArg,
-    IntDtypeArg,
-    ObjectDtypeArg,
-    PandasAstypeComplexDtypeArg,
-    PandasAstypeTimedeltaDtypeArg,
-    PandasAstypeTimestampDtypeArg,
-    StrDtypeArg,
-    TimedeltaDtypeArg,
-    TimestampDtypeArg,
-    UIntDtypeArg,
-    VoidDtypeArg,
     np_1darray,
     np_1darray_anyint,
     np_1darray_bool,
@@ -88,6 +70,20 @@ from tests._typing import (
     np_1darray_object,
     np_1darray_td,
     np_ndarray_num,
+)
+from tests.dtypes import (
+    ASTYPE_BOOL_ARGS,
+    ASTYPE_BYTES_ARGS,
+    ASTYPE_CATEGORICAL_ARGS,
+    ASTYPE_COMPLEX_ARGS,
+    ASTYPE_FLOAT_ARGS,
+    ASTYPE_INT_ARGS,
+    ASTYPE_OBJECT_ARGS,
+    ASTYPE_STRING_ARGS,
+    ASTYPE_TIMEDELTA_ARGS,
+    ASTYPE_TIMESTAMP_ARGS,
+    ASTYPE_UINT_ARGS,
+    ASTYPE_VOID_ARGS,
 )
 from tests.extension.decimal.array import DecimalDtype
 
@@ -102,7 +98,7 @@ from pandas.tseries.offsets import (
 )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration] # isort: skip
+    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -163,6 +159,14 @@ def test_types_init() -> None:
         pd.Series,
         float,
     )
+    check(
+        assert_type(
+            pd.Series([pd.Interval(pd.Timestamp(0), pd.Timestamp(1))]),
+            "pd.Series[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.Series,
+        pd.Interval,
+    )
 
 
 def test_types_any() -> None:
@@ -177,22 +181,22 @@ def test_types_all() -> None:
     check(assert_type(pd.Series([np.nan]).all(skipna=False), np.bool), np.bool)
 
 
-def test_types_csv() -> None:
+def test_types_csv(tmp_path: Path) -> None:
     s = pd.Series(data=[1, 2, 3])
     check(assert_type(s.to_csv(), str), str)
 
-    with ensure_clean() as path:
-        s.to_csv(path)
-        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / f"{uuid.uuid4()}test0.csv")
+    s.to_csv(path_str)
+    check(assert_type(pd.read_csv(path_str), pd.DataFrame), pd.DataFrame)
 
-    with ensure_clean() as path:
-        s.to_csv(Path(path))
-        check(assert_type(pd.read_csv(Path(path)), pd.DataFrame), pd.DataFrame)
+    path = tmp_path / f"{uuid.uuid4()}test1.csv"
+    s.to_csv(path)
+    check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
 
     # This keyword was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with ensure_clean() as path:
-        s.to_csv(path, errors="replace")
-        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / f"{uuid.uuid4()}test2.csv")
+    s.to_csv(path_str, errors="replace")
+    check(assert_type(pd.read_csv(path_str), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_copy() -> None:
@@ -267,9 +271,9 @@ def test_arguments_drop() -> None:
     # GH 950
     s = pd.Series([0, 1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
+        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
 
     def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(s.drop(columns=None), Never)
@@ -780,9 +784,9 @@ def test_types_abs() -> None:
 
 def test_types_var() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.var()
-    s.var(axis=0, ddof=1)
-    s.var(skipna=True, numeric_only=False)
+    check(assert_type(s.var(), float), np.float64)
+    check(assert_type(s.var(axis=0, ddof=1), float), np.float64)
+    check(assert_type(s.var(skipna=True, numeric_only=False), float), np.float64)
 
 
 def test_types_std() -> None:
@@ -1152,20 +1156,8 @@ def test_types_groupby_transform() -> None:
         pd.Series,
         float,
     )
-    check(
-        assert_type(
-            s.groupby(lambda x: x).transform("mean"),
-            "pd.Series",
-        ),
-        pd.Series,
-    )
-    check(
-        assert_type(
-            s.groupby(lambda x: x).transform("first"),
-            "pd.Series",
-        ),
-        pd.Series,
-    )
+    check(assert_type(s.groupby(lambda x: x).transform("mean"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(lambda x: x).transform("first"), pd.Series), pd.Series)
 
 
 def test_types_groupby_aggregate() -> None:
@@ -1442,8 +1434,7 @@ def test_types_values() -> None:
         assert_type(
             pd.Series(list("aabc")).values, np_1darray | ExtensionArray | pd.Categorical
         ),
-        # TODO: BaseStringArray after pandas-dev/pandas-stubs#1469
-        np_1darray if PD_LTE_23 else ExtensionArray,
+        np_1darray if PD_LTE_23 else BaseStringArray,
         str,
     )
     check(
@@ -1790,7 +1781,7 @@ def test_categorical_codes() -> None:
 
     # GH1383
     sr = pd.Series([1], dtype="category")
-    check(assert_type(sr, "pd.Series[CategoricalDtype]"), pd.Series, np.integer)
+    check(assert_type(sr, "pd.Series[pd.CategoricalDtype]"), pd.Series, np.integer)
 
 
 def test_relops() -> None:
@@ -2185,710 +2176,6 @@ def test_change_to_dict_return_type() -> None:
     check(assert_type(fd, dict[Hashable, Any]), dict)
 
 
-ASTYPE_BOOL_ARGS: list[tuple[BooleanDtypeArg, type]] = [
-    # python boolean
-    (bool, np.bool_),
-    ("bool", np.bool_),
-    # pandas boolean
-    (pd.BooleanDtype(), np.bool_),
-    ("boolean", np.bool_),
-    # numpy boolean type
-    (np.bool_, np.bool_),
-    ("bool_", np.bool_),
-    ("?", np.bool_),
-    ("b1", np.bool_),
-    # pyarrow boolean type
-    ("bool[pyarrow]", bool),
-    ("boolean[pyarrow]", bool),
-]
-
-ASTYPE_INT_ARGS: list[tuple[IntDtypeArg, type]] = [
-    # python int
-    (int, np.integer),
-    ("int", np.integer),
-    # pandas Int8
-    (pd.Int8Dtype(), np.int8),
-    ("Int8", np.int8),
-    # pandas Int16
-    (pd.Int16Dtype(), np.int16),
-    ("Int16", np.int16),
-    # pandas Int32
-    (pd.Int32Dtype(), np.int32),
-    ("Int32", np.int32),
-    # pandas Int64
-    (pd.Int64Dtype(), np.int64),
-    ("Int64", np.int64),
-    # numpy int8
-    (np.byte, np.byte),
-    ("byte", np.byte),
-    ("b", np.byte),
-    ("int8", np.int8),
-    ("i1", np.int8),
-    # numpy int16
-    (np.short, np.short),
-    ("short", np.short),
-    ("h", np.short),
-    ("int16", np.int16),
-    ("i2", np.int16),
-    # numpy int32
-    (np.intc, np.intc),
-    ("intc", np.intc),
-    ("i", np.intc),
-    ("int32", np.int32),
-    ("i4", np.int32),
-    # numpy int64
-    (np.int_, np.int_),
-    ("int_", np.int_),
-    ("int64", np.int64),
-    ("i8", np.int64),
-    # numpy extended int
-    (np.longlong, np.longlong),
-    ("longlong", np.longlong),
-    ("q", np.longlong),
-    # numpy signed pointer  (platform dependent one of int[8,16,32,64])
-    (np.intp, np.intp),
-    ("intp", np.intp),
-    ("p", np.intp),
-    # pyarrow integer types
-    ("int8[pyarrow]", int),
-    ("int16[pyarrow]", int),
-    ("int32[pyarrow]", int),
-    ("int64[pyarrow]", int),
-]
-
-ASTYPE_UINT_ARGS: list[tuple[UIntDtypeArg, type]] = [
-    # pandas UInt8
-    (pd.UInt8Dtype(), np.uint8),
-    ("UInt8", np.uint8),
-    # pandas UInt16
-    (pd.UInt16Dtype(), np.uint16),
-    ("UInt16", np.uint16),
-    # pandas UInt32
-    (pd.UInt32Dtype(), np.uint32),
-    ("UInt32", np.uint32),
-    # pandas UInt64
-    (pd.UInt64Dtype(), np.uint64),
-    ("UInt64", np.uint64),
-    # numpy uint8
-    (np.ubyte, np.ubyte),
-    ("ubyte", np.ubyte),
-    ("B", np.ubyte),
-    ("uint8", np.uint8),
-    ("u1", np.uint8),
-    # numpy uint16
-    (np.ushort, np.ushort),
-    ("ushort", np.ushort),
-    ("H", np.ushort),
-    ("uint16", np.uint16),
-    ("u2", np.uint16),
-    # numpy uint32
-    (np.uintc, np.uintc),
-    ("uintc", np.uintc),
-    ("I", np.uintc),
-    ("uint32", np.uint32),
-    ("u4", np.uint32),
-    # numpy uint64
-    (np.uint, np.uint),
-    ("uint", np.uint),
-    ("uint64", np.uint64),
-    ("u8", np.uint64),
-    # numpy extended uint
-    (np.ulonglong, np.ulonglong),
-    ("ulonglong", np.ulonglong),
-    ("Q", np.ulonglong),
-    # numpy unsigned pointer  (platform dependent one of uint[8,16,32,64])
-    (np.uintp, np.uintp),
-    ("uintp", np.uintp),
-    ("P", np.uintp),
-    # pyarrow unsigned integer types
-    ("uint8[pyarrow]", int),
-    ("uint16[pyarrow]", int),
-    ("uint32[pyarrow]", int),
-    ("uint64[pyarrow]", int),
-]
-
-
-ASTYPE_COMPLEX_ARGS: list[
-    tuple[ComplexDtypeArg | PandasAstypeComplexDtypeArg, type]
-] = [
-    # python complex
-    (complex, np.complexfloating),
-    ("complex", np.complexfloating),
-    # numpy complex64
-    (np.csingle, np.csingle),
-    ("csingle", np.csingle),
-    ("F", np.csingle),
-    ("complex64", np.complex64),
-    ("c8", np.complex64),
-    # numpy complex128
-    (np.cdouble, np.cdouble),
-    ("cdouble", np.cdouble),
-    ("D", np.cdouble),
-    ("complex128", np.complex128),
-    ("c16", np.complex128),
-    # numpy complex256
-    (np.clongdouble, np.clongdouble),
-    ("clongdouble", np.clongdouble),
-    ("G", np.clongdouble),
-    ("c32", np.clongdouble),
-    # ("complex192", np.clongdouble),  # NOTE: unsupported
-    ("complex256", np.clongdouble),  # NOTE: UNIX ONLY
-]
-
-
-ASTYPE_TIMESTAMP_ARGS: list[
-    tuple[TimestampDtypeArg | PandasAstypeTimestampDtypeArg, type]
-] = [
-    # numpy datetime64
-    ("datetime64[Y]", datetime.datetime),
-    ("datetime64[M]", datetime.datetime),
-    ("datetime64[W]", datetime.datetime),
-    ("datetime64[D]", datetime.datetime),
-    ("datetime64[h]", datetime.datetime),
-    ("datetime64[m]", datetime.datetime),
-    ("datetime64[s]", datetime.datetime),
-    ("datetime64[ms]", datetime.datetime),
-    ("datetime64[us]", datetime.datetime),
-    ("datetime64[μs]", datetime.datetime),
-    ("datetime64[ns]", datetime.datetime),
-    ("datetime64[ps]", datetime.datetime),
-    ("datetime64[fs]", datetime.datetime),
-    ("datetime64[as]", datetime.datetime),
-    # numpy datetime64 type codes
-    ("M8[Y]", datetime.datetime),
-    ("M8[M]", datetime.datetime),
-    ("M8[W]", datetime.datetime),
-    ("M8[D]", datetime.datetime),
-    ("M8[h]", datetime.datetime),
-    ("M8[m]", datetime.datetime),
-    ("M8[s]", datetime.datetime),
-    ("M8[ms]", datetime.datetime),
-    ("M8[us]", datetime.datetime),
-    ("M8[μs]", datetime.datetime),
-    ("M8[ns]", datetime.datetime),
-    ("M8[ps]", datetime.datetime),
-    ("M8[fs]", datetime.datetime),
-    ("M8[as]", datetime.datetime),
-    # little endian
-    ("<M8[Y]", datetime.datetime),
-    ("<M8[M]", datetime.datetime),
-    ("<M8[W]", datetime.datetime),
-    ("<M8[D]", datetime.datetime),
-    ("<M8[h]", datetime.datetime),
-    ("<M8[m]", datetime.datetime),
-    ("<M8[s]", datetime.datetime),
-    ("<M8[ms]", datetime.datetime),
-    ("<M8[us]", datetime.datetime),
-    ("<M8[μs]", datetime.datetime),
-    ("<M8[ns]", datetime.datetime),
-    ("<M8[ps]", datetime.datetime),
-    ("<M8[fs]", datetime.datetime),
-    ("<M8[as]", datetime.datetime),
-    # pyarrow timestamp
-    ("timestamp[s][pyarrow]", datetime.datetime),
-    ("timestamp[ms][pyarrow]", datetime.datetime),
-    ("timestamp[us][pyarrow]", datetime.datetime),
-    ("timestamp[ns][pyarrow]", datetime.datetime),
-    # pyarrow date
-    ("date32[pyarrow]", datetime.date),
-    ("date64[pyarrow]", datetime.date),
-]
-
-
-ASTYPE_TIMEDELTA_ARGS: list[
-    tuple[TimedeltaDtypeArg | PandasAstypeTimedeltaDtypeArg, type]
-] = [
-    # numpy timedelta64
-    ("timedelta64[Y]", datetime.timedelta),
-    ("timedelta64[M]", datetime.timedelta),
-    ("timedelta64[W]", datetime.timedelta),
-    ("timedelta64[D]", datetime.timedelta),
-    ("timedelta64[h]", datetime.timedelta),
-    ("timedelta64[m]", datetime.timedelta),
-    ("timedelta64[s]", datetime.timedelta),
-    ("timedelta64[ms]", datetime.timedelta),
-    ("timedelta64[us]", datetime.timedelta),
-    ("timedelta64[μs]", datetime.timedelta),
-    ("timedelta64[ns]", datetime.timedelta),
-    ("timedelta64[ps]", datetime.timedelta),
-    ("timedelta64[fs]", datetime.timedelta),
-    ("timedelta64[as]", datetime.timedelta),
-    # numpy timedelta64 type codes
-    ("m8[Y]", datetime.timedelta),
-    ("m8[M]", datetime.timedelta),
-    ("m8[W]", datetime.timedelta),
-    ("m8[D]", datetime.timedelta),
-    ("m8[h]", datetime.timedelta),
-    ("m8[m]", datetime.timedelta),
-    ("m8[s]", datetime.timedelta),
-    ("m8[ms]", datetime.timedelta),
-    ("m8[us]", datetime.timedelta),
-    ("m8[μs]", datetime.timedelta),
-    ("m8[ns]", datetime.timedelta),
-    ("m8[ps]", datetime.timedelta),
-    ("m8[fs]", datetime.timedelta),
-    ("m8[as]", datetime.timedelta),
-    # little endian
-    ("<m8[Y]", datetime.timedelta),
-    ("<m8[M]", datetime.timedelta),
-    ("<m8[W]", datetime.timedelta),
-    ("<m8[D]", datetime.timedelta),
-    ("<m8[h]", datetime.timedelta),
-    ("<m8[m]", datetime.timedelta),
-    ("<m8[s]", datetime.timedelta),
-    ("<m8[ms]", datetime.timedelta),
-    ("<m8[us]", datetime.timedelta),
-    ("<m8[μs]", datetime.timedelta),
-    ("<m8[ns]", datetime.timedelta),
-    ("<m8[ps]", datetime.timedelta),
-    ("<m8[fs]", datetime.timedelta),
-    ("<m8[as]", datetime.timedelta),
-    # pyarrow duration
-    ("duration[s][pyarrow]", datetime.timedelta),
-    ("duration[ms][pyarrow]", datetime.timedelta),
-    ("duration[us][pyarrow]", datetime.timedelta),
-    ("duration[ns][pyarrow]", datetime.timedelta),
-]
-
-
-ASTYPE_STRING_ARGS: list[tuple[StrDtypeArg, type]] = [
-    # python string
-    (str, str),
-    ("str", str),
-    # pandas string
-    (pd.StringDtype(), str),
-    ("string", str),
-    # numpy string
-    (np.str_, str),
-    ("str_", str),
-    ("unicode", str),
-    ("U", str),
-    # pyarrow string
-    ("string[pyarrow]", str),
-]
-
-ASTYPE_BYTES_ARGS: list[tuple[BytesDtypeArg, type]] = [
-    # python bytes
-    (bytes, bytes),
-    ("bytes", bytes),
-    # numpy bytes
-    (np.bytes_, np.bytes_),
-    ("bytes_", np.bytes_),
-    ("S", np.bytes_),
-    # pyarrow bytes
-    ("binary[pyarrow]", bytes),
-]
-
-ASTYPE_CATEGORICAL_ARGS: list[tuple[CategoryDtypeArg, type]] = [
-    # pandas category
-    (pd.CategoricalDtype(), object),
-    ("category", object),
-    # pyarrow dictionary
-    # ("dictionary[pyarrow]", "pd.Series[category]", Categorical),
-]
-
-
-ASTYPE_OBJECT_ARGS: list[tuple[ObjectDtypeArg, type]] = [
-    # python object
-    (object, object),
-    # numpy object
-    (np.object_, object),
-    ("object", object),
-    # "object_"  # NOTE: not assigned
-    ("O", object),
-]
-
-ASTYPE_VOID_ARGS: list[tuple[VoidDtypeArg, type]] = [
-    # numpy void
-    (np.void, np.void),
-    ("void", np.void),
-    ("V", np.void),
-]
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_BOOL_ARGS, ids=repr)
-def test_astype_bool(cast_arg: BooleanDtypeArg, target_type: type) -> None:
-    s = pd.Series([0, 1])
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # python boolean
-        assert_type(s.astype(bool), "pd.Series[bool]")
-        assert_type(s.astype("bool"), "pd.Series[bool]")
-        # pandas boolean
-        assert_type(s.astype(pd.BooleanDtype()), "pd.Series[bool]")
-        assert_type(s.astype("boolean"), "pd.Series[bool]")
-        # numpy boolean type
-        assert_type(s.astype(np.bool_), "pd.Series[bool]")
-        assert_type(s.astype("bool_"), "pd.Series[bool]")
-        assert_type(s.astype("?"), "pd.Series[bool]")
-        # pyarrow boolean type
-        assert_type(s.astype("bool[pyarrow]"), "pd.Series[bool]")
-        assert_type(s.astype("boolean[pyarrow]"), "pd.Series[bool]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_INT_ARGS, ids=repr)
-def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
-    s = pd.Series([1, 2, 3])
-
-    s_astype = s.astype(cast_arg)
-    if (LINUX or MAC) and cast_arg in {np.longlong, "longlong", "q"}:
-        # TODO: pandas-dev/pandas#54252 longlong is bugged on Linux and Mac
-        msg = rf"Expected type '{target_type}' but got '{type(s_astype.iloc[0])}'"
-        with pytest.raises(RuntimeError, match=msg):
-            check(s_astype, pd.Series, target_type)
-    else:
-        check(s_astype, pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # python int
-        assert_type(s.astype(int), "pd.Series[int]")
-        assert_type(s.astype("int"), "pd.Series[int]")
-        # pandas Int8
-        assert_type(s.astype(pd.Int8Dtype()), "pd.Series[int]")
-        assert_type(s.astype("Int8"), "pd.Series[int]")
-        # pandas Int16
-        assert_type(s.astype(pd.Int16Dtype()), "pd.Series[int]")
-        assert_type(s.astype("Int16"), "pd.Series[int]")
-        # pandas Int32
-        assert_type(s.astype(pd.Int32Dtype()), "pd.Series[int]")
-        assert_type(s.astype("Int32"), "pd.Series[int]")
-        # pandas Int64
-        assert_type(s.astype(pd.Int64Dtype()), "pd.Series[int]")
-        assert_type(s.astype("Int64"), "pd.Series[int]")
-        # numpy int8
-        assert_type(s.astype(np.byte), "pd.Series[int]")
-        assert_type(s.astype("byte"), "pd.Series[int]")
-        assert_type(s.astype("int8"), "pd.Series[int]")
-        assert_type(s.astype("b"), "pd.Series[int]")
-        assert_type(s.astype("i1"), "pd.Series[int]")
-        # numpy int16
-        assert_type(s.astype(np.short), "pd.Series[int]")
-        assert_type(s.astype("short"), "pd.Series[int]")
-        assert_type(s.astype("int16"), "pd.Series[int]")
-        assert_type(s.astype("h"), "pd.Series[int]")
-        assert_type(s.astype("i2"), "pd.Series[int]")
-        # numpy int32
-        assert_type(s.astype(np.intc), "pd.Series[int]")
-        assert_type(s.astype("intc"), "pd.Series[int]")
-        assert_type(s.astype("int32"), "pd.Series[int]")
-        assert_type(s.astype("i"), "pd.Series[int]")
-        assert_type(s.astype("i4"), "pd.Series[int]")
-        # numpy int64
-        assert_type(s.astype(np.int_), "pd.Series[int]")
-        assert_type(s.astype("int_"), "pd.Series[int]")
-        assert_type(s.astype("int64"), "pd.Series[int]")
-        assert_type(s.astype("long"), "pd.Series[int]")
-        assert_type(s.astype("l"), "pd.Series[int]")
-        assert_type(s.astype("i8"), "pd.Series[int]")
-        # numpy signed pointer
-        assert_type(s.astype(np.intp), "pd.Series[int]")
-        assert_type(s.astype("intp"), "pd.Series[int]")
-        assert_type(s.astype("p"), "pd.Series[int]")
-        # pyarrow integer types
-        assert_type(s.astype("int8[pyarrow]"), "pd.Series[int]")
-        assert_type(s.astype("int16[pyarrow]"), "pd.Series[int]")
-        assert_type(s.astype("int32[pyarrow]"), "pd.Series[int]")
-        assert_type(s.astype("int64[pyarrow]"), "pd.Series[int]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_UINT_ARGS, ids=repr)
-def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
-    s = pd.Series([1, 2, 3])
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # pandas UInt8
-        assert_type(s.astype(pd.UInt8Dtype()), "pd.Series[int]")
-        assert_type(s.astype("UInt8"), "pd.Series[int]")
-        # pandas UInt16
-        assert_type(s.astype(pd.UInt16Dtype()), "pd.Series[int]")
-        assert_type(s.astype("UInt16"), "pd.Series[int]")
-        # pandas UInt32
-        assert_type(s.astype(pd.UInt32Dtype()), "pd.Series[int]")
-        assert_type(s.astype("UInt32"), "pd.Series[int]")
-        # pandas UInt64
-        assert_type(s.astype(pd.UInt64Dtype()), "pd.Series[int]")
-        assert_type(s.astype("UInt64"), "pd.Series[int]")
-        # numpy uint8
-        assert_type(s.astype(np.ubyte), "pd.Series[int]")
-        assert_type(s.astype("ubyte"), "pd.Series[int]")
-        assert_type(s.astype("uint8"), "pd.Series[int]")
-        assert_type(s.astype("B"), "pd.Series[int]")
-        assert_type(s.astype("u1"), "pd.Series[int]")
-        # numpy uint16
-        assert_type(s.astype(np.ushort), "pd.Series[int]")
-        assert_type(s.astype("ushort"), "pd.Series[int]")
-        assert_type(s.astype("uint16"), "pd.Series[int]")
-        assert_type(s.astype("H"), "pd.Series[int]")
-        assert_type(s.astype("u2"), "pd.Series[int]")
-        # numpy uint32
-        assert_type(s.astype(np.uintc), "pd.Series[int]")
-        assert_type(s.astype("uintc"), "pd.Series[int]")
-        assert_type(s.astype("uint32"), "pd.Series[int]")
-        assert_type(s.astype("I"), "pd.Series[int]")
-        assert_type(s.astype("u4"), "pd.Series[int]")
-        # numpy uint64
-        assert_type(s.astype(np.uint), "pd.Series[int]")
-        assert_type(s.astype("uint"), "pd.Series[int]")
-        assert_type(s.astype("uint64"), "pd.Series[int]")
-        assert_type(s.astype("ulong"), "pd.Series[int]")
-        assert_type(s.astype("L"), "pd.Series[int]")
-        assert_type(s.astype("u8"), "pd.Series[int]")
-        # numpy unsigned pointer
-        assert_type(s.astype(np.uintp), "pd.Series[int]")
-        assert_type(s.astype("uintp"), "pd.Series[int]")
-        assert_type(s.astype("P"), "pd.Series[int]")
-        # pyarrow unsigned integer types
-        assert_type(s.astype("uint8[pyarrow]"), "pd.Series[int]")
-        assert_type(s.astype("uint16[pyarrow]"), "pd.Series[int]")
-        assert_type(s.astype("uint32[pyarrow]"), "pd.Series[int]")
-        assert_type(s.astype("uint64[pyarrow]"), "pd.Series[int]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_COMPLEX_ARGS, ids=repr)
-def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
-    s = pd.Series([1, 2, 3])
-
-    if platform.system() == "Windows" and cast_arg in ("c32", "complex256"):
-        with pytest.raises(TypeError):
-            s.astype(cast_arg)
-        pytest.skip("Windows does not support complex256")
-
-    if (
-        platform.system() == "Darwin"
-        and platform.processor() == "arm"
-        and cast_arg in ("c32", "complex256")
-    ):
-        with pytest.raises(TypeError):
-            s.astype(cast_arg)
-        pytest.skip("MacOS arm does not support complex256")
-
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        assert_type(s.astype(complex), "pd.Series[complex]")
-        assert_type(s.astype("complex"), "pd.Series[complex]")
-        # numpy complex64
-        assert_type(s.astype(np.csingle), "pd.Series[complex]")
-        assert_type(s.astype("csingle"), "pd.Series[complex]")
-        assert_type(s.astype("complex64"), "pd.Series[complex]")
-        assert_type(s.astype("F"), "pd.Series[complex]")
-        assert_type(s.astype("c8"), "pd.Series[complex]")
-        # numpy complex128
-        assert_type(s.astype(np.cdouble), "pd.Series[complex]")
-        assert_type(s.astype("cdouble"), "pd.Series[complex]")
-        assert_type(s.astype("complex128"), "pd.Series[complex]")
-        assert_type(s.astype("D"), "pd.Series[complex]")
-        assert_type(s.astype("c16"), "pd.Series[complex]")
-        # numpy complex256
-        assert_type(s.astype(np.clongdouble), "pd.Series[complex]")
-        assert_type(s.astype("clongdouble"), "pd.Series[complex]")
-        assert_type(s.astype("complex256"), "pd.Series[complex]")
-        assert_type(s.astype("G"), "pd.Series[complex]")
-        assert_type(s.astype("c32"), "pd.Series[complex]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_TIMESTAMP_ARGS, ids=repr)
-def test_astype_timestamp(cast_arg: TimestampDtypeArg, target_type: type) -> None:
-    s = pd.Series([1, 2, 3])
-
-    if cast_arg in ("date32[pyarrow]", "date64[pyarrow]"):
-        x = pd.Series(pd.date_range("2000-01-01", "2000-02-01"))
-        check(x.astype(cast_arg), pd.Series, target_type)
-    else:
-        check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # numpy datetime64
-        assert_type(s.astype("datetime64[Y]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[M]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[W]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[D]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[h]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[m]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[s]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[ms]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[us]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[μs]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[ns]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[ps]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[fs]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("datetime64[as]"), "pd.Series[pd.Timestamp]")
-        # numpy datetime64 type codes
-        assert_type(s.astype("M8[Y]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[M]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[W]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[D]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[h]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[m]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[s]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[ms]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[us]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[μs]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[ns]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[ps]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[fs]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("M8[as]"), "pd.Series[pd.Timestamp]")
-        # numpy datetime64 type codes
-        assert_type(s.astype("<M8[Y]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[M]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[W]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[D]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[h]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[m]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[s]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[ms]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[us]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[μs]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[ns]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[ps]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[fs]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("<M8[as]"), "pd.Series[pd.Timestamp]")
-        # pyarrow timestamp
-        assert_type(s.astype("timestamp[s][pyarrow]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("timestamp[ms][pyarrow]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("timestamp[us][pyarrow]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("timestamp[ns][pyarrow]"), "pd.Series[pd.Timestamp]")
-        # pyarrow date
-        assert_type(s.astype("date32[pyarrow]"), "pd.Series[pd.Timestamp]")
-        assert_type(s.astype("date64[pyarrow]"), "pd.Series[pd.Timestamp]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_TIMEDELTA_ARGS, ids=repr)
-def test_astype_timedelta(cast_arg: TimedeltaDtypeArg, target_type: type) -> None:
-    s = pd.Series([1, 2, 3])
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        assert_type(s.astype("timedelta64[Y]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[M]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[W]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[D]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[h]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[m]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[s]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[ms]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[us]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[μs]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[ns]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[ps]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[fs]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("timedelta64[as]"), "pd.Series[pd.Timedelta]")
-        # numpy timedelta64 type codes
-        assert_type(s.astype("m8[Y]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[M]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[W]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[D]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[h]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[m]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[s]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[ms]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[us]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[μs]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[ns]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[ps]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[fs]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("m8[as]"), "pd.Series[pd.Timedelta]")
-        # numpy timedelta64 type codes
-        assert_type(s.astype("<m8[Y]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[M]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[W]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[D]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[h]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[m]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[s]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[ms]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[us]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[μs]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[ns]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[ps]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[fs]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("<m8[as]"), "pd.Series[pd.Timedelta]")
-        # pyarrow duration
-        assert_type(s.astype("duration[s][pyarrow]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("duration[ms][pyarrow]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("duration[us][pyarrow]"), "pd.Series[pd.Timedelta]")
-        assert_type(s.astype("duration[ns][pyarrow]"), "pd.Series[pd.Timedelta]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_STRING_ARGS, ids=repr)
-def test_astype_string(cast_arg: StrDtypeArg, target_type: type) -> None:
-    s = pd.Series(["a", "b"])
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # python string
-        assert_type(s.astype(str), "pd.Series[str]")
-        assert_type(s.astype("str"), "pd.Series[str]")
-        # pandas string
-        assert_type(s.astype(pd.StringDtype()), "pd.Series[str]")
-        assert_type(s.astype("string"), "pd.Series[str]")
-        # numpy string
-        assert_type(s.astype(np.str_), "pd.Series[str]")
-        assert_type(s.astype("str_"), "pd.Series[str]")
-        assert_type(s.astype("unicode"), "pd.Series[str]")
-        assert_type(s.astype("U"), "pd.Series[str]")
-        # pyarrow string
-        assert_type(s.astype("string[pyarrow]"), "pd.Series[str]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_BYTES_ARGS, ids=repr)
-def test_astype_bytes(cast_arg: BytesDtypeArg, target_type: type) -> None:
-    s = pd.Series(["a", "b"])
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # python bytes
-        assert_type(s.astype(bytes), "pd.Series[bytes]")
-        assert_type(s.astype("bytes"), "pd.Series[bytes]")
-        # numpy bytes
-        assert_type(s.astype(np.bytes_), "pd.Series[bytes]")
-        assert_type(s.astype("bytes_"), "pd.Series[bytes]")
-        assert_type(s.astype("S"), "pd.Series[bytes]")
-        # pyarrow bytes
-        assert_type(s.astype("binary[pyarrow]"), "pd.Series[bytes]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_CATEGORICAL_ARGS, ids=repr)
-def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> None:
-    s = pd.Series(["a", "b"])
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # pandas category
-        assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype]")
-        assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_OBJECT_ARGS, ids=repr)
-def test_astype_object(cast_arg: ObjectDtypeArg, target_type: type) -> None:
-    s = pd.Series([object(), 2, 3])
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # python object
-        assert_type(s.astype(object), pd.Series)
-        assert_type(s.astype("object"), pd.Series)
-        # numpy object
-        assert_type(s.astype(np.object_), pd.Series)
-        # assert_type(s.astype("object_"), pd.Series)  # NOTE: not assigned
-        # assert_type(s.astype("object0"), pd.Series)  # NOTE: not assigned
-        assert_type(s.astype("O"), pd.Series)
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_VOID_ARGS, ids=repr)
-def test_astype_void(cast_arg: VoidDtypeArg, target_type: type) -> None:
-    s = pd.Series([1, 2, 3])
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # numpy void
-        assert_type(s.astype(np.void), pd.Series)
-        assert_type(s.astype("void"), pd.Series)
-        assert_type(s.astype("V"), pd.Series)
-
-
 def test_astype_other() -> None:
     s = pd.Series([3, 4, 5])
 
@@ -2953,23 +2240,23 @@ def test_all_astype_args_tested() -> None:
         "ulong",
         "L",
     }
-    TESTED_ASTYPE_ARGS: list[tuple[Any, type]] = (
+    TESTED_ASTYPE_ARGS = (
         ASTYPE_BOOL_ARGS
-        + ASTYPE_INT_ARGS
-        + ASTYPE_UINT_ARGS
-        + list(ASTYPE_FLOAT_ARGS.items())
-        + ASTYPE_COMPLEX_ARGS
-        + ASTYPE_TIMEDELTA_ARGS
-        + ASTYPE_TIMESTAMP_ARGS
-        + ASTYPE_BYTES_ARGS
-        + ASTYPE_STRING_ARGS
-        + ASTYPE_CATEGORICAL_ARGS
-        + ASTYPE_OBJECT_ARGS
-        + ASTYPE_VOID_ARGS
+        | ASTYPE_INT_ARGS
+        | ASTYPE_UINT_ARGS
+        | ASTYPE_FLOAT_ARGS
+        | ASTYPE_COMPLEX_ARGS
+        | ASTYPE_TIMEDELTA_ARGS
+        | ASTYPE_TIMESTAMP_ARGS
+        | ASTYPE_BYTES_ARGS
+        | ASTYPE_STRING_ARGS
+        | ASTYPE_CATEGORICAL_ARGS
+        | ASTYPE_OBJECT_ARGS
+        | ASTYPE_VOID_ARGS
     )
 
     TESTED_ALIASES: set[str] = {
-        arg for arg, _ in TESTED_ASTYPE_ARGS if isinstance(arg, str)
+        arg for arg in TESTED_ASTYPE_ARGS if isinstance(arg, str)
     }
     UNTESTED_ALIASES = (
         NUMPY_ALIASES - TESTED_ALIASES - NON_NUMPY20_ALIASES
@@ -2978,7 +2265,7 @@ def test_all_astype_args_tested() -> None:
 
     NUMPY_TYPES: set[type] = set(np.sctypeDict.values())
     EXCLUDED_TYPES: set[type] = {np.str_, np.object_, np.timedelta64, np.datetime64}
-    TESTED_TYPES: set[type] = {t for _, t in TESTED_ASTYPE_ARGS}
+    TESTED_TYPES = set(TESTED_ASTYPE_ARGS.values())
     UNTESTED_TYPES = (NUMPY_TYPES - TESTED_TYPES) - EXCLUDED_TYPES
     assert not UNTESTED_TYPES, f"{UNTESTED_TYPES}"
 
@@ -2987,6 +2274,10 @@ def test_check_xs() -> None:
     s4 = pd.Series([1, 4])
     s4.xs(0, axis=0)
     check(assert_type(s4, "pd.Series[int]"), pd.Series, np.integer)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s4.xs([0])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        s4.xs(0, axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_types_apply_set() -> None:
@@ -3053,7 +2344,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
 
 
 def test_interpolate() -> None:
@@ -3246,11 +2537,7 @@ def test_pipe() -> None:
     check(
         assert_type(
             ser.pipe(
-                first_arg_series,
-                1,
-                [1.0, 2.0],
-                argument_2="hi",
-                keyword_only=(1, 2),
+                first_arg_series, 1, [1.0, 2.0], argument_2="hi", keyword_only=(1, 2)
             ),
             pd.Series,
         ),
@@ -3311,16 +2598,7 @@ def test_pipe() -> None:
     def first_arg_not_series(argument_1: int, ser: pd.Series) -> pd.Series:
         return ser
 
-    check(
-        assert_type(
-            ser.pipe(
-                (first_arg_not_series, "ser"),
-                1,
-            ),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(ser.pipe((first_arg_not_series, "ser"), 1), pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
         ser.pipe(
@@ -3453,9 +2731,9 @@ def test_diff() -> None:
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
         pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-    def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
-        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
-        assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
+        def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
+            # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+            assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 
 
 def test_operator_constistency() -> None:
@@ -3836,3 +3114,11 @@ def test_series_index_setter() -> None:
     check(assert_type(sr.index, pd.Index), pd.Index)
     sr.index = [2, 3]
     check(assert_type(sr.index, pd.Index), pd.Index)
+
+
+def test_series_delitem() -> None:
+    """Test deleting elements in a series with __delitem__."""
+    sr = pd.Series([1, 2, 3])
+
+    check(assert_type(sr.__delitem__(0), None), type(None))
+    del sr[1]

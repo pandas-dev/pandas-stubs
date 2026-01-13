@@ -1,26 +1,40 @@
+from typing import Any
+
 from pandas import PeriodDtype
 from pandas.core.arrays.datetimelike import (
     DatelikeOps,
     DatetimeLikeArrayMixin,
 )
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.series import Series
+import pyarrow as pa
 
 from pandas._libs.tslibs import Timestamp
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
+    DtypeArg,
     NpDtype,
     PeriodFrequency,
     np_1darray,
+    np_ndarray_anyint,
 )
 
 class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
     __array_priority__: int = ...
-    def __init__(self, values, freq=..., dtype=..., copy: bool = ...) -> None: ...
+    def __init__(
+        self,
+        values: np_ndarray_anyint | PeriodArray | PeriodIndex | Series[Period],
+        dtype: PeriodDtype | None = None,
+        copy: bool = False,
+    ) -> None: ...
     @property
     def dtype(self) -> PeriodDtype: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...
-    def __arrow_array__(self, type=...): ...
+    def __arrow_array__(
+        self, type: DtypeArg | None = None
+    ) -> pa.ExtensionArray[Any]: ...
     year: int = ...
     month: int = ...
     day: int = ...

@@ -1,5 +1,4 @@
 from collections.abc import Sequence
-from typing import Any
 
 import numpy as np
 from pandas.core.arrays.integer import IntegerArray
@@ -12,23 +11,18 @@ from pandas._typing import (
     type_t,
 )
 
-from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
+from pandas.core.dtypes.dtypes import BaseMaskedDtype
 
-class BooleanDtype(ExtensionDtype):
-    @property
-    def na_value(self) -> NAType: ...
+class BooleanDtype(BaseMaskedDtype):
     @classmethod
     def construct_array_type(cls) -> type_t[BooleanArray]: ...
 
 class BooleanArray(BaseMaskedArray):
     def __init__(
-        self, values: np_ndarray_bool, mask: np_ndarray_bool, copy: bool = ...
+        self, values: np_ndarray_bool, mask: np_ndarray_bool, copy: bool = False
     ) -> None: ...
     @property
-    def dtype(self): ...
-    def __setitem__(self, key, value) -> None: ...
-    def any(self, *, skipna: bool = ..., **kwargs: Any): ...
-    def all(self, *, skipna: bool = ..., **kwargs: Any): ...
+    def dtype(self) -> BooleanDtype: ...
     def __and__(
         self,
         other: (

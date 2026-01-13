@@ -90,7 +90,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, idx: int
     ) -> int: ...
-    def where(  # type: ignore[override]
+    def where(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self,
         cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
         other: Scalar | AnyArrayLike | None = None,

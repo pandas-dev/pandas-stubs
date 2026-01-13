@@ -80,12 +80,12 @@ def test_add_py_sequence() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # Series[Timedelta] + Sequence[datetime] should work, see pandas-dev/pandas#62353
-        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
         # Series[Timedelta] + Sequence[timedelta] should work, see pandas-dev/pandas#62353
-        _a = left + d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _a = left + d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _b = d + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _b = d + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(left.add(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(assert_type(left.add(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)

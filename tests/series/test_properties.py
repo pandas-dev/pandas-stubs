@@ -1,3 +1,4 @@
+# pyright: reportMissingTypeArgument=false
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -78,8 +79,8 @@ def test_property_dt() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
-        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
+        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
+        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
 
 
 def test_property_array() -> None:

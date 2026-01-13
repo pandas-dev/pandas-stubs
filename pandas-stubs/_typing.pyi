@@ -1,3 +1,4 @@
+# ruff: noqa: PYI002
 from builtins import type as type_t
 from collections.abc import (
     Callable,
@@ -77,6 +78,7 @@ from pandas.tseries.offsets import (
 P = ParamSpec("P")
 
 HashableT = TypeVar("HashableT", bound=Hashable)
+HashableT0 = TypeVar("HashableT0", bound=Hashable, default=Any)
 HashableT1 = TypeVar("HashableT1", bound=Hashable)
 HashableT2 = TypeVar("HashableT2", bound=Hashable)
 HashableT3 = TypeVar("HashableT3", bound=Hashable)
@@ -87,7 +89,7 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 ArrayLike: TypeAlias = ExtensionArray | npt.NDArray[Any]
 AnyArrayLike: TypeAlias = ArrayLike | Index | Series
-if TYPE_CHECKING:  # noqa: PYI002
+if TYPE_CHECKING:
     AnyArrayLikeInt: TypeAlias = (
         IntegerArray | Index[int] | Series[int] | npt.NDArray[np.integer]
     )
@@ -246,32 +248,28 @@ BooleanDtypeArg: TypeAlias = (
 BuiltinIntDtypeArg: TypeAlias = type[int] | Literal["int"]
 # Pandas nullable integer types and their string aliases
 PandasIntDtypeArg: TypeAlias = (
-    pd.Int8Dtype
-    | pd.Int16Dtype
-    | pd.Int32Dtype
-    | pd.Int64Dtype
-    | Literal["Int8", "Int16", "Int32", "Int64"]
+    (pd.Int8Dtype | Literal["Int8"])  # noqa: PYI030
+    | (pd.Int16Dtype | Literal["Int16"])
+    | (pd.Int32Dtype | Literal["Int32"])
+    | (pd.Int64Dtype | Literal["Int64"])
 )
 # Numpy signed integer types and their string aliases
 NumpyIntDtypeArg: TypeAlias = (
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.byte
-    type[np.byte]  # noqa: PYI030
-    | Literal["b", "i1", "int8", "byte"]
+    (type[np.byte] | Literal["b", "i1", "int8", "byte"])  # noqa: PYI030
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.short
-    | type[np.short]
-    | Literal["h", "i2", "int16", "short"]
+    | (type[np.short] | Literal["h", "i2", "int16", "short"])
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.intc
-    | type[np.intc]
-    | Literal["i", "i4", "int32", "intc"]
+    | (type[np.intc] | Literal["i", "i4", "int32", "intc"])
+    # l and long correspond to np.long
+    | Literal["l", "long"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int_
-    | type[np.int_]
-    | Literal["l", "i8", "int64", "int_", "long"]
+    | (type[np.int_] | Literal["l", "i8", "int64", "int_", "long"])
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.longlong
-    | type[np.longlong]
-    | Literal["q", "longlong"]  # NOTE: int128 not assigned
+    | (type[np.longlong] | Literal["q", "longlong"])  # NOTE: int128 not assigned
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.intp
-    | type[np.intp]  # signed pointer (=`intptr_t`, platform dependent)
-    | Literal["p", "intp"]
+    # signed pointer (=`intptr_t`, platform dependent)
+    | (type[np.intp] | Literal["p", "intp"])
 )
 # PyArrow integer types and their string aliases
 PyArrowIntDtypeArg: TypeAlias = Literal[
@@ -282,32 +280,28 @@ IntDtypeArg: TypeAlias = (
 )
 # Pandas nullable unsigned integer types and their string aliases
 PandasUIntDtypeArg: TypeAlias = (
-    pd.UInt8Dtype
-    | pd.UInt16Dtype
-    | pd.UInt32Dtype
-    | pd.UInt64Dtype
-    | Literal["UInt8", "UInt16", "UInt32", "UInt64"]
+    (pd.UInt8Dtype | Literal["UInt8"])  # noqa: PYI030
+    | (pd.UInt16Dtype | Literal["UInt16"])
+    | (pd.UInt32Dtype | Literal["UInt32"])
+    | (pd.UInt64Dtype | Literal["UInt64"])
 )
 # Numpy unsigned integer types and their string aliases
 NumpyUIntDtypeArg: TypeAlias = (
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ubyte
-    type[np.ubyte]  # noqa: PYI030
-    | Literal["B", "u1", "uint8", "ubyte"]
+    (type[np.ubyte] | Literal["B", "u1", "uint8", "ubyte"])  # noqa: PYI030
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ushort
-    | type[np.ushort]
-    | Literal["H", "u2", "uint16", "ushort"]
+    | (type[np.ushort] | Literal["H", "u2", "uint16", "ushort"])
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uintc
-    | type[np.uintc]
-    | Literal["I", "u4", "uint32", "uintc"]
+    | (type[np.uintc] | Literal["I", "u4", "uint32", "uintc"])
+    # L and ulong correspond to np.ulong
+    | Literal["L", "ulong"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uint
-    | type[np.uint]
-    | Literal["L", "u8", "uint", "ulong", "uint64"]
+    | (type[np.uint] | Literal["L", "u8", "uint", "ulong", "uint64"])
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ulonglong
-    | type[np.ulonglong]
-    | Literal["Q", "ulonglong"]  # NOTE: uint128 not assigned
+    | (type[np.ulonglong] | Literal["Q", "ulonglong"])  # NOTE: uint128 not assigned
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uintp
-    | type[np.uintp]  # unsigned pointer (=`uintptr_t`, platform dependent)
-    | Literal["P", "uintp"]
+    # unsigned pointer (=`uintptr_t`, platform dependent)
+    | (type[np.uintp] | Literal["P", "uintp"])
 )
 # PyArrow unsigned integer types and their string aliases
 PyArrowUIntDtypeArg: TypeAlias = Literal[
@@ -320,7 +314,6 @@ BuiltinFloatDtypeArg: TypeAlias = type[float] | Literal["float"]
 PandasFloatDtypeArg: TypeAlias = (
     pd.Float32Dtype | pd.Float64Dtype | Literal["Float32", "Float64"]
 )
-PandasAstypeFloatDtypeArg: TypeAlias = Literal["float_", "longfloat"]
 # Numpy float types and their string aliases
 NumpyFloat16DtypeArg: TypeAlias = (
     # NOTE: Alias np.float16 only on Linux x86_64, use np.half instead
@@ -356,11 +349,6 @@ FloatDtypeArg: TypeAlias = (
 )
 # Builtin complex type and its string alias
 BuiltinComplexDtypeArg: TypeAlias = type[complex] | Literal["complex"]
-PandasAstypeComplexDtypeArg: TypeAlias = (
-    Literal["singlecomplex"]  # noqa: PYI030
-    | Literal["cfloat", "complex_"]
-    | Literal["c32", "complex256", "clongfloat", "longcomplex"]
-)
 # Numpy complex types and their aliases
 NumpyComplexDtypeArg: TypeAlias = (
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.csingle
@@ -372,7 +360,7 @@ NumpyComplexDtypeArg: TypeAlias = (
     #  https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.clongdouble
     # NOTE: Alias np.complex256 only on Linux x86_64, use np.clongdouble instead
     | type[np.clongdouble]
-    | Literal["G", "clongdouble"]
+    | Literal["G", "c32", "complex256", "clongdouble"]
 )
 ComplexDtypeArg: TypeAlias = BuiltinComplexDtypeArg | NumpyComplexDtypeArg
 PandasAstypeTimedeltaDtypeArg: TypeAlias = Literal[
@@ -436,15 +424,12 @@ PyArrowTimedeltaDtypeArg: TypeAlias = Literal[
 TimedeltaDtypeArg: TypeAlias = NumpyTimedeltaDtypeArg | PyArrowTimedeltaDtypeArg
 # Pandas timestamp type and its string alias
 # Not comprehensive
-PandasTimestampDtypeArg: TypeAlias = (
-    pd.DatetimeTZDtype
-    | Literal[
-        "datetime64[s, UTC]",
-        "datetime64[ms, UTC]",
-        "datetime64[us, UTC]",
-        "datetime64[ns, UTC]",
-    ]
-)
+PandasTimestampDtypeArg: TypeAlias = Literal[
+    "datetime64[s, UTC]",
+    "datetime64[ms, UTC]",
+    "datetime64[us, UTC]",
+    "datetime64[ns, UTC]",
+]
 PandasAstypeTimestampDtypeArg: TypeAlias = Literal[
     # numpy datetime64
     "datetime64[Y]",
@@ -512,14 +497,27 @@ TimestampDtypeArg: TypeAlias = (
 # Builtin str type and its string alias
 BuiltinStrDtypeArg: TypeAlias = type[str] | Literal["str"]
 # Pandas nullable string type and its string alias
-PandasStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string"]
+PandasBaseStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string"]
+if TYPE_CHECKING:
+    PandasStrDtypeArg: TypeAlias = (
+        pd.StringDtype[Literal["python"]] | Literal["string[python]"]
+    )
+    # PyArrow string type and its string alias
+    PyArrowStrDtypeArg: TypeAlias = (
+        pd.StringDtype[Literal["pyarrow"]] | Literal["string[pyarrow]"]
+    )
+else:
+    PandasStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string[python]"]
+    PyArrowStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string[pyarrow]"]
 # Numpy string type and its string alias
 # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.str_
 NumpyStrDtypeArg: TypeAlias = type[np.str_] | Literal["U", "str_", "unicode"]
-# PyArrow string type and its string alias
-PyArrowStrDtypeArg: TypeAlias = Literal["string[pyarrow]"]
 StrDtypeArg: TypeAlias = (
-    BuiltinStrDtypeArg | PandasStrDtypeArg | NumpyStrDtypeArg | PyArrowStrDtypeArg
+    BuiltinStrDtypeArg
+    | PandasBaseStrDtypeArg
+    | PandasStrDtypeArg
+    | NumpyStrDtypeArg
+    | PyArrowStrDtypeArg
 )
 # Builtin bytes type and its string alias
 BuiltinBytesDtypeArg: TypeAlias = type[bytes] | Literal["bytes"]
@@ -537,8 +535,7 @@ CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
 BuiltinObjectDtypeArg: TypeAlias = type[object] | Literal["object"]
 # Numpy object type and its string alias
 # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_
-# NOTE: "object_" not assigned
-NumpyObjectDtypeArg: TypeAlias = type[np.object_] | Literal["O"]
+NumpyObjectDtypeArg: TypeAlias = type[np.object_] | Literal["object_", "O"]
 
 ObjectDtypeArg: TypeAlias = BuiltinObjectDtypeArg | NumpyObjectDtypeArg
 
@@ -776,7 +773,7 @@ XMLParsers: TypeAlias = Literal["lxml", "etree"]
 HTMLFlavors: TypeAlias = Literal["lxml", "html5lib", "bs4"]
 
 # Interval closed type
-IntervalT = TypeVar("IntervalT", bound=Interval)
+IntervalT = TypeVar("IntervalT", bound=Interval, default=Interval)
 IntervalLeftRight: TypeAlias = Literal["left", "right"]
 IntervalClosedType: TypeAlias = IntervalLeftRight | Literal["both", "neither"]
 
@@ -874,7 +871,11 @@ ExcelWriterMergeCells: TypeAlias = bool | Literal["columns"]
 
 # read_csv: usecols
 UsecolsArgType: TypeAlias = (
-    SequenceNotStr[Hashable] | range | AnyArrayLike | Callable[[HashableT], bool] | None
+    SequenceNotStr[Hashable]
+    | range
+    | AnyArrayLike
+    | Callable[[HashableT0], bool]
+    | None
 )
 
 # maintain the sub-type of any hashable sequence
@@ -886,15 +887,15 @@ SliceType: TypeAlias = Hashable | None
 ## All types below this point are only used in pandas-stubs
 ######
 
-BuiltinDtypeArg: TypeAlias = (
+BuiltinNotStrDtypeArg: TypeAlias = (
     BuiltinBooleanDtypeArg
     | BuiltinIntDtypeArg
     | BuiltinFloatDtypeArg
     | BuiltinComplexDtypeArg
-    | BuiltinStrDtypeArg
     | BuiltinBytesDtypeArg
     | BuiltinObjectDtypeArg
 )
+BuiltinDtypeArg: TypeAlias = BuiltinNotStrDtypeArg | BuiltinStrDtypeArg
 NumpyNotTimeDtypeArg: TypeAlias = (
     NumpyBooleanDtypeArg
     | NumpyIntDtypeArg
@@ -920,18 +921,9 @@ PyArrowNotStrDtypeArg: TypeAlias = (
 StrLike: TypeAlias = str | np.str_
 
 ScalarT = TypeVar("ScalarT", bound=Scalar)
+ScalarT0 = TypeVar("ScalarT0", bound=Scalar, default=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
 np_num: TypeAlias = np.bool | np.integer | np.floating | np.complexfloating
-np_ndarray_intp: TypeAlias = npt.NDArray[np.intp]
-np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
-np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
-np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
-np_ndarray_float: TypeAlias = npt.NDArray[np.floating]
-np_ndarray_complex: TypeAlias = npt.NDArray[np.complexfloating]
-np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
-np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
-np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
-np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 # Define shape and generic type variables with defaults similar to numpy
 GenericT = TypeVar("GenericT", bound=np.generic, default=Any)
@@ -940,10 +932,24 @@ GenericT_contra = TypeVar(
     "GenericT_contra", bound=np.generic, default=Any, contravariant=True
 )
 NpNumT = TypeVar("NpNumT", bound=np_num, default=np_num)
-ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
+if sys.version_info >= (3, 11):
+    ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
+else:
+    ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[int, ...])
 # Numpy ndarray with more ergonomic typevar
 np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
-np_ndarray_num: TypeAlias = np_ndarray[ShapeT, NpNumT]
+np_ndarray_intp: TypeAlias = np_ndarray[ShapeT, np.intp]
+np_ndarray_int64: TypeAlias = np_ndarray[ShapeT, np.int64]
+np_ndarray_int: TypeAlias = np_ndarray[ShapeT, np.signedinteger]
+np_ndarray_anyint: TypeAlias = np_ndarray[ShapeT, np.integer]
+np_ndarray_float: TypeAlias = np_ndarray[ShapeT, np.floating]
+np_ndarray_complex: TypeAlias = np_ndarray[ShapeT, np.complexfloating]
+np_ndarray_bool: TypeAlias = np_ndarray[ShapeT, np.bool]
+np_ndarray_num: TypeAlias = np_ndarray[ShapeT, np_num]
+np_ndarray_str: TypeAlias = np_ndarray[ShapeT, np.str_]
+np_ndarray_dt: TypeAlias = np_ndarray[ShapeT, np.datetime64]
+np_ndarray_td: TypeAlias = np_ndarray[ShapeT, np.timedelta64]
+np_ndarray_object: TypeAlias = np_ndarray[ShapeT, np.object_]
 
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
@@ -974,7 +980,7 @@ ListLikeExceptSeriesAndStr: TypeAlias = (
 )
 ListLikeU: TypeAlias = Sequence[Any] | np_1darray | Series | Index
 ListLikeHashable: TypeAlias = (
-    MutableSequence[HashableT] | np_1darray | tuple[HashableT, ...] | range
+    MutableSequence[HashableT0] | np_1darray | tuple[HashableT0, ...] | range
 )
 
 class SupportsDType(Protocol[GenericT_co]):
@@ -984,7 +990,7 @@ class SupportsDType(Protocol[GenericT_co]):
 # Similar to npt.DTypeLike but leaves out np.dtype and None for use in overloads
 DTypeLike: TypeAlias = type[Any] | tuple[Any, Any] | list[Any] | str
 
-if TYPE_CHECKING:  # noqa: PYI002
+if TYPE_CHECKING:
     IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
     MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
@@ -1015,8 +1021,9 @@ SeriesDType: TypeAlias = (
     | datetime.datetime  # includes pd.Timestamp
     | datetime.timedelta  # includes pd.Timedelta
 )
+S0 = TypeVar("S0", bound=SeriesDType, default=Any)
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
-# Like S1, but without `default=Any`.
+# Like S0 and S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
 S2_contra = TypeVar("S2_contra", bound=SeriesDType, contravariant=True)
 S2_NDT_contra = TypeVar(
@@ -1050,15 +1057,15 @@ IndexingInt: TypeAlias = (
 )
 
 # AxesData is used for data for Index
-AxesData: TypeAlias = Mapping[S3, Any] | Axes | KeysView[S3]
+AxesData: TypeAlias = Mapping[S0, Any] | Axes | KeysView[S0]
 
 # Any plain Python or numpy function
 Function: TypeAlias = np.ufunc | Callable[..., Any]
 # Use a distinct HashableT in shared types to avoid conflicts with
 # shared HashableT and HashableT#. This one can be used if the identical
 # type is need in a function that uses GroupByObjectNonScalar
-_HashableTa = TypeVar("_HashableTa", bound=Hashable)
-if TYPE_CHECKING:  # noqa: PYI002
+_HashableTa = TypeVar("_HashableTa", bound=Hashable, default=Any)
+if TYPE_CHECKING:
     ByT = TypeVar(
         "ByT",
         bound=str
@@ -1075,7 +1082,7 @@ if TYPE_CHECKING:  # noqa: PYI002
         | Scalar
         | Period
         | Interval[int | float | Timestamp | Timedelta]
-        | tuple,
+        | tuple[Any, ...],
     )
     # Use a distinct SeriesByT when using groupby with Series of known dtype.
     # Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
@@ -1093,21 +1100,23 @@ if TYPE_CHECKING:  # noqa: PYI002
         | Period
         | Interval[int | float | Timestamp | Timedelta],
     )
-GroupByObjectNonScalar: TypeAlias = (
-    tuple[_HashableTa, ...]
-    | list[_HashableTa]
-    | Function
-    | list[Function]
-    | list[Series]
-    | np_ndarray
-    | list[np_ndarray]
-    | Mapping[Label, Any]
-    | list[Mapping[Label, Any]]
-    | list[Index]
-    | Grouper
-    | list[Grouper]
-)
-GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar | Series
+    GroupByObjectNonScalar: TypeAlias = (
+        tuple[_HashableTa, ...]
+        | list[_HashableTa]
+        | Function
+        | list[Function]
+        | list[Series]
+        | np_ndarray
+        | list[np_ndarray]
+        | Mapping[Label, Any]
+        | list[Mapping[Label, Any]]
+        | list[Index]
+        | Grouper
+        | list[Grouper]
+    )
+    GroupByObject: TypeAlias = (
+        Scalar | Index | GroupByObjectNonScalar[_HashableTa] | Series
+    )
 
 StataDateFormat: TypeAlias = Literal[
     "tc",
@@ -1130,10 +1139,10 @@ StataDateFormat: TypeAlias = Literal[
 # `DataFrame.replace` also accepts mappings of these.
 ReplaceValue: TypeAlias = (
     Scalar
-    | Pattern
+    | Pattern[str]
     | NAType
-    | Sequence[Scalar | Pattern]
-    | Mapping[HashableT, ScalarT]
+    | Sequence[Scalar | Pattern[str]]
+    | Mapping[HashableT0, ScalarT0]
     | Series
     | None
 )

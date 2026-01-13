@@ -38,7 +38,7 @@ def test_cumul_complex() -> None:
 
 
 def test_cumul_str() -> None:
-    series = pd.Series(["1", "a", "🐼"])
+    series = pd.Series(["1", "a", "pd"])
     if TYPE_CHECKING_INVALID_USAGE:
         series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 

@@ -18,13 +18,13 @@ import sqlalchemy.engine
 from sqlalchemy.orm import FromStatement
 import sqlalchemy.sql.expression
 
-from pandas._libs.lib import _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
     DtypeArg,
     DtypeBackend,
     Scalar,
     SequenceNotStr,
-    npt,
+    np_ndarray,
 )
 
 _SQLConnection: TypeAlias = str | sqlalchemy.engine.Connectable | sqlite3.Connection
@@ -33,8 +33,8 @@ _SQLStatement: TypeAlias = (
     str
     | sqlalchemy.sql.expression.Selectable
     | sqlalchemy.sql.expression.TextClause
-    | sqlalchemy.sql.Select
-    | FromStatement
+    | sqlalchemy.sql.Select[Any]
+    | FromStatement[Any]
     | sqlalchemy.sql.expression.UpdateBase
 )
 
@@ -49,7 +49,7 @@ def read_sql_table(
     columns: list[str] | None = ...,
     *,
     chunksize: int,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql_table(
@@ -61,7 +61,7 @@ def read_sql_table(
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] | None = ...,
     chunksize: None = None,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
 @overload
 def read_sql_query(
@@ -81,7 +81,7 @@ def read_sql_query(
     *,
     chunksize: int,
     dtype: DtypeArg | None = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql_query(
@@ -100,7 +100,7 @@ def read_sql_query(
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     chunksize: None = None,
     dtype: DtypeArg | None = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
 @overload
 def read_sql(
@@ -120,7 +120,7 @@ def read_sql(
     *,
     chunksize: int,
     dtype: DtypeArg | None = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql(
@@ -139,7 +139,7 @@ def read_sql(
     columns: list[str] | None = None,
     chunksize: None = None,
     dtype: DtypeArg | None = None,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
 
 class PandasSQL:
@@ -155,7 +155,7 @@ class PandasSQL:
         dtype: DtypeArg | None = None,
         method: (
             Literal["multi"]
-            | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+            | Callable[[SQLTable, Any, list[str], Iterable[Any]], int | None]
             | None
         ) = None,
         engine: str = "auto",
@@ -189,7 +189,7 @@ class SQLTable:
     def exists(self) -> bool: ...
     def sql_schema(self) -> str: ...
     def create(self) -> None: ...
-    def insert_data(self) -> tuple[list[str], list[npt.NDArray]]: ...
+    def insert_data(self) -> tuple[list[str], list[np_ndarray]]: ...
     def insert(
         self, chunksize: int | None = ..., method: str | None = ...
     ) -> int | None: ...

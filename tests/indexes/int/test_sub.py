@@ -57,7 +57,9 @@ def test_sub_numpy_array() -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rsub__` cannot override. At runtime, they return
     # `Index`es with the correct element type.
-    check(assert_type(b - left, NoReturn), pd.Index, np.integer)
+    def _10() -> None:  # pyright: ignore[reportUnusedFunction]
+        check(assert_type(b - left, NoReturn), pd.Index, np.integer)
+
     check(assert_type(i - left, np_ndarray_int64), pd.Index, np.integer)
     check(assert_type(f - left, "npt.NDArray[np.float64]"), pd.Index, np.floating)
     check(

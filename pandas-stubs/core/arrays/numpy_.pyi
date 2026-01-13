@@ -1,24 +1,8 @@
-import sys
-from typing import Any
+from pandas.core.arraylike import OpsMixin
+from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
+from typing_extensions import Self
 
-import numpy as np
-from numpy.lib.mixins import NDArrayOperatorsMixin
-from pandas.core.arrays.base import (
-    ExtensionArray,
-    ExtensionOpsMixin,
-)
+from pandas._typing import np_ndarray
 
-from pandas.core.dtypes.dtypes import ExtensionDtype
-
-class PandasDtype(ExtensionDtype):
-    if sys.version_info >= (3, 11):
-        @property
-        def numpy_dtype(self) -> np.dtype: ...
-    else:
-        @property
-        def numpy_dtype(self) -> np.dtype[Any]: ...
-
-    @property
-    def itemsize(self) -> int: ...
-
-class PandasArray(ExtensionArray, ExtensionOpsMixin, NDArrayOperatorsMixin): ...
+class NumpyExtensionArray(OpsMixin, NDArrayBackedExtensionArray):
+    def __new__(cls, values: np_ndarray | Self, copy: bool = False) -> Self: ...

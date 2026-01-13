@@ -29,18 +29,18 @@ def test_mul_py_scalar(left: "pd.Series[pd.Timedelta]") -> None:
     b, i, f, c = True, 1, 1.0, 1j
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(f * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -62,18 +62,18 @@ def test_mul_py_sequence(left: "pd.Series[pd.Timedelta]") -> None:
     b, i, f, c = [True], [2], [1.5], [1.7j]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(f * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -138,18 +138,18 @@ def test_mul_pd_index(left: "pd.Series[pd.Timedelta]") -> None:
     c = pd.Index([1.7j])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator,type-var,unused-ignore] # pyright: ignore[reportOperatorIssue] # mypy gives different errors for mypy and test_dist
+        _10 = b * left  # type: ignore[operator,type-var,unused-ignore] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # mypy gives different errors for mypy and test_dist
     check(assert_type(i * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(f * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c * left  # type: ignore[operator,type-var,unused-ignore] # pyright: ignore[reportOperatorIssue] # mypy gives different errors for mypy and test_dist
+        _13 = c * left  # type: ignore[operator,type-var,unused-ignore] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # mypy gives different errors for mypy and test_dist
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -174,18 +174,18 @@ def test_mul_pd_series(left: "pd.Series[pd.Timedelta]") -> None:
     c = pd.Series([1.7j])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(f * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

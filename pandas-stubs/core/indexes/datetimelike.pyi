@@ -51,10 +51,10 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
         *args: Any,
         **kwargs: Any,
     ) -> np.int64: ...
-    def __mul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __mul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, other: np_ndarray_complex
     ) -> Never: ...
-    def __rmul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __rmul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, other: np_ndarray_complex
     ) -> Never: ...
 

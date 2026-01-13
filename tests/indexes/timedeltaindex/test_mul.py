@@ -29,18 +29,18 @@ def test_mul_py_scalar(left: pd.TimedeltaIndex) -> None:
     b, i, f, c = True, 1, 1.0, 1j
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * i, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     check(assert_type(left * f, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i * left, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     check(assert_type(f * left, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
 
 def test_mul_py_sequence(left: pd.TimedeltaIndex) -> None:
@@ -48,18 +48,18 @@ def test_mul_py_sequence(left: pd.TimedeltaIndex) -> None:
     b, i, f, c = [True], [2], [1.5], [1.7j]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * i, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     check(assert_type(left * f, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i * left, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     check(assert_type(f * left, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
 
 def test_mul_numpy_array(left: pd.TimedeltaIndex) -> None:
@@ -100,15 +100,15 @@ def test_mul_pd_index(left: pd.TimedeltaIndex) -> None:
     c = pd.Index([1.7j])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * i, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     check(assert_type(left * f, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i * left, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     check(assert_type(f * left, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]

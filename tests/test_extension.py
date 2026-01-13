@@ -16,7 +16,7 @@ from tests.extension.decimal.array import (
 )
 
 
-def test_constructor() -> None:
+def test_init() -> None:
     arr = DecimalArray([decimal.Decimal("1.0"), decimal.Decimal("2.0")])
 
     check(assert_type(arr, DecimalArray), DecimalArray, decimal.Decimal)

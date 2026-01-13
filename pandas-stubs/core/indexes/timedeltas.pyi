@@ -26,6 +26,7 @@ from typing_extensions import (
 )
 
 from pandas._libs import Timedelta
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
@@ -59,18 +60,20 @@ class TimedeltaIndex(
 ):
     def __new__(
         cls,
-        data: Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData = ...,
-        freq: Frequency = ...,
-        closed: object = ...,
-        dtype: Literal["<m8[ns]"] = ...,
-        copy: bool = ...,
-        name: str = ...,
+        data: (
+            Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData | None
+        ),
+        freq: Frequency | NoDefaultDoNotUse = ...,
+        dtype: Literal["<m8[ns]"] | None = None,
+        copy: bool | None = None,
+        name: str | None = None,
     ) -> Self: ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __add__(self, other: Period) -> PeriodIndex: ...
+    def __add__(  # pyrefly: ignore[bad-override]
+        self, other: Period
+    ) -> PeriodIndex: ...
     @overload
     def __add__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
     @overload
@@ -78,20 +81,20 @@ class TimedeltaIndex(
         self, other: timedelta | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __radd__(self, other: Period) -> PeriodIndex: ...
+    def __radd__(  # pyrefly: ignore[bad-override]
+        self, other: Period
+    ) -> PeriodIndex: ...
     @overload
     def __radd__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
     @overload
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: timedelta | Self
     ) -> Self: ...
-    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __rsub__(
+    def __rsub__(  # pyrefly: ignore[bad-override]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload
@@ -111,7 +114,7 @@ class TimedeltaIndex(
         self, other: _NUM_FACTOR_SEQ
     ) -> Self: ...  # ty: ignore[invalid-method-override]
     @overload  # type: ignore[override]
-    def __truediv__(  # type: ignore[overload-overlap]
+    def __truediv__(  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
         self, other: Index[Never]
     ) -> Index: ...
     @overload
@@ -168,7 +171,7 @@ def timedelta_range(
     freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    unit: None | str = ...,
+    unit: None | str = None,
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
@@ -178,7 +181,7 @@ def timedelta_range(
     freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    unit: None | str = ...,
+    unit: None | str = None,
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
@@ -188,7 +191,7 @@ def timedelta_range(
     freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    unit: None | str = ...,
+    unit: None | str = None,
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
@@ -198,5 +201,5 @@ def timedelta_range(
     *,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    unit: None | str = ...,
+    unit: None | str = None,
 ) -> TimedeltaIndex: ...

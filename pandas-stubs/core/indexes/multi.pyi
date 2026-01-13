@@ -41,41 +41,41 @@ from pandas._typing import (
 class MultiIndex(Index):
     def __new__(
         cls,
-        levels: Sequence[SequenceNotStr[Hashable]] = ...,
-        codes: Sequence[Sequence[int]] = ...,
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
-        copy: bool = ...,
-        name: SequenceNotStr[Hashable] = ...,
-        verify_integrity: bool = ...,
+        levels: Sequence[SequenceNotStr[Hashable]] | None = None,
+        codes: Sequence[Sequence[int]] | None = None,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
+        copy: bool = False,
+        name: None = None,
+        verify_integrity: bool = True,
     ) -> Self: ...
     @classmethod
     def from_arrays(
         cls,
         arrays: Sequence[Axes],
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @classmethod
     def from_tuples(
         cls,
         tuples: Iterable[tuple[Hashable, ...]],
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @classmethod
     def from_product(
         cls,
         iterables: Sequence[SequenceNotStr[Hashable] | pd.Series | pd.Index | range],
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @classmethod
     def from_frame(
         cls,
         df: pd.DataFrame,
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @property  # Should be read-only
     def levels(self) -> list[Index]: ...
@@ -114,7 +114,7 @@ class MultiIndex(Index):
         verify_integrity: bool = True,
     ) -> MultiIndex: ...
     def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore # ty: ignore[invalid-method-override]
-        self, names: SequenceNotStr[Hashable] = ..., deep: bool = False
+        self, names: SequenceNotStr[Hashable] | None = None, deep: bool = False
     ) -> Self: ...
     def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     if sys.version_info >= (3, 11):
@@ -135,7 +135,7 @@ class MultiIndex(Index):
     @property
     def is_monotonic_decreasing(self) -> bool: ...
     def dropna(self, how: AnyAll = "any") -> Self: ...
-    def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override]
+    def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
     def get_level_values(self, level: str | int) -> Index: ...
     @overload  # type: ignore[override]
     def unique(  # pyrefly: ignore[bad-override]
@@ -145,7 +145,7 @@ class MultiIndex(Index):
     def unique(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, level: Level
     ) -> Index: ...
-    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self,
         index: bool = True,
         name: list[HashableT] = ...,
@@ -158,8 +158,7 @@ class MultiIndex(Index):
     @property
     def levshape(self) -> Shape: ...
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __getitem__(
+    def __getitem__(  # pyrefly: ignore[bad-override]
         self,
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
     ) -> Self: ...
@@ -173,7 +172,7 @@ class MultiIndex(Index):
     def append(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: Index | Sequence[Index]
     ) -> Index: ...
-    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override] # ty: ignore[invalid-method-override]
     def swaplevel(self, i: int = -2, j: int = -1) -> Self: ...
     def reorder_levels(self, order: Sequence[Level]) -> MultiIndex: ...
     def sortlevel(

@@ -25,12 +25,12 @@ from pandas.api.types import (
     is_list_like,
     is_scalar,
 )
-from pandas.core import arraylike
-from pandas.core.arraylike import OpsMixin
-from pandas.core.arrays import (
-    ExtensionArray,
-    ExtensionScalarOpsMixin,
+from pandas.core.arraylike import (
+    OpsMixin,
+    dispatch_reduction_ufunc,
+    dispatch_ufunc_with_out,
 )
+from pandas.core.arrays import ExtensionArray
 from pandas.core.indexers import check_array_indexer
 from pandas.core.series import Series
 from typing_extensions import Self
@@ -38,6 +38,7 @@ from typing_extensions import Self
 from pandas._typing import (
     ArrayLike,
     AstypeArg,
+    Dtype,
     ListLike,
     ScalarIndexer,
     SequenceIndexer,
@@ -91,7 +92,7 @@ class DecimalDtype(ExtensionDtype):
         return True
 
 
-class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
+class DecimalArray(OpsMixin, ExtensionArray):
     __array_priority__ = 1000
 
     def __init__(
@@ -159,33 +160,28 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         copy: bool = False,
         na_value: object = no_default,
         decimals: int | None = None,
-    ) -> np_ndarray:
-        result = np.asarray(self, dtype=dtype)
+    ) -> np_1darray:
+        result = cast(np_1darray, np.asarray(self, dtype=dtype))
         if decimals is not None:
-            result = np.asarray([round(x, decimals) for x in result])
+            result = cast(np_1darray, np.asarray([round(x, decimals) for x in result]))
         return result
 
     def __array_ufunc__(
         self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
-    ) -> arraylike.dispatch_ufunc_with_out:  # type: ignore[name-defined] # pyright: ignore[reportAttributeAccessIssue]
-        #
+    ) -> Any:
         if not all(
             isinstance(t, self._HANDLED_TYPES + (DecimalArray,)) for t in inputs
         ):
             return NotImplemented
 
         if "out" in kwargs:
-            return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-                self, ufunc, method, *inputs, **kwargs
-            )
+            return dispatch_ufunc_with_out(self, ufunc, method, *inputs, **kwargs)
 
         inputs = tuple(x._data if isinstance(x, DecimalArray) else x for x in inputs)
         result = getattr(ufunc, method)(*inputs, **kwargs)
 
         if method == "reduce":
-            result = arraylike.dispatch_reduction_ufunc(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-                self, ufunc, method, *inputs, **kwargs
-            )
+            result = dispatch_reduction_ufunc(self, ufunc, method, *inputs, **kwargs)
             if result is not NotImplemented:
                 return result
 
@@ -207,12 +203,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
-            return self._data[item]
+            return self._data[item]  # type: ignore[unreachable]
         # array, slice.
-        item = check_array_indexer(
-            self,
-            item,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        )
+        item = check_array_indexer(self, item)
         return type(self)(self._data[item])
 
     def take(
@@ -244,7 +237,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     @overload
     def astype(self, dtype: AstypeArg, copy: bool = True) -> ArrayLike: ...
 
-    def astype(self, dtype, copy=True):
+    def astype(self, dtype: Dtype, copy: bool = True):
         if is_dtype_equal(dtype, self._dtype):
             if not copy:
                 return self
@@ -291,9 +284,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         return 0
 
     def isna(self) -> np_1darray_bool:
-        if sys.version_info < (3, 11):
-            return np.array([x.is_nan() for x in self._data], bool)  # type: ignore[return-value] # pyright: ignore[reportReturnType]
-        return np.array([x.is_nan() for x in self._data], bool)
+        return cast(np_1darray_bool, np.array([x.is_nan() for x in self._data], bool))
 
     @property
     def _na_value(self) -> decimal.Decimal:
@@ -348,12 +339,17 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
         return cast(np_1darray_bool, np.asarray(res, dtype=bool))
 
-    def value_counts(self, dropna: bool = True) -> Series:
-        from pandas.core.algorithms import (  # type: ignore[attr-defined] # isort: skip
-            value_counts,  # pyright: ignore[reportAttributeAccessIssue]
-        )
+    def value_counts(self, dropna: bool = True) -> Series[int]:
+        from pandas.core.algorithms import value_counts
 
         return value_counts(self.to_numpy(), dropna=dropna)
+
+    @classmethod
+    def _add_arithmetic_ops(cls) -> None: ...
+    @classmethod
+    def _add_comparison_ops(cls) -> None: ...
+    @classmethod
+    def _add_logical_ops(cls) -> None: ...
 
 
 DecimalArray._add_arithmetic_ops()

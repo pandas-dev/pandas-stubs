@@ -36,15 +36,15 @@ def test_truediv_py_scalar(left_i: pd.Series) -> None:
     check(assert_type(left_i / f, pd.Series), pd.Series)
     check(assert_type(left_i / c, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left_i / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left_i / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b / left_i, pd.Series), pd.Series)
     check(assert_type(i / left_i, pd.Series), pd.Series)
     check(assert_type(f / left_i, pd.Series), pd.Series)
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left_i, pd.Series), pd.Series)
 
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
@@ -91,15 +91,15 @@ def test_truediv_py_sequence(left_i: pd.Series) -> None:
     check(assert_type(left_i / f, pd.Series), pd.Series)
     check(assert_type(left_i / c, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left_i / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left_i / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b / left_i, pd.Series), pd.Series)
     check(assert_type(i / left_i, pd.Series), pd.Series)
     check(assert_type(f / left_i, pd.Series), pd.Series)
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left_i, pd.Series), pd.Series)
 
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
@@ -231,7 +231,7 @@ def test_truediv_pd_index(left_i: pd.Series) -> None:
     check(assert_type(left_i / f, pd.Series), pd.Series)
     check(assert_type(left_i / c, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
         assert_type(left_i / d, Never)
 
     check(assert_type(a / left_i, pd.Series), pd.Series)
@@ -240,7 +240,7 @@ def test_truediv_pd_index(left_i: pd.Series) -> None:
     check(assert_type(f / left_i, pd.Series), pd.Series)
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left_i, pd.Series), pd.Series)
 
     check(assert_type(left_i.truediv(a), pd.Series), pd.Series)
@@ -300,7 +300,7 @@ def test_truediv_pd_series(left_i: pd.Series) -> None:
     check(assert_type(left_i / f, pd.Series), pd.Series)
     check(assert_type(left_i / c, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
         # _05 = left_i / d  # This invalid one cannot be detected by static type checking
 
     check(assert_type(a / left_i, pd.Series), pd.Series)
@@ -309,7 +309,7 @@ def test_truediv_pd_series(left_i: pd.Series) -> None:
     check(assert_type(f / left_i, pd.Series), pd.Series)
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left_i, pd.Series), pd.Series)
 
     check(assert_type(left_i.truediv(a), pd.Series), pd.Series)
@@ -387,8 +387,8 @@ def test_truediv_str_py_str(left_i: pd.Series) -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        _01 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        _00 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        _01 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
 
         left_i.truediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left_i.div(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

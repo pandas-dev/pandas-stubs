@@ -15,6 +15,7 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
+from pandas.core.groupby.base import ReductionKernelType
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -33,8 +34,23 @@ _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
 _PivotAggFunc: TypeAlias = (
     _PivotAggCallable[ScalarT]
     | np.ufunc
-    | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
+    | ReductionKernelType
+    | Literal[
+        "ohlc",
+        "quantile",
+        "bfill",
+        "cummax",
+        "cummin",
+        "cumprod",
+        "cumsum",
+        "diff",
+        "ffill",
+        "pct_change",
+        "rank",
+        "shift",
+    ]
 )
+
 _PivotAggFuncTypes: TypeAlias = (
     _PivotAggFunc[ScalarT]
     | Sequence[_PivotAggFunc[ScalarT]]
@@ -61,7 +77,7 @@ _PivotTableColumnsTypes: TypeAlias = (
 _PivotTableValuesTypes: TypeAlias = Label | Sequence[Hashable] | None
 
 _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
-_Values: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
+_CrossTabValues: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
 
 @overload
 def pivot_table(
@@ -118,9 +134,9 @@ def pivot(
 ) -> DataFrame: ...
 @overload
 def crosstab(
-    index: _Values | list[_Values],
-    columns: _Values | list[_Values],
-    values: _Values,
+    index: _CrossTabValues | list[_CrossTabValues],
+    columns: _CrossTabValues | list[_CrossTabValues],
+    values: _CrossTabValues,
     rownames: SequenceNotStr[Hashable] | None = None,
     colnames: SequenceNotStr[Hashable] | None = None,
     *,
@@ -132,8 +148,8 @@ def crosstab(
 ) -> DataFrame: ...
 @overload
 def crosstab(
-    index: _Values | list[_Values],
-    columns: _Values | list[_Values],
+    index: _CrossTabValues | list[_CrossTabValues],
+    columns: _CrossTabValues | list[_CrossTabValues],
     values: None = None,
     rownames: SequenceNotStr[Hashable] | None = None,
     colnames: SequenceNotStr[Hashable] | None = None,

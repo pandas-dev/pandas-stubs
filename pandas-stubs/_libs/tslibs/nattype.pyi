@@ -37,7 +37,7 @@ class NaTType:
     def asm8(self) -> np.datetime64: ...
     def to_datetime64(self) -> np.datetime64: ...
     def to_numpy(
-        self, dtype: NpDtype | None = ..., copy: bool = ...
+        self, dtype: NpDtype | None = None, copy: bool = False
     ) -> np.datetime64 | np.timedelta64: ...
     @property
     def is_leap_year(self) -> bool: ...
@@ -105,16 +105,16 @@ class NaTType:
     ) -> NaTType: ...
     def replace(
         self,
-        year: int | None = ...,
-        month: int | None = ...,
-        day: int | None = ...,
-        hour: int | None = ...,
-        minute: int | None = ...,
-        second: int | None = ...,
-        microsecond: int | None = ...,
-        nanosecond: int | None = ...,
-        tzinfo: _tzinfo | None = ...,
-        fold: int | None = ...,
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        microsecond: int | None = None,
+        nanosecond: int | None = None,
+        tzinfo: _tzinfo | None = None,
+        fold: int | None = None,
     ) -> NaTType: ...
     @property
     def year(self) -> float: ...

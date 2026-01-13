@@ -1,7 +1,10 @@
-from collections import abc
-from collections.abc import Mapping
+from collections.abc import (
+    Iterator,
+    Mapping,
+)
 from types import TracebackType
 from typing import (
+    Any,
     Generic,
     Literal,
     overload,
@@ -10,7 +13,7 @@ from typing import (
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
-from pandas._libs.lib import _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
     CompressionOptions,
     DtypeArg,
@@ -47,7 +50,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     engine: Literal["ujson"] = ...,
 ) -> JsonReader[Series]: ...
 @overload
@@ -72,7 +75,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     engine: Literal["pyarrow"],
 ) -> JsonReader[Series]: ...
 @overload
@@ -97,7 +100,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     engine: Literal["ujson"] = ...,
 ) -> JsonReader[DataFrame]: ...
 @overload
@@ -122,7 +125,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     engine: Literal["pyarrow"],
 ) -> JsonReader[DataFrame]: ...
 @overload
@@ -147,7 +150,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     engine: Literal["ujson"] = ...,
 ) -> Series: ...
 @overload
@@ -172,7 +175,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     engine: Literal["pyarrow"],
 ) -> Series: ...
 @overload
@@ -197,7 +200,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     engine: Literal["ujson"] = ...,
 ) -> DataFrame: ...
 @overload
@@ -222,11 +225,11 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
     engine: Literal["pyarrow"],
 ) -> DataFrame: ...
 
-class JsonReader(abc.Iterator, Generic[NDFrameT]):
+class JsonReader(Iterator[Any], Generic[NDFrameT]):
     def read(self) -> NDFrameT: ...
     def close(self) -> None: ...
     def __iter__(self) -> JsonReader[NDFrameT]: ...

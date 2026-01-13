@@ -1,3 +1,4 @@
+# pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
 from collections.abc import (
@@ -123,7 +124,7 @@ def test_types_groupby() -> None:
     # GH 284
     df.groupby(df["col1"] > 2)
     df.groupby([df["col1"] > 2, df["col2"] % 2 == 1])
-    df.groupby(lambda x: x)
+    df.groupby(lambda x: x)  # pyright: ignore[reportUnknownArgumentType]
     df.groupby([lambda x: x % 2, lambda x: x % 3])
     df.groupby(np.array([1, 0, 1]))
     df.groupby([np.array([1, 0, 0]), np.array([0, 0, 1])])
@@ -531,7 +532,7 @@ def test_groupby_apply() -> None:
     ):
         check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
-    def sum_to_list(x: pd.DataFrame) -> list:
+    def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()
 
     with pytest_warns_bounded(
