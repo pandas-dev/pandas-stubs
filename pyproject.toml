@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "2.3.3.251219"
+version = "2.3.3.260113"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -25,7 +25,7 @@ classifiers = [
   "Typing :: Stubs Only",
 ]
 packages = [{ include = "pandas-stubs" }]
-exclude = [ "pandas-stubs/__init__.py" ]
+exclude = ["pandas-stubs/__init__.py"]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/pandas-dev/pandas-stubs/issues"
@@ -41,9 +41,9 @@ mypy = ">=1.19.1"
 pandas = "2.3.3"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
-pyright = ">=1.1.407"
-ty = ">=0.0.5"
-pyrefly = ">=0.46.1"
+pyright = ">=1.1.408"
+ty = ">=0.0.11"
+pyrefly = ">=0.48.0"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.5.0"
@@ -71,7 +71,7 @@ html5lib = ">=1.1"
 python-calamine = ">=0.2.0"
 pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
 fsspec = "^2025.10.0"
-tables = { version = ">=3.10.2", python = ">=3.11,<3.14" }  # TODO: add py314 when PyTables/PyTables#1261 is resolved
+tables = { version = ">=3.10.2", python = ">=3.11,<3.14" }       # TODO: add py314 when PyTables/PyTables#1261 is resolved
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -182,35 +182,37 @@ fix = true
 extend-select = ["ALL"]
 ignore = [
   # The following rules are ignored permanently for good reasons
-  "COM",     # https://docs.astral.sh/ruff/rules/#flake8-commas-com
-  "D",       # https://docs.astral.sh/ruff/rules/#pydocstyle-d
-  "E501",    # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
-  "FBT",     # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
-  "I",       # handled by isort
-  "TRY003",  # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
+  "COM",    # https://docs.astral.sh/ruff/rules/#flake8-commas-com
+  "D",      # https://docs.astral.sh/ruff/rules/#pydocstyle-d
+  "E501",   # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
+  "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
+  "I",      # handled by isort
+  "TRY003", # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
 ]
 
 
 [tool.ruff.lint.per-file-ignores]
 "*.pyi" = [
   # The following rules are ignored permanently for good reasons
-  "A002",    # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
-  "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
-  "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
-  "N",       # https://docs.astral.sh/ruff/rules/#pep8-naming-n
-  "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
+  "A002",   # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
+  "ANN401", # https://docs.astral.sh/ruff/rules/any-type/
+  "FIX002", # https://docs.astral.sh/ruff/rules/line-contains-todo/
+  "N",      # https://docs.astral.sh/ruff/rules/#pep8-naming-n
+  "TD002",  # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
   "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
   "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
   "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
-  "ERA001", "PLR0402", "PLC0105"
+  "ERA001",
+  "PLR0402",
+  "PLC0105",
 ]
 
 "scripts/*" = [
   # The following rules are ignored permanently for good reasons
-  "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
-  "S603",    # https://docs.astral.sh/ruff/rules/subprocess-without-shell-equals-true/
+  "EM",   # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
+  "S603", # https://docs.astral.sh/ruff/rules/subprocess-without-shell-equals-true/
 ]
 "tests/*" = [
   # The following rules are ignored permanently for good reasons
@@ -225,14 +227,26 @@ ignore = [
   "S101",    # https://docs.astral.sh/ruff/rules/assert/
   "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
-  "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
-  "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
-  "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
-  "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "S311", "C901"
+  "A001",   # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
+  "PYI042", # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
+  "SLF001", # https://docs.astral.sh/ruff/rules/private-member-access/
+  "ERA",
+  "RUF",
+  "SIM",
+  "TRY",
+  "PT",
+  "NPY",
+  "N",
+  "DTZ",
+  "PLR",
+  "TC",
+  "PGH",
+  "S311",
+  "C901",
 ]
 "tests/test_io.py" = [
   # The following rules are ignored permanently for good reasons
-  "S301",    # https://docs.astral.sh/ruff/rules/suspicious-pickle-usage/
+  "S301", # https://docs.astral.sh/ruff/rules/suspicious-pickle-usage/
 ]
 
 
@@ -331,3 +345,6 @@ python-version = "3.10"
 
 [tool.ty.rules]
 possibly-unresolved-reference = "error"
+
+[tool.ty.analysis]
+respect-type-ignore-comments = false

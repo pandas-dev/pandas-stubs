@@ -99,8 +99,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def __getitem__(self, item: ScalarIndexer) -> IntervalOrNA: ...
     @overload
     def __getitem__(self, item: SequenceIndexer) -> Self: ...
-    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
-    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
     @property
     def dtype(self) -> IntervalDtype: ...
     @property
@@ -108,7 +108,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @property
     def size(self) -> int: ...
     def shift(self, periods: int = 1, fill_value: object = ...) -> IntervalArray: ...
-    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
+    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override] # ty: ignore[invalid-method-override]
         self,
         indices: TakeIndexer,
         *,

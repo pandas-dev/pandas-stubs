@@ -90,7 +90,7 @@ class TimedeltaIndex(
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: timedelta | Self
     ) -> Self: ...
-    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
