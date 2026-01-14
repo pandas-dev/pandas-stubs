@@ -14,12 +14,10 @@ import sys
 from typing import (
     Any,
     ClassVar,
-    Generic,
     Literal,
     TypeAlias,
     final,
     overload,
-    type_check_only,
 )
 
 from _typeshed import (
@@ -32,7 +30,6 @@ import numpy as np
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.base import (
-    T_INTERVAL_NP,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
     IndexComplex,
@@ -88,10 +85,7 @@ from pandas._typing import (
     DropKeep,
     Dtype,
     DtypeArg,
-    DTypeLike,
     DtypeObj,
-    GenericT,
-    GenericT_co,
     HashableT,
     IgnoreRaise,
     JoinHow,
@@ -115,7 +109,6 @@ from pandas._typing import (
     Scalar,
     SequenceNotStr,
     SliceType,
-    SupportsDType,
     TakeIndexer,
     TimedeltaDtypeArg,
     TimestampDtypeArg,
@@ -1216,38 +1209,3 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self: Index[int] | Index[float], other: Sequence[timedelta | np.timedelta64]
     ) -> Index: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
-
-@type_check_only
-class IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
-    @overload
-    def to_numpy(
-        self: IndexSubclassBase[Interval],
-        dtype: type[T_INTERVAL_NP],
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray: ...
-    @overload
-    def to_numpy(
-        self,
-        dtype: None = None,
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray[GenericT_co]: ...
-    @overload
-    def to_numpy(
-        self,
-        dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray[GenericT]: ...
-    @overload
-    def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self,
-        dtype: DTypeLike,
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray: ...

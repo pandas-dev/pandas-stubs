@@ -39,6 +39,12 @@ from pandas import (
     Timedelta,
     Timestamp,
 )
+from pandas._stubs_only import (
+    PivotAggFuncTypes,
+    PivotTableColumnsTypes,
+    PivotTableIndexTypes,
+    PivotTableValuesTypes,
+)
 from pandas.core.arraylike import OpsMixin
 from pandas.core.base import IndexOpsMixin
 from pandas.core.generic import NDFrame
@@ -56,12 +62,6 @@ from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPriva
 from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
-from pandas.core.reshape.pivot import (
-    PivotAggFuncTypes,
-    PivotTableColumnsTypes,
-    PivotTableIndexTypes,
-    PivotTableValuesTypes,
-)
 from pandas.core.series import Series
 from pandas.core.window import (
     Expanding,

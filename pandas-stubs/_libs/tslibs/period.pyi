@@ -6,7 +6,7 @@ from typing import (
     overload,
 )
 
-import numpy as np
+from pandas._stubs_only import PeriodAddSub
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
@@ -26,10 +26,6 @@ from pandas._typing import (
 )
 
 class IncompatibleFrequency(ValueError): ...
-
-PeriodAddSub: TypeAlias = (
-    Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | int | BaseOffset
-)
 
 _PeriodFreqHow: TypeAlias = Literal["S", "E", "start", "end"]
 

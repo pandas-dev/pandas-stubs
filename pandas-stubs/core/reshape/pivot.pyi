@@ -1,7 +1,6 @@
 from collections.abc import (
     Callable,
     Hashable,
-    Mapping,
     Sequence,
 )
 import datetime
@@ -14,8 +13,13 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas._stubs_only import (
+    PivotAggFuncTypes,
+    PivotTableColumnsTypes,
+    PivotTableIndexTypes,
+    PivotTableValuesTypes,
+)
 from pandas.core.frame import DataFrame
-from pandas.core.groupby.base import ReductionKernelType
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -23,38 +27,9 @@ from pandas.core.series import Series
 from pandas._typing import (
     AnyArrayLike,
     ArrayLike,
-    Label,
     Scalar,
-    ScalarT,
     SequenceNotStr,
     np_ndarray,
-)
-
-PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
-PivotAggFunc: TypeAlias = (
-    PivotAggCallable[ScalarT]
-    | np.ufunc
-    | ReductionKernelType
-    | Literal[
-        "ohlc",
-        "quantile",
-        "bfill",
-        "cummax",
-        "cummin",
-        "cumprod",
-        "cumsum",
-        "diff",
-        "ffill",
-        "pct_change",
-        "rank",
-        "shift",
-    ]
-)
-
-PivotAggFuncTypes: TypeAlias = (
-    PivotAggFunc[ScalarT]
-    | Sequence[PivotAggFunc[ScalarT]]
-    | Mapping[Any, PivotAggFunc[ScalarT]]
 )
 
 _NonIterableHashable: TypeAlias = (
@@ -69,10 +44,6 @@ _NonIterableHashable: TypeAlias = (
     | pd.Timestamp
     | pd.Timedelta
 )
-
-PivotTableIndexTypes: TypeAlias = Label | Sequence[Hashable] | Series | Grouper | None
-PivotTableColumnsTypes: TypeAlias = Label | Sequence[Hashable] | Series | Grouper | None
-PivotTableValuesTypes: TypeAlias = Label | Sequence[Hashable] | None
 
 _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 _CrossTabValues: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike

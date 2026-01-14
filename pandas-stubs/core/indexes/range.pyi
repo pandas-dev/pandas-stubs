@@ -9,12 +9,10 @@ from typing import (
 )
 
 import numpy as np
+from pandas._stubs_only import IndexSubclassBase
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.base import IndexOpsMixin
-from pandas.core.indexes.base import (
-    Index,
-    IndexSubclassBase,
-)
+from pandas.core.indexes.base import Index
 from typing_extensions import Self
 
 from pandas._typing import (
