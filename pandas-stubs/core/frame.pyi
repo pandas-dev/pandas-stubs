@@ -298,16 +298,16 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
-    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[int, int], value: ScalarOrNA
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
-    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable]
     ) -> Scalar: ...
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA
     ) -> None: ...
 
