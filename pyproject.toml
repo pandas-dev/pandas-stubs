@@ -42,7 +42,7 @@ pandas = "2.3.3"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.407"
-ty = ">=0.0.5"
+ty = "0.0.10"  # TODO ty is diverging from mypy at 0.0.11 so needs investigation
 pyrefly = ">=0.46.1"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"

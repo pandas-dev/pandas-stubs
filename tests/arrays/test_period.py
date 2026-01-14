@@ -9,7 +9,6 @@ from pandas import (
     PeriodIndex,
     Series,
 )
-import pandas.arrays as pd_arr
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.period import PeriodArray
 import pyarrow as pa
@@ -54,7 +53,7 @@ def test_constructor() -> None:
     arr = PeriodArray(idx, copy=False)
     check(assert_type(arr, PeriodArray), PeriodArray)
 
-    arr = pd_arr.PeriodArray([1, 2, 3], pd.PeriodDtype("D"))
+    arr = PeriodArray([1, 2, 3], pd.PeriodDtype("D"))
     check(assert_type(arr, PeriodArray), PeriodArray)
 
 
