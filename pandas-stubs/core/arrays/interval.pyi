@@ -5,14 +5,12 @@ from typing import (
     overload,
 )
 
+from pandas._stubs_only import OrderableT
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 import pyarrow as pa
-from typing_extensions import (
-    Self,
-    TypeVar,
-)
+from typing_extensions import Self
 
 from pandas._libs.interval import (
     Interval as Interval,
@@ -23,7 +21,6 @@ from pandas._typing import (
     DtypeArg,
     IntervalClosedType,
     NpDtype,
-    Orderables,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
@@ -37,13 +34,11 @@ from pandas.core.dtypes.dtypes import IntervalDtype
 
 IntervalOrNA: TypeAlias = Interval | float
 
-_OrderableT = TypeVar("_OrderableT", bound=Orderables, default=Any)
-
 class IntervalArray(IntervalMixin, ExtensionArray):
     can_hold_na: bool = True
     def __new__(
         cls,
-        data: Sequence[Interval[_OrderableT]] | AnyArrayLike,
+        data: Sequence[Interval[OrderableT]] | AnyArrayLike,
         closed: IntervalClosedType | None = None,
         dtype: DtypeArg | None = None,
         copy: bool = False,
@@ -53,11 +48,11 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def from_breaks(
         cls,
         breaks: (
-            Sequence[_OrderableT]
+            Sequence[OrderableT]
             | np_ndarray
             | ExtensionArray
-            | Index[_OrderableT]
-            | Series[_OrderableT]
+            | Index[OrderableT]
+            | Series[OrderableT]
         ),
         closed: str = "right",
         copy: bool = False,
@@ -67,18 +62,18 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def from_arrays(
         cls,
         left: (
-            Sequence[_OrderableT]
+            Sequence[OrderableT]
             | np_ndarray
             | ExtensionArray
-            | Index[_OrderableT]
-            | Series[_OrderableT]
+            | Index[OrderableT]
+            | Series[OrderableT]
         ),
         right: (
-            Sequence[_OrderableT]
+            Sequence[OrderableT]
             | np_ndarray
             | ExtensionArray
-            | Index[_OrderableT]
-            | Series[_OrderableT]
+            | Index[OrderableT]
+            | Series[OrderableT]
         ),
         closed: IntervalClosedType = "right",
         copy: bool = False,
@@ -87,7 +82,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @classmethod
     def from_tuples(
         cls,
-        data: Sequence[tuple[_OrderableT, _OrderableT]] | np_ndarray,
+        data: Sequence[tuple[OrderableT, OrderableT]] | np_ndarray,
         closed: IntervalClosedType = "right",
         copy: bool = False,
         dtype: DtypeArg | None = None,

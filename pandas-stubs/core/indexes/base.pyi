@@ -27,6 +27,10 @@ from _typeshed import (
     SupportsRMul,
 )
 import numpy as np
+from pandas._stubs_only import (
+    OrderableT,
+    T_contra,
+)
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.base import (
@@ -62,7 +66,6 @@ from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
     Self,
-    TypeVar,
 )
 
 from pandas._libs.interval import Interval
@@ -100,7 +103,6 @@ from pandas._typing import (
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
     NumpyTimestampDtypeArg,
-    Orderables,
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
     ReindexMethod,
@@ -134,9 +136,6 @@ FloatNotNumpy16DtypeArg: TypeAlias = (
     | NumpyFloatNot16DtypeArg
     | PyArrowFloatDtypeArg
 )
-
-_T_contra = TypeVar("_T_contra", contravariant=True)
-_OrderableT = TypeVar("_OrderableT", bound=Orderables, default=Any)
 
 class InvalidIndexError(Exception): ...
 
@@ -301,13 +300,13 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
+        data: Sequence[Interval[OrderableT]] | IndexOpsMixin[Interval[OrderableT]],
         *,
         dtype: Literal["Interval"] | None = None,
         copy: bool = False,
         name: Hashable = None,
         tupleize_cols: bool = True,
-    ) -> IntervalIndex[Interval[_OrderableT]]: ...
+    ) -> IntervalIndex[Interval[OrderableT]]: ...
     @overload
     def __new__(
         cls,
@@ -638,7 +637,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __add__(self: Index[Never], other: Period) -> PeriodIndex: ...
     @overload
     def __add__(
-        self: Supports_ProtoAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra]
     ) -> Index[S2]: ...
     @overload
     def __add__(
@@ -690,8 +689,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __radd__(self: Index[Never], other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(
-        self: Supports_ProtoRAdd[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRAdd[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __radd__(
@@ -907,7 +906,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __mul__(
-        self: Supports_ProtoMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoMul[T_contra, S2], other: T_contra | Sequence[T_contra]
     ) -> Index[S2]: ...
     @overload
     def __mul__(
@@ -973,8 +972,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __rmul__(
-        self: Supports_ProtoRMul[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRMul[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __rmul__(
@@ -1023,8 +1022,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __truediv__(self: IndexComplex, other: Index[Never]) -> Index: ...
     @overload
     def __truediv__(
-        self: Supports_ProtoTrueDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __truediv__(
@@ -1074,8 +1073,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __rtruediv__(
-        self: Supports_ProtoRTrueDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __rtruediv__(
@@ -1131,8 +1130,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __floordiv__(
-        self: Supports_ProtoFloorDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __floordiv__(
@@ -1175,8 +1174,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __rfloordiv__(
-        self: Supports_ProtoRFloorDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __rfloordiv__(

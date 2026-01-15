@@ -919,9 +919,6 @@ PyArrowNotStrDtypeArg: TypeAlias = (
 )
 
 StrLike: TypeAlias = str | np.str_
-OrderableScalars: TypeAlias = int | float
-OrderableTimes: TypeAlias = Timestamp | Timedelta
-Orderables: TypeAlias = OrderableScalars | OrderableTimes
 
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 ScalarT0 = TypeVar("ScalarT0", bound=Scalar, default=Scalar)

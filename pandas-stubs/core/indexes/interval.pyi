@@ -4,7 +4,6 @@ from collections.abc import (
 )
 import datetime as dt
 from typing import (
-    Any,
     Literal,
     TypeAlias,
     overload,
@@ -14,8 +13,12 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Index
+from pandas._stubs_only import (
+    OrderableScalarT,
+    OrderableT,
+    OrderableTimesT,
+)
 from pandas.core.indexes.extension import ExtensionIndex
-from typing_extensions import TypeVar
 
 from pandas._libs.interval import (
     Interval as Interval,
@@ -30,9 +33,6 @@ from pandas._typing import (
     IntervalT,
     Label,
     MaskType,
-    Orderables,
-    OrderableScalars,
-    OrderableTimes,
     np_1darray_bool,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -65,22 +65,18 @@ _EdgesTimedelta: TypeAlias = (
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
 
-_OrderableScalarT = TypeVar("_OrderableScalarT", bound=OrderableScalars)
-_OrderableTimesT = TypeVar("_OrderableTimesT", bound=OrderableTimes)
-_OrderableT = TypeVar("_OrderableT", bound=Orderables, default=Any)
-
 @type_check_only
 class _LengthDescriptor:
     @overload
     def __get__(
         self,
-        instance: IntervalIndex[Interval[_OrderableScalarT]],
+        instance: IntervalIndex[Interval[OrderableScalarT]],
         owner: type[IntervalIndex],
-    ) -> Index[_OrderableScalarT]: ...
+    ) -> Index[OrderableScalarT]: ...
     @overload
     def __get__(
         self,
-        instance: IntervalIndex[Interval[_OrderableTimesT]],
+        instance: IntervalIndex[Interval[OrderableTimesT]],
         owner: type[IntervalIndex],
     ) -> Index[Timedelta]: ...
 
@@ -95,9 +91,9 @@ class _MidDescriptor:
     @overload
     def __get__(
         self,
-        instance: IntervalIndex[Interval[_OrderableT]],
+        instance: IntervalIndex[Interval[OrderableT]],
         owner: type[IntervalIndex],
-    ) -> Index[_OrderableT]: ...
+    ) -> Index[OrderableT]: ...
 
 class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     closed: IntervalClosedType
@@ -257,9 +253,9 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     def is_overlapping(self) -> bool: ...
     def get_loc(self, key: Label) -> int | slice | np_1darray_bool: ...
     @property
-    def left(self: IntervalIndex[Interval[_OrderableT]]) -> Index[_OrderableT]: ...
+    def left(self: IntervalIndex[Interval[OrderableT]]) -> Index[OrderableT]: ...
     @property
-    def right(self: IntervalIndex[Interval[_OrderableT]]) -> Index[_OrderableT]: ...
+    def right(self: IntervalIndex[Interval[OrderableT]]) -> Index[OrderableT]: ...
     mid = _MidDescriptor()
     length = _LengthDescriptor()
     @overload  # type: ignore[override]
