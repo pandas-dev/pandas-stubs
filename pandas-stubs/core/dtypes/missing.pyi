@@ -54,6 +54,8 @@ def notna(obj: np_ndarray[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
 @overload
 def notna(obj: list[Any]) -> np_ndarray_bool: ...
 @overload
-def notna(obj: ScalarT0 | NaTType | NAType | None) -> TypeIs[ScalarT0]: ...
+def notna(
+    obj: ScalarT0 | NaTType | NAType | None,
+) -> TypeIs[ScalarT0]: ...  # ty: ignore[invalid-type-guard-definition]
 
 notnull = notna
