@@ -10,7 +10,10 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas.core.arrays.floating import FloatingArray
+from pandas.core.arrays.floating import (
+    FloatingArray,
+    FloatingDtype,
+)
 from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pytest
 from typing_extensions import assert_type
@@ -95,14 +98,21 @@ def test_construction_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> N
     exc = exception_on_platform(dtype)
     if exc:
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
-            assert_type(pd.array([1.0], dtype=dtype), FloatingArray)
+            assert_type(pd.array([1.0], dtype), FloatingArray)
     else:
-        check(pd.array([1.0], dtype=dtype), FloatingArray, target_dtype)
+        check(pd.array([1.0], dtype), FloatingArray, target_dtype)
 
     if TYPE_CHECKING:
         # pandas Float32
-        assert_type(pd.array([1.0], dtype=pd.Float32Dtype()), FloatingArray)
-        assert_type(pd.array([1.0], dtype="Float32"), FloatingArray)
+        assert_type(pd.array([1.0], pd.Float32Dtype()), FloatingArray)
+        assert_type(pd.array([1.0], "Float32"), FloatingArray)
         # pandas Float64
-        assert_type(pd.array([1.0], dtype=pd.Float64Dtype()), FloatingArray)
-        assert_type(pd.array([1.0], dtype="Float64"), FloatingArray)
+        assert_type(pd.array([1.0], pd.Float64Dtype()), FloatingArray)
+        assert_type(pd.array([1.0], "Float64"), FloatingArray)
+
+
+def test_dtype() -> None:
+    check(assert_type(pd.array([1.0]).dtype, FloatingDtype), pd.Float64Dtype)
+
+    check(assert_type(pd.array([1.0], "Float32").dtype, FloatingDtype), pd.Float32Dtype)
+    check(assert_type(pd.array([1.0], "Float64").dtype, FloatingDtype), pd.Float64Dtype)
