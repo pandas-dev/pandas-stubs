@@ -429,7 +429,6 @@ def test_frame_setitem_na() -> None:
     df.at["a", "y"] = None
     df.iat[0, 0] = None
 
-    # TODO: pandas-dev/pandas#63420, this is failing on latest build, should work
     df.loc[:, "x"] = [None, pd.NA, pd.NaT]
     df.iloc[:, 0] = [None, pd.NA, pd.NaT]
 

@@ -39,6 +39,7 @@ def test_construction_sequence(
 ) -> None:
     # `pd.NaT in [pd.NA, pd.NaT]` leads to an exception
     if missing_values[-1] is pd.NaT:
+        # TODO: pandas-dev/pandas-stubs#1589 clean up this and move to the right test file
         expected_type = DatetimeArray
         check(pd.array(typ(missing_values)), expected_type)
         check(pd.array(typ((np.nan, *missing_values))), expected_type)
