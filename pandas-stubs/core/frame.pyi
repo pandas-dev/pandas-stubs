@@ -57,6 +57,8 @@ from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
+
+# The classes are private in pandas implementation. We have to ignore the private usage in the stubs.
 from pandas.core.indexing import _AtIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
