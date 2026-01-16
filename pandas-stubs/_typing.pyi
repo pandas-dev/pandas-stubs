@@ -824,7 +824,9 @@ ReindexMethod: TypeAlias = FillnaOptions | Literal["nearest"]
 TimeGrouperOrigin: TypeAlias = (
     Timestamp | Literal["epoch", "start", "start_day", "end", "end_day"]
 )
-TimeAmbiguous: TypeAlias = Literal["infer", "NaT", "raise"] | npt.NDArray[np.bool_]
+TimeAmbiguous: TypeAlias = (
+    Literal["infer", "NaT", "raise"] | bool | npt.NDArray[np.bool_]
+)
 # Note this is same as TimestampNonexistent - defined both ways in pandas
 TimeNonexistent: TypeAlias = (
     Literal["shift_forward", "shift_backward", "NaT", "raise"]
