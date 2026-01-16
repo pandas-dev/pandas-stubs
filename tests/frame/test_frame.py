@@ -72,9 +72,9 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.frame import _PandasNamedTuple
+    from pandas.core.frame import PandasNamedTuple
 else:
-    _PandasNamedTuple: TypeAlias = tuple
+    PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
@@ -659,17 +659,13 @@ def test_types_iterrows() -> None:
 
 def test_types_itertuples() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(
-        assert_type(df.itertuples(), Iterator[_PandasNamedTuple]),
-        Iterator,
-        _PandasNamedTuple,
-    )
+    check(assert_type(df.itertuples(), Iterator[PandasNamedTuple]), Iterator, tuple)
     check(
         assert_type(
-            df.itertuples(index=False, name="Foobar"), Iterator[_PandasNamedTuple]
+            df.itertuples(index=False, name="Foobar"), Iterator[PandasNamedTuple]
         ),
         Iterator,
-        _PandasNamedTuple,
+        tuple,
     )
     check(
         assert_type(df.itertuples(index=False, name=None), Iterator[tuple[Any, ...]]),
@@ -678,7 +674,7 @@ def test_types_itertuples() -> None:
     )
 
     for t1 in df.itertuples():
-        assert_type(t1, _PandasNamedTuple)
+        check(assert_type(t1, PandasNamedTuple), tuple)
         assert t1.__class__.__name__ == "Pandas"
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col1, int)
@@ -687,7 +683,7 @@ def test_types_itertuples() -> None:
             assert isinstance(t1[k], int)
 
     for t1 in df.itertuples(name="FooBar"):
-        assert_type(t1, _PandasNamedTuple)
+        check(assert_type(t1, PandasNamedTuple), tuple)
         assert t1.__class__.__name__ == "FooBar"
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col1, int)
@@ -715,7 +711,7 @@ def test_frame_iterator() -> None:
 
     check(assert_type(next(df.items()), tuple[Hashable, pd.Series]), tuple)
     check(assert_type(next(df.iterrows()), tuple[Hashable, pd.Series]), tuple)
-    check(assert_type(next(df.itertuples()), _PandasNamedTuple), _PandasNamedTuple)
+    check(assert_type(next(df.itertuples()), PandasNamedTuple), tuple)
 
 
 def test_types_sum() -> None:
@@ -4144,7 +4140,7 @@ def test_itertuples() -> None:
     df = pd.DataFrame({"a": [1, 2, 3, 4], "b": [5, 6, 7, 8]})
 
     for item in df.itertuples():
-        check(assert_type(item, _PandasNamedTuple), tuple)
+        check(assert_type(item, PandasNamedTuple), tuple)
         assert_type(item.a, Scalar)
 
 

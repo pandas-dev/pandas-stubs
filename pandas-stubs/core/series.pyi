@@ -41,7 +41,6 @@ from _typeshed import (
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
-    _T_contra,
 )
 from matplotlib.axes import (
     Axes as PlotAxes,
@@ -54,6 +53,11 @@ from pandas import (
     PeriodDtype,
     Timedelta,
     Timestamp,
+)
+from pandas._stubs_only import (
+    OrderableT,
+    T_co,
+    T_contra,
 )
 from pandas.core.api import (
     Int8Dtype as Int8Dtype,
@@ -106,13 +110,13 @@ from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.indexing import (
-    _AtIndexer,
-    _iAtIndexer,
-    _iLocIndexer,
-    _IndexSliceTuple,
-    _LocIndexer,
-)
+
+# The classes are private in pandas implementation. We have to ignore the private usage in the stubs.
+from pandas.core.indexing import _AtIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.strings.accessor import StringMethods
 from pandas.core.window import (
     Expanding,
@@ -128,10 +132,7 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._libs.interval import (
-    Interval,
-    _OrderableT,
-)
+from pandas._libs.interval import Interval
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
@@ -221,7 +222,6 @@ from pandas._typing import (
     ValueKeyFunc,
     VoidDtypeArg,
     WriteBuffer,
-    _T_co,
     np_1darray,
     np_1darray_anyint,
     np_1darray_bool,
@@ -251,20 +251,20 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 from pandas.plotting import PlotAccessor
 
 @type_check_only
-class _SupportsAdd(Protocol[_T_co]):
-    def __add__(self, value: Self, /) -> _T_co: ...
+class _SupportsAdd(Protocol[T_co]):
+    def __add__(self, value: Self, /) -> T_co: ...
 
 @type_check_only
-class SupportsSelfSub(Protocol[_T_co]):
-    def __sub__(self, x: Self, /) -> _T_co: ...
+class SupportsSelfSub(Protocol[T_co]):
+    def __sub__(self, x: Self, /) -> T_co: ...
 
 @type_check_only
-class _SupportsMul(Protocol[_T_co]):
-    def __mul__(self, value: Self, /) -> _T_co: ...
+class _SupportsMul(Protocol[T_co]):
+    def __mul__(self, value: Self, /) -> T_co: ...
 
 @type_check_only
-class SupportsTruedivInt(Protocol[_T_co]):
-    def __truediv__(self, value: int, /) -> _T_co: ...
+class SupportsTruedivInt(Protocol[T_co]):
+    def __truediv__(self, value: int, /) -> T_co: ...
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -441,16 +441,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: (
-            IntervalIndex[Interval[_OrderableT]]
-            | Interval[_OrderableT]
-            | Sequence[Interval[_OrderableT]]
-            | dict[Hashable, Interval[_OrderableT]]
+            IntervalIndex[Interval[OrderableT]]
+            | Interval[OrderableT]
+            | Sequence[Interval[OrderableT]]
+            | dict[Hashable, Interval[OrderableT]]
         ),
         index: AxesData | None = None,
         dtype: Literal["Interval"] = ...,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[Interval[_OrderableT]]: ...
+    ) -> Series[Interval[OrderableT]]: ...
     @overload
     def __new__(  # pyright: ignore[reportOverlappingOverload]
         cls,
@@ -2295,8 +2295,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Never: ...
     @overload
     def __floordiv__(
-        self: Supports_ProtoFloorDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoFloorDiv[T_contra, S2], other: T_contra | Sequence[T_contra]
     ) -> Series[S2]: ...
     @overload
     def __floordiv__(
@@ -2361,8 +2360,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def floordiv(
-        self: Supports_ProtoFloorDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
@@ -2445,8 +2444,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def __rfloordiv__(
-        self: Supports_ProtoRFloorDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Series[S2]: ...
     @overload
     def __rfloordiv__(
@@ -2506,8 +2505,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def rfloordiv(
-        self: Supports_ProtoRFloorDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -2641,7 +2640,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_str]: ...
     @overload
     def __mul__(
-        self: Supports_ProtoMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoMul[T_contra, S2], other: T_contra | Sequence[T_contra]
     ) -> Series[S2]: ...
     @overload
     def __mul__(
@@ -2733,8 +2732,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_str]: ...
     @overload
     def mul(
-        self: Supports_ProtoMul[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoMul[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2857,7 +2856,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_str]: ...
     @overload
     def __rmul__(
-        self: Supports_ProtoRMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoRMul[T_contra, S2], other: T_contra | Sequence[T_contra]
     ) -> Series[S2]: ...
     @overload
     def __rmul__(
@@ -2948,8 +2947,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_str]: ...
     @overload
     def rmul(
-        self: Supports_ProtoRMul[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRMul[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -3701,8 +3700,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Never: ...
     @overload
     def __truediv__(
-        self: Supports_ProtoTrueDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Series[S2]: ...
     @overload
     def __truediv__(
@@ -3786,8 +3785,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def truediv(
-        self: Supports_ProtoTrueDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3904,8 +3903,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def __rtruediv__(
-        self: Supports_ProtoRTrueDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Series[S2]: ...
     @overload
     def __rtruediv__(
@@ -3979,8 +3978,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def rtruediv(
-        self: Supports_ProtoRTrueDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
