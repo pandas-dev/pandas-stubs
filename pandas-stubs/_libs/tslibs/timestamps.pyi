@@ -7,7 +7,7 @@ from datetime import (
     tzinfo as _tzinfo,
 )
 
-# The class is private in pandas implementation. We have to ignore the private usage in the stubs.
+# The class is private in python implementation. We have to ignore the private usage in the stubs.
 from datetime import _IsoCalendarDate  # pyright: ignore[reportPrivateUsage]
 import sys
 from time import struct_time
