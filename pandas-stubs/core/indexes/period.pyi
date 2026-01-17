@@ -5,6 +5,7 @@ from typing import overload
 import numpy as np
 import pandas as pd
 from pandas import Index
+from pandas._stubs_only import PeriodAddSub
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
 from pandas.core.indexes.datetimelike import DatetimeIndexOpsMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
@@ -14,7 +15,6 @@ from pandas._libs.tslibs import (
     NaTType,
     Period,
 )
-from pandas._libs.tslibs.period import _PeriodAddSub
 from pandas._typing import (
     AxesData,
     Dtype,
@@ -24,7 +24,7 @@ from pandas._typing import (
     np_ndarray_bool,
 )
 
-class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexFieldOps):
+class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps):
     def __new__(
         cls,
         data: AxesData | None = None,
@@ -46,7 +46,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
     @overload
     def __sub__(self, other: Self) -> Index: ...
     @overload
-    def __sub__(self, other: _PeriodAddSub) -> Self: ...
+    def __sub__(self, other: PeriodAddSub) -> Self: ...
     @overload
     def __sub__(self, other: NaTType) -> NaTType: ...
     @overload

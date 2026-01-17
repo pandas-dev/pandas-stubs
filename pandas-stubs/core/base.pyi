@@ -14,9 +14,9 @@ from typing import (
     type_check_only,
 )
 
-from _typeshed import _T_contra
 import numpy as np
 import numpy.typing as npt
+from pandas._stubs_only import T_contra
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -389,33 +389,33 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[int]: ...
 
 @type_check_only
-class Supports_ProtoAdd(Protocol[_T_contra, S2]):
-    def _proto_add(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+class Supports_ProtoAdd(Protocol[T_contra, S2]):
+    def _proto_add(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
-class Supports_ProtoRAdd(Protocol[_T_contra, S2]):
-    def _proto_radd(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+class Supports_ProtoRAdd(Protocol[T_contra, S2]):
+    def _proto_radd(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
-class Supports_ProtoMul(Protocol[_T_contra, S2]):
-    def _proto_mul(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+class Supports_ProtoMul(Protocol[T_contra, S2]):
+    def _proto_mul(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
-class Supports_ProtoRMul(Protocol[_T_contra, S2]):
-    def _proto_rmul(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+class Supports_ProtoRMul(Protocol[T_contra, S2]):
+    def _proto_rmul(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
-class Supports_ProtoTrueDiv(Protocol[_T_contra, S2]):
-    def _proto_truediv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+class Supports_ProtoTrueDiv(Protocol[T_contra, S2]):
+    def _proto_truediv(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
-class Supports_ProtoRTrueDiv(Protocol[_T_contra, S2]):
-    def _proto_rtruediv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+class Supports_ProtoRTrueDiv(Protocol[T_contra, S2]):
+    def _proto_rtruediv(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
-class Supports_ProtoFloorDiv(Protocol[_T_contra, S2]):
-    def _proto_floordiv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+class Supports_ProtoFloorDiv(Protocol[T_contra, S2]):
+    def _proto_floordiv(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
-class Supports_ProtoRFloorDiv(Protocol[_T_contra, S2]):
-    def _proto_rfloordiv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+class Supports_ProtoRFloorDiv(Protocol[T_contra, S2]):
+    def _proto_rfloordiv(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
