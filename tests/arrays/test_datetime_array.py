@@ -3,7 +3,11 @@ from collections.abc import (
     Callable,
     Sequence,
 )
-from datetime import datetime
+from datetime import (
+    date,
+    datetime,
+    time,
+)
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -13,18 +17,25 @@ from zoneinfo import ZoneInfo
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.string_ import BaseStringArray
 import pytest
 from typing_extensions import assert_type
 
 from pandas._libs.tslibs.nattype import NaTType
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
 from tests._typing import (
     NumpyTimestampDtypeArg,
     PandasTimestampDtypeArg,
+    np_1darray,
+    np_1darray_bool,
+    np_1darray_float,
+    np_1darray_int32,
+    np_1darray_object,
 )
 from tests.dtypes import (
     NUMPY_TIMESTAMP_ARGS,
@@ -223,3 +234,45 @@ def test_construction_dtype(
         pd.array([], "<M8[ps]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
         pd.array([], "<M8[fs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
         pd.array([], "<M8[as]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+
+def test_properties() -> None:
+    arr = pd.array([datetime(1748, 12, 24)])
+
+    check(
+        assert_type(arr.month_name(), np_1darray_object),
+        np_1darray_object if PD_LTE_23 else BaseStringArray,
+    )
+    check(
+        assert_type(arr.day_name(), np_1darray_object),
+        np_1darray_object if PD_LTE_23 else BaseStringArray,
+    )
+    check(assert_type(arr.time, np_1darray_object), np_1darray_object, time)
+    check(assert_type(arr.timetz, np_1darray_object), np_1darray_object, time)
+    check(assert_type(arr.date, np_1darray_object), np_1darray_object, date)
+    check(assert_type(arr.year, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.month, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.day, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.hour, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.minute, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.second, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.microsecond, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.nanosecond, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.dayofweek, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.weekday, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.dayofyear, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.quarter, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.days_in_month, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.daysinmonth, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.is_month_start, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(arr.is_month_end, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(arr.is_quarter_start, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(arr.is_quarter_end, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(arr.is_year_start, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(arr.is_year_end, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(arr.is_leap_year, np_1darray_bool), np_1darray_bool, np.bool)
+    check(
+        assert_type(arr.to_julian_date(), np_1darray_float),
+        np_1darray,
+        np.float64,
+    )
