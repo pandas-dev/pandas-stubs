@@ -75,7 +75,7 @@ def array(
 ) -> NumpyExtensionArray: ...
 @overload
 def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    data: Sequence[NAType | NaTType | None],
+    data: Sequence[NAType | None],
     dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
