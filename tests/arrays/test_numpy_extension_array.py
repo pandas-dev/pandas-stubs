@@ -16,7 +16,6 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     exception_on_platform,
@@ -40,7 +39,8 @@ def test_construction_sequence(
 ) -> None:
     # `pd.NaT in [pd.NA, pd.NaT]` leads to an exception
     if missing_values[-1] is pd.NaT:
-        expected_type = DatetimeArray if PD_LTE_23 else NumpyExtensionArray
+        # TODO: pandas-dev/pandas-stubs#1589 clean up this and move to the right test file
+        expected_type = DatetimeArray
         check(pd.array(typ(missing_values)), expected_type)
         check(pd.array(typ((np.nan, *missing_values))), expected_type)
     else:
