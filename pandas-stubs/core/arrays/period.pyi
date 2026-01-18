@@ -2,16 +2,16 @@ from collections.abc import Sequence
 from typing import Any
 
 from pandas import PeriodDtype
-from pandas.core.arrays.datetimelike import (
-    DatelikeOps,
-    DatetimeLikeArrayMixin,
-)
+from pandas.core.arrays.datetimelike import DatelikeOps
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
 import pyarrow as pa
 
-from pandas._libs.tslibs.period import Period
+from pandas._libs.tslibs.period import (
+    Period,
+    PeriodMixin,
+)
 from pandas._typing import (
     DtypeArg,
     NpDtype,
@@ -22,7 +22,7 @@ from pandas._typing import (
     np_ndarray_anyint,
 )
 
-class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
+class PeriodArray(DatelikeOps, PeriodMixin):
     __array_priority__: int = ...
     def __init__(
         self,
@@ -78,9 +78,9 @@ class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
     @property
     def is_leap_year(self) -> np_1darray_bool: ...
     @property
-    def start_time(self) -> DatetimeArray: ...
+    def start_time(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     @property
-    def end_time(self) -> DatetimeArray: ...
+    def end_time(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     def to_timestamp(
         self, freq: PeriodFrequency | None = None, how: str = ...
     ) -> DatetimeArray: ...
