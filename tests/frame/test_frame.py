@@ -1779,6 +1779,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1793,6 +1794,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1807,6 +1809,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1822,6 +1825,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1836,6 +1840,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1850,6 +1855,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1864,6 +1870,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1878,6 +1885,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1933,6 +1941,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1948,6 +1957,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1963,6 +1973,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1978,6 +1989,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -2033,6 +2045,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -2051,6 +2064,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
