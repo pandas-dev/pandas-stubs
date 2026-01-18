@@ -336,13 +336,7 @@ def test_sas_xport() -> None:
         pass
 
 
-MESSAGE_PYTABLE_314 = (
-    "PyTables does not support Python 3.14+ yet, see PyTables/PyTables#1261"
-)
-
-
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df"), None), type(None))
@@ -350,7 +344,6 @@ def test_hdf(tmp_path: Path) -> None:
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdfstore(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     store = HDFStore(path_str, model="w")
@@ -386,7 +379,6 @@ def test_hdfstore(tmp_path: Path) -> None:
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_read_hdf_iterator(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
@@ -402,7 +394,6 @@ def test_read_hdf_iterator(tmp_path: Path) -> None:
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_context_manager(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
@@ -412,7 +403,6 @@ def test_hdf_context_manager(tmp_path: Path) -> None:
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_series(tmp_path: Path) -> None:
     s = DF["a"]
     path_str = str(tmp_path / str(uuid.uuid4()))
