@@ -164,9 +164,6 @@ def array(
 ) -> StringArray: ...
 
 # TODO: pandas-dev/pandas#54466 add BuiltinStrDtypeArg after Pandas 3.0
-# Also PyArrow will become required in Pandas 3.0, so "string" will give
-# ArrowStringArray.
-# StringDtype[None] means unknown, so it will still give BaseStringArray
 @overload
 def array(
     data: _NaNStrData, dtype: PandasBaseStrDtypeArg, copy: bool = True
@@ -181,9 +178,6 @@ def array(  # pyright: ignore[reportOverlappingOverload]
     ),
     dtype: None = None,
     copy: bool = True,
-    # TODO: pandas-dev/pandas#54466
-    # PyArrow will become required in Pandas 3.0, so no dtype will give
-    # ArrowStringArray.
 ) -> BaseStringArray: ...
 @overload
 def array(
