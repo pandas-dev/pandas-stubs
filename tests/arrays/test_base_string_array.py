@@ -81,7 +81,7 @@ def test_construction_dtype(
 ) -> None:
     is_builtin_str = dtype in PYTHON_STRING_ARGS
     is_numpy_extension_array = PD_LTE_23 and is_builtin_str
-    # TODO: pandas-dev/pandas#54466 should give BaseStringArray or even ArrowStringAray after Pandas 3.0
+    # TODO: pandas-dev/pandas#54466 should give BaseStringArray after Pandas 3.0
     target_type = NumpyExtensionArray if is_numpy_extension_array else BaseStringArray
 
     dtype_notna = target_dtype if data else None
@@ -99,7 +99,7 @@ def test_construction_dtype(
     check(pd.array([*data, *data, np.nan], dtype), target_type, dtype_na)
 
     if TYPE_CHECKING:
-        # TODO: pandas-dev/pandas#54466 should give BaseStringArray or even ArrowStringAray after 3.0
+        # TODO: pandas-dev/pandas#54466 should give BaseStringArray after 3.0
         # The following one still gives NumpyExtensionArray because issubclass(str, object),
         # and pd.array([], object) gives NumpyExtensionArray
         assert_type(pd.array([], str), NumpyExtensionArray)
