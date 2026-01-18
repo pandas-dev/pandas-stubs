@@ -17,7 +17,6 @@ from typing import (
 
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
-import pyxlsb.workbook  # pyright: ignore[reportMissingTypeStubs]
 from typing_extensions import (
     Self,
     TypeVar,
@@ -39,6 +38,10 @@ from pandas._typing import (
     UsecolsArgType,
 )
 
+from pyxlsb.workbook import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
+    Workbook as PyXlsbWorkBook,  # pyright: ignore[reportUnknownVariableType]
+)
+
 from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
     Workbook as XlsxWorkbook,  # pyright: ignore[reportUnknownVariableType]
 )
@@ -56,7 +59,7 @@ def read_excel(
         | Workbook
         | Book
         | OpenDocument
-        | pyxlsb.workbook.Workbook
+        | PyXlsbWorkBook
     ),
     sheet_name: list[IntStrT],
     *,
@@ -99,7 +102,7 @@ def read_excel(
         | Workbook
         | Book
         | OpenDocument
-        | pyxlsb.workbook.Workbook
+        | PyXlsbWorkBook
     ),
     sheet_name: None,
     *,
@@ -143,7 +146,7 @@ def read_excel(  # type: ignore[overload-cannot-match]
         | Workbook
         | Book
         | OpenDocument
-        | pyxlsb.workbook.Workbook
+        | PyXlsbWorkBook
     ),
     sheet_name: list[int | str],
     *,
@@ -186,7 +189,7 @@ def read_excel(
         | Workbook
         | Book
         | OpenDocument
-        | pyxlsb.workbook.Workbook
+        | PyXlsbWorkBook
     ),
     sheet_name: int | str = ...,
     *,
@@ -301,8 +304,6 @@ class ExcelWriter(Generic[_WorkbookT]):
     def close(self) -> None: ...
 
 class ExcelFile:
-    engine = ...
-    io: FilePath | ReadBuffer[bytes] | bytes = ...
     def __init__(
         self,
         path_or_buffer: FilePath | ReadBuffer[bytes] | bytes,
@@ -368,7 +369,7 @@ class ExcelFile:
         **kwds: Any,
     ) -> DataFrame: ...
     @property
-    def book(self) -> Workbook | Book | OpenDocument | pyxlsb.workbook.Workbook: ...
+    def book(self) -> Workbook | Book | OpenDocument | PyXlsbWorkBook: ...
     @property
     def sheet_names(self) -> list[int | str]: ...
     def close(self) -> None: ...

@@ -11,8 +11,9 @@ Here are the most important options. Fore more details, please use `poe --help`.
   - Run only pytest: `poe pytest`
   - Run only pre-commit: `poe style`
 - Run tests against the installed stubs (this will install and uninstall the stubs): `poe test_dist`
+- Verify type completeness: `poe type_completeness`.
 
-These tests originally came from https://github.com/VirtusLab/pandas-stubs.
+Some of these tests originally came from https://github.com/VirtusLab/pandas-stubs.
 
 The following tests are **optional**. Some of them are run by the CI but it is okay if they fail.
 
