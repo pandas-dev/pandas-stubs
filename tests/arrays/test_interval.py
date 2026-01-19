@@ -132,12 +132,13 @@ def test_from_arrays_index() -> None:
 def test_from_arrays_index_ndarray() -> None:
     """Test from_arrays class method for IntervalArray with Sequence/ndarray."""
     left = [0, 1, 2]
-    right = np.ndarray([1, 2, 3])
-
+    right = np.array([1, 2, 3])
     arr = IntervalArray.from_arrays(left, right)
     check(assert_type(arr, IntervalArray), IntervalArray)
 
-    arr = IntervalArray.from_arrays(right, left)
+    left = np.array([0, 1, 2])
+    right = [1, 2, 3]
+    arr = IntervalArray.from_arrays(left, right)
     check(assert_type(arr, IntervalArray), IntervalArray)
 
 
