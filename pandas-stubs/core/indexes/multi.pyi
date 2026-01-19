@@ -66,7 +66,7 @@ class MultiIndex(Index):
     @classmethod
     def from_product(
         cls,
-        iterables: Sequence[SequenceNotStr[Hashable] | pd.Series | pd.Index | range],
+        iterables: Sequence[Iterable[Hashable]],
         sortorder: int | None = None,
         names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...

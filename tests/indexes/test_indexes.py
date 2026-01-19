@@ -1411,6 +1411,12 @@ def test_multiindex_range() -> None:
     check(assert_type(midx_mixed_types, pd.MultiIndex), pd.MultiIndex)
 
 
+def test_multiindex_from_product_with_sets() -> None:
+    """Test using sets in `MultiIndex.from_product` GH1637."""
+    midx = pd.MultiIndex.from_product([{1, 2, 3}, {"a", "b", "c"}])
+    check(assert_type(midx, pd.MultiIndex), pd.MultiIndex)
+
+
 def test_index_naming() -> None:
     """
     Test index names type both for the getter and the setter.
