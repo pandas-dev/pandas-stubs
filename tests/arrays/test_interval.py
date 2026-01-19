@@ -20,7 +20,7 @@ from tests._typing import (
 
 
 def test_constructor() -> None:
-    """Test __new__ method for IntervalArray."""
+    """Test constructor method for IntervalArray."""
     intervals = [Interval(0, 1), Interval(1, 2), Interval(2, 3)]
     arr = IntervalArray(intervals)
     check(assert_type(arr, IntervalArray), IntervalArray)
@@ -177,6 +177,9 @@ def test_getitem_scalar() -> None:
     arr = IntervalArray.from_breaks([0, 1, 2, 3])
     result = arr[0]
     check(assert_type(result, "Interval | float"), Interval)
+
+    ia_with_na = IntervalArray(pd.Index([Interval(0, 1), None]))
+    check(assert_type(ia_with_na[1], "Interval | float"), float)
 
 
 def test_getitem_sequence() -> None:
