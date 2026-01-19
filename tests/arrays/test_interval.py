@@ -48,14 +48,14 @@ def test_constructor() -> None:
 
 
 def test_constructor_from_index() -> None:
-    """Test __new__ method for IntervalArray from Index."""
+    """Test constructor method for IntervalArray from Index."""
     idx = pd.IntervalIndex.from_breaks([0, 1, 2, 3])
     arr = IntervalArray(idx)
     check(assert_type(arr, IntervalArray), IntervalArray)
 
 
 def test_constructor_from_series() -> None:
-    """Test __new__ method for IntervalArray from Series."""
+    """Test constructor method for IntervalArray from Series."""
     intervals = [Interval(0, 1), Interval(1, 2), Interval(2, 3)]
     series = Series(intervals)
     arr = IntervalArray(series)
@@ -126,6 +126,18 @@ def test_from_arrays_index() -> None:
     left = Index([0, 1, 2])
     right = Index([1, 2, 3])
     arr = IntervalArray.from_arrays(left, right)
+    check(assert_type(arr, IntervalArray), IntervalArray)
+
+
+def test_from_arrays_index_ndarray() -> None:
+    """Test from_arrays class method for IntervalArray with Sequence/ndarray."""
+    left = [0, 1, 2]
+    right = np.ndarray([1, 2, 3])
+
+    arr = IntervalArray.from_arrays(left, right)
+    check(assert_type(arr, IntervalArray), IntervalArray)
+
+    arr = IntervalArray.from_arrays(right, left)
     check(assert_type(arr, IntervalArray), IntervalArray)
 
 
