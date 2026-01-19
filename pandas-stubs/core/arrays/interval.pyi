@@ -5,6 +5,7 @@ from typing import (
     overload,
 )
 
+from pandas._stubs_only import OrderableT
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -14,7 +15,6 @@ from typing_extensions import Self
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
-    _OrderableT,
 )
 from pandas._typing import (
     AnyArrayLike,
@@ -38,7 +38,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     can_hold_na: bool = True
     def __new__(
         cls,
-        data: Sequence[Interval[_OrderableT]] | AnyArrayLike,
+        data: Sequence[Interval[OrderableT]] | AnyArrayLike,
         closed: IntervalClosedType | None = None,
         dtype: DtypeArg | None = None,
         copy: bool = False,
@@ -48,11 +48,11 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def from_breaks(
         cls,
         breaks: (
-            Sequence[_OrderableT]
+            Sequence[OrderableT]
             | np_ndarray
             | ExtensionArray
-            | Index[_OrderableT]
-            | Series[_OrderableT]
+            | Index[OrderableT]
+            | Series[OrderableT]
         ),
         closed: str = "right",
         copy: bool = False,
@@ -62,18 +62,18 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def from_arrays(
         cls,
         left: (
-            Sequence[_OrderableT]
+            Sequence[OrderableT]
             | np_ndarray
             | ExtensionArray
-            | Index[_OrderableT]
-            | Series[_OrderableT]
+            | Index[OrderableT]
+            | Series[OrderableT]
         ),
         right: (
-            Sequence[_OrderableT]
+            Sequence[OrderableT]
             | np_ndarray
             | ExtensionArray
-            | Index[_OrderableT]
-            | Series[_OrderableT]
+            | Index[OrderableT]
+            | Series[OrderableT]
         ),
         closed: IntervalClosedType = "right",
         copy: bool = False,
@@ -82,7 +82,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @classmethod
     def from_tuples(
         cls,
-        data: Sequence[tuple[_OrderableT, _OrderableT]],
+        data: Sequence[tuple[OrderableT, OrderableT]] | np_ndarray,
         closed: IntervalClosedType = "right",
         copy: bool = False,
         dtype: DtypeArg | None = None,
@@ -94,8 +94,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def __getitem__(self, item: ScalarIndexer) -> IntervalOrNA: ...
     @overload
     def __getitem__(self, item: SequenceIndexer) -> Self: ...
-    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
-    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
     @property
     def dtype(self) -> IntervalDtype: ...
     @property
@@ -103,7 +103,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @property
     def size(self) -> int: ...
     def shift(self, periods: int = 1, fill_value: object = ...) -> IntervalArray: ...
-    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
+    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override] # ty: ignore[invalid-method-override]
         self,
         indices: TakeIndexer,
         *,

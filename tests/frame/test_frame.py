@@ -72,9 +72,9 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.frame import _PandasNamedTuple
+    from pandas.core.frame import PandasNamedTuple
 else:
-    _PandasNamedTuple: TypeAlias = tuple
+    PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
@@ -110,6 +110,18 @@ def getSeriesData() -> dict[str, pd.Series]:
         c: pd.Series(np.random.default_rng(i).standard_normal(_N), index=index)
         for i, c in enumerate(getCols(_K))
     }
+
+
+@pytest.fixture
+def sample_df() -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "A": ["foo", "foo", "foo", "bar", "bar", "bar"],
+            "B": ["one", "one", "two", "two", "one", "one"],
+            "C": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+            "D": [10.0, 20.0, 30.0, 40.0, 50.0, 60.0],
+        }
+    )
 
 
 def test_types_init() -> None:
@@ -647,17 +659,13 @@ def test_types_iterrows() -> None:
 
 def test_types_itertuples() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(
-        assert_type(df.itertuples(), Iterator[_PandasNamedTuple]),
-        Iterator,
-        _PandasNamedTuple,
-    )
+    check(assert_type(df.itertuples(), Iterator[PandasNamedTuple]), Iterator, tuple)
     check(
         assert_type(
-            df.itertuples(index=False, name="Foobar"), Iterator[_PandasNamedTuple]
+            df.itertuples(index=False, name="Foobar"), Iterator[PandasNamedTuple]
         ),
         Iterator,
-        _PandasNamedTuple,
+        tuple,
     )
     check(
         assert_type(df.itertuples(index=False, name=None), Iterator[tuple[Any, ...]]),
@@ -666,7 +674,7 @@ def test_types_itertuples() -> None:
     )
 
     for t1 in df.itertuples():
-        assert_type(t1, _PandasNamedTuple)
+        check(assert_type(t1, PandasNamedTuple), tuple)
         assert t1.__class__.__name__ == "Pandas"
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col1, int)
@@ -675,7 +683,7 @@ def test_types_itertuples() -> None:
             assert isinstance(t1[k], int)
 
     for t1 in df.itertuples(name="FooBar"):
-        assert_type(t1, _PandasNamedTuple)
+        check(assert_type(t1, PandasNamedTuple), tuple)
         assert t1.__class__.__name__ == "FooBar"
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col1, int)
@@ -703,7 +711,7 @@ def test_frame_iterator() -> None:
 
     check(assert_type(next(df.items()), tuple[Hashable, pd.Series]), tuple)
     check(assert_type(next(df.iterrows()), tuple[Hashable, pd.Series]), tuple)
-    check(assert_type(next(df.itertuples()), _PandasNamedTuple), _PandasNamedTuple)
+    check(assert_type(next(df.itertuples()), PandasNamedTuple), tuple)
 
 
 def test_types_sum() -> None:
@@ -1549,6 +1557,513 @@ def test_types_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
+    check(
+        assert_type(
+            df.pivot_table(
+                index="col1", columns="col3", values=["col2", "col4"], aggfunc="sum"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.pivot_table(
+                index="col1", columns="col3", values=["col2", "col4"], aggfunc="nunique"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.pivot_table(
+                index="col1", columns="col3", values=["col2", "col4"], aggfunc="ohlc"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.pivot_table(
+                index="col1",
+                columns="col3",
+                values=["col2", "col4"],
+                aggfunc="quantile",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_pivot_table_aggfunc_string_reduction(sample_df: pd.DataFrame) -> None:
+    """Test string aggfunc with reduction functions from ReductionKernelType."""
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="sum"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="mean"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="count"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="min"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="max"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="median"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="std"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="var"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="prod"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="first"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="last"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="sem"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc="nunique"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_pivot_table_aggfunc_string_transformation(sample_df: pd.DataFrame) -> None:
+    """Test string aggfunc with transformation functions from TransformationKernelType."""
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="bfill"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="cummax"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="cummin"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc="cumprod"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="cumsum"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="diff"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="ffill"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc="pct_change"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="rank"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc="shift"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
+    """Test with df.pivot_table using np.ufunc."""
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=np.sum
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=np.mean
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=np.min
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=np.max
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=np.std
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=np.var
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=np.prod
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=np.median
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+
+def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
+    """Test with df.pivot_table using list of strings."""
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=["sum", "mean"]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=["min", "max", "count"]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=["std", "var", "median"]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=["first", "last", "nunique"]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=[np.sum, np.mean]
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=[np.min, np.max]
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=["sum", np.mean]
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values="C", index="A", columns="B", aggfunc=[np.sum, "mean", np.max]
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+
+def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
+    """Test dict of aggfuncs mapping columns to functions."""
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values=["C", "D"],
+                index="A",
+                columns="B",
+                aggfunc={"C": "sum", "D": "mean"},
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values=["C", "D"],
+                index="A",
+                columns="B",
+                aggfunc={"C": "min", "D": "max"},
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            sample_df.pivot_table(
+                values=["C", "D"],
+                index="A",
+                columns="B",
+                aggfunc={"C": "nunique", "D": "count"},
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values=["C", "D"],
+                    index="A",
+                    columns="B",
+                    aggfunc={"C": np.sum, "D": np.mean},
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable.*",
+        lower="2.3.0",
+    ):
+        check(
+            assert_type(
+                sample_df.pivot_table(
+                    values=["C", "D"],
+                    index="A",
+                    columns="B",
+                    aggfunc={"C": "sum", "D": np.mean},
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
 
 
 def test_pivot_table_sort() -> None:
@@ -3625,7 +4140,7 @@ def test_itertuples() -> None:
     df = pd.DataFrame({"a": [1, 2, 3, 4], "b": [5, 6, 7, 8]})
 
     for item in df.itertuples():
-        check(assert_type(item, _PandasNamedTuple), tuple)
+        check(assert_type(item, PandasNamedTuple), tuple)
         assert_type(item.a, Scalar)
 
 

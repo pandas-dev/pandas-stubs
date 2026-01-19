@@ -6,7 +6,7 @@ from typing import (
     overload,
 )
 
-import numpy as np
+from pandas._stubs_only import PeriodAddSub
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
@@ -26,10 +26,6 @@ from pandas._typing import (
 )
 
 class IncompatibleFrequency(ValueError): ...
-
-_PeriodAddSub: TypeAlias = (
-    Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | int | BaseOffset
-)
 
 _PeriodFreqHow: TypeAlias = Literal["S", "E", "start", "end"]
 
@@ -61,7 +57,7 @@ class Period(PeriodMixin):
         second: int | None = None,
     ) -> None: ...
     @overload
-    def __sub__(self, other: _PeriodAddSub) -> Period: ...
+    def __sub__(self, other: PeriodAddSub) -> Period: ...
     @overload
     def __sub__(self, other: Self) -> BaseOffset: ...
     @overload
@@ -75,17 +71,17 @@ class Period(PeriodMixin):
     @overload
     def __sub__(self, other: TimedeltaIndex) -> PeriodIndex: ...
     @overload
-    def __add__(self, other: _PeriodAddSub) -> Self: ...
+    def __add__(self, other: PeriodAddSub) -> Self: ...
     @overload
     def __add__(self, other: NaTType) -> NaTType: ...
     # Ignored due to indecipherable error from mypy:
     # Forward operator "__add__" is not callable  [misc]
     if sys.version_info >= (3, 11):
         @overload
-        def __radd__(self, other: _PeriodAddSub) -> Self: ...
+        def __radd__(self, other: PeriodAddSub) -> Self: ...
     else:
         @overload
-        def __radd__(self, other: _PeriodAddSub) -> Self: ...  # type: ignore[misc]
+        def __radd__(self, other: PeriodAddSub) -> Self: ...  # type: ignore[misc]
 
     @overload
     def __radd__(self, other: NaTType) -> NaTType: ...

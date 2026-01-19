@@ -1,6 +1,6 @@
 from pandas import DataFrame
 
-from pandas._libs.lib import _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
     DtypeBackend,
     FilePath,
@@ -14,5 +14,5 @@ def read_feather(
     columns: list[HashableT] | None = None,
     use_threads: bool = True,
     storage_options: StorageOptions = None,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
+    dtype_backend: DtypeBackend | NoDefaultDoNotUse = "numpy_nullable",
 ) -> DataFrame: ...

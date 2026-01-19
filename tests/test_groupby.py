@@ -39,7 +39,7 @@ from tests import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.groupby.groupby import _ResamplerGroupBy  # noqa: F401
+    from pandas.core.groupby.groupby import ResamplerGroupBy  # noqa: F401
 
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
@@ -53,18 +53,18 @@ GB_S = cast("SeriesGroupBy[float, int]", GB_DF.col1)
 def test_frame_groupby_resample() -> None:
     # basic
     check(
-        assert_type(GB_DF.resample("ME"), "_ResamplerGroupBy[DataFrame]"),
+        assert_type(GB_DF.resample("ME"), "ResamplerGroupBy[DataFrame]"),
         DatetimeIndexResamplerGroupby,
         DataFrame,
     )
     check(
-        assert_type(GB_DF.resample(Timedelta(days=30)), "_ResamplerGroupBy[DataFrame]"),
+        assert_type(GB_DF.resample(Timedelta(days=30)), "ResamplerGroupBy[DataFrame]"),
         DatetimeIndexResamplerGroupby,
         DataFrame,
     )
     check(
         assert_type(
-            GB_DF.resample(dt.timedelta(days=30)), "_ResamplerGroupBy[DataFrame]"
+            GB_DF.resample(dt.timedelta(days=30)), "ResamplerGroupBy[DataFrame]"
         ),
         DatetimeIndexResamplerGroupby,
         DataFrame,
@@ -231,18 +231,18 @@ def test_frame_groupby_resample() -> None:
 
         # getattr
         check(
-            assert_type(GB_DF.resample("ME").col1, "_ResamplerGroupBy[DataFrame]"),
+            assert_type(GB_DF.resample("ME").col1, "ResamplerGroupBy[DataFrame]"),
             DatetimeIndexResamplerGroupby,
         )
 
         # getitem
         check(
-            assert_type(GB_DF.resample("ME")["col1"], "_ResamplerGroupBy[DataFrame]"),
+            assert_type(GB_DF.resample("ME")["col1"], "ResamplerGroupBy[DataFrame]"),
             DatetimeIndexResamplerGroupby,
         )
         check(
             assert_type(
-                GB_DF.resample("ME")[["col1", "col2"]], "_ResamplerGroupBy[DataFrame]"
+                GB_DF.resample("ME")[["col1", "col2"]], "ResamplerGroupBy[DataFrame]"
             ),
             DatetimeIndexResamplerGroupby,
         )
@@ -304,7 +304,7 @@ def test_frame_groupby_resample() -> None:
 def test_series_groupby_resample() -> None:
     # basic
     check(
-        assert_type(GB_S.resample("ME"), "_ResamplerGroupBy[Series[float]]"),
+        assert_type(GB_S.resample("ME"), "ResamplerGroupBy[Series[float]]"),
         DatetimeIndexResamplerGroupby,
         Series,
     )

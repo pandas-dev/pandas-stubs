@@ -26,7 +26,7 @@ from typing_extensions import (
 )
 
 from pandas._libs import Timedelta
-from pandas._libs.lib import _NoDefaultDoNotUse
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
@@ -63,7 +63,7 @@ class TimedeltaIndex(
         data: (
             Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData | None
         ),
-        freq: Frequency | _NoDefaultDoNotUse = ...,
+        freq: Frequency | NoDefaultDoNotUse = ...,
         dtype: Literal["<m8[ns]"] | None = None,
         copy: bool | None = None,
         name: str | None = None,
@@ -90,7 +90,7 @@ class TimedeltaIndex(
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: timedelta | Self
     ) -> Self: ...
-    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
@@ -104,15 +104,11 @@ class TimedeltaIndex(
     @overload  # type: ignore[override]
     def __mul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
     @overload
-    def __mul__(
-        self, other: _NUM_FACTOR_SEQ
-    ) -> Self: ...  # ty: ignore[invalid-method-override]
+    def __mul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
     def __rmul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
     @overload
-    def __rmul__(
-        self, other: _NUM_FACTOR_SEQ
-    ) -> Self: ...  # ty: ignore[invalid-method-override]
+    def __rmul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
     def __truediv__(  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
         self, other: Index[Never]

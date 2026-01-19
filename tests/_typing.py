@@ -1,5 +1,6 @@
 # This file serves as a stub file for static type checkers
 # (pyright does not like it if I call the file tests/_typing.pyi).
+# It can only import from pandas._typing.
 # By tests/conftest.py, pytest copies this file to tests/_typing.pyi, and
 # pandas-stubs/_typing.pyi to tests/_typing.py.
 # After tests are done, pytest copies tests/_typing.pyi back to
@@ -14,6 +15,7 @@ from pandas._typing import (
     BuiltinDtypeArg,
     BuiltinFloatDtypeArg,
     BuiltinIntDtypeArg,
+    BuiltinNotStrDtypeArg,
     BuiltinObjectDtypeArg,
     BuiltinStrDtypeArg,
     BytesDtypeArg,
@@ -92,6 +94,7 @@ __all__ = [
     "BuiltinDtypeArg",
     "BuiltinFloatDtypeArg",
     "BuiltinIntDtypeArg",
+    "BuiltinNotStrDtypeArg",
     "BuiltinObjectDtypeArg",
     "BuiltinStrDtypeArg",
     "BytesDtypeArg",
