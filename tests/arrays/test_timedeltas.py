@@ -16,7 +16,6 @@ from pandas._typing import TimeUnit
 from tests import check
 from tests._typing import (
     np_1darray,
-    np_1darray_anyint,
     np_1darray_float,
     np_1darray_int32,
     np_1darray_int64,
@@ -96,7 +95,7 @@ def test_timedelta_array_floordiv() -> None:
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
     result_np = arr // Timedelta("1 day")
-    check(assert_type(result_np, np_1darray_float), np_1darray, np.longlong)
+    check(assert_type(result_np, np_1darray_int64), np_1darray_int64)
 
 
 def test_timedelta_array_mod() -> None:
@@ -114,8 +113,8 @@ def test_timedelta_array_divmod() -> None:
     arr = pd.array(idx)
 
     result = divmod(arr, Timedelta("12 hours"))
-    q, r = check(assert_type(result, tuple[np_1darray_anyint, TimedeltaArray]), tuple)
-    check(assert_type(q, np_1darray_anyint), np_1darray, np.longlong)
+    q, r = check(assert_type(result, tuple[np_1darray_int64, TimedeltaArray]), tuple)
+    check(assert_type(q, np_1darray_int64), np_1darray_int64)
     check(assert_type(r, TimedeltaArray), TimedeltaArray)
 
 
