@@ -1,6 +1,5 @@
 """Test module for methods in pandas.core.arrays.timedeltas."""
 
-from collections.abc import Sequence
 from datetime import timedelta
 from typing import cast
 
@@ -12,18 +11,18 @@ from pandas import (
 )
 from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
-from typing_extensions import (
-    Any,
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs.timedeltas import Timedelta
-from pandas._typing import TimeUnit
+from pandas._typing import (
+    TimeUnit,
+    np_1darray_anyint,
+    np_1darray_object,
+)
 
 from tests import check
 from tests._typing import (
-    np_1darray,
     np_1darray_float,
     np_1darray_int32,
     np_1darray_td,
@@ -87,7 +86,7 @@ def test_timedelta_array_truediv() -> None:
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
     result_np = arr / Timedelta("1 day")
-    check(assert_type(result_np, np_1darray_float), np.ndarray)
+    check(assert_type(result_np, np_1darray_float), np_1darray_float)
 
 
 def test_timedelta_array_floordiv() -> None:
@@ -99,7 +98,7 @@ def test_timedelta_array_floordiv() -> None:
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
     result_np = arr // Timedelta("1 day")
-    check(assert_type(result_np, np_1darray_float), np.ndarray)
+    check(assert_type(result_np, np_1darray_float), np_1darray_float)
 
 
 def test_timedelta_array_mod() -> None:
@@ -117,7 +116,9 @@ def test_timedelta_array_divmod() -> None:
     arr = pd.array(idx)
 
     result = divmod(arr, Timedelta("12 hours"))
-    check(assert_type(result, tuple[Any, ...]), tuple)
+    q, r = check(assert_type(result, tuple[np_1darray_anyint, TimedeltaArray]), tuple)
+    check(assert_type(q, np_1darray_anyint), np_1darray_anyint)
+    check(assert_type(r, TimedeltaArray), TimedeltaArray)
 
 
 def test_timedelta_array_neg() -> None:
@@ -153,7 +154,7 @@ def test_timedelta_array_total_seconds() -> None:
     arr = pd.array(idx)
 
     result = arr.total_seconds()
-    check(assert_type(result, int), np.ndarray)
+    check(assert_type(result, np_1darray_float), np_1darray_float)
 
 
 def test_timedelta_array_to_pytimedelta() -> None:
@@ -162,7 +163,7 @@ def test_timedelta_array_to_pytimedelta() -> None:
     arr = pd.array(idx)
 
     result = arr.to_pytimedelta()
-    check(assert_type(result, Sequence[timedelta]), np.ndarray)
+    check(assert_type(result, np_1darray_object), np_1darray_object, timedelta)
 
 
 def test_timedelta_array_days() -> None:
@@ -171,7 +172,7 @@ def test_timedelta_array_days() -> None:
     arr = pd.array(idx)
 
     result = arr.days
-    check(assert_type(result, np_1darray_int32), np.ndarray)
+    check(assert_type(result, np_1darray_int32), np_1darray_int32)
 
 
 def test_timedelta_array_seconds() -> None:
@@ -180,7 +181,7 @@ def test_timedelta_array_seconds() -> None:
     arr = pd.array(idx)
 
     result = arr.seconds
-    check(assert_type(result, np_1darray_int32), np.ndarray)
+    check(assert_type(result, np_1darray_int32), np_1darray_int32)
 
 
 def test_timedelta_array_microseconds() -> None:
@@ -189,7 +190,7 @@ def test_timedelta_array_microseconds() -> None:
     arr = pd.array(idx)
 
     result = arr.microseconds
-    check(assert_type(result, np_1darray_int32), np.ndarray)
+    check(assert_type(result, np_1darray_int32), np_1darray_int32)
 
 
 def test_timedelta_array_nanoseconds() -> None:
@@ -198,7 +199,7 @@ def test_timedelta_array_nanoseconds() -> None:
     arr = pd.array(idx)
 
     result = arr.nanoseconds
-    check(assert_type(result, np_1darray_int32), np.ndarray)
+    check(assert_type(result, np_1darray_int32), np_1darray_int32)
 
 
 def test_timedelta_array_components() -> None:
@@ -385,4 +386,4 @@ def test_timedelta_array_array() -> None:
     arr = pd.array(idx)
 
     result = arr.__array__()
-    check(assert_type(result, np_1darray), np.ndarray)
+    check(assert_type(result, np_1darray_td), np_1darray_td)
