@@ -1,4 +1,4 @@
-# pyright: reportUnknownArgumentType=false,reportUnknownLambdaType=false
+# pyright: reportUnknownArgumentType=false,reportUnknownLambdaType=false,reportUnknownMemberType=false
 from __future__ import annotations
 
 from collections import (

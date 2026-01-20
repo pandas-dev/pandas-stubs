@@ -5,6 +5,6 @@
   "enableTypeIgnoreComments": false,
   "reportUnnecessaryTypeIgnoreComment": true,
   "reportMissingModuleSource": true,
-  "useLibraryCodeForTypes": false,
+  "useLibraryCodeForTypes": true,
   "reportUnknownLambdaType": false
 }

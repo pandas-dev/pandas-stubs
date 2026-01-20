@@ -15,14 +15,20 @@ from typing import (
     overload,
 )
 
+from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeStubs]
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
-import pyxlsb.workbook  # pyright: ignore[reportMissingTypeStubs]
+from pyxlsb.workbook import (  # pyright: ignore[reportMissingTypeStubs]
+    Workbook as PyXlsbWorkbook,
+)
 from typing_extensions import (
     Self,
     TypeVar,
 )
 from xlrd.book import Book
+from xlsxwriter import (  # pyright: ignore[reportMissingTypeStubs]
+    Workbook as XlsxWorkbook,
+)
 
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
@@ -39,24 +45,16 @@ from pandas._typing import (
     UsecolsArgType,
 )
 
-from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
-    Workbook as XlsxWorkbook,  # pyright: ignore[reportUnknownVariableType]
-)
-
-from odf.opendocument import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
-    OpenDocument,  # pyright: ignore[reportUnknownVariableType]
-)
-
 @overload
 def read_excel(
-    io: (  # pyright: ignore[reportUnknownParameterType]
+    io: (
         FilePath
         | ReadBuffer[bytes]
         | ExcelFile
         | Workbook
         | Book
         | OpenDocument
-        | pyxlsb.workbook.Workbook
+        | PyXlsbWorkbook
     ),
     sheet_name: list[IntStrT],
     *,
@@ -92,14 +90,14 @@ def read_excel(
 ) -> dict[IntStrT, DataFrame]: ...
 @overload
 def read_excel(
-    io: (  # pyright: ignore[reportUnknownParameterType]
+    io: (
         FilePath
         | ReadBuffer[bytes]
         | ExcelFile
         | Workbook
         | Book
         | OpenDocument
-        | pyxlsb.workbook.Workbook
+        | PyXlsbWorkbook
     ),
     sheet_name: None,
     *,
@@ -136,14 +134,14 @@ def read_excel(
 @overload
 # mypy says this won't be matched
 def read_excel(  # type: ignore[overload-cannot-match]
-    io: (  # pyright: ignore[reportUnknownParameterType]
+    io: (
         FilePath
         | ReadBuffer[bytes]
         | ExcelFile
         | Workbook
         | Book
         | OpenDocument
-        | pyxlsb.workbook.Workbook
+        | PyXlsbWorkbook
     ),
     sheet_name: list[int | str],
     *,
@@ -179,14 +177,14 @@ def read_excel(  # type: ignore[overload-cannot-match]
 ) -> dict[int | str, DataFrame]: ...
 @overload
 def read_excel(
-    io: (  # pyright: ignore[reportUnknownParameterType]
+    io: (
         FilePath
         | ReadBuffer[bytes]
         | ExcelFile
         | Workbook
         | Book
         | OpenDocument
-        | pyxlsb.workbook.Workbook
+        | PyXlsbWorkbook
     ),
     sheet_name: int | str = ...,
     *,
@@ -221,9 +219,7 @@ def read_excel(
     engine_kwargs: dict[str, Any] | None = ...,
 ) -> DataFrame: ...
 
-ExcelWriteWorkbook: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
-    Workbook | OpenDocument | XlsxWorkbook
-)
+ExcelWriteWorkbook: TypeAlias = Workbook | OpenDocument | XlsxWorkbook
 
 _WorkbookT = TypeVar("_WorkbookT", default=ExcelWriteWorkbook, bound=ExcelWriteWorkbook)
 
@@ -368,7 +364,7 @@ class ExcelFile:
         **kwds: Any,
     ) -> DataFrame: ...
     @property
-    def book(self) -> Workbook | Book | OpenDocument | pyxlsb.workbook.Workbook: ...
+    def book(self) -> Workbook | Book | OpenDocument | PyXlsbWorkbook: ...
     @property
     def sheet_names(self) -> list[int | str]: ...
     def close(self) -> None: ...

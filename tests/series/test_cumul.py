@@ -40,7 +40,7 @@ def test_cumul_complex() -> None:
 def test_cumul_str() -> None:
     series = pd.Series(["1", "a", "pd"])
     if TYPE_CHECKING_INVALID_USAGE:
-        series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
 
 def test_cumul_ts() -> None:
@@ -48,7 +48,7 @@ def test_cumul_ts() -> None:
     check(assert_type(series, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
 
 def test_cumul_td() -> None:
@@ -56,4 +56,4 @@ def test_cumul_td() -> None:
     check(assert_type(series, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
