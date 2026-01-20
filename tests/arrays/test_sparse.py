@@ -22,7 +22,6 @@ from tests import (
 from tests._typing import (
     np_1darray,
     np_1darray_int32,
-    np_1darray_int64,
     np_ndarray,
 )
 
