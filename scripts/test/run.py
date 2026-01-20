@@ -15,11 +15,6 @@ def pyright_src() -> None:
     subprocess.run(cmd, check=True)
 
 
-def pyright_src_strict() -> None:
-    cmd = ["pyright", "--project", "pyrightconfig-strict.json"]
-    subprocess.run(cmd, check=True)
-
-
 def pytest() -> None:
     cmd = ["pytest", "--cache-clear"]
     subprocess.run(cmd, check=True)

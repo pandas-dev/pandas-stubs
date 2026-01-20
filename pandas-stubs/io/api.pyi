@@ -2,16 +2,12 @@ from pandas.io.clipboards import read_clipboard as read_clipboard
 from pandas.io.excel import (
     ExcelFile as ExcelFile,
     ExcelWriter as ExcelWriter,
-)
-from pandas.io.excel import (
-    read_excel as read_excel,  # pyright: ignore[reportUnknownVariableType]
+    read_excel as read_excel,
 )
 from pandas.io.feather_format import read_feather as read_feather
 from pandas.io.html import read_html as read_html
 from pandas.io.json import read_json as read_json
-from pandas.io.orc import (
-    read_orc as read_orc,  # pyright: ignore[reportUnknownVariableType]
-)
+from pandas.io.orc import read_orc as read_orc
 from pandas.io.parquet import read_parquet as read_parquet
 from pandas.io.parsers import (
     read_csv as read_csv,

@@ -15,6 +15,7 @@ from typing import (
 import uuid
 
 import numpy as np
+from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeStubs]
 from openpyxl.workbook.workbook import Workbook as OpenXlWorkbook
 import pandas as pd
 from pandas import (
@@ -24,11 +25,13 @@ from pandas import (
     errors,
     read_clipboard,
     read_csv,
+    read_excel,
     read_feather,
     read_fwf,
     read_hdf,
     read_html,
     read_json,
+    read_orc,
     read_parquet,
     read_pickle,
     read_sas,
@@ -40,14 +43,15 @@ from pandas import (
     read_table,
     read_xml,
 )
-from pandas import read_excel  # pyright: ignore[reportUnknownVariableType]
-from pandas import read_orc  # pyright: ignore[reportUnknownVariableType]
 from pandas.api.typing import JsonReader
 import pytest
 import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
+from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
+    Workbook as XlsxWorkbook,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -63,14 +67,6 @@ from pandas.io.pytables import (
 from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
-
-from odf.opendocument import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
-    OpenDocument,  # pyright: ignore[reportUnknownVariableType]
-)
-from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
-    Workbook as XlsxWorkbook,  # pyright: ignore[reportUnknownVariableType]
-)
-
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = Path(__file__).parent.resolve()
@@ -1082,13 +1078,8 @@ def test_excel_fspath(tmp_path: Path) -> None:
 
 def test_excel_writer(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    with pd.ExcelWriter(path_str) as ew:  # pyright: ignore[reportUnknownVariableType]
-        check(
-            assert_type(
-                ew, pd.ExcelWriter  # pyright: ignore[reportUnknownArgumentType]
-            ),
-            pd.ExcelWriter,
-        )
+    with pd.ExcelWriter(path_str) as ew:
+        check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
         DF.to_excel(ew, sheet_name="A")
     check(assert_type(read_excel(path_str, sheet_name="A"), DataFrame), DataFrame)
     check(assert_type(read_excel(path_str), DataFrame), DataFrame)
@@ -1106,7 +1097,7 @@ def test_excel_writer(tmp_path: Path) -> None:
 
 def test_excel_writer_io() -> None:
     buffer = io.BytesIO()
-    with pd.ExcelWriter(buffer) as writer:  # pyright: ignore[reportUnknownVariableType]
+    with pd.ExcelWriter(buffer) as writer:
         DF.to_excel(writer, sheet_name="A")
 
     ef = pd.ExcelFile(buffer)
@@ -1116,16 +1107,8 @@ def test_excel_writer_io() -> None:
 
 def test_excel_writer_engine(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test0.xlsx")
-    with pd.ExcelWriter(
-        path_str, engine="auto"
-    ) as ew:  # pyright: ignore[reportUnknownVariableType]
-        check(
-            assert_type(
-                ew,
-                pd.ExcelWriter,  # pyright: ignore[reportUnknownArgumentType]
-            ),
-            pd.ExcelWriter,
-        )
+    with pd.ExcelWriter(path_str, engine="auto") as ew:
+        check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
         DF.to_excel(ew, sheet_name="A")
 
     path_str = str(tmp_path / f"{uuid.uuid4()}test1.xlsx")
@@ -1141,17 +1124,9 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
         )
 
     path_str = str(tmp_path / f"{uuid.uuid4()}test2.ods")
-    with pd.ExcelWriter(
-        path_str, engine="odf"
-    ) as ew:  # pyright: ignore[reportUnknownVariableType]
+    with pd.ExcelWriter(path_str, engine="odf") as ew:
         check(
-            assert_type(
-                ew,
-                pd.ExcelWriter[
-                    OpenDocument
-                ],  # pyright: ignore[reportUnknownArgumentType]
-            ),
-            pd.ExcelWriter[OpenDocument],
+            assert_type(ew, pd.ExcelWriter[OpenDocument]), pd.ExcelWriter[OpenDocument]
         )
         DF.to_excel(ew, sheet_name="A")
         check(
@@ -1160,13 +1135,9 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
         )
 
     path_str = str(tmp_path / f"{uuid.uuid4()}test3.xlsx")
-    with pd.ExcelWriter(
-        path_str, engine="xlsxwriter"
-    ) as ew:  # pyright: ignore[reportUnknownVariableType]
+    with pd.ExcelWriter(path_str, engine="xlsxwriter") as ew:
         check(
-            assert_type(
-                ew, pd.ExcelWriter[XlsxWorkbook]
-            ),  # pyright: ignore[reportUnknownArgumentType]
+            assert_type(ew, pd.ExcelWriter[XlsxWorkbook]),
             pd.ExcelWriter[XlsxWorkbook],
         )
         DF.to_excel(ew, sheet_name="A")
@@ -1178,9 +1149,7 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
 
 def test_excel_writer_append_mode(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    with pd.ExcelWriter(
-        path_str, mode="w"
-    ) as ew:  # pyright: ignore[reportUnknownVariableType]
+    with pd.ExcelWriter(path_str, mode="w") as ew:
         DF.to_excel(ew, sheet_name="A")
     with pd.ExcelWriter(path_str, mode="a", engine="openpyxl") as ew:
         DF.to_excel(ew, sheet_name="B")

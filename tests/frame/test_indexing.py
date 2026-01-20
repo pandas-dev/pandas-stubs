@@ -1,4 +1,3 @@
-# pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
 from collections import (
@@ -523,7 +522,15 @@ def test_loc_callable() -> None:
     check(assert_type(df.loc[select3, "x"], Scalar), np.integer)
 
     check(
-        assert_type(df.loc[:, lambda df: df.columns.str.startswith("x")], pd.DataFrame),
+        assert_type(
+            df.loc[
+                :,
+                lambda df: df.columns.str.startswith(  # pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]
+                    "x"
+                ),
+            ],
+            pd.DataFrame,
+        ),
         pd.DataFrame,
     )
 

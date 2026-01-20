@@ -1,4 +1,3 @@
-# pyright: strict
 from builtins import slice as _slice
 from collections.abc import (
     Callable,
