@@ -4,7 +4,5 @@
   "include": ["tests", "pandas-stubs"],
   "enableTypeIgnoreComments": false,
   "reportUnnecessaryTypeIgnoreComment": true,
-  "reportMissingModuleSource": true,
-  "useLibraryCodeForTypes": true,
-  "reportUnknownLambdaType": false
+  "reportMissingModuleSource": true
 }

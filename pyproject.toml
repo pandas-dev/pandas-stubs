@@ -303,7 +303,6 @@ enableTypeIgnoreComments = false    # use pyright-specific ignores
 reportUnnecessaryTypeIgnoreComment = true
 # enable optional checks
 reportMissingModuleSource = true
-useLibraryCodeForTypes = true
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"
