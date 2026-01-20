@@ -1,28 +1,28 @@
 """Test module for methods in pandas.core.arrays.sparse.array."""
 
 from typing import (
-    TYPE_CHECKING,
+    Any,
     Literal,
 )
 
 import numpy as np
 import pandas as pd
-from pandas import Series
 from pandas.core.arrays.sparse import SparseArray
-from typing_extensions import (
-    Any,
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from pandas._libs.sparse import SparseIndex
 from pandas._typing import Scalar
 
 from pandas.core.dtypes.dtypes import SparseDtype
 
-from tests import check
+from tests import (
+    PD_LTE_23,
+    check,
+)
 from tests._typing import (
     np_1darray,
-    np_1darray_intp,
+    np_1darray_int32,
+    np_1darray_int64,
     np_ndarray,
 )
 
@@ -90,9 +90,7 @@ def test_sparse_fill_value() -> None:
 def test_sparse_kind() -> None:
     """Test kind property for SparseArray."""
     arr = SparseArray([1, 0, 0, 2, 3], kind="integer")
-    kind = arr.kind
-    check(assert_type(kind, Literal["integer", "block"]), str)
-    assert kind in ("integer", "block")
+    assert assert_type(arr.kind, Literal["integer", "block"]) in {"integer", "block"}
 
 
 def test_sparse_shift() -> None:
@@ -114,10 +112,16 @@ def test_sparse_unique() -> None:
 def test_sparse_value_counts() -> None:
     """Test value_counts method for SparseArray."""
     arr = SparseArray([1, 0, 0, 2, 3, 1])
-    check(assert_type(arr.value_counts(), "Series[int]"), Series, np.integer)
-    check(assert_type(arr.value_counts(dropna=True), "Series[int]"), Series, np.integer)
+    check(assert_type(arr.value_counts(), "pd.Series[int]"), pd.Series, np.integer)
     check(
-        assert_type(arr.value_counts(dropna=False), "Series[int]"), Series, np.integer
+        assert_type(arr.value_counts(dropna=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(arr.value_counts(dropna=False), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
     )
 
 
@@ -144,14 +148,15 @@ def test_sparse_copy() -> None:
 def test_sparse_to_dense() -> None:
     """Test to_dense method for SparseArray."""
     arr = SparseArray([1, 0, 0, 2, 3])
-    check(assert_type(arr.to_dense(), np_1darray), np.ndarray)
+    check(assert_type(arr.to_dense(), np_1darray), np_1darray, np.integer)
 
 
 def test_sparse_nonzero() -> None:
     """Test nonzero method for SparseArray."""
     arr = SparseArray([1, 0, 0, 2, 3], fill_value=0)
     result = arr.nonzero()
-    check(assert_type(result, tuple[np_1darray_intp]), tuple)
+    (res,) = check(assert_type(result, tuple[np_1darray_int32]), tuple)
+    check(assert_type(res, np_1darray_int32), np_1darray_int32)
 
 
 def test_sparse_all() -> None:
@@ -179,14 +184,15 @@ def test_sparse_sum() -> None:
 
 
 def test_sparse_cumsum() -> None:
-    """Test cumsum method for SparseArray.
+    """
+    Test cumsum method for SparseArray.
 
     Note: At runtime, cumsum has a recursion bug in pandas.
     This test only validates the type signature.
     """
     arr = SparseArray([1, 0, 0, 2, 3], fill_value=0)
-    # Type check only - not calling at runtime due to pandas bug
-    if TYPE_CHECKING:  # noqa: SIM223
+    if not PD_LTE_23:
+        # TODO: pandas-dev/pandas#62669 fix is in 3.0
         check(assert_type(arr.cumsum(), SparseArray), SparseArray)
         check(assert_type(arr.cumsum(axis=0), SparseArray), SparseArray)
 
@@ -214,4 +220,6 @@ def test_sparse_array() -> None:
     """Test __array__ method for SparseArray."""
     arr = SparseArray([1, 0, 0, 2, 3])
     check(assert_type(arr.__array__(), np_1darray), np.ndarray)
-    check(assert_type(arr.__array__(dtype=np.float64), np_1darray), np.ndarray)
+    check(
+        assert_type(arr.__array__(dtype=np.float64), np_1darray), np_1darray, np.float64
+    )
