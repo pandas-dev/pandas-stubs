@@ -19,6 +19,7 @@ from pandas._typing import (
     np_1darray_anyint,
     np_1darray_float,
     np_1darray_int32,
+    np_1darray_int64,
     np_1darray_object,
     np_1darray_td,
 )
@@ -105,7 +106,7 @@ class TimedeltaArray(TimelikeOps):
     def total_seconds(self) -> np_1darray_float: ...
     def to_pytimedelta(self) -> np_1darray_object: ...
     @property
-    def days(self) -> np_1darray_int32: ...
+    def days(self) -> np_1darray_int64: ...
     @property
     def seconds(self) -> np_1darray_int32: ...
     @property
