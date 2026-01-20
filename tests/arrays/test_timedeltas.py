@@ -1,6 +1,7 @@
 """Test module for methods in pandas.core.arrays.timedeltas."""
 
 from datetime import timedelta
+from typing import cast
 
 import numpy as np
 import pandas as pd
@@ -35,7 +36,7 @@ def test_construction() -> None:
     values = np.array(
         [np.timedelta64(1, "D"), np.timedelta64(2, "D"), np.timedelta64(3, "D")]
     )
-    arr = pd.array(values)
+    arr = pd.array(cast(np_1darray_td, values))
     check(assert_type(arr, TimedeltaArray), TimedeltaArray)
 
     # With dtype parameter
