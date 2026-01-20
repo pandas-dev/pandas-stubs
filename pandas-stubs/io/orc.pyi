@@ -1,5 +1,8 @@
 from typing import Any
 
+from fsspec import (  # pyright: ignore[reportMissingTypeStubs]
+    AbstractFileSystem,
+)
 from pandas import DataFrame
 from pyarrow.fs import FileSystem
 
@@ -9,10 +12,6 @@ from pandas._typing import (
     FilePath,
     HashableT,
     ReadBuffer,
-)
-
-from fsspec import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
-    AbstractFileSystem as AbstractFileSystem,
 )
 
 def read_orc(
