@@ -11,16 +11,14 @@ from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs.timedeltas import Timedelta
-from pandas._typing import (
-    TimeUnit,
-    np_1darray_anyint,
-    np_1darray_object,
-)
+from pandas._typing import TimeUnit
 
 from tests import check
 from tests._typing import (
+    np_1darray_anyint,
     np_1darray_float,
     np_1darray_int32,
+    np_1darray_object,
     np_1darray_td,
 )
 
