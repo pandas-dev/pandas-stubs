@@ -468,6 +468,19 @@ def test_series_dt_accessors() -> None:
         pd.Series,
         pd.Timestamp,
     )
+    check(
+        assert_type(s0.dt.ceil("D", ambiguous=True), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(
+            s0.dt.ceil("D", ambiguous=np.array([True, False])),
+            "pd.Series[pd.Timestamp]",
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
     check(assert_type(s0.dt.month_name(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s0.dt.day_name(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s0.dt.unit, TimeUnit), str)

@@ -14,12 +14,10 @@ import sys
 from typing import (
     Any,
     ClassVar,
-    Generic,
     Literal,
     TypeAlias,
     final,
     overload,
-    type_check_only,
 )
 
 from _typeshed import (
@@ -27,13 +25,15 @@ from _typeshed import (
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
-    _T_contra,
 )
 import numpy as np
+from pandas._stubs_only import (
+    OrderableT,
+    T_contra,
+)
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.base import (
-    T_INTERVAL_NP,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
     IndexComplex,
@@ -68,10 +68,7 @@ from typing_extensions import (
     Self,
 )
 
-from pandas._libs.interval import (
-    Interval,
-    _OrderableT,
-)
+from pandas._libs.interval import Interval
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -91,10 +88,7 @@ from pandas._typing import (
     DropKeep,
     Dtype,
     DtypeArg,
-    DTypeLike,
     DtypeObj,
-    GenericT,
-    GenericT_co,
     HashableT,
     IgnoreRaise,
     JoinHow,
@@ -117,7 +111,6 @@ from pandas._typing import (
     Scalar,
     SequenceNotStr,
     SliceType,
-    SupportsDType,
     TakeIndexer,
     TimedeltaDtypeArg,
     TimestampDtypeArg,
@@ -307,13 +300,13 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
+        data: Sequence[Interval[OrderableT]] | IndexOpsMixin[Interval[OrderableT]],
         *,
         dtype: Literal["Interval"] | None = None,
         copy: bool = False,
         name: Hashable = None,
         tupleize_cols: bool = True,
-    ) -> IntervalIndex[Interval[_OrderableT]]: ...
+    ) -> IntervalIndex[Interval[OrderableT]]: ...
     @overload
     def __new__(
         cls,
@@ -626,12 +619,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @property
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
-    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-    def __le__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-    def __ge__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-    def __lt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-    def __gt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __le__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __ge__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __lt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __gt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @overload
     def __add__(self: Index[Never], other: _str) -> Index[_str]: ...
     @overload
@@ -644,7 +637,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __add__(self: Index[Never], other: Period) -> PeriodIndex: ...
     @overload
     def __add__(
-        self: Supports_ProtoAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra]
     ) -> Index[S2]: ...
     @overload
     def __add__(
@@ -696,8 +689,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __radd__(self: Index[Never], other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(
-        self: Supports_ProtoRAdd[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRAdd[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __radd__(
@@ -913,7 +906,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __mul__(
-        self: Supports_ProtoMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoMul[T_contra, S2], other: T_contra | Sequence[T_contra]
     ) -> Index[S2]: ...
     @overload
     def __mul__(
@@ -979,8 +972,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __rmul__(
-        self: Supports_ProtoRMul[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRMul[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __rmul__(
@@ -1029,8 +1022,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __truediv__(self: IndexComplex, other: Index[Never]) -> Index: ...
     @overload
     def __truediv__(
-        self: Supports_ProtoTrueDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __truediv__(
@@ -1080,8 +1073,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __rtruediv__(
-        self: Supports_ProtoRTrueDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __rtruediv__(
@@ -1137,8 +1130,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __floordiv__(
-        self: Supports_ProtoFloorDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __floordiv__(
@@ -1181,8 +1174,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __rfloordiv__(
-        self: Supports_ProtoRFloorDiv[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
     ) -> Index[S2]: ...
     @overload
     def __rfloordiv__(
@@ -1215,38 +1208,3 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self: Index[int] | Index[float], other: Sequence[timedelta | np.timedelta64]
     ) -> Index: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
-
-@type_check_only
-class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
-    @overload
-    def to_numpy(
-        self: _IndexSubclassBase[Interval],
-        dtype: type[T_INTERVAL_NP],
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray: ...
-    @overload
-    def to_numpy(
-        self,
-        dtype: None = None,
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray[GenericT_co]: ...
-    @overload
-    def to_numpy(
-        self,
-        dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray[GenericT]: ...
-    @overload
-    def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self,
-        dtype: DTypeLike,
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray: ...

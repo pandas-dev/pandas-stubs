@@ -14,7 +14,10 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.core.indexes.base import Index
-from typing_extensions import Self
+from typing_extensions import (
+    Never,
+    Self,
+)
 
 from pandas._typing import (
     AnyAll,
@@ -63,10 +66,19 @@ class MultiIndex(Index):
         sortorder: int | None = None,
         names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
+    @overload
     @classmethod
     def from_product(
         cls,
-        iterables: Sequence[SequenceNotStr[Hashable] | pd.Series | pd.Index | range],
+        iterables: Sequence[str],
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
+    ) -> Never: ...
+    @overload
+    @classmethod
+    def from_product(
+        cls,
+        iterables: Sequence[Iterable[Hashable]],
         sortorder: int | None = None,
         names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
@@ -113,10 +125,10 @@ class MultiIndex(Index):
         level: Level,
         verify_integrity: bool = True,
     ) -> MultiIndex: ...
-    def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore
+    def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore # ty: ignore[invalid-method-override]
         self, names: SequenceNotStr[Hashable] | None = None, deep: bool = False
     ) -> Self: ...
-    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     if sys.version_info >= (3, 11):
         @property
         def dtype(self) -> np.dtype: ...
@@ -145,7 +157,7 @@ class MultiIndex(Index):
     def unique(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, level: Level
     ) -> Index: ...
-    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self,
         index: bool = True,
         name: list[HashableT] = ...,
@@ -172,7 +184,7 @@ class MultiIndex(Index):
     def append(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: Index | Sequence[Index]
     ) -> Index: ...
-    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
+    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override] # ty: ignore[invalid-method-override]
     def swaplevel(self, i: int = -2, j: int = -1) -> Self: ...
     def reorder_levels(self, order: Sequence[Level]) -> MultiIndex: ...
     def sortlevel(

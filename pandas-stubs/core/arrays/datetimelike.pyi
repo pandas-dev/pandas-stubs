@@ -35,10 +35,10 @@ from pandas._typing import (
 
 DTScalarOrNaT: TypeAlias = DatetimeLikeScalar | NaTType
 
-class DatelikeOps:
+class DatelikeOps(DatetimeLikeArrayMixin):
     def strftime(self, date_format: str) -> np_1darray_str: ...
 
-class TimelikeOps:
+class TimelikeOps(DatetimeLikeArrayMixin):
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit) -> Self: ...
@@ -81,7 +81,7 @@ class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
     def __getitem__(  # ty: ignore[invalid-method-override]
         self, key: SequenceIndexer | PositionalIndexerTuple
     ) -> Self: ...
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: int | Sequence[int] | Sequence[bool] | slice, value: Any
     ) -> None: ...
     # TODO: pandas-dev/pandas-stubs#1589 import testing

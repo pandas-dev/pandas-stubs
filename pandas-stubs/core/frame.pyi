@@ -28,6 +28,7 @@ from typing import (
     TypeVar,
     final,
     overload,
+    type_check_only,
 )
 
 from matplotlib.axes import Axes as PlotAxes
@@ -37,6 +38,12 @@ from pandas import (
     Period,
     Timedelta,
     Timestamp,
+)
+from pandas._stubs_only import (
+    PivotAggFuncTypes,
+    PivotTableColumnsTypes,
+    PivotTableIndexTypes,
+    PivotTableValuesTypes,
 )
 from pandas.core.arraylike import OpsMixin
 from pandas.core.base import IndexOpsMixin
@@ -50,19 +57,13 @@ from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.indexing import (
-    _AtIndexer,
-    _iAtIndexer,
-    _iLocIndexer,
-    _IndexSliceTuple,
-    _LocIndexer,
-)
-from pandas.core.reshape.pivot import (
-    _PivotAggFuncTypes,
-    _PivotTableColumnsTypes,
-    _PivotTableIndexTypes,
-    _PivotTableValuesTypes,
-)
+
+# The classes are private in pandas implementation. We have to ignore the private usage in the stubs.
+from pandas.core.indexing import _AtIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
+from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.series import Series
 from pandas.core.window import (
     Expanding,
@@ -176,7 +177,7 @@ from pandas._typing import (
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
-from pandas.plotting._core import _BoxPlotT
+from pandas.plotting._core import BoxPlotT
 
 _T_MUTABLE_MAPPING_co = TypeVar(
     "_T_MUTABLE_MAPPING_co", bound=MutableMapping[Any, Any], covariant=True
@@ -298,16 +299,16 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
-    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[int, int], value: ScalarOrNA
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
-    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable]
     ) -> Scalar: ...
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA
     ) -> None: ...
 
@@ -384,7 +385,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def itertuples(
         self, index: _bool = ..., name: _str = ...
-    ) -> Iterator[_PandasNamedTuple]: ...
+    ) -> Iterator[PandasNamedTuple]: ...
     @overload
     def itertuples(
         self, index: _bool = ..., name: None = None
@@ -1376,10 +1377,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def pivot_table(
         self,
-        values: _PivotTableValuesTypes = None,
-        index: _PivotTableIndexTypes = None,
-        columns: _PivotTableColumnsTypes = None,
-        aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
+        values: PivotTableValuesTypes = None,
+        index: PivotTableIndexTypes = None,
+        columns: PivotTableColumnsTypes = None,
+        aggfunc: PivotAggFuncTypes[Scalar] = "mean",
         fill_value: Scalar | None = None,
         margins: _bool = False,
         dropna: _bool = True,
@@ -1769,7 +1770,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         return_type: Literal["both"],
         backend: _str | None = None,
         **kwargs: Any,
-    ) -> _BoxPlotT: ...
+    ) -> BoxPlotT: ...
     @overload
     def boxplot(
         self,
@@ -2769,5 +2770,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @final
     def __bool__(self) -> NoReturn: ...
 
-class _PandasNamedTuple(tuple[Any, ...]):
+@type_check_only
+class PandasNamedTuple(tuple[Any, ...]):
     def __getattr__(self, field: str) -> Scalar: ...
