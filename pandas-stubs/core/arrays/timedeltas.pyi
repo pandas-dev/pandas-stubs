@@ -8,6 +8,7 @@ from pandas.core.arrays.datetimelike import (
     DatetimeLikeArrayMixin,
     TimelikeOps,
 )
+from pandas.core.frame import DataFrame
 from typing_extensions import Self
 
 from pandas._libs.tslibs.nattype import NaTType
@@ -115,7 +116,7 @@ class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     @property
     def nanoseconds(self) -> np_1darray_int32: ...
     @property
-    def components(self) -> int: ...
+    def components(self) -> DataFrame: ...
     @property
     def freq(self) -> DateOffset | None: ...  # pyrefly: ignore[bad-override]
     @freq.setter  # type: ignore[override]

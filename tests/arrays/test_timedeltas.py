@@ -1,14 +1,9 @@
 """Test module for methods in pandas.core.arrays.timedeltas."""
 
 from datetime import timedelta
-from typing import cast
 
 import numpy as np
 import pandas as pd
-from pandas import (
-    DataFrame,
-    TimedeltaIndex,
-)
 from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from typing_extensions import assert_type
@@ -32,13 +27,15 @@ from tests._typing import (
 def test_construction() -> None:
     """Test pd.array method for TimedeltaArray."""
     # From TimedeltaIndex
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
     check(assert_type(arr, TimedeltaArray), TimedeltaArray)
 
     # From numpy array of timedelta64
-    values = np.array([1, 2, 3], dtype="timedelta64[D]")
-    arr = pd.array(cast(np_1darray_td, values))
+    values = np.array(
+        [np.timedelta64(1, "D"), np.timedelta64(2, "D"), np.timedelta64(3, "D")]
+    )
+    arr = pd.array(values)
     check(assert_type(arr, TimedeltaArray), TimedeltaArray)
 
     # With dtype parameter
@@ -55,7 +52,7 @@ def test_construction() -> None:
 
 def test_timedelta_array_dtype() -> None:
     """Test dtype property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
     check(
         assert_type(arr.dtype, np.dtypes.TimeDelta64DType), np.dtypes.TimeDelta64DType
@@ -64,7 +61,7 @@ def test_timedelta_array_dtype() -> None:
 
 def test_timedelta_array_mul() -> None:
     """Test __mul__ and __rmul__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr * 2
@@ -79,7 +76,7 @@ def test_timedelta_array_mul() -> None:
 
 def test_timedelta_array_truediv() -> None:
     """Test __truediv__ and __rtruediv__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr / 2
@@ -91,7 +88,7 @@ def test_timedelta_array_truediv() -> None:
 
 def test_timedelta_array_floordiv() -> None:
     """Test __floordiv__ and __rfloordiv__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr // 2
@@ -103,7 +100,7 @@ def test_timedelta_array_floordiv() -> None:
 
 def test_timedelta_array_mod() -> None:
     """Test __mod__ and __rmod__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr % Timedelta("12 hours")
@@ -112,7 +109,7 @@ def test_timedelta_array_mod() -> None:
 
 def test_timedelta_array_divmod() -> None:
     """Test __divmod__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = divmod(arr, Timedelta("12 hours"))
@@ -123,7 +120,7 @@ def test_timedelta_array_divmod() -> None:
 
 def test_timedelta_array_neg() -> None:
     """Test __neg__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = -arr
@@ -132,7 +129,7 @@ def test_timedelta_array_neg() -> None:
 
 def test_timedelta_array_pos() -> None:
     """Test __pos__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = +arr
@@ -141,7 +138,7 @@ def test_timedelta_array_pos() -> None:
 
 def test_timedelta_array_abs() -> None:
     """Test __abs__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["-1 days", "2 days", "-3 days"])
+    idx = pd.TimedeltaIndex(["-1 days", "2 days", "-3 days"])
     arr = pd.array(idx)
 
     result = abs(arr)
@@ -150,7 +147,7 @@ def test_timedelta_array_abs() -> None:
 
 def test_timedelta_array_total_seconds() -> None:
     """Test total_seconds method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.total_seconds()
@@ -159,7 +156,7 @@ def test_timedelta_array_total_seconds() -> None:
 
 def test_timedelta_array_to_pytimedelta() -> None:
     """Test to_pytimedelta method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.to_pytimedelta()
@@ -168,7 +165,7 @@ def test_timedelta_array_to_pytimedelta() -> None:
 
 def test_timedelta_array_days() -> None:
     """Test days property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days 12:00:00", "2 days 06:00:00", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days 12:00:00", "2 days 06:00:00", "3 days"])
     arr = pd.array(idx)
 
     result = arr.days
@@ -177,7 +174,7 @@ def test_timedelta_array_days() -> None:
 
 def test_timedelta_array_seconds() -> None:
     """Test seconds property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days 12:00:00", "2 days 06:00:00", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days 12:00:00", "2 days 06:00:00", "3 days"])
     arr = pd.array(idx)
 
     result = arr.seconds
@@ -186,7 +183,7 @@ def test_timedelta_array_seconds() -> None:
 
 def test_timedelta_array_microseconds() -> None:
     """Test microseconds property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days 00:00:00.000100", "2 days 00:00:00.000200"])
+    idx = pd.TimedeltaIndex(["1 days 00:00:00.000100", "2 days 00:00:00.000200"])
     arr = pd.array(idx)
 
     result = arr.microseconds
@@ -195,7 +192,7 @@ def test_timedelta_array_microseconds() -> None:
 
 def test_timedelta_array_nanoseconds() -> None:
     """Test nanoseconds property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days 00:00:00.000000100", "2 days 00:00:00.000000200"])
+    idx = pd.TimedeltaIndex(["1 days 00:00:00.000000100", "2 days 00:00:00.000000200"])
     arr = pd.array(idx)
 
     result = arr.nanoseconds
@@ -204,11 +201,11 @@ def test_timedelta_array_nanoseconds() -> None:
 
 def test_timedelta_array_components() -> None:
     """Test components property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days 12:30:45.123456", "2 days 06:15:30.654321"])
+    idx = pd.TimedeltaIndex(["1 days 12:30:45.123456", "2 days 06:15:30.654321"])
     arr = pd.array(idx)
 
     result = arr.components
-    check(assert_type(result, int), DataFrame)
+    check(assert_type(result, pd.DataFrame), pd.DataFrame)
 
 
 # Tests for inherited methods from DatetimeLikeArrayMixin and TimelikeOps
@@ -216,7 +213,7 @@ def test_timedelta_array_components() -> None:
 
 def test_timedelta_array_unit() -> None:
     """Test unit property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.unit
@@ -225,7 +222,7 @@ def test_timedelta_array_unit() -> None:
 
 def test_timedelta_array_as_unit() -> None:
     """Test as_unit method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.as_unit("s")
@@ -243,7 +240,7 @@ def test_timedelta_array_as_unit() -> None:
 
 def test_timedelta_array_round() -> None:
     """Test round method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days 12:30:45", "2 days 06:15:30"])
+    idx = pd.TimedeltaIndex(["1 days 12:30:45", "2 days 06:15:30"])
     arr = pd.array(idx)
 
     result = arr.round("h")
@@ -255,7 +252,7 @@ def test_timedelta_array_round() -> None:
 
 def test_timedelta_array_floor() -> None:
     """Test floor method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days 12:30:45", "2 days 06:15:30"])
+    idx = pd.TimedeltaIndex(["1 days 12:30:45", "2 days 06:15:30"])
     arr = pd.array(idx)
 
     result = arr.floor("h")
@@ -267,7 +264,7 @@ def test_timedelta_array_floor() -> None:
 
 def test_timedelta_array_ceil() -> None:
     """Test ceil method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days 12:30:45", "2 days 06:15:30"])
+    idx = pd.TimedeltaIndex(["1 days 12:30:45", "2 days 06:15:30"])
     arr = pd.array(idx)
 
     result = arr.ceil("h")
@@ -279,7 +276,7 @@ def test_timedelta_array_ceil() -> None:
 
 def test_timedelta_array_ndim() -> None:
     """Test ndim property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.ndim
@@ -288,7 +285,7 @@ def test_timedelta_array_ndim() -> None:
 
 def test_timedelta_array_nbytes() -> None:
     """Test nbytes property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.nbytes
@@ -297,7 +294,7 @@ def test_timedelta_array_nbytes() -> None:
 
 def test_timedelta_array_size() -> None:
     """Test size property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.size
@@ -306,7 +303,7 @@ def test_timedelta_array_size() -> None:
 
 def test_timedelta_array_freq() -> None:
     """Test freq property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
     arr = pd.array(idx)
 
     result = arr.freq
@@ -315,7 +312,7 @@ def test_timedelta_array_freq() -> None:
 
 def test_timedelta_array_freqstr() -> None:
     """Test freqstr property for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
     arr = pd.array(idx)
 
     result = arr.freqstr
@@ -324,7 +321,7 @@ def test_timedelta_array_freqstr() -> None:
 
 def test_timedelta_array_min() -> None:
     """Test min method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.min()
@@ -336,7 +333,7 @@ def test_timedelta_array_min() -> None:
 
 def test_timedelta_array_max() -> None:
     """Test max method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.max()
@@ -348,7 +345,7 @@ def test_timedelta_array_max() -> None:
 
 def test_timedelta_array_mean() -> None:
     """Test mean method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.mean()
@@ -360,7 +357,7 @@ def test_timedelta_array_mean() -> None:
 
 def test_timedelta_array_getitem() -> None:
     """Test __getitem__ for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     # Scalar indexing
@@ -382,7 +379,7 @@ def test_timedelta_array_getitem() -> None:
 
 def test_timedelta_array_array() -> None:
     """Test __array__ method for TimedeltaArray."""
-    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
 
     result = arr.__array__()
