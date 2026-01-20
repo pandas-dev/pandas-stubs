@@ -10,6 +10,7 @@ from pandas import (
     DataFrame,
     TimedeltaIndex,
 )
+from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from typing_extensions import (
     Any,
@@ -23,11 +24,12 @@ from pandas._typing import TimeUnit
 from tests import check
 from tests._typing import (
     np_1darray,
+    np_1darray_float,
     np_1darray_td,
 )
 
 
-def test_constructor() -> None:
+def test_construction() -> None:
     """Test pd.array method for TimedeltaArray."""
     # From TimedeltaIndex
     idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
@@ -84,7 +86,7 @@ def test_timedelta_array_truediv() -> None:
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
     result_np = arr / Timedelta("1 day")
-    check(assert_type(result_np, np_1darray), np.ndarray)
+    check(assert_type(result_np, np_1darray_float), np.ndarray)
 
 
 def test_timedelta_array_floordiv() -> None:
@@ -96,7 +98,7 @@ def test_timedelta_array_floordiv() -> None:
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
     result_np = arr // Timedelta("1 day")
-    check(assert_type(result_np, np_1darray), np.ndarray)
+    check(assert_type(result_np, np_1darray_float), np.ndarray)
 
 
 def test_timedelta_array_mod() -> None:
@@ -354,26 +356,26 @@ def test_timedelta_array_mean() -> None:
     check(assert_type(result, Timedelta | NaTType), Timedelta)
 
 
-# def test_timedelta_array_getitem() -> None:
-#     """Test __getitem__ for TimedeltaArray."""
-#     idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
-#     arr = pd.array(idx)
-#
-#     # Scalar indexing
-#     result = arr[0]
-#     check(assert_type(result, Timedelta | NaTType), Timedelta)
-#
-#     # Slice indexing
-#     result = arr[0:2]
-#     check(assert_type(result, TimedeltaArray), TimedeltaArray)
-#
-#     # List indexing
-#     result = arr[[0, 2]]
-#     check(assert_type(result, TimedeltaArray), TimedeltaArray)
-#
-#     # Boolean indexing
-#     result = arr[[True, False, True]]
-#     check(assert_type(result, TimedeltaArray), TimedeltaArray)
+def test_timedelta_array_getitem() -> None:
+    """Test __getitem__ for TimedeltaArray."""
+    idx = TimedeltaIndex(["1 days", "2 days", "3 days"])
+    arr = pd.array(idx)
+
+    # Scalar indexing
+    result = arr[0]
+    check(assert_type(result, DTScalarOrNaT), Timedelta)
+
+    # Slice indexing
+    result_slice = arr[0:2]
+    check(assert_type(result_slice, TimedeltaArray), TimedeltaArray)
+
+    # List indexing
+    result_lst = arr[[0, 2]]
+    check(assert_type(result_lst, TimedeltaArray), TimedeltaArray)
+
+    # Boolean indexing
+    result_arr = arr[np.array([True, False, True])]
+    check(assert_type(result_arr, TimedeltaArray), TimedeltaArray)
 
 
 def test_timedelta_array_array() -> None:
