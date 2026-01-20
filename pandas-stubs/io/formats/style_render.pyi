@@ -16,7 +16,9 @@ from jinja2.environment import (
 )
 from jinja2.loaders import PackageLoader
 from pandas import Index
-from pandas.core.indexing import _IndexSlice
+
+# The class is private in pandas implementation. We have to ignore the private usage in the stubs.
+from pandas.core.indexing import _IndexSlice  # pyright: ignore[reportPrivateUsage]
 from typing_extensions import Self
 
 from pandas._typing import (

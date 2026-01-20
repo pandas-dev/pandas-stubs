@@ -1411,6 +1411,31 @@ def test_multiindex_range() -> None:
     check(assert_type(midx_mixed_types, pd.MultiIndex), pd.MultiIndex)
 
 
+def test_multiindex_from_product_with_sets() -> None:
+    """Test using sets in `MultiIndex.from_product` GH1637."""
+    midx = pd.MultiIndex.from_product([{1, 2, 3}, {"a", "b", "c"}])
+    check(assert_type(midx, pd.MultiIndex), pd.MultiIndex)
+
+
+def test_multiindex_from_product_with_iterables() -> None:
+    """Test using genuinely iterable inputs in `MultiIndex.from_product` GH1637."""
+    # Test with generator expressions
+    midx = pd.MultiIndex.from_product([iter([1, 2, 3]), iter(["a", "b", "c"])])
+    check(assert_type(midx, pd.MultiIndex), pd.MultiIndex)
+
+    # Test with map object (iterator)
+    midx2 = pd.MultiIndex.from_product([map(str, [1, 2, 3]), iter(["x", "y"])])
+    check(assert_type(midx2, pd.MultiIndex), pd.MultiIndex)
+
+
+def test_multiindex_from_product_forbid_strings() -> None:
+    """Test that passing strings directly to `MultiIndex.from_product` is forbidden."""
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.MultiIndex.from_product(["12", "34"]), Never)
+
+
 def test_index_naming() -> None:
     """
     Test index names type both for the getter and the setter.
