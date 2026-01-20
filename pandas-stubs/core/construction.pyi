@@ -21,11 +21,15 @@ from pandas.core.arrays.string_ import (
     StringDtype,
 )
 from pandas.core.arrays.string_arrow import ArrowStringArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.range import RangeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import Series
 from typing_extensions import Never
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs.nattype import NaTType
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     BuiltinNotStrDtypeArg,
     Just,
@@ -39,6 +43,8 @@ from pandas._typing import (
     PandasTimestampDtypeArg,
     PandasUIntDtypeArg,
     PyArrowStrDtypeArg,
+    TimedeltaDtypeArg,
+    np_1darray_td,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -80,6 +86,18 @@ def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlapping
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
+def array(  # pyright: ignore[reportOverlappingOverload]
+    data: (
+        Sequence[Timedelta]
+        | Series[Timedelta]
+        | TimedeltaArray
+        | TimedeltaIndex
+        | np_1darray_td
+    ),
+    dtype: TimedeltaDtypeArg | None = None,
+    copy: bool = True,
+) -> TimedeltaArray: ...
+@overload
 def array(
     data: Sequence[bool | np.bool | Just[float] | NAType | None],
     dtype: PandasBooleanDtypeArg,
@@ -92,7 +110,7 @@ def array(  # type: ignore[overload-overlap]
     copy: bool = True,
 ) -> BooleanArray: ...
 @overload
-def array(  # pyright: ignore[reportOverlappingOverload]
+def array(
     data: np_ndarray_bool | BooleanArray,
     dtype: PandasBooleanDtypeArg | None = None,
     copy: bool = True,
