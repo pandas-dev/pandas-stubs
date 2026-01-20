@@ -383,4 +383,4 @@ def test_timedelta_array_array() -> None:
     arr = pd.array(idx)
 
     result = arr.__array__()
-    check(assert_type(result, np_1darray_td), np_1darray)
+    check(assert_type(result, np_1darray_td), np_1darray, np.timedelta64)
