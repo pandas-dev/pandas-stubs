@@ -25,6 +25,7 @@ from tests import check
 from tests._typing import (
     np_1darray,
     np_1darray_float,
+    np_1darray_int32,
     np_1darray_td,
 )
 
@@ -170,7 +171,7 @@ def test_timedelta_array_days() -> None:
     arr = pd.array(idx)
 
     result = arr.days
-    check(assert_type(result, int), np.ndarray)
+    check(assert_type(result, np_1darray_int32), np.ndarray)
 
 
 def test_timedelta_array_seconds() -> None:
@@ -179,7 +180,7 @@ def test_timedelta_array_seconds() -> None:
     arr = pd.array(idx)
 
     result = arr.seconds
-    check(assert_type(result, int), np.ndarray)
+    check(assert_type(result, np_1darray_int32), np.ndarray)
 
 
 def test_timedelta_array_microseconds() -> None:
@@ -188,7 +189,7 @@ def test_timedelta_array_microseconds() -> None:
     arr = pd.array(idx)
 
     result = arr.microseconds
-    check(assert_type(result, int), np.ndarray)
+    check(assert_type(result, np_1darray_int32), np.ndarray)
 
 
 def test_timedelta_array_nanoseconds() -> None:
@@ -197,7 +198,7 @@ def test_timedelta_array_nanoseconds() -> None:
     arr = pd.array(idx)
 
     result = arr.nanoseconds
-    check(assert_type(result, int), np.ndarray)
+    check(assert_type(result, np_1darray_int32), np.ndarray)
 
 
 def test_timedelta_array_components() -> None:
