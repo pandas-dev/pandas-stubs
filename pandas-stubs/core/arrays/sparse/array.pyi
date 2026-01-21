@@ -1,5 +1,5 @@
 from collections.abc import (
-    Sequence,
+    Iterable,
     Set as AbstractSet,
 )
 from enum import Enum
@@ -63,7 +63,7 @@ class SparseArray(OpsMixin, ExtensionArray):
     @overload
     def __new__(
         cls,
-        data: AnyArrayLike | Sequence[Scalar],
+        data: AnyArrayLike | Iterable[Scalar],
         sparse_index: SparseIndex | None = None,
         fill_value: Scalar | None = None,
         kind: SparseIndexKind = "integer",

@@ -68,6 +68,9 @@ def test_constructor() -> None:
     arr = SparseArray(("a", "b"))
     check(assert_type(arr, SparseArray), SparseArray)
 
+    arr = SparseArray(iter([1, "a"]))
+    check(assert_type(arr, SparseArray), SparseArray)
+
     arr = SparseArray(range(24))
     check(assert_type(arr, SparseArray), SparseArray)
 
