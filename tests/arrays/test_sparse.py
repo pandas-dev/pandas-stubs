@@ -68,7 +68,11 @@ def test_constructor() -> None:
     arr = SparseArray(("a", "b"))
     check(assert_type(arr, SparseArray), SparseArray)
 
-    arr = SparseArray(iter([1, "a"]))
+    # TODO: python/mypy#20420, mixed type in iter is not recognized as Iterable[Scalar]
+    arr = SparseArray(iter([1, 2, 3, 4]))
+    check(assert_type(arr, SparseArray), SparseArray)
+
+    arr = SparseArray(iter(["a", "b", "c"]))
     check(assert_type(arr, SparseArray), SparseArray)
 
     arr = SparseArray(range(24))
