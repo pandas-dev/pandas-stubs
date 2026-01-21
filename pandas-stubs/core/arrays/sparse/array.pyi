@@ -1,4 +1,7 @@
-from collections.abc import Sequence
+from collections.abc import (
+    Sequence,
+    Set as AbstractSet,
+)
 from enum import Enum
 from typing import (
     Any,
@@ -13,7 +16,10 @@ from typing import (
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.series import Series
-from typing_extensions import Self
+from typing_extensions import (
+    Never,
+    Self,
+)
 
 from pandas._libs.sparse import SparseIndex
 from pandas._typing import (
@@ -44,9 +50,20 @@ class ellipsis(Enum):
     Ellipsis = "..."
 
 class SparseArray(OpsMixin, ExtensionArray):
+    @overload
     def __new__(
         cls,
-        data: AnyArrayLike | Sequence[int | float | complex] | Scalar,
+        data: AbstractSet[Any] | str,
+        sparse_index: SparseIndex | None = None,
+        fill_value: Scalar | None = None,
+        kind: SparseIndexKind = "integer",
+        dtype: NpDtypeNoStr | SparseDtype | None = None,
+        copy: bool = False,
+    ) -> Never: ...
+    @overload
+    def __new__(
+        cls,
+        data: AnyArrayLike | Sequence[Scalar],
         sparse_index: SparseIndex | None = None,
         fill_value: Scalar | None = None,
         kind: SparseIndexKind = "integer",

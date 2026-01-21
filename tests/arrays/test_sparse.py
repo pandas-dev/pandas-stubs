@@ -8,7 +8,10 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.sparse import SparseArray
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from pandas._libs.sparse import SparseIndex
 from pandas._typing import Scalar
@@ -17,6 +20,7 @@ from pandas.core.dtypes.dtypes import SparseDtype
 
 from tests import (
     PD_LTE_23,
+    TYPE_CHECKING_INVALID_USAGE,
     check,
 )
 from tests._typing import (
@@ -60,6 +64,24 @@ def test_constructor() -> None:
 
     arr = SparseArray([])
     check(assert_type(arr, SparseArray), SparseArray)
+
+    arr = SparseArray(("a", "b"))
+    check(assert_type(arr, SparseArray), SparseArray)
+
+    arr = SparseArray(range(24))
+    check(assert_type(arr, SparseArray), SparseArray)
+
+
+def test_constructor_forbidden_str() -> None:
+    """Test __new__ method for SparseArray with forbidden types (str)."""
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(SparseArray("abc"), Never)
+
+
+def test_constructor_forbidden_set() -> None:
+    """Test __new__ method for SparseArray with forbidden types (set)."""
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(SparseArray({"a", "b"}), Never)
 
 
 def test_sparse_dtype() -> None:
