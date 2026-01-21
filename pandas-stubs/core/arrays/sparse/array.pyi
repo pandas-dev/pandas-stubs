@@ -33,7 +33,6 @@ from pandas._typing import (
     SequenceIndexer,
     np_1darray,
     np_1darray_int32,
-    np_ndarray,
 )
 
 from pandas.core.dtypes.dtypes import SparseDtype
@@ -78,7 +77,7 @@ class SparseArray(OpsMixin, ExtensionArray):
     @property
     def sp_index(self) -> SparseIndex: ...
     @property
-    def sp_values(self) -> np_ndarray: ...
+    def sp_values(self) -> np_1darray: ...
     @property
     def dtype(self) -> SparseDtype: ...
     @property

@@ -26,7 +26,6 @@ from tests import (
 from tests._typing import (
     np_1darray,
     np_1darray_int32,
-    np_ndarray,
 )
 
 
@@ -102,7 +101,7 @@ def test_sparse_properties() -> None:
     arr = SparseArray([1, 0, 0, 2, 3], fill_value=0)
 
     check(assert_type(arr.sp_index, SparseIndex), SparseIndex)
-    check(assert_type(arr.sp_values, np_ndarray), np.ndarray)
+    check(assert_type(arr.sp_values, np_1darray), np_1darray)
     check(assert_type(arr.dtype, SparseDtype), SparseDtype)
     check(assert_type(arr.nbytes, int), int)
     check(assert_type(arr.density, float), float)
