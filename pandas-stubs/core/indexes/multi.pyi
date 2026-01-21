@@ -14,7 +14,10 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.core.indexes.base import Index
-from typing_extensions import Self
+from typing_extensions import (
+    Never,
+    Self,
+)
 
 from pandas._typing import (
     AnyAll,
@@ -63,10 +66,19 @@ class MultiIndex(Index):
         sortorder: int | None = None,
         names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
+    @overload
     @classmethod
     def from_product(
         cls,
-        iterables: Sequence[SequenceNotStr[Hashable] | pd.Series | pd.Index | range],
+        iterables: Sequence[str],
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
+    ) -> Never: ...
+    @overload
+    @classmethod
+    def from_product(
+        cls,
+        iterables: Sequence[Iterable[Hashable]],
         sortorder: int | None = None,
         names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...

@@ -824,7 +824,9 @@ ReindexMethod: TypeAlias = FillnaOptions | Literal["nearest"]
 TimeGrouperOrigin: TypeAlias = (
     Timestamp | Literal["epoch", "start", "start_day", "end", "end_day"]
 )
-TimeAmbiguous: TypeAlias = Literal["infer", "NaT", "raise"] | npt.NDArray[np.bool_]
+TimeAmbiguous: TypeAlias = (
+    Literal["infer", "NaT", "raise"] | bool | npt.NDArray[np.bool_]
+)
 # Note this is same as TimestampNonexistent - defined both ways in pandas
 TimeNonexistent: TypeAlias = (
     Literal["shift_forward", "shift_backward", "NaT", "raise"]
@@ -960,6 +962,7 @@ np_1darray_object: TypeAlias = np_1darray[np.object_]
 np_1darray_bool: TypeAlias = np_1darray[np.bool]
 np_1darray_intp: TypeAlias = np_1darray[np.intp]
 np_1darray_int8: TypeAlias = np_1darray[np.int8]
+np_1darray_int32: TypeAlias = np_1darray[np.int32]
 np_1darray_int64: TypeAlias = np_1darray[np.int64]
 np_1darray_anyint: TypeAlias = np_1darray[np.integer]
 np_1darray_float: TypeAlias = np_1darray[np.floating]

@@ -1,4 +1,3 @@
-# pyright: strict
 from datetime import (
     date as _date,
     datetime,
@@ -6,6 +5,8 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
+
+# The class is private in python implementation. We have to ignore the private usage in the stubs.
 from datetime import _IsoCalendarDate  # pyright: ignore[reportPrivateUsage]
 import sys
 from time import struct_time
@@ -181,9 +182,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __le__(self, other: np_ndarray_dt[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
     @overload
-    def __le__(  # ty: ignore[invalid-method-override]
-        self, other: Series[Timestamp]
-    ) -> Series[bool]: ...
+    def __le__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __lt__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
@@ -191,9 +190,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __lt__(self, other: np_ndarray_dt[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
     @overload
-    def __lt__(  # ty: ignore[invalid-method-override]
-        self, other: Series[Timestamp]
-    ) -> Series[bool]: ...
+    def __lt__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __ge__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
@@ -201,9 +198,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ge__(self, other: np_ndarray_dt[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
     @overload
-    def __ge__(  # ty: ignore[invalid-method-override]
-        self, other: Series[Timestamp]
-    ) -> Series[bool]: ...
+    def __ge__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __gt__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
@@ -211,9 +206,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __gt__(self, other: np_ndarray_dt[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
     @overload
-    def __gt__(  # ty: ignore[invalid-method-override]
-        self, other: Series[Timestamp]
-    ) -> Series[bool]: ...
+    def __gt__(self, other: Series[Timestamp]) -> Series[bool]: ...
     # error: Signature of "__add__" incompatible with supertype "date"/"datetime"
     @overload  # type: ignore[override]
     def __add__(self, other: np_ndarray_td[ShapeT]) -> np_ndarray_dt[ShapeT]: ...
@@ -235,9 +228,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __sub__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
-    def __sub__(  # ty: ignore[invalid-method-override]
-        self, other: np_ndarray_td[ShapeT]
-    ) -> np_ndarray_dt[ShapeT]: ...
+    def __sub__(self, other: np_ndarray_td[ShapeT]) -> np_ndarray_dt[ShapeT]: ...
     @overload
     def __eq__(self, other: datetime | np.datetime64 | Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload

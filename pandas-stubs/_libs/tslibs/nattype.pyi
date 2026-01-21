@@ -1,4 +1,3 @@
-# pyright: strict
 from datetime import (
     datetime,
     timedelta,

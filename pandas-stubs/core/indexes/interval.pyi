@@ -13,14 +13,16 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Index
+from pandas._stubs_only import (
+    OrderableScalarT,
+    OrderableT,
+    OrderableTimesT,
+)
 from pandas.core.indexes.extension import ExtensionIndex
 
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin,
-    _OrderableScalarT,
-    _OrderableT,
-    _OrderableTimesT,
 )
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -68,13 +70,13 @@ class _LengthDescriptor:
     @overload
     def __get__(
         self,
-        instance: IntervalIndex[Interval[_OrderableScalarT]],
+        instance: IntervalIndex[Interval[OrderableScalarT]],
         owner: type[IntervalIndex],
-    ) -> Index[_OrderableScalarT]: ...
+    ) -> Index[OrderableScalarT]: ...
     @overload
     def __get__(
         self,
-        instance: IntervalIndex[Interval[_OrderableTimesT]],
+        instance: IntervalIndex[Interval[OrderableTimesT]],
         owner: type[IntervalIndex],
     ) -> Index[Timedelta]: ...
 
@@ -89,9 +91,9 @@ class _MidDescriptor:
     @overload
     def __get__(
         self,
-        instance: IntervalIndex[Interval[_OrderableT]],
+        instance: IntervalIndex[Interval[OrderableT]],
         owner: type[IntervalIndex],
-    ) -> Index[_OrderableT]: ...
+    ) -> Index[OrderableT]: ...
 
 class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     closed: IntervalClosedType
@@ -251,9 +253,9 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     def is_overlapping(self) -> bool: ...
     def get_loc(self, key: Label) -> int | slice | np_1darray_bool: ...
     @property
-    def left(self: IntervalIndex[Interval[_OrderableT]]) -> Index[_OrderableT]: ...
+    def left(self: IntervalIndex[Interval[OrderableT]]) -> Index[OrderableT]: ...
     @property
-    def right(self: IntervalIndex[Interval[_OrderableT]]) -> Index[_OrderableT]: ...
+    def right(self: IntervalIndex[Interval[OrderableT]]) -> Index[OrderableT]: ...
     mid = _MidDescriptor()
     length = _LengthDescriptor()
     @overload  # type: ignore[override]

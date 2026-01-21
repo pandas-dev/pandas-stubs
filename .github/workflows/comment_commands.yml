@@ -8,9 +8,9 @@ permissions:
 
 env:
   # store mapping of commands to use with poetry
-  RUN_COMMAND: '{"/pandas_nightly": "pytest --nightly", "/pyright_strict": "pyright_strict", "/mypy_nightly": "mypy --mypy_nightly"}'
+  RUN_COMMAND: '{"/pandas_nightly": "pytest --nightly", "/mypy_nightly": "mypy --mypy_nightly"}'
   # store mapping of labels to display in the check runs
-  DISPLAY_COMMAND: '{"/pandas_nightly": "Pandas nightly tests", "/pyright_strict": "Pyright strict tests", "/mypy_nightly": "Mypy nightly tests"}'
+  DISPLAY_COMMAND: '{"/pandas_nightly": "Pandas nightly tests", "/mypy_nightly": "Mypy nightly tests"}'
 
 jobs:
   optional_tests:
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # if more commands are added, they will need to be added here too as we don't have access to env at this stage
-    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/pyright_strict", "/mypy_nightly"]'), github.event.comment.body)
+    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly"]'), github.event.comment.body)
 
     steps:
       - name: Get head sha, branch name and store value

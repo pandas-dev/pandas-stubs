@@ -79,8 +79,8 @@ def test_property_dt() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
-        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
+        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType]
+        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType]
 
 
 def test_property_array() -> None:

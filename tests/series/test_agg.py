@@ -74,10 +74,10 @@ def test_agg_complex() -> None:
 def test_agg_str() -> None:
     series = pd.Series(["1", "a", "pd"])
     if TYPE_CHECKING_INVALID_USAGE:
-        series.mean()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
-        series.median()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
-        series.std()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
-        series.var()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        series.mean()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
+        series.median()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
+        series.std()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
+        series.var()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
 
 def test_agg_ts() -> None:

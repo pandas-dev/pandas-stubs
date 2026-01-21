@@ -1,4 +1,3 @@
-# pyright: reportUnknownArgumentType=false,reportUnknownLambdaType=false
 from __future__ import annotations
 
 from collections import (
@@ -72,9 +71,9 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.frame import _PandasNamedTuple
+    from pandas.core.frame import PandasNamedTuple
 else:
-    _PandasNamedTuple: TypeAlias = tuple
+    PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
@@ -299,7 +298,7 @@ def test_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], 1: [4, 5, 6]})
 
     my_unnamed_func = (  # pyright: ignore[reportUnknownVariableType]
-        lambda df: df["a"] * 2
+        lambda df: df["a"] * 2  # pyright: ignore[reportUnknownLambdaType]
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
@@ -324,7 +323,13 @@ def test_assign() -> None:
     check(assert_type(df.assign(c=df["a"].index), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=df["a"].to_numpy()), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=2), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.assign(c=my_unnamed_func), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            df.assign(c=my_unnamed_func),  # pyright: ignore[reportUnknownArgumentType]
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
     check(assert_type(df.assign(c=my_named_func_1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=None), pd.DataFrame), pd.DataFrame)
@@ -659,17 +664,13 @@ def test_types_iterrows() -> None:
 
 def test_types_itertuples() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(
-        assert_type(df.itertuples(), Iterator[_PandasNamedTuple]),
-        Iterator,
-        _PandasNamedTuple,
-    )
+    check(assert_type(df.itertuples(), Iterator[PandasNamedTuple]), Iterator, tuple)
     check(
         assert_type(
-            df.itertuples(index=False, name="Foobar"), Iterator[_PandasNamedTuple]
+            df.itertuples(index=False, name="Foobar"), Iterator[PandasNamedTuple]
         ),
         Iterator,
-        _PandasNamedTuple,
+        tuple,
     )
     check(
         assert_type(df.itertuples(index=False, name=None), Iterator[tuple[Any, ...]]),
@@ -678,7 +679,7 @@ def test_types_itertuples() -> None:
     )
 
     for t1 in df.itertuples():
-        assert_type(t1, _PandasNamedTuple)
+        check(assert_type(t1, PandasNamedTuple), tuple)
         assert t1.__class__.__name__ == "Pandas"
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col1, int)
@@ -687,7 +688,7 @@ def test_types_itertuples() -> None:
             assert isinstance(t1[k], int)
 
     for t1 in df.itertuples(name="FooBar"):
-        assert_type(t1, _PandasNamedTuple)
+        check(assert_type(t1, PandasNamedTuple), tuple)
         assert t1.__class__.__name__ == "FooBar"
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col1, int)
@@ -715,7 +716,7 @@ def test_frame_iterator() -> None:
 
     check(assert_type(next(df.items()), tuple[Hashable, pd.Series]), tuple)
     check(assert_type(next(df.iterrows()), tuple[Hashable, pd.Series]), tuple)
-    check(assert_type(next(df.itertuples()), _PandasNamedTuple), _PandasNamedTuple)
+    check(assert_type(next(df.itertuples()), PandasNamedTuple), tuple)
 
 
 def test_types_sum() -> None:
@@ -1381,7 +1382,16 @@ def test_types_apply() -> None:
 def test_types_map() -> None:
     # GH774
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(assert_type(df.map(lambda x: x**2), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            df.map(
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+                ** 2
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
     check(assert_type(df.map(np.exp), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.map(str), pd.DataFrame), pd.DataFrame)
     # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -1783,6 +1793,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1797,6 +1808,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1811,6 +1823,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1826,6 +1839,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1840,6 +1854,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1854,6 +1869,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1868,6 +1884,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1882,6 +1899,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1937,6 +1955,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1952,6 +1971,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1967,6 +1987,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -1982,6 +2003,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -2037,6 +2059,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -2055,6 +2078,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
         FutureWarning,
         r"The provided callable.*",
         lower="2.3.0",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -2837,7 +2861,8 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(), columns=lambda name: name.upper()
+                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
+                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
             ),
             pd.DataFrame,
         ),
@@ -3633,7 +3658,11 @@ def test_to_dict_into_ordered_dict() -> None:
     data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
 
     check(
-        assert_type(data.to_dict(into=OrderedDict), OrderedDict[Any, Any]),
+        assert_type(
+            # into is a generic class with no default type parameters, hence the pyright ignore
+            data.to_dict(into=OrderedDict),
+            OrderedDict[Any, Any],  # pyright: ignore[reportUnknownArgumentType]
+        ),
         OrderedDict,
         tuple,
     )
@@ -3653,7 +3682,9 @@ def test_to_dict_into_ordered_dict() -> None:
     )
     check(
         assert_type(
-            data.to_dict("records", into=OrderedDict), list[OrderedDict[Any, Any]]
+            # into is a generic class with no default type parameters, hence the pyright ignore
+            data.to_dict("records", into=OrderedDict),
+            list[OrderedDict[Any, Any]],  # pyright: ignore[reportUnknownArgumentType]
         ),
         list,
         OrderedDict,
@@ -4144,7 +4175,7 @@ def test_itertuples() -> None:
     df = pd.DataFrame({"a": [1, 2, 3, 4], "b": [5, 6, 7, 8]})
 
     for item in df.itertuples():
-        check(assert_type(item, _PandasNamedTuple), tuple)
+        check(assert_type(item, PandasNamedTuple), tuple)
         assert_type(item.a, Scalar)
 
 
@@ -4276,12 +4307,18 @@ def test_transpose() -> None:
 def test_combine() -> None:
     df1 = pd.DataFrame({"A": [0, 0], "B": [4, 4]})
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
-    take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownVariableType]
-        s1 if s1.sum() < s2.sum() else s2
+    take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownLambdaType,reportUnknownVariableType]
+        s1 if s1.sum() < s2.sum() else s2  # pyright: ignore[reportUnknownMemberType]
     )
     assert_type(
         check(
-            df1.combine(df2, take_smaller, fill_value=0, overwrite=False), pd.DataFrame
+            df1.combine(
+                df2,
+                take_smaller,  # pyright: ignore[reportUnknownArgumentType]
+                fill_value=0,
+                overwrite=False,
+            ),
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )

@@ -1,4 +1,3 @@
-# pyright: reportUnknownArgumentType=false,reportUnknownLambdaType=false
 from __future__ import annotations
 
 from collections.abc import (
@@ -383,7 +382,7 @@ def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
     check(assert_type(s.sort_values(), "pd.Series[int]"), pd.Series, np.integer)
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(s.sort_values(0), pd.Series), pd.Series)  # type: ignore[assert-type,call-overload] # pyright: ignore[reportAssertTypeFailure,reportCallIssue]
+        s.sort_values(0)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
     check(assert_type(s.sort_values(axis=0), "pd.Series[int]"), pd.Series, np.integer)
     check(
         assert_type(s.sort_values(ascending=False), "pd.Series[int]"),
@@ -855,7 +854,16 @@ def test_types_apply() -> None:
     ss = s.astype(str)
     check(assert_type(ss.apply(get_depth), pd.Series), pd.Series, np.integer)
 
-    check(assert_type(s.apply(lambda x: pd.NA), pd.Series), pd.Series, NAType)
+    check(
+        assert_type(
+            s.apply(
+                lambda x: pd.NA  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+            ),
+            pd.Series,
+        ),
+        pd.Series,
+        NAType,
+    )
 
 
 def test_types_element_wise_arithmetic() -> None:
@@ -919,8 +927,17 @@ def test_types_groupby() -> None:
     s.groupby(s > 2)
     # GH 284
     s.groupby([s > 2, s % 2 == 1])
-    s.groupby(lambda x: x)
-    s.groupby([lambda x: x, lambda x: x.replace("a", "b")])
+    s.groupby(
+        lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+    )
+    s.groupby(
+        [
+            lambda x: x,  # pyright: ignore[reportUnknownLambdaType]
+            lambda x: x.replace(  # pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]
+                "a", "b"
+            ),
+        ]
+    )
     s.groupby(np.array([1, 0, 1, 0]))
     s.groupby([np.array([1, 0, 0, 0]), np.array([0, 0, 1, 0])])
     s.groupby({"a": 1, "b": 2})
@@ -1140,7 +1157,9 @@ def test_types_groupby_transform() -> None:
 
     check(
         assert_type(
-            s.groupby(lambda x: x).transform(transform_func, True, kw_arg="foo"),
+            s.groupby(
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+            ).transform(transform_func, True, kw_arg="foo"),
             "pd.Series[float]",
         ),
         pd.Series,
@@ -1148,16 +1167,32 @@ def test_types_groupby_transform() -> None:
     )
     check(
         assert_type(
-            s.groupby(lambda x: x).transform(
-                transform_func, True, engine="cython", kw_arg="foo"
-            ),
+            s.groupby(
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+            ).transform(transform_func, True, engine="cython", kw_arg="foo"),
             "pd.Series[float]",
         ),
         pd.Series,
         float,
     )
-    check(assert_type(s.groupby(lambda x: x).transform("mean"), pd.Series), pd.Series)
-    check(assert_type(s.groupby(lambda x: x).transform("first"), pd.Series), pd.Series)
+    check(
+        assert_type(
+            s.groupby(
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+            ).transform("mean"),
+            pd.Series,
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            s.groupby(
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+            ).transform("first"),
+            pd.Series,
+        ),
+        pd.Series,
+    )
 
 
 def test_types_groupby_aggregate() -> None:
@@ -1413,7 +1448,12 @@ def test_types_rename_axis() -> None:
     check(assert_type(s.rename_axis(index=["A"]), "pd.Series[int]"), pd.Series)
     check(assert_type(s.rename_axis(index={"a": "A"}), "pd.Series[int]"), pd.Series)
     check(
-        assert_type(s.rename_axis(index=lambda name: name.upper()), "pd.Series[int]"),
+        assert_type(
+            s.rename_axis(
+                index=lambda name: name.upper()  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
+            ),
+            "pd.Series[int]",
+        ),
         pd.Series,
     )
     check(assert_type(s.rename_axis(index=None), "pd.Series[int]"), pd.Series)
@@ -2284,7 +2324,17 @@ def test_types_apply_set() -> None:
     series_of_lists: pd.Series = pd.Series(
         {"list1": [1, 2, 3], "list2": ["a", "b", "c"], "list3": [True, False, True]}
     )
-    check(assert_type(series_of_lists.apply(lambda x: set(x)), pd.Series), pd.Series)
+    check(
+        assert_type(
+            series_of_lists.apply(
+                lambda x: set(  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+                    x  # pyright: ignore[reportUnknownArgumentType]
+                )
+            ),
+            pd.Series,
+        ),
+        pd.Series,
+    )
 
 
 def test_prefix_summix_axis() -> None:
@@ -2330,7 +2380,15 @@ def test_convert_dtypes_dtype_backend() -> None:
 def test_apply_returns_none() -> None:
     # GH 557
     s = pd.Series([1, 2, 3])
-    check(assert_type(s.apply(lambda x: None), pd.Series), pd.Series)
+    check(
+        assert_type(
+            s.apply(
+                lambda x: None  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+            ),
+            pd.Series,
+        ),
+        pd.Series,
+    )
 
 
 def test_to_json_mode() -> None:
@@ -2723,13 +2781,13 @@ def test_diff() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
-        pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
         # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
-        pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
-        pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
         def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
             # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
@@ -2849,7 +2907,12 @@ def test_apply_dateoffset() -> None:
     s = pd.Series(months)
     check(
         assert_type(
-            s.apply(lambda x: pd.DateOffset(months=x)), "pd.Series[BaseOffset]"
+            s.apply(
+                lambda x: pd.DateOffset(  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+                    months=x  # pyright: ignore[reportUnknownArgumentType]
+                )
+            ),
+            "pd.Series[BaseOffset]",
         ),
         pd.Series,
         pd.DateOffset,
@@ -3077,18 +3140,13 @@ def test_timedelta_index_cumprod() -> None:
     offset_series = as_period_series - as_period_series
 
     if TYPE_CHECKING_INVALID_USAGE:
-        offset_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        offset_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        pd.Series(  # type: ignore[misc]
-            [pd.Timestamp("2024-04-29"), pd.Timestamp("2034-08-28")]
-        ).cumprod()  # pyright: ignore[reportAttributeAccessIssue]
+        pd.Series([pd.Timestamp("2024-04-29"), pd.Timestamp("2034-08-28")]).cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        as_period_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        as_period_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType]
 
 
 def test_series_str_methods() -> None:

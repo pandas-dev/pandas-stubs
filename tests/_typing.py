@@ -1,5 +1,6 @@
 # This file serves as a stub file for static type checkers
 # (pyright does not like it if I call the file tests/_typing.pyi).
+# It can only import from pandas._typing.
 # By tests/conftest.py, pytest copies this file to tests/_typing.pyi, and
 # pandas-stubs/_typing.pyi to tests/_typing.py.
 # After tests are done, pytest copies tests/_typing.pyi back to
@@ -56,6 +57,7 @@ from pandas._typing import (
     StrDtypeArg,
     TimedeltaDtypeArg,
     TimestampDtypeArg,
+    TimeUnit,
     UIntDtypeArg,
     VoidDtypeArg,
     np_1darray,
@@ -66,6 +68,7 @@ from pandas._typing import (
     np_1darray_dt,
     np_1darray_float,
     np_1darray_int8,
+    np_1darray_int32,
     np_1darray_int64,
     np_1darray_intp,
     np_1darray_object,
@@ -135,6 +138,7 @@ __all__ = [
     "StrDtypeArg",
     "TimedeltaDtypeArg",
     "TimestampDtypeArg",
+    "TimeUnit",
     "UIntDtypeArg",
     "VoidDtypeArg",
     "np_1darray",
@@ -145,6 +149,7 @@ __all__ = [
     "np_1darray_dt",
     "np_1darray_float",
     "np_1darray_int8",
+    "np_1darray_int32",
     "np_1darray_int64",
     "np_1darray_intp",
     "np_1darray_object",
