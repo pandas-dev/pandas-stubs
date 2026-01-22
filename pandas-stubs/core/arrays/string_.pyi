@@ -2,6 +2,7 @@ from typing import (
     Any,
     Generic,
     Literal,
+    Self,
     TypeAlias,
     overload,
     type_check_only,
@@ -11,7 +12,6 @@ from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pyarrow as pa
 from typing_extensions import (
-    Self,
     TypeVar,
 )
 

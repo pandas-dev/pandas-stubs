@@ -18,9 +18,11 @@ from typing import (
     Any,
     Generic,
     Literal,
+    Never,
     TypeAlias,
     TypedDict,
     TypeVar,
+    assert_type,
     cast,
 )
 import uuid
@@ -39,10 +41,6 @@ from pandas.core.window import ExponentialMovingWindow
 from pandas.core.window.expanding import Expanding
 from pandas.core.window.rolling import Rolling
 import pytest
-from typing_extensions import (
-    Never,
-    assert_type,
-)
 import xarray as xr
 
 from pandas._libs.tslibs.offsets import Day

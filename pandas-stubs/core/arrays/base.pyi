@@ -5,11 +5,11 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
+    Self,
     overload,
 )
 
 import numpy as np
-from typing_extensions import Self
 
 from pandas._typing import (
     AnyArrayLikeInt,

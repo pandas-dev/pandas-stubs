@@ -10,6 +10,8 @@ from datetime import (
 )
 from typing import (
     Literal,
+    Never,
+    Self,
     final,
     overload,
 )
@@ -22,10 +24,6 @@ from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import (
-    Never,
-    Self,
-)
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (

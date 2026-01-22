@@ -1,6 +1,7 @@
+from typing import assert_type
+
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.construction import array
-from typing_extensions import assert_type
 
 from pandas._libs.missing import NA
 

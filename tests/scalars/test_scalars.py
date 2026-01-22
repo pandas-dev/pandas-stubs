@@ -5,6 +5,8 @@ import datetime as dt
 from typing import (
     Any,
     Literal,
+    TypeAlias,
+    assert_type,
 )
 
 import dateutil.tz
@@ -12,7 +14,6 @@ import numpy as np
 import pandas as pd
 from pandas.api.typing import NaTType
 import pytz
-from typing_extensions import assert_type
 
 from pandas._libs.tslibs.timedeltas import Components
 from pandas._typing import TimeUnit

@@ -7,6 +7,7 @@ from typing import (
     ClassVar,
     Literal,
     NamedTuple,
+    Self,
     TypeAlias,
     overload,
 )
@@ -18,7 +19,6 @@ from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.period import Period

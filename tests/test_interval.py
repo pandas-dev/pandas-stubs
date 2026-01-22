@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from typing import assert_type
+
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.interval import IntervalArray
-from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

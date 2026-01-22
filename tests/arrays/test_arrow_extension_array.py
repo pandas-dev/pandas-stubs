@@ -1,18 +1,18 @@
 from collections.abc import Sequence
 from datetime import (
+    UTC,
     datetime,
     timedelta,
-    timezone,
 )
 from typing import (
     TYPE_CHECKING,
     Any,
+    assert_type,
 )
 
 from pandas.core.arrays.arrow.array import ArrowExtensionArray
 import pyarrow as pa
 import pytest
-from typing_extensions import assert_type
 
 from tests import check
 
@@ -25,7 +25,7 @@ from tests import check
         [1.0],
         ["1"],
         [datetime(2026, 1, 1)],
-        [datetime(2026, 1, 1, tzinfo=timezone.utc)],
+        [datetime(2026, 1, 1, tzinfo=UTC)],
         [timedelta(seconds=1)],
     ],
 )
@@ -42,7 +42,7 @@ def test_constructor(data: Sequence[Any]) -> None:
             ArrowExtensionArray(pa.array([datetime(2026, 1, 1)])), ArrowExtensionArray
         )
         assert_type(
-            ArrowExtensionArray(pa.array([datetime(2026, 1, 1, tzinfo=timezone.utc)])),
+            ArrowExtensionArray(pa.array([datetime(2026, 1, 1, tzinfo=UTC)])),
             ArrowExtensionArray,
         )
         assert_type(
@@ -60,9 +60,7 @@ def test_constructor(data: Sequence[Any]) -> None:
             ArrowExtensionArray,
         )
         assert_type(
-            ArrowExtensionArray(
-                pa.chunked_array([[datetime(2026, 1, 1, tzinfo=timezone.utc)]])
-            ),
+            ArrowExtensionArray(pa.chunked_array([[datetime(2026, 1, 1, tzinfo=UTC)]])),
             ArrowExtensionArray,
         )
         assert_type(

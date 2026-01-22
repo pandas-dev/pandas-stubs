@@ -6,6 +6,7 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
+    Self,
     overload,
 )
 
@@ -17,7 +18,6 @@ from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
-from typing_extensions import Self
 
 from pandas._libs.missing import NAType
 from pandas._typing import (

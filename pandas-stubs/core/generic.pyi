@@ -16,6 +16,8 @@ from typing import (
     ClassVar,
     Concatenate,
     Literal,
+    Never,
+    Self,
     final,
     overload,
 )
@@ -25,10 +27,6 @@ from pandas import Index
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 import sqlalchemy.engine
-from typing_extensions import (
-    Never,
-    Self,
-)
 
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (

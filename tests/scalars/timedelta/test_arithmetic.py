@@ -1,7 +1,8 @@
 """Test file for arithmetic method on Timedelta objects."""
 
+from typing import assert_type
+
 import pandas as pd
-from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

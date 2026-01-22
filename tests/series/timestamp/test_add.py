@@ -2,13 +2,13 @@ from datetime import (
     datetime,
     timedelta,
 )
-
-import numpy as np
-import pandas as pd
-from typing_extensions import (
+from typing import (
     Never,
     assert_type,
 )
+
+import numpy as np
+import pandas as pd
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

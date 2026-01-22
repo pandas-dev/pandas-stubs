@@ -1,11 +1,11 @@
 from typing import (
     Any,
+    Self,
     final,
     overload,
 )
 
 from pandas.core.resample import TimeGrouper
-from typing_extensions import Self
 
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (

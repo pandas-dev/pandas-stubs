@@ -1,9 +1,10 @@
-import numpy as np
-import pandas as pd
-from typing_extensions import (
+from typing import (
     Never,
     assert_type,
 )
+
+import numpy as np
+import pandas as pd
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -80,7 +81,9 @@ def test_add_numpy_array() -> None:
     # `Series`.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(i + left, np_ndarray_int64)
-
+    # `numpy` typing gives `npt.NDArray[np.int64]` in the static type
+    # checking, where our `__radd__` cannot override. At runtime, they return
+    # `Series`.
     check(assert_type(r0 + left, np_ndarray_str), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:

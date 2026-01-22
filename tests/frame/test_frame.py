@@ -24,9 +24,12 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
+    Never,
     TypeAlias,
     TypedDict,
     TypeVar,
+    assert_never,
+    assert_type,
 )
 import uuid
 
@@ -38,11 +41,6 @@ from pandas.core.resample import (
     Resampler,
 )
 import pytest
-from typing_extensions import (
-    Never,
-    assert_never,
-    assert_type,
-)
 import xarray as xr
 
 from pandas._typing import Scalar

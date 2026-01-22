@@ -3,15 +3,13 @@
 from typing import (
     Any,
     Literal,
+    Never,
+    assert_type,
 )
 
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.sparse import SparseArray
-from typing_extensions import (
-    Never,
-    assert_type,
-)
 
 from pandas._libs.sparse import SparseIndex
 from pandas._typing import Scalar

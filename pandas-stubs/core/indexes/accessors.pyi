@@ -7,6 +7,7 @@ from typing import (
     Any,
     Generic,
     Literal,
+    Never,
     TypeVar,
     overload,
     type_check_only,
@@ -29,7 +30,6 @@ from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import Never
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs import BaseOffset

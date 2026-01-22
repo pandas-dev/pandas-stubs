@@ -11,6 +11,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Literal,
+    assert_type,
 )
 import uuid
 
@@ -48,7 +49,6 @@ import pytest
 import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.orm.decl_api
-from typing_extensions import assert_type
 from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as XlsxWorkbook,
 )

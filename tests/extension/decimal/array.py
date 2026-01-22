@@ -13,6 +13,7 @@ import numbers
 import sys
 from typing import (
     Any,
+    Self,
     cast,
     overload,
 )
@@ -34,7 +35,6 @@ from pandas.core.arraylike import (
 from pandas.core.arrays import ExtensionArray
 from pandas.core.indexers import check_array_indexer
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._typing import (
     ArrayLike,
@@ -226,7 +226,6 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
     @overload
     def astype(self, dtype: np.dtype, copy: bool = True) -> np_1darray: ...
-
     @overload
     def astype(self, dtype: ExtensionDtype, copy: bool = True) -> ExtensionArray: ...
     @overload

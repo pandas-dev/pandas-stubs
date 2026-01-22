@@ -4,6 +4,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     TypeAlias,
+    assert_type,
 )
 
 from matplotlib.axes import Axes
@@ -14,7 +15,6 @@ import numpy as np
 import pandas as pd
 from pandas import Series
 import pytest
-from typing_extensions import assert_type
 
 from tests import check
 from tests._typing import np_ndarray_object

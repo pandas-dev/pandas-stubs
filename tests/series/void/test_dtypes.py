@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    assert_type,
+)
 
 import numpy as np
 import pandas as pd
 import pytest
-from typing_extensions import assert_type
 
 from tests import check
 from tests._typing import VoidDtypeArg

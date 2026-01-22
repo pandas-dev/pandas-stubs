@@ -2,6 +2,7 @@ from datetime import timezone
 from typing import (
     Any,
     Literal,
+    Self,
     TypeAlias,
     overload,
 )
@@ -9,7 +10,6 @@ from typing import (
 import numpy as np
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs import NaTType
 from pandas._libs.missing import NAType

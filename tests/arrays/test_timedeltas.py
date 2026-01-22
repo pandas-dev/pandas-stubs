@@ -1,13 +1,15 @@
 """Test module for methods in pandas.core.arrays.timedeltas."""
 
 from datetime import timedelta
-from typing import cast
+from typing import (
+    assert_type,
+    cast,
+)
 
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
-from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs.timedeltas import Timedelta

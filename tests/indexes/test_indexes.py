@@ -8,6 +8,8 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
+    Never,
+    assert_type,
     cast,
 )
 
@@ -22,10 +24,6 @@ from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 import pytest
-from typing_extensions import (
-    Never,
-    assert_type,
-)
 
 from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar  # noqa: F401
@@ -1739,6 +1737,9 @@ def test_index_view() -> None:
     ind = pd.Index([1, 2])
     check(assert_type(ind.view("int64"), np_1darray), np_1darray)
     check(assert_type(ind.view(), "pd.Index[int]"), pd.Index)
+    # mypy and pyright differ here in what they report:
+    # - mypy: ndarray[Any, Any]"
+    # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
     check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
 
     class MyArray(np.ndarray): ...

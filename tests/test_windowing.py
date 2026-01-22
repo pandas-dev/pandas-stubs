@@ -1,4 +1,5 @@
 import datetime as dt
+from typing import assert_type
 
 import numpy as np
 import pandas as pd
@@ -16,7 +17,6 @@ from pandas.core.window import (
     Rolling,
     Window,
 )
-from typing_extensions import assert_type
 
 from pandas._libs.tslibs.offsets import BaseOffset
 

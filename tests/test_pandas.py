@@ -5,6 +5,8 @@ import random
 from typing import (
     TYPE_CHECKING,
     Any,
+    Never,
+    assert_type,
 )
 
 import numpy as np
@@ -20,10 +22,6 @@ import pandas.util as pdutil
 
 # TODO: pandas-dev/pandas#55023
 import pytest
-from typing_extensions import (
-    Never,
-    assert_type,
-)
 
 from pandas._typing import Scalar
 

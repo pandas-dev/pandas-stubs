@@ -14,6 +14,8 @@ from typing import (
     Any,
     ClassVar,
     Literal,
+    Never,
+    Self,
     TypeAlias,
     final,
     overload,
@@ -62,10 +64,6 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from pandas.core.strings.accessor import StringMethods
-from typing_extensions import (
-    Never,
-    Self,
-)
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs.period import Period

@@ -11,11 +11,11 @@ from types import TracebackType
 from typing import (
     Any,
     Literal,
+    Self,
     overload,
 )
 
 from pandas.core.frame import DataFrame
-from typing_extensions import Self
 
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (

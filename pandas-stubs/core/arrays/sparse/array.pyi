@@ -6,7 +6,9 @@ from enum import Enum
 from typing import (
     Any,
     Literal,
+    Never,
     Protocol,
+    Self,
     TypeAlias,
     final,
     overload,
@@ -16,10 +18,6 @@ from typing import (
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.series import Series
-from typing_extensions import (
-    Never,
-    Self,
-)
 
 from pandas._libs.sparse import SparseIndex
 from pandas._typing import (

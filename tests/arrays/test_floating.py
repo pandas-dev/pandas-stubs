@@ -6,6 +6,7 @@ from collections.abc import (
 from typing import (
     TYPE_CHECKING,
     Any,
+    assert_type,
 )
 
 import numpy as np
@@ -15,7 +16,6 @@ from pandas.core.arrays.floating import (
     FloatingDtype,
 )
 import pytest
-from typing_extensions import assert_type
 
 from tests import (
     check,

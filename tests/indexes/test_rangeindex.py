@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from typing import assert_type
+
 import pandas as pd
-from typing_extensions import assert_type
 
 from tests import check
 from tests._typing import np_1darray_intp

@@ -1,9 +1,9 @@
 from collections.abc import Sequence
+from typing import Self
 
 import numpy as np
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
-from typing_extensions import Self
 
 from pandas._libs.missing import NAType
 from pandas._typing import (

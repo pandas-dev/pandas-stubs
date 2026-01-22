@@ -7,16 +7,14 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    Never,
+    Self,
     overload,
 )
 
 import numpy as np
 import pandas as pd
 from pandas.core.indexes.base import Index
-from typing_extensions import (
-    Never,
-    Self,
-)
 
 from pandas._typing import (
     AnyAll,

@@ -15,6 +15,7 @@ import itertools
 from typing import (
     TYPE_CHECKING,
     Any,
+    assert_type,
     cast,
 )
 
@@ -22,7 +23,6 @@ import numpy as np
 from numpy import typing as npt
 import pandas as pd
 import pytest
-from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 

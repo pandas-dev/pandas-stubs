@@ -5,11 +5,11 @@ from datetime import (
 )
 from typing import (
     Literal,
+    Self,
     TypeAlias,
 )
 
 import numpy as np
-from typing_extensions import Self
 
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (

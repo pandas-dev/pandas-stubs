@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from datetime import time
+from typing import assert_type
 
 import numpy as np
 import pandas as pd
-from typing_extensions import assert_type
 
 from tests import check
 from tests._typing import (

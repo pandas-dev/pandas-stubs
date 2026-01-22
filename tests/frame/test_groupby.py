@@ -9,11 +9,11 @@ from collections.abc import (
 from typing import (
     TYPE_CHECKING,
     Any,
+    assert_type,
 )
 
 import numpy as np
 import pandas as pd
-from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 

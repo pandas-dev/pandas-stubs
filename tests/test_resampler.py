@@ -3,6 +3,10 @@ from collections.abc import (
     Hashable,
     Iterator,
 )
+from typing import (
+    TypeAlias,
+    assert_type,
+)
 
 import numpy as np
 from pandas.core.frame import DataFrame
@@ -13,7 +17,6 @@ from pandas.core.groupby.generic import (
 from pandas.core.indexes.datetimes import date_range
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
-from typing_extensions import assert_type
 
 from pandas.errors import Pandas4Warning
 
