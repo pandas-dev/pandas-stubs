@@ -20,7 +20,10 @@ from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from typing_extensions import Self
 
-from pandas._libs.tslibs import NaTType
+from pandas._libs.tslibs import (
+    NaTType,
+    Tick,
+)
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -95,7 +98,7 @@ class Timedelta(timedelta):
     value: int
     def __new__(
         cls,
-        value: str | float | Timedelta | timedelta | np.timedelta64 = ...,
+        value: str | float | Timedelta | Tick | timedelta | np.timedelta64 = ...,
         unit: TimeDeltaUnitChoices = ...,
         *,
         days: float | np.integer | np.floating = ...,
