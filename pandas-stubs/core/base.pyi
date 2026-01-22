@@ -8,6 +8,7 @@ from typing import (
     Generic,
     Literal,
     Protocol,
+    Self,
     TypeAlias,
     TypeVar,
     overload,
@@ -27,7 +28,6 @@ from pandas.core.indexes.accessors import ArrayDescriptor
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (

@@ -11,12 +11,13 @@ from collections.abc import (
 )
 import datetime as dt
 import sqlite3
-import sys
 from typing import (
     Any,
     ClassVar,
     Concatenate,
     Literal,
+    Never,
+    Self,
     final,
     overload,
 )
@@ -26,10 +27,6 @@ from pandas import Index
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 import sqlalchemy.engine
-from typing_extensions import (
-    Never,
-    Self,
-)
 
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
@@ -105,15 +102,9 @@ class NDFrame:
     @property
     def empty(self) -> _bool: ...
     __array_priority__: int = ...
-    if sys.version_info >= (3, 11):
-        def __array__(
-            self, dtype: _str | np.dtype = ..., copy: _bool | None = ...
-        ) -> np_1darray: ...
-    else:
-        def __array__(
-            self, dtype: _str | np.dtype[Any] = ..., copy: _bool | None = ...
-        ) -> np_1darray: ...
-
+    def __array__(
+        self, dtype: _str | np.dtype = ..., copy: _bool | None = ...
+    ) -> np_1darray: ...
     @final
     def __delitem__(self, key: Hashable) -> None: ...
     @final

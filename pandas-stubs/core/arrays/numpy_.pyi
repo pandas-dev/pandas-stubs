@@ -1,6 +1,7 @@
+from typing import Self
+
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
-from typing_extensions import Self
 
 from pandas._typing import np_ndarray
 

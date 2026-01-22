@@ -934,10 +934,7 @@ GenericT_contra = TypeVar(
     "GenericT_contra", bound=np.generic, default=Any, contravariant=True
 )
 NpNumT = TypeVar("NpNumT", bound=np_num, default=np_num)
-if sys.version_info >= (3, 11):
-    ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
-else:
-    ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[int, ...])
+ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
 # Numpy ndarray with more ergonomic typevar
 np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
 np_ndarray_intp: TypeAlias = np_ndarray[ShapeT, np.intp]
@@ -970,11 +967,7 @@ np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
 
-if sys.version_info >= (3, 11):
-    NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
-else:
-    NDArrayT = TypeVar("NDArrayT", bound=np.ndarray[Any, Any])
-
+NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
 ListLikeT = TypeVar("ListLikeT", bound=ListLike)

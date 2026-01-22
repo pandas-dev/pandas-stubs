@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    assert_type,
+)
 import uuid
 
 from jinja2.environment import (
@@ -16,7 +19,6 @@ from pandas import (
     Series,
 )
 import pytest
-from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 

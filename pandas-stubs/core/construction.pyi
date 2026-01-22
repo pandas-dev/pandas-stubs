@@ -5,6 +5,7 @@ from collections.abc import (
 from datetime import datetime
 from typing import (
     Any,
+    Never,
     TypeAlias,
     overload,
 )
@@ -25,7 +26,6 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.range import RangeIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import Never
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs.nattype import NaTType

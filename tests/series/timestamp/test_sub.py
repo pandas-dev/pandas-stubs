@@ -2,10 +2,10 @@ from datetime import (
     datetime,
     timedelta,
 )
+from typing import assert_type
 
 import numpy as np
 import pandas as pd
-from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

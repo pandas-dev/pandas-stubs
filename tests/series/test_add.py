@@ -1,11 +1,11 @@
 from typing import (
     Any,
+    assert_type,
     cast,
 )
 
 import numpy as np
 import pandas as pd
-from typing_extensions import assert_type
 
 from tests import check
 

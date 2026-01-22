@@ -1,9 +1,11 @@
-from typing import Literal
+from typing import (
+    Literal,
+    assert_type,
+)
 
 import pandas as pd
 from pandas.api.typing import NAType
 from pandas.core.arrays.boolean import BooleanArray
-from typing_extensions import assert_type
 
 from tests import check
 

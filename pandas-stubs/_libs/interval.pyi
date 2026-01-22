@@ -2,6 +2,7 @@ from typing import (
     Any,
     Generic,
     Literal,
+    Self,
     overload,
     type_check_only,
 )
@@ -18,7 +19,6 @@ from pandas._stubs_only import (
     OrderableT,
     OrderableTimesT,
 )
-from typing_extensions import Self
 
 from pandas._typing import (
     IntervalClosedType,

@@ -4,13 +4,13 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    Self,
     TypeAlias,
     overload,
 )
 
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
-from typing_extensions import Self
 
 from pandas._libs import (
     NaT as NaT,

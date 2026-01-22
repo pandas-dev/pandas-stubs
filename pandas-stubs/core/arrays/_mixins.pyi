@@ -1,6 +1,7 @@
+from typing import Self
+
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs.arrays import NDArrayBacked
 from pandas._typing import (

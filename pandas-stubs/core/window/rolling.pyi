@@ -8,6 +8,7 @@ import datetime as dt
 from typing import (
     Any,
     Generic,
+    Self,
     overload,
 )
 
@@ -17,7 +18,6 @@ from pandas import (
     Series,
 )
 from pandas.core.indexers import BaseIndexer
-from typing_extensions import Self
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (

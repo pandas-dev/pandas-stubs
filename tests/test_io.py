@@ -11,6 +11,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Literal,
+    assert_type,
 )
 import uuid
 
@@ -48,7 +49,6 @@ import pytest
 import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.orm.decl_api
-from typing_extensions import assert_type
 from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as XlsxWorkbook,
 )
@@ -337,7 +337,6 @@ MESSAGE_PYTABLE_314 = (
 )
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
 @pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
@@ -345,7 +344,6 @@ def test_hdf(tmp_path: Path) -> None:
     check(assert_type(read_hdf(path_str), DataFrame | Series), DataFrame)
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
 @pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdfstore(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
@@ -381,7 +379,6 @@ def test_hdfstore(tmp_path: Path) -> None:
     store.close()
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
 @pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_read_hdf_iterator(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
@@ -397,7 +394,6 @@ def test_read_hdf_iterator(tmp_path: Path) -> None:
     ti.close()
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
 @pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_context_manager(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
@@ -407,7 +403,6 @@ def test_hdf_context_manager(tmp_path: Path) -> None:
         check(assert_type(store.get("df"), DataFrame | Series), DataFrame)
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="PyTables requires Python 3.11+")
 @pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_series(tmp_path: Path) -> None:
     s = DF["a"]

@@ -102,7 +102,7 @@ pip install pandas-stubs
 
 ## Installation from sources
 
-- Make sure you have `python >= 3.10` installed.
+- Make sure you have `python >= 3.11` installed.
 - Install poetry
 
 ```sh

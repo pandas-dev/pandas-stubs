@@ -1,9 +1,11 @@
-from typing import NoReturn
+from typing import (
+    NoReturn,
+    assert_type,
+)
 
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
-from typing_extensions import assert_type
 
 from tests import check
 from tests._typing import np_ndarray_int64

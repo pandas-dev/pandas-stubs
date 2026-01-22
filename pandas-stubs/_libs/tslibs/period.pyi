@@ -1,7 +1,7 @@
 import datetime
-import sys
 from typing import (
     Literal,
+    Self,
     TypeAlias,
     overload,
 )
@@ -11,7 +11,6 @@ from pandas.core.indexes.base import Index
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.offsets import BaseOffset
@@ -76,13 +75,8 @@ class Period(PeriodMixin):
     def __add__(self, other: NaTType) -> NaTType: ...
     # Ignored due to indecipherable error from mypy:
     # Forward operator "__add__" is not callable  [misc]
-    if sys.version_info >= (3, 11):
-        @overload
-        def __radd__(self, other: PeriodAddSub) -> Self: ...
-    else:
-        @overload
-        def __radd__(self, other: PeriodAddSub) -> Self: ...  # type: ignore[misc]
-
+    @overload
+    def __radd__(self, other: PeriodAddSub) -> Self: ...
     @overload
     def __radd__(self, other: NaTType) -> NaTType: ...
     #  ignore[misc] here because we know all other comparisons

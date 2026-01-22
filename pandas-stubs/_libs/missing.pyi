@@ -1,8 +1,8 @@
 from collections.abc import Callable
-import sys
 from typing import (
     Any,
     Literal,
+    Self,
     overload,
 )
 
@@ -10,7 +10,6 @@ import numpy as np
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._typing import Scalar
 
@@ -29,13 +28,8 @@ class NAType:
     def __radd__(self, other: Series, /) -> Series: ...
     @overload
     def __radd__(self, other: Index, /) -> Index: ...
-    if sys.version_info >= (3, 11):
-        @overload
-        def __radd__(self, other: Scalar, /) -> NAType: ...
-    else:
-        @overload
-        def __radd__(self, other: Scalar, /) -> NAType: ...  # type: ignore[misc]
-
+    @overload
+    def __radd__(self, other: Scalar, /) -> NAType: ...
     @overload
     def __sub__(self, other: Series, /) -> Series: ...
     @overload

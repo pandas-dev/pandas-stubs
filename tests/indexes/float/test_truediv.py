@@ -2,16 +2,16 @@ from datetime import (
     datetime,
     timedelta,
 )
-from typing import Any
+from typing import (
+    Any,
+    Never,
+    assert_type,
+)
 
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
 import pytest
-from typing_extensions import (
-    Never,
-    assert_type,
-)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

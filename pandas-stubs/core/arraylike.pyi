@@ -1,7 +1,9 @@
-from typing import Any
+from typing import (
+    Any,
+    Self,
+)
 
 import numpy as np
-from typing_extensions import Self
 
 class OpsMixin:
     def __eq__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]

@@ -1,5 +1,6 @@
 from collections.abc import Iterator
 from datetime import tzinfo as _tzinfo
+from typing import Self
 
 import numpy as np
 from pandas.core.arrays.datetimelike import (
@@ -9,7 +10,6 @@ from pandas.core.arrays.datetimelike import (
 from pandas.core.arrays.period import PeriodArray
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (

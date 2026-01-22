@@ -5,19 +5,16 @@ from collections.abc import (
     Mapping,
     Sequence,
 )
-import sys
 from typing import (
     Any,
+    Never,
+    Self,
     overload,
 )
 
 import numpy as np
 import pandas as pd
 from pandas.core.indexes.base import Index
-from typing_extensions import (
-    Never,
-    Self,
-)
 
 from pandas._typing import (
     AnyAll,
@@ -129,13 +126,8 @@ class MultiIndex(Index):
         self, names: SequenceNotStr[Hashable] | None = None, deep: bool = False
     ) -> Self: ...
     def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-    if sys.version_info >= (3, 11):
-        @property
-        def dtype(self) -> np.dtype: ...
-    else:
-        @property
-        def dtype(self) -> np.dtype[Any]: ...
-
+    @property
+    def dtype(self) -> np.dtype: ...
     @property
     def dtypes(self) -> pd.Series[Dtype]: ...
     def memory_usage(self, deep: bool = False) -> int: ...

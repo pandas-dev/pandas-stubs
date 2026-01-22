@@ -8,6 +8,8 @@ from datetime import (
 )
 from typing import (
     Literal,
+    Never,
+    Self,
     TypeAlias,
     final,
     overload,
@@ -20,10 +22,6 @@ from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
-from typing_extensions import (
-    Never,
-    Self,
-)
 
 from pandas._libs import Timedelta
 from pandas._libs.lib import NoDefaultDoNotUse

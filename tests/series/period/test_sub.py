@@ -1,7 +1,8 @@
 """Test module for subtraction operation on Series[Period]."""
 
+from typing import assert_type
+
 import pandas as pd
-from typing_extensions import assert_type
 
 from pandas._libs.tslibs.offsets import BaseOffset
 

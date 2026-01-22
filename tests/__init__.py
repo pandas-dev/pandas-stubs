@@ -166,7 +166,7 @@ def pytest_warns_bounded(
         pass
 
     with pytest_warns_bounded(
-        UserWarning, match="foo", lower="3.10",
+        UserWarning, match="foo", lower="3.11",
         version_str = platform.python_version()
     ):
         # Python version 3.11 and above will raise an error
