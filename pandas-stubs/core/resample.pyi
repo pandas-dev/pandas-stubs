@@ -6,6 +6,7 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
+    Self,
     TypeAlias,
     final,
     overload,
@@ -17,7 +18,6 @@ from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (

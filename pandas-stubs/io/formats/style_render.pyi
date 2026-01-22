@@ -6,6 +6,7 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
+    Self,
     TypeAlias,
     TypedDict,
 )
@@ -19,7 +20,6 @@ from pandas import Index
 
 # The class is private in pandas implementation. We have to ignore the private usage in the stubs.
 from pandas.core.indexing import _IndexSlice  # pyright: ignore[reportPrivateUsage]
-from typing_extensions import Self
 
 from pandas._typing import (
     Axis,

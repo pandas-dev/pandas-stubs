@@ -5,13 +5,13 @@ from collections.abc import (
 )
 from typing import (
     Literal,
+    Never,
     overload,
 )
 
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.series import Series
-from typing_extensions import Never
 
 from pandas._typing import (
     S2,

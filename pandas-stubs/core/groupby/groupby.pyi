@@ -11,6 +11,7 @@ from typing import (
     Concatenate,
     Generic,
     Literal,
+    Self,
     TypeAlias,
     TypeVar,
     final,
@@ -37,7 +38,6 @@ from pandas.core.window import (
     ExponentialMovingWindowGroupby,
     RollingGroupby,
 )
-from typing_extensions import Self
 
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._libs.tslibs import BaseOffset

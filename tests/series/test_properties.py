@@ -1,5 +1,8 @@
 # pyright: reportMissingTypeArgument=false
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    assert_type,
+)
 
 import numpy as np
 from pandas.core.arrays import DatetimeArray
@@ -17,7 +20,6 @@ from pandas.core.indexes.accessors import (
 from pandas.core.indexes.interval import interval_range
 from pandas.core.indexes.period import period_range
 from pandas.core.series import Series
-from typing_extensions import assert_type
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs.timedeltas import Timedelta

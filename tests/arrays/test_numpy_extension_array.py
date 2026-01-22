@@ -6,13 +6,13 @@ from collections.abc import (
 from typing import (
     TYPE_CHECKING,
     Any,
+    assert_type,
 )
 
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pytest
-from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

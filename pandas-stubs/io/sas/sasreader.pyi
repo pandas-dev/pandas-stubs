@@ -6,11 +6,11 @@ from collections.abc import Hashable
 from types import TracebackType
 from typing import (
     Literal,
+    Self,
     overload,
 )
 
 from pandas import DataFrame
-from typing_extensions import Self
 
 from pandas._typing import (
     CompressionOptions as CompressionOptions,

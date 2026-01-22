@@ -1,7 +1,8 @@
 from collections.abc import Sequence
-from typing import Any
-
-from typing_extensions import Self
+from typing import (
+    Any,
+    Self,
+)
 
 from pandas._typing import (
     AnyArrayLikeInt,

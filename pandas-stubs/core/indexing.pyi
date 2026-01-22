@@ -3,12 +3,12 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
+    Self,
     TypeAlias,
     TypeVar,
 )
 
 from pandas.core.base import IndexOpsMixin
-from typing_extensions import Self
 
 from pandas._libs.indexing import NDFrameIndexerBase
 from pandas._libs.missing import NAType

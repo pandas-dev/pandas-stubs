@@ -1,4 +1,6 @@
 # Test common ExtensionArray methods
+from typing import assert_type
+
 import numpy as np
 import pandas as pd
 from pandas.core.arrays import ExtensionArray
@@ -7,7 +9,6 @@ from pandas.core.arrays.integer import (
     IntegerArray,
 )
 from pandas.core.construction import array
-from typing_extensions import assert_type
 
 from pandas._typing import ArrayLike
 

@@ -7,6 +7,7 @@ from types import TracebackType
 from typing import (
     Any,
     Literal,
+    Self,
     overload,
 )
 
@@ -16,7 +17,6 @@ from pandas import (
 )
 from pandas.core.computation.pytables import PyTablesExpr
 from pandas.core.generic import NDFrame
-from typing_extensions import Self
 
 from pandas._typing import (
     BaseBuffer,

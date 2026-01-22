@@ -9,6 +9,7 @@ from typing import (
     Concatenate,
     Literal,
     Protocol,
+    Self,
     overload,
 )
 
@@ -16,7 +17,6 @@ from matplotlib.colors import Colormap
 from openpyxl.workbook.workbook import Workbook as OpenXlWorkbook
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
-from typing_extensions import Self
 from xlsxwriter import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as XlsxWorkbook,
 )

@@ -1,12 +1,10 @@
-import sys
-from typing import Any
-
-import numpy as np
-import pandas as pd
-from typing_extensions import (
+from typing import (
     Never,
     assert_type,
 )
+
+import numpy as np
+import pandas as pd
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -83,16 +81,10 @@ def test_add_numpy_array() -> None:
     # `Series`.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(i + left, np_ndarray_int64)
-    if sys.version_info >= (3, 11):
-        # `numpy` typing gives `npt.NDArray[np.int64]` in the static type
-        # checking, where our `__radd__` cannot override. At runtime, they return
-        # `Series`.
-        check(assert_type(r0 + left, np_ndarray_str), pd.Series, str)
-    else:
-        # Python 3.10 uses NumPy 2.2.6, and it has for r0 ndarray[tuple[int,...], dtype[str_]]
-        # Python 3.11+ uses NumPy 2.3.2, and it has for r0 ndarray[tuple[Any,...,dtype[str_]]
-        # https://github.com/pandas-dev/pandas-stubs/pull/1274#discussion_r2291498975
-        check(assert_type(r0 + left, Any), pd.Series, str)
+    # `numpy` typing gives `npt.NDArray[np.int64]` in the static type
+    # checking, where our `__radd__` cannot override. At runtime, they return
+    # `Series`.
+    check(assert_type(r0 + left, np_ndarray_str), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

@@ -1,6 +1,7 @@
 """Test module for methods in pandas.core.arrays.period."""
 
 from typing import Any  # noqa: F401
+from typing import assert_type
 
 import numpy as np
 import pandas as pd
@@ -12,7 +13,6 @@ from pandas import (
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.period import PeriodArray
 import pyarrow as pa
-from typing_extensions import assert_type
 
 from pandas._libs.tslibs.period import Period
 

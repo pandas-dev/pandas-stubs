@@ -3,15 +3,15 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
-from typing import Any
+from typing import (
+    Any,
+    Never,
+    assert_type,
+)
 
 import numpy as np
 import pandas as pd
 import pytest
-from typing_extensions import (
-    Never,
-    assert_type,
-)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

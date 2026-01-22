@@ -1,4 +1,3 @@
-import sys
 from typing import (
     Any,
     Literal,
@@ -47,17 +46,8 @@ def unique(values: TimedeltaIndex) -> np_1darray_td: ...
 @overload
 # switch to Index[int] after Pandas 3.0
 def unique(values: RangeIndex) -> np_1darray_int64: ...
-
-if sys.version_info >= (3, 11):
-    @overload
-    def unique(values: MultiIndex) -> np_ndarray: ...
-
-else:
-    @overload
-    def unique(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-        values: MultiIndex,
-    ) -> np_ndarray: ...
-
+@overload
+def unique(values: MultiIndex) -> np_ndarray: ...
 @overload
 def unique(values: Index) -> np_1darray | Index: ...  # switch to Index after Pandas 3.0
 @overload

@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from typing import (
     Any,
+    Self,
     TypeAlias,
     overload,
 )
@@ -10,7 +11,6 @@ from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 import pyarrow as pa
-from typing_extensions import Self
 
 from pandas._libs.interval import (
     Interval as Interval,

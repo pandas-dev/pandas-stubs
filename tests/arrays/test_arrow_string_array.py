@@ -1,6 +1,7 @@
 from typing import (
     TYPE_CHECKING,
     Literal,
+    assert_type,
     cast,
 )
 
@@ -9,7 +10,6 @@ import pandas as pd
 from pandas.core.arrays.string_arrow import ArrowStringArray
 import pyarrow as pa
 import pytest
-from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
 

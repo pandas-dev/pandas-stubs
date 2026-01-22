@@ -1,6 +1,9 @@
 from collections.abc import Hashable
 import datetime
-from typing import overload
+from typing import (
+    Self,
+    overload,
+)
 
 import numpy as np
 import pandas as pd
@@ -9,7 +12,6 @@ from pandas._stubs_only import PeriodAddSub
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
 from pandas.core.indexes.datetimelike import DatetimeIndexOpsMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from typing_extensions import Self
 
 from pandas._libs.tslibs import (
     NaTType,
