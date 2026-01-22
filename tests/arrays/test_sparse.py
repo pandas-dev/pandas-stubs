@@ -29,6 +29,10 @@ from tests._typing import (
 )
 
 
+def test_construction() -> None:
+    check(assert_type(pd.array(SparseArray([1])), SparseArray), SparseArray)
+
+
 def test_constructor() -> None:
     """Test __new__ method for SparseArray."""
     arr = SparseArray([1, 0, 0, 2, 3])

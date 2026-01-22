@@ -11,6 +11,7 @@ from datetime import (
 from typing import (
     TYPE_CHECKING,
     Any,
+    cast,
 )
 from zoneinfo import ZoneInfo
 
@@ -276,3 +277,26 @@ def test_properties() -> None:
         np_1darray,
         np.float64,
     )
+
+
+def test_constructor() -> None:
+    dt = datetime(2025, 11, 10)
+    check(assert_type(pd.array([dt]), DatetimeArray), DatetimeArray)
+    check(assert_type(pd.array([dt, pd.Timestamp(dt)]), DatetimeArray), DatetimeArray)
+    check(assert_type(pd.array([dt, None]), DatetimeArray), DatetimeArray)
+    check(assert_type(pd.array([dt, pd.NaT, None]), DatetimeArray), DatetimeArray)
+
+    np_dt = np.datetime64(dt)
+    check(assert_type(pd.array([np_dt]), DatetimeArray), DatetimeArray)
+    check(assert_type(pd.array([np_dt, None]), DatetimeArray), DatetimeArray)
+    dt_nat = cast(list[np.datetime64 | NaTType], [np_dt, pd.NaT])
+    check(assert_type(pd.array(dt_nat), DatetimeArray), DatetimeArray)
+
+    np_arr = np.array([dt], np.datetime64)
+    check(assert_type(pd.array(np_arr), DatetimeArray), DatetimeArray)
+
+    check(assert_type(pd.array(pd.array([dt])), DatetimeArray), DatetimeArray)
+
+    check(assert_type(pd.array(pd.Index([dt])), DatetimeArray), DatetimeArray)
+
+    check(assert_type(pd.array(pd.Series([dt])), DatetimeArray), DatetimeArray)
