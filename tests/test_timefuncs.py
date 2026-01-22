@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import (
-    TypeAlias,
     assert_never,
     assert_type,
 )

@@ -5,7 +5,6 @@ import datetime as dt
 from typing import (
     Any,
     Literal,
-    TypeAlias,
     assert_type,
 )
 

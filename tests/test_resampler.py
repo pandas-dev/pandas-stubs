@@ -4,7 +4,6 @@ from collections.abc import (
     Iterator,
 )
 from typing import (
-    TypeAlias,
     assert_type,
 )
 
