@@ -1,5 +1,8 @@
+from collections.abc import (
+    Iterable,
+    Set as AbstractSet,
+)
 from enum import Enum
-import sys
 from typing import (
     Any,
     Literal,
@@ -10,11 +13,13 @@ from typing import (
     type_check_only,
 )
 
-import numpy as np
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.series import Series
-from typing_extensions import Self
+from typing_extensions import (
+    Never,
+    Self,
+)
 
 from pandas._libs.sparse import SparseIndex
 from pandas._typing import (
@@ -22,12 +27,12 @@ from pandas._typing import (
     Axis,
     AxisInt,
     NpDtype,
+    NpDtypeNoStr,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
     np_1darray,
-    np_1darray_intp,
-    np_ndarray,
+    np_1darray_int32,
 )
 
 from pandas.core.dtypes.dtypes import SparseDtype
@@ -44,27 +49,26 @@ class ellipsis(Enum):
     Ellipsis = "..."
 
 class SparseArray(OpsMixin, ExtensionArray):
-    if sys.version_info >= (3, 11):
-        def __new__(
-            cls,
-            data: AnyArrayLike | Scalar,
-            sparse_index: SparseIndex | None = None,
-            fill_value: Scalar | None = None,
-            kind: SparseIndexKind = "integer",
-            dtype: np.dtype | SparseDtype | None = None,
-            copy: bool = False,
-        ) -> Self: ...
-    else:
-        def __new__(
-            cls,
-            data: AnyArrayLike | Scalar,
-            sparse_index: SparseIndex | None = None,
-            fill_value: Scalar | None = None,
-            kind: SparseIndexKind = "integer",
-            dtype: np.dtype[Any] | SparseDtype | None = None,
-            copy: bool = False,
-        ) -> Self: ...
-
+    @overload
+    def __new__(
+        cls,
+        data: AbstractSet[Any] | str,
+        sparse_index: SparseIndex | None = None,
+        fill_value: Scalar | None = None,
+        kind: SparseIndexKind = "integer",
+        dtype: NpDtypeNoStr | SparseDtype | None = None,
+        copy: bool = False,
+    ) -> Never: ...
+    @overload
+    def __new__(
+        cls,
+        data: AnyArrayLike | Iterable[Scalar],
+        sparse_index: SparseIndex | None = None,
+        fill_value: Scalar | None = None,
+        kind: SparseIndexKind = "integer",
+        dtype: NpDtypeNoStr | SparseDtype | None = None,
+        copy: bool = False,
+    ) -> Self: ...
     @classmethod
     def from_spmatrix(cls, data: _SparseMatrixLike) -> Self: ...
     def __array__(
@@ -73,7 +77,7 @@ class SparseArray(OpsMixin, ExtensionArray):
     @property
     def sp_index(self) -> SparseIndex: ...
     @property
-    def sp_values(self) -> np_ndarray: ...
+    def sp_values(self) -> np_1darray: ...
     @property
     def dtype(self) -> SparseDtype: ...
     @property
@@ -103,7 +107,7 @@ class SparseArray(OpsMixin, ExtensionArray):
     ) -> Self: ...
     def copy(self) -> Self: ...
     def to_dense(self) -> np_1darray: ...
-    def nonzero(self) -> tuple[np_1darray_intp]: ...
+    def nonzero(self) -> tuple[np_1darray_int32]: ...
     def all(self, axis: Axis | None = None, *args: Any, **kwargs: Any) -> bool: ...
     def any(self, axis: AxisInt = 0, *args: Any, **kwargs: Any) -> bool: ...
     def sum(
