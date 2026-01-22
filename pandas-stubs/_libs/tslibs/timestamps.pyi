@@ -8,7 +8,6 @@ from datetime import (
 
 # The class is private in python implementation. We have to ignore the private usage in the stubs.
 from datetime import _IsoCalendarDate  # pyright: ignore[reportPrivateUsage]
-import sys
 from time import struct_time
 from typing import (
     ClassVar,
@@ -101,15 +100,10 @@ class Timestamp(datetime, SupportsIndex):
     def tz(self) -> _tzinfo | None: ...
     @property
     def fold(self) -> int: ...
-    if sys.version_info >= (3, 12):
-        @classmethod
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
-            cls, t: float, tz: _tzinfo | str | None = ...
-        ) -> Self: ...
-    else:
-        @classmethod
-        def fromtimestamp(cls, t: float, tz: _tzinfo | str | None = ...) -> Self: ...
-
+    @classmethod
+    def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
+        cls, t: float, tz: _tzinfo | str | None = ...
+    ) -> Self: ...
     @classmethod
     def utcfromtimestamp(cls, ts: float) -> Self: ...
     @classmethod

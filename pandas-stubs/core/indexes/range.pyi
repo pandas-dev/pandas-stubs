@@ -2,7 +2,6 @@ from collections.abc import (
     Hashable,
     Sequence,
 )
-import sys
 from typing import (
     Any,
     overload,
@@ -49,13 +48,8 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
     @property
     def nbytes(self) -> int: ...
     def memory_usage(self, deep: bool = ...) -> int: ...
-    if sys.version_info >= (3, 11):
-        @property
-        def dtype(self) -> np.dtype: ...
-    else:
-        @property
-        def dtype(self) -> np.dtype[Any]: ...
-
+    @property
+    def dtype(self) -> np.dtype: ...
     @property
     def is_unique(self) -> bool: ...
     @property

@@ -14,7 +14,6 @@ from typing_extensions import (
 )
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -92,7 +91,7 @@ def test_floordiv_py_sequence(left: "pd.Series[pd.Timedelta]") -> None:
     check(
         assert_type(left // d, "pd.Series[int]"),
         pd.Series,
-        int if PD_LTE_23 else np.integer,
+        np.integer,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:

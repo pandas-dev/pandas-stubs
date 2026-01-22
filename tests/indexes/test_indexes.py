@@ -5,7 +5,6 @@ from collections.abc import (
     Sequence,
 )
 import datetime as dt
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -32,7 +31,6 @@ from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar  # noqa: F401
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -1042,7 +1040,7 @@ def test_getitem() -> None:
     check(
         assert_type(iri[[0, 2, 4]], pd.Index),
         pd.Index,
-        np.integer if PD_LTE_23 else int,
+        int,
     )
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
@@ -1741,27 +1739,9 @@ def test_index_view() -> None:
     ind = pd.Index([1, 2])
     check(assert_type(ind.view("int64"), np_1darray), np_1darray)
     check(assert_type(ind.view(), "pd.Index[int]"), pd.Index)
-    if sys.version_info >= (3, 11):
-        # mypy and pyright differ here in what they report:
-        # - mypy: ndarray[Any, Any]"
-        # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
-        check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
-    else:
-        check(
-            assert_type(
-                ind.view(np.ndarray),  # pyright: ignore[reportUnknownArgumentType]
-                np.ndarray[Any, Any],
-            ),
-            np.ndarray,
-        )
+    check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
 
-    if sys.version_info >= (3, 11):
-
-        class MyArray(np.ndarray): ...
-
-    else:
-
-        class MyArray(np.ndarray[Any, Any]): ...
+    class MyArray(np.ndarray): ...
 
     check(assert_type(ind.view(MyArray), MyArray), MyArray)
 

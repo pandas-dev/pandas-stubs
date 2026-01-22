@@ -21,7 +21,6 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
-import sys
 from typing import (
     Any,
     ClassVar,
@@ -559,15 +558,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __array_ufunc__(
         self, ufunc: Callable[..., Any], method: _str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
-    if sys.version_info >= (3, 11):
-        def __array__(
-            self, dtype: _str | np.dtype = ..., copy: bool | None = ...
-        ) -> np_1darray: ...
-    else:
-        def __array__(
-            self, dtype: _str | np.dtype[Any] = ..., copy: bool | None = ...
-        ) -> np_1darray: ...
-
+    def __array__(
+        self, dtype: _str | np.dtype = ..., copy: bool | None = ...
+    ) -> np_1darray: ...
     @final
     def __getattr__(self, name: _str) -> S1: ...
 
@@ -1264,42 +1257,21 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         limit: int | None = None,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
     ) -> Self: ...
-    @overload
     def fillna(
         self,
         value: Scalar | NAType | dict[Any, Any] | Series[S1] | DataFrame | None = ...,
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
-        inplace: Literal[True],
-    ) -> None: ...
-    @overload
-    def fillna(
-        self,
-        value: Scalar | NAType | dict[Any, Any] | Series[S1] | DataFrame | None = ...,
-        *,
-        axis: AxisIndex = ...,
-        limit: int | None = ...,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
     ) -> Series[S1]: ...
-    @overload
     def replace(
         self,
         to_replace: ReplaceValue = ...,
         value: ReplaceValue = ...,
         *,
         regex: ReplaceValue = ...,
-        inplace: Literal[True],
-        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    ) -> None: ...
-    @overload
-    def replace(
-        self,
-        to_replace: ReplaceValue = ...,
-        value: ReplaceValue = ...,
-        *,
-        regex: ReplaceValue = ...,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
     ) -> Series[S1]: ...
     def shift(
         self,
@@ -1507,63 +1479,29 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def copy(self, deep: _bool = True) -> Series[S1]: ...
     @final
     def infer_objects(self, copy: _bool = True) -> Series[S1]: ...
-    @overload
     def ffill(
         self,
         *,
         axis: AxisIndex | None = 0,
-        inplace: Literal[True],
-        limit: int | None = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-    ) -> None: ...
-    @overload
-    def ffill(
-        self,
-        *,
-        axis: AxisIndex | None = 0,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
     ) -> Series[S1]: ...
-    @overload
     def bfill(
         self,
         *,
         axis: AxisIndex | None = 0,
-        inplace: Literal[True],
-        limit: int | None = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-    ) -> None: ...
-    @overload
-    def bfill(
-        self,
-        *,
-        axis: AxisIndex | None = 0,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
     ) -> Series[S1]: ...
-    @overload
     def interpolate(
         self,
         method: InterpolateOptions = ...,
         *,
         axis: AxisIndex | None = 0,
         limit: int | None = ...,
-        inplace: Literal[True],
-        limit_direction: Literal["forward", "backward", "both"] | None = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-        **kwargs: Any,
-        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    ) -> None: ...
-    @overload
-    def interpolate(
-        self,
-        method: InterpolateOptions = ...,
-        *,
-        axis: AxisIndex | None = 0,
-        limit: int | None = ...,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
         limit_direction: Literal["forward", "backward", "both"] | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         **kwargs: Any,
@@ -1575,13 +1513,13 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         subset: None = None,
     ) -> Scalar | Series[S1]: ...
     @overload
-    def clip(  # pyright: ignore[reportOverlappingOverload]
+    def clip(
         self,
         lower: None = None,
         upper: None = None,
         *,
         axis: AxisIndex | None = 0,
-        inplace: Literal[True],
+        inplace: _bool = False,
         **kwargs: Any,
     ) -> Self: ...
     @overload
@@ -1591,18 +1529,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         upper: AnyArrayLike | float | None = ...,
         *,
         axis: AxisIndex | None = 0,
-        inplace: Literal[True],
-        **kwargs: Any,
-        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    ) -> None: ...
-    @overload
-    def clip(
-        self,
-        lower: AnyArrayLike | float | None = ...,
-        upper: AnyArrayLike | float | None = ...,
-        *,
-        axis: AxisIndex | None = 0,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
         **kwargs: Any,
     ) -> Series[S1]: ...
     @final

@@ -8,9 +8,7 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
-import sys
 from typing import (
-    Any,
     Literal,
     final,
     overload,
@@ -107,13 +105,8 @@ class DatetimeIndex(
     def isocalendar(self) -> DataFrame: ...
     @property
     def tzinfo(self) -> _tzinfo | None: ...
-    if sys.version_info >= (3, 11):
-        @property
-        def dtype(self) -> np.dtype | DatetimeTZDtype: ...
-    else:
-        @property
-        def dtype(self) -> np.dtype[Any] | DatetimeTZDtype: ...
-
+    @property
+    def dtype(self) -> np.dtype | DatetimeTZDtype: ...
     def shift(
         self, periods: int = 1, freq: Frequency | timedelta | None = None
     ) -> Self: ...

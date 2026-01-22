@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import TypeAlias
 
 from dateutil.relativedelta import (
     FR,
@@ -23,9 +22,9 @@ from typing_extensions import (
 )
 
 from pandas._typing import TimeUnit
+from pandas.errors import Pandas4Warning
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -50,11 +49,6 @@ from pandas.tseries.offsets import (
     DateOffset,
     Day,
 )
-
-if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
-else:
-    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 
 def test_types_init() -> None:
@@ -366,7 +360,7 @@ def test_series_dt_accessors() -> None:
     ):
         check(
             assert_type(s0.dt.to_pydatetime(), np_1darray_object),
-            np_1darray_object if PD_LTE_23 else pd.Series,
+            pd.Series,
             dt.datetime,
         )
     s0_local = s0.dt.tz_localize("UTC")
@@ -543,7 +537,7 @@ def test_series_dt_accessors() -> None:
             upper="2.99",
         ),
         pytest_warns_bounded(
-            Pandas4Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
+            Pandas4Warning,
             "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
             lower="2.99",
             upper="3.0.99",

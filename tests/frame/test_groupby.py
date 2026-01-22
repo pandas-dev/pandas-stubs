@@ -18,7 +18,6 @@ from typing_extensions import assert_type
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_23,
     check,
     pytest_warns_bounded,
 )
@@ -163,21 +162,6 @@ def test_types_groupby() -> None:
         assert_type(df.groupby(by=["col1", "col2"]).nunique(), pd.DataFrame),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
-        upper="2.3.99",
-    ):
-        with pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns",
-            upper="2.3.99",
-        ):
-            if PD_LTE_23:
-                check(
-                    assert_type(df.groupby(by="col1").apply(sum), pd.DataFrame),
-                    pd.DataFrame,
-                )
     check(assert_type(df.groupby("col1").transform("sum"), pd.DataFrame), pd.DataFrame)
     s1 = df.set_index("col1")["col2"]
     check(assert_type(s1, pd.Series), pd.Series)
@@ -381,10 +365,7 @@ def test_groupby_result() -> None:
     index, value = next(iterator)
     assert_type((index, value), tuple[tuple[Hashable, ...], pd.DataFrame])
 
-    if PD_LTE_23:
-        check(assert_type(index, tuple[Hashable, ...]), tuple, np.integer)
-    else:
-        check(assert_type(index, tuple[Hashable, ...]), tuple, int)
+    check(assert_type(index, tuple[Hashable, ...]), tuple, int)
 
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 

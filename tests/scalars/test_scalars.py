@@ -5,7 +5,6 @@ import datetime as dt
 from typing import (
     Any,
     Literal,
-    TypeAlias,
 )
 
 import dateutil.tz
@@ -17,9 +16,9 @@ from typing_extensions import assert_type
 
 from pandas._libs.tslibs.timedeltas import Components
 from pandas._typing import TimeUnit
+from pandas.errors import Pandas4Warning
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -39,11 +38,6 @@ from pandas.tseries.offsets import (
     BaseOffset,
     Day,
 )
-
-if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
-else:
-    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 
 def test_interval() -> None:

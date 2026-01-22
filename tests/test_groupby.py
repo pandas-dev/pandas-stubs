@@ -32,7 +32,6 @@ from pandas.core.window import (
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -247,16 +246,6 @@ def test_frame_groupby_resample() -> None:
             DatetimeIndexResamplerGroupby,
         )
 
-        # interpolate
-        if PD_LTE_23:
-            check(assert_type(GB_DF.resample("ME").interpolate(), DataFrame), DataFrame)
-            check(
-                assert_type(
-                    GB_DF.resample("ME").interpolate(method="linear"), DataFrame
-                ),
-                DataFrame,
-            )
-
         def resample_interpolate(x: DataFrame) -> DataFrame:
             return x.resample("ME").interpolate()
 
@@ -403,21 +392,13 @@ def test_series_groupby_resample() -> None:
     # asfreq
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
 
-    # interpolate
-    if PD_LTE_23:
-        check(
-            assert_type(GB_S.resample("ME").interpolate(), "Series[float]"),
-            Series,
-            float,
-        )
-    else:
-        check(
-            assert_type(
-                GB_S.apply(lambda x: x.resample("ME").interpolate()), "Series[float]"
-            ),
-            Series,
-            float,
-        )
+    check(
+        assert_type(
+            GB_S.apply(lambda x: x.resample("ME").interpolate()), "Series[float]"
+        ),
+        Series,
+        float,
+    )
 
     # pipe
     def g(val: Resampler[Series]) -> float:
@@ -467,8 +448,6 @@ def test_frame_groupby_rolling() -> None:
     # props
     check(assert_type(GB_DF.rolling(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.rolling(1).method, Literal["single", "table"]), str)
-    if PD_LTE_23:
-        check(assert_type(GB_DF.rolling(1).axis, int), int)
 
     # agg funcs
     check(assert_type(GB_DF.rolling(1).sum(), DataFrame), DataFrame)
@@ -658,8 +637,6 @@ def test_frame_groupby_expanding() -> None:
     # props
     check(assert_type(GB_DF.expanding(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.expanding(1).method, Literal["single", "table"]), str)
-    if PD_LTE_23:
-        check(assert_type(GB_DF.expanding(1).axis, int), int)
 
     # agg funcs
     check(assert_type(GB_DF.expanding(1).sum(), DataFrame), DataFrame)
@@ -853,8 +830,6 @@ def test_frame_groupby_ewm() -> None:
     # props
     check(assert_type(GB_DF.ewm(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.ewm(1).method, Literal["single", "table"]), str)
-    if PD_LTE_23:
-        check(assert_type(GB_DF.ewm(1).axis, int), int)
 
     # agg funcs
     check(assert_type(GB_DF.ewm(1).sum(), DataFrame), DataFrame)
@@ -865,64 +840,6 @@ def test_frame_groupby_ewm() -> None:
     check(assert_type(GB_DF.ewm(1).std(), DataFrame), DataFrame)
     check(assert_type(GB_DF.ewm(1).var(), DataFrame), DataFrame)
 
-    # aggregate
-    if PD_LTE_23:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.99",
-        ):
-            check(assert_type(GB_DF.ewm(1).aggregate(np.sum), DataFrame), DataFrame)
-            check(assert_type(GB_DF.ewm(1).agg(np.sum), DataFrame), DataFrame)
-            check(
-                assert_type(GB_DF.ewm(1).aggregate([np.sum, np.mean]), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(GB_DF.ewm(1).aggregate(["sum", np.mean]), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    GB_DF.ewm(1).aggregate({"col1": "sum", "col2": np.mean}),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    GB_DF.ewm(1).aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
-
-        # aggregate combinations
-        with pytest_warns_bounded(
-            FutureWarning,
-            r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.99",
-        ):
-            check(GB_DF.ewm(1).aggregate(np.sum), DataFrame)
-            check(GB_DF.ewm(1).aggregate([np.mean]), DataFrame)
-            check(GB_DF.ewm(1).aggregate(["sum", np.mean]), DataFrame)
-            check(GB_DF.ewm(1).aggregate({"col1": np.sum}), DataFrame)
-            check(
-                GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": np.mean}),
-                DataFrame,
-            )
-            check(
-                GB_DF.ewm(1).aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
-                DataFrame,
-            )
-            check(
-                GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
-                DataFrame,
-            )
-            check(
-                GB_DF.ewm(1).aggregate({"col1": "sum", "col2": [np.mean]}),
-                DataFrame,
-            )
     check(GB_DF.ewm(1).aggregate("sum"), DataFrame)
 
     # getattr
@@ -966,31 +883,6 @@ def test_series_groupby_ewm() -> None:
     # std / var
     check(assert_type(GB_S.ewm(1).std(), "Series[float]"), Series, float)
     check(assert_type(GB_S.ewm(1).var(), "Series[float]"), Series, float)
-
-    # aggregate
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.99",
-    ):
-        check(assert_type(GB_S.ewm(1).aggregate("sum"), Series), Series)
-        if PD_LTE_23:
-            check(assert_type(GB_S.ewm(1).aggregate(np.sum), Series), Series)
-            check(assert_type(GB_S.ewm(1).agg(np.sum), Series), Series)
-            check(
-                assert_type(GB_S.ewm(1).aggregate([np.sum, np.mean]), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(GB_S.ewm(1).aggregate(["sum", np.mean]), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    GB_S.ewm(1).aggregate({"col1": "sum", "col2": np.mean}), DataFrame
-                ),
-                DataFrame,
-            )
 
     # iter
     iterator = iter(GB_S.ewm(1))

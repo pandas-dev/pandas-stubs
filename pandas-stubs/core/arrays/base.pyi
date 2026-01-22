@@ -2,7 +2,6 @@ from collections.abc import (
     Iterator,
     Sequence,
 )
-import sys
 from typing import (
     Any,
     Literal,
@@ -59,13 +58,8 @@ class ExtensionArray:
     def ndim(self) -> int: ...
     @property
     def nbytes(self) -> int: ...
-    if sys.version_info >= (3, 11):
-        @overload
-        def astype(self, dtype: np.dtype, copy: bool = True) -> np_1darray: ...
-    else:
-        @overload
-        def astype(self, dtype: np.dtype[Any], copy: bool = True) -> np_1darray: ...
-
+    @overload
+    def astype(self, dtype: np.dtype, copy: bool = True) -> np_1darray: ...
     @overload
     def astype(self, dtype: ExtensionDtype, copy: bool = True) -> ExtensionArray: ...
     @overload

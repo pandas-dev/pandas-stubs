@@ -16,10 +16,7 @@ from pandas import Series
 import pytest
 from typing_extensions import assert_type
 
-from tests import (
-    PD_LTE_23,
-    check,
-)
+from tests import check
 from tests._typing import np_ndarray_object
 
 from pandas.plotting import (
@@ -636,20 +633,19 @@ def test_grouped_dataframe_boxplot(close_figures: None) -> None:
     check(assert_type(grouped.boxplot(subplots=True), Series), Series)
 
     # a single plot
-    if not PD_LTE_23:
-        check(
-            assert_type(
-                grouped.boxplot(
-                    subplots=False,
-                    rot=45,
-                    fontsize=12,
-                    figsize=(8, 10),
-                    orientation="horizontal",
-                ),
-                Axes,
+    check(
+        assert_type(
+            grouped.boxplot(
+                subplots=False,
+                rot=45,
+                fontsize=12,
+                figsize=(8, 10),
+                orientation="horizontal",
             ),
             Axes,
-        )
+        ),
+        Axes,
+    )
 
 
 def test_grouped_dataframe_boxplot_single(close_figures: None) -> None:
@@ -681,20 +677,19 @@ def test_grouped_dataframe_boxplot_single(close_figures: None) -> None:
         Axes,
     )
 
-    if not PD_LTE_23:
-        check(
-            assert_type(
-                grouped.boxplot(
-                    subplots=False,
-                    rot=45,
-                    fontsize=12,
-                    figsize=(8, 10),
-                    orientation="horizontal",
-                ),
-                Axes,
+    check(
+        assert_type(
+            grouped.boxplot(
+                subplots=False,
+                rot=45,
+                fontsize=12,
+                figsize=(8, 10),
+                orientation="horizontal",
             ),
             Axes,
-        )
+        ),
+        Axes,
+    )
 
     # not a literal bool
     check(assert_type(grouped.boxplot(subplots=bool(0.5)), Axes | Series), Series)

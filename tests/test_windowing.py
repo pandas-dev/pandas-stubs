@@ -21,7 +21,6 @@ from typing_extensions import assert_type
 from pandas._libs.tslibs.offsets import BaseOffset
 
 from tests import (
-    PD_LTE_23,
     check,
     pytest_warns_bounded,
 )
@@ -350,24 +349,6 @@ def test_ewm_basic_math() -> None:
 
 
 def test_ewm_aggregate() -> None:
-    if PD_LTE_23:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.3.99",
-        ):
-            check(assert_type(DF.ewm(span=10).aggregate(np.mean), DataFrame), DataFrame)
-            check(
-                assert_type(DF.ewm(span=10).aggregate(["mean", np.mean]), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean}),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
     check(assert_type(DF.ewm(span=10).agg("sum"), DataFrame), DataFrame)
 
 
@@ -381,24 +362,6 @@ def test_ewm_basic_math_series() -> None:
 
 
 def test_ewm_aggregate_series() -> None:
-    if PD_LTE_23:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.3.99",
-        ):
-            check(assert_type(S.ewm(span=10).aggregate(np.mean), Series), Series)
-            check(
-                assert_type(S.ewm(span=10).aggregate(["mean", np.mean]), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean}),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
 
 

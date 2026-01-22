@@ -16,7 +16,6 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -32,13 +31,14 @@ exclude = ["pandas-stubs/__init__.py"]
 "Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
 
 [tool.poetry.dependencies]
-python = ">=3.10"
+python = ">=3.11"
 types-pytz = ">=2022.1.1"
 numpy = ">=1.23.5"
+pytz = "^2025.2"
 
 [tool.poetry.group.dev.dependencies]
 mypy = ">=1.19.1"
-pandas = "2.3.3"
+pandas = "3.0.0"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.408"

@@ -10,7 +10,6 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
-import sys
 from typing import (
     Any,
     ClassVar,
@@ -365,15 +364,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @final
     def is_(self, other: Any) -> bool: ...
     def __len__(self) -> int: ...
-    if sys.version_info >= (3, 11):
-        def __array__(
-            self, dtype: _str | np.dtype | None = None, copy: bool | None = None
-        ) -> np_1darray: ...
-    else:
-        def __array__(
-            self, dtype: _str | np.dtype[Any] | None = None, copy: bool | None = None
-        ) -> np_1darray: ...
-
+    def __array__(
+        self, dtype: _str | np.dtype | None = None, copy: bool | None = None
+    ) -> np_1darray: ...
     @property
     def dtype(self) -> DtypeObj: ...
     @final

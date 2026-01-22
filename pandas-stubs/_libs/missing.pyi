@@ -1,5 +1,4 @@
 from collections.abc import Callable
-import sys
 from typing import (
     Any,
     Literal,
@@ -29,13 +28,8 @@ class NAType:
     def __radd__(self, other: Series, /) -> Series: ...
     @overload
     def __radd__(self, other: Index, /) -> Index: ...
-    if sys.version_info >= (3, 11):
-        @overload
-        def __radd__(self, other: Scalar, /) -> NAType: ...
-    else:
-        @overload
-        def __radd__(self, other: Scalar, /) -> NAType: ...  # type: ignore[misc]
-
+    @overload
+    def __radd__(self, other: Scalar, /) -> NAType: ...
     @overload
     def __sub__(self, other: Series, /) -> Series: ...
     @overload

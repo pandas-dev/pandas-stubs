@@ -3,7 +3,6 @@ from collections.abc import (
     Hashable,
     Iterator,
 )
-from typing import TypeAlias
 
 import numpy as np
 from pandas.core.frame import DataFrame
@@ -16,17 +15,13 @@ from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 from typing_extensions import assert_type
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
 )
-
-if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
-else:
-    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
