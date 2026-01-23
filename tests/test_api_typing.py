@@ -2,7 +2,10 @@
 """Test module for classes in pandas.api.typing."""
 
 from pathlib import Path
-from typing import TypeAlias
+from typing import (
+    TypeAlias,
+    assert_type,
+)
 import uuid
 
 import numpy as np
@@ -28,7 +31,6 @@ from pandas.api.typing import (
     TimeGrouper,
     Window,
 )
-from typing_extensions import assert_type
 
 from tests import check
 

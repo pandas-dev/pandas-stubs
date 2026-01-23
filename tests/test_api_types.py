@@ -1,9 +1,10 @@
+from typing import assert_type
+
 import numpy as np
 import pandas as pd
 from pandas.api.extensions import ExtensionDtype
 from pandas.api.interchange import from_dataframe
 import pandas.api.types as api
-from typing_extensions import assert_type
 
 from pandas._typing import DtypeObj
 

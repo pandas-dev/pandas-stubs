@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import TypeAlias
+from typing import (
+    TypeAlias,
+    assert_never,
+    assert_type,
+)
 
 from dateutil.relativedelta import (
     FR,
@@ -17,10 +21,6 @@ import pandas as pd
 from pandas.api.typing import NaTType
 from pandas.core.tools.datetimes import FulldatetimeDict
 import pytz
-from typing_extensions import (
-    assert_never,
-    assert_type,
-)
 
 from pandas._typing import TimeUnit
 

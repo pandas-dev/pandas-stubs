@@ -11,6 +11,7 @@ from typing import (
     BinaryIO,
     Generic,
     Literal,
+    Self,
     TypeAlias,
     overload,
 )
@@ -22,7 +23,6 @@ from pyxlsb.workbook import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as PyXlsbWorkbook,
 )
 from typing_extensions import (
-    Self,
     TypeVar,
 )
 from xlrd.book import Book

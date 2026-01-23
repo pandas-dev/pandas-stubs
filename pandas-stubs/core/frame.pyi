@@ -23,7 +23,9 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
+    Never,
     NoReturn,
+    Self,
     TypeAlias,
     TypeVar,
     final,
@@ -72,10 +74,6 @@ from pandas.core.window import (
 from pandas.core.window.rolling import (
     Rolling,
     Window,
-)
-from typing_extensions import (
-    Never,
-    Self,
 )
 import xarray as xr
 
@@ -529,29 +527,16 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         coerce_float: bool = False,
         nrows: int | None = None,
     ) -> Self: ...
-    if sys.version_info >= (3, 11):
-        def to_records(
-            self,
-            index: _bool = True,
-            column_dtypes: (
-                _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
-            ) = None,
-            index_dtypes: (
-                _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
-            ) = None,
-        ) -> np.recarray: ...
-    else:
-        def to_records(
-            self,
-            index: _bool = True,
-            column_dtypes: (
-                _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
-            ) = None,
-            index_dtypes: (
-                _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
-            ) = None,
-        ) -> np.recarray[Any, Any]: ...
-
+    def to_records(
+        self,
+        index: _bool = True,
+        column_dtypes: (
+            _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
+        ) = None,
+        index_dtypes: (
+            _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
+        ) = None,
+    ) -> np.recarray: ...
     @overload
     def to_stata(
         self,

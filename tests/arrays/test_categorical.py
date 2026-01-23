@@ -1,11 +1,12 @@
 """Test module for methods in pandas.core.arrays.categorical."""
 
+from typing import assert_type
+
 import numpy as np
 import pandas as pd
 from pandas import Categorical
 from pandas.core.arrays.categorical import CategoricalDtype
 from pandas.core.indexes.base import Index
-from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
 from pandas._typing import Ordered

@@ -1,5 +1,7 @@
 """Test module for methods in pandas.core.arrays.interval."""
 
+from typing import assert_type
+
 import numpy as np
 import pandas as pd
 from pandas import (
@@ -8,7 +10,6 @@ from pandas import (
     Series,
 )
 from pandas.core.arrays import IntervalArray
-from typing_extensions import assert_type
 
 from pandas.core.dtypes.dtypes import IntervalDtype
 

@@ -2,12 +2,12 @@ from collections.abc import (
     Hashable,
     Iterable,
 )
+from typing import Self
 
 from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
-from typing_extensions import Self
 
 from pandas._typing import (
     S1,

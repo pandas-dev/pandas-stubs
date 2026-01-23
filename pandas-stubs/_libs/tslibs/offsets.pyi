@@ -8,6 +8,7 @@ from datetime import (
 from typing import (
     Any,
     Literal,
+    Self,
     TypeVar,
     overload,
 )
@@ -15,7 +16,6 @@ from typing import (
 from dateutil.relativedelta import weekday as WeekdayClass
 import numpy as np
 from pandas import Timestamp
-from typing_extensions import Self
 
 from pandas._typing import (
     ShapeT,

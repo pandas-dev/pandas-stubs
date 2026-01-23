@@ -1,10 +1,11 @@
-import numpy as np
-from numpy import typing as npt  # noqa: F401
-import pandas as pd
-from typing_extensions import (
+from typing import (
     Never,
     assert_type,
 )
+
+import numpy as np
+from numpy import typing as npt  # noqa: F401
+import pandas as pd
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

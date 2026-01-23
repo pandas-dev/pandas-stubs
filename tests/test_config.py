@@ -3,10 +3,10 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Literal,
+    assert_type,
 )
 
 import pandas as pd
-from typing_extensions import assert_type
 
 from pandas._config.config import DictWrapper
 

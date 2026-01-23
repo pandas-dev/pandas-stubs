@@ -1,8 +1,8 @@
 from datetime import timezone
-import sys
 from typing import (
     Any,
     Literal,
+    Self,
     TypeAlias,
     overload,
 )
@@ -10,7 +10,6 @@ from typing import (
 import numpy as np
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs import NaTType
 from pandas._libs.missing import NAType
@@ -20,6 +19,7 @@ from pandas._libs.tslibs.offsets import (
     SingleConstructorOffset,
 )
 from pandas._typing import (
+    Dtype,
     Ordered,
     TimeZones,
     npt,
@@ -73,11 +73,8 @@ class PeriodDtype(PandasExtensionDtype):
 
 class IntervalDtype(PandasExtensionDtype):
     def __init__(self, subtype: str | npt.DTypeLike | None = ...) -> None: ...
-    if sys.version_info >= (3, 11):
-        @property
-        def subtype(self) -> np.dtype | None: ...
-    else:
-        @property
-        def subtype(self) -> np.dtype[Any] | None: ...
+    @property
+    def subtype(self) -> np.dtype | None: ...
 
-class SparseDtype(ExtensionDtype): ...
+class SparseDtype(ExtensionDtype):
+    def __init__(self, dtype: Dtype = ..., fill_value: Any = None) -> None: ...

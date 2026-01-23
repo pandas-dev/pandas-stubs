@@ -2,12 +2,12 @@ from collections.abc import Iterator
 from typing import (
     Any,
     Literal,
+    Self,
     overload,
 )
 
 from pandas.core.arrays import ExtensionArray as ExtensionArray
 from pandas.core.series import Series
-from typing_extensions import Self
 
 from pandas._libs.missing import NAType
 from pandas._typing import (

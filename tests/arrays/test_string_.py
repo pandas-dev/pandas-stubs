@@ -1,13 +1,13 @@
 from typing import (
     TYPE_CHECKING,
     Literal,
+    assert_type,
 )
 
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.string_ import StringArray
 import pytest
-from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
 

@@ -5,6 +5,7 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Literal,
+    assert_type,
     cast,
 )
 
@@ -29,7 +30,6 @@ from pandas.core.window import (
     ExponentialMovingWindowGroupby,
     RollingGroupby,
 )
-from typing_extensions import assert_type
 
 from tests import (
     PD_LTE_23,

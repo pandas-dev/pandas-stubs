@@ -1,12 +1,14 @@
 import decimal
-from typing import Any
+from typing import (
+    Any,
+    assert_type,
+)
 
 import numpy as np
 import pandas as pd
 from pandas.arrays import IntegerArray
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.indexers import check_array_indexer
-from typing_extensions import assert_type
 
 from tests import check
 from tests._typing import np_1darray_bool

@@ -1,11 +1,11 @@
-from typing import Any
-
-import numpy as np
-from pandas.core.indexes.extension import ExtensionIndex
-from typing_extensions import (
+from typing import (
+    Any,
     Never,
     Self,
 )
+
+import numpy as np
+from pandas.core.indexes.extension import ExtensionIndex
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (

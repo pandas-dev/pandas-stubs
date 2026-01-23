@@ -7,6 +7,7 @@ from datetime import (
 from typing import (
     TYPE_CHECKING,
     Literal,
+    assert_type,
 )
 from zoneinfo import (
     ZoneInfo,
@@ -26,7 +27,6 @@ from pandas.core.arrays import (
 )
 import pyarrow as pa
 import pytest
-from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 

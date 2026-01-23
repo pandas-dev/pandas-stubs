@@ -11,6 +11,7 @@ from datetime import (
 from typing import (
     TYPE_CHECKING,
     Any,
+    assert_type,
 )
 from zoneinfo import ZoneInfo
 
@@ -19,7 +20,6 @@ import pandas as pd
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.string_ import BaseStringArray
 import pytest
-from typing_extensions import assert_type
 
 from pandas._libs.tslibs.nattype import NaTType
 

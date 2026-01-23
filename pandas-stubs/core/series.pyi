@@ -21,14 +21,15 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
-import sys
 from typing import (
     Any,
     ClassVar,
     Generic,
     Literal,
+    Never,
     NoReturn,
     Protocol,
+    Self,
     TypeAlias,
     final,
     overload,
@@ -125,10 +126,6 @@ from pandas.core.window import (
 from pandas.core.window.rolling import (
     Rolling,
     Window,
-)
-from typing_extensions import (
-    Never,
-    Self,
 )
 import xarray as xr
 
@@ -559,15 +556,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __array_ufunc__(
         self, ufunc: Callable[..., Any], method: _str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
-    if sys.version_info >= (3, 11):
-        def __array__(
-            self, dtype: _str | np.dtype = ..., copy: bool | None = ...
-        ) -> np_1darray: ...
-    else:
-        def __array__(
-            self, dtype: _str | np.dtype[Any] = ..., copy: bool | None = ...
-        ) -> np_1darray: ...
-
+    def __array__(
+        self, dtype: _str | np.dtype = ..., copy: bool | None = ...
+    ) -> np_1darray: ...
     @final
     def __getattr__(self, name: _str) -> S1: ...
 

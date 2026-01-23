@@ -1,11 +1,13 @@
 # pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
-from typing import Any
+from typing import (
+    Any,
+    assert_type,
+)
 
 import numpy as np
 import pandas as pd
-from typing_extensions import assert_type
 
 from tests import (
     PD_LTE_23,

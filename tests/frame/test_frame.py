@@ -24,9 +24,12 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
+    Never,
     TypeAlias,
     TypedDict,
     TypeVar,
+    assert_never,
+    assert_type,
 )
 import uuid
 
@@ -38,11 +41,6 @@ from pandas.core.resample import (
     Resampler,
 )
 import pytest
-from typing_extensions import (
-    Never,
-    assert_never,
-    assert_type,
-)
 import xarray as xr
 
 from pandas._typing import Scalar
@@ -3538,41 +3536,18 @@ def test_to_xarray() -> None:
 def test_to_records() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     dtypes = {"col1": np.int8, "col2": np.int16}
-    if sys.version_info >= (3, 11):
-        check(assert_type(df.to_records(False, "int8"), np.recarray), np.recarray)
-        check(
-            assert_type(df.to_records(False, index_dtypes=np.int8), np.recarray),
-            np.recarray,
-        )
-        check(
-            assert_type(
-                df.to_records(False, {"col1": np.int8, "col2": np.int16}), np.recarray
-            ),
-            np.recarray,
-        )
-        check(assert_type(df.to_records(False, dtypes), np.recarray), np.recarray)
-    else:
-        check(
-            assert_type(df.to_records(False, "int8"), np.recarray[Any, Any]),
-            np.recarray,
-        )
-        check(
-            assert_type(
-                df.to_records(False, index_dtypes=np.int8), np.recarray[Any, Any]
-            ),
-            np.recarray,
-        )
-        check(
-            assert_type(
-                df.to_records(False, {"col1": np.int8, "col2": np.int16}),
-                np.recarray[Any, Any],
-            ),
-            np.recarray,
-        )
-        check(
-            assert_type(df.to_records(False, dtypes), np.recarray[Any, Any]),
-            np.recarray,
-        )
+    check(assert_type(df.to_records(False, "int8"), np.recarray), np.recarray)
+    check(
+        assert_type(df.to_records(False, index_dtypes=np.int8), np.recarray),
+        np.recarray,
+    )
+    check(
+        assert_type(
+            df.to_records(False, {"col1": np.int8, "col2": np.int16}), np.recarray
+        ),
+        np.recarray,
+    )
+    check(assert_type(df.to_records(False, dtypes), np.recarray), np.recarray)
 
 
 def test_to_dict_simple() -> None:

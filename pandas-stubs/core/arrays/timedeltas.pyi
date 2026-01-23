@@ -1,12 +1,12 @@
 from typing import (
     Any,
+    Self,
     overload,
 )
 
 import numpy as np
 from pandas.core.arrays.datetimelike import TimelikeOps
 from pandas.core.frame import DataFrame
-from typing_extensions import Self
 
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.offsets import DateOffset
