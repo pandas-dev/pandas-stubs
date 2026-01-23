@@ -53,6 +53,8 @@ EXCLUDE = [
     "pandas.io.formats.printing.*",
     "pandas.io.formats.string.*",
     "pandas.io.formats.xml.*",
+    # Not documented, not really part of public API
+    "pandas.api.executors.BaseExecutionEngine",
 ]
 THRESHOLD = 1
 
@@ -136,6 +138,7 @@ def main() -> int:
                 continue
             s = item
             d = pandas_dir / item.replace("pandas-stubs", "pandas")
+            d.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(s, d)
 
         # Pyright requires `py.typed` to exist.
