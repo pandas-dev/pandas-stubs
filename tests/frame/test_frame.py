@@ -3570,6 +3570,8 @@ def test_reset_index_150_changes() -> None:
     check(assert_type(df4, pd.DataFrame), pd.DataFrame)
     check(assert_type(df4[["num"]], pd.DataFrame), pd.DataFrame)
 
+    check(assert_type(frame.reset_index(inplace=True), None), type(None))
+
 
 def test_compare_150_changes() -> None:
     frame_a = pd.DataFrame({"a": [1, 2, 3, 4]}, index=[-10, -9, -8, -7])

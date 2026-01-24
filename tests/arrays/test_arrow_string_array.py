@@ -106,7 +106,7 @@ def test_dtype() -> None:
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['pyarrow']]"), pd.StringDtype)
     assert assert_type(arr.dtype.storage, Literal["pyarrow"]) == "pyarrow"
 
-    # pandas-dev/pandas#63567
+    # TODO: pandas-dev/pandas#54466 should give BaseStringArray after 3.0
     arr_arrow = cast("ArrowStringArray", pd.array([pd.NA], str))
     check(assert_type(arr_arrow, ArrowStringArray), ArrowStringArray, float)
     assert pd.isna(assert_type(arr_arrow.dtype.na_value, NAType | float))

@@ -958,6 +958,19 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         verify_integrity: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...
+    @overload
+    def reset_index(
+        self,
+        level: Level | Sequence[Level] = ...,
+        *,
+        drop: _bool = ...,
+        col_level: int | _str = ...,
+        col_fill: Hashable = ...,
+        inplace: Literal[True],
+        allow_duplicates: _bool = ...,
+        names: Hashable | Sequence[Hashable] = ...,
+    ) -> None: ...
+    @overload
     def reset_index(
         self,
         level: Level | Sequence[Level] = ...,
@@ -965,7 +978,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
         drop: _bool = ...,
-        inplace: bool = False,
+        inplace: Literal[False] = False,
         allow_duplicates: _bool = ...,
         names: Hashable | Sequence[Hashable] = ...,
     ) -> Self: ...

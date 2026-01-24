@@ -62,7 +62,6 @@ def test_floordiv_py_sequence(left: pd.TimedeltaIndex) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
         _04 = left // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-    # TODO: pandas-dev/pandas#62552 switch to np.integer after Pandas 3.0
     check(assert_type(left // d, "pd.Index[int]"), pd.Index, np.integer)
 
     if TYPE_CHECKING_INVALID_USAGE:

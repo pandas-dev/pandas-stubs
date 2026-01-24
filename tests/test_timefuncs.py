@@ -358,6 +358,7 @@ def test_series_dt_accessors() -> None:
         "The behavior of DatetimeProperties.to_pydatetime is deprecated",
         upper="2.3.99",
     ):
+        # TODO: pandas-dev/pandas-stubs#1641 discuss deprecation
         check(
             assert_type(s0.dt.to_pydatetime(), np_1darray_object),
             pd.Series,

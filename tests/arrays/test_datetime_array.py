@@ -238,8 +238,8 @@ def test_construction_dtype(
 def test_properties() -> None:
     arr = pd.array([datetime(1748, 12, 24)])
 
-    check(assert_type(arr.month_name(), np_1darray_object), BaseStringArray)
-    check(assert_type(arr.day_name(), np_1darray_object), BaseStringArray)
+    check(assert_type(arr.month_name(), BaseStringArray), BaseStringArray)
+    check(assert_type(arr.day_name(), BaseStringArray), BaseStringArray)
     check(assert_type(arr.time, np_1darray_object), np_1darray_object, time)
     check(assert_type(arr.timetz, np_1darray_object), np_1darray_object, time)
     check(assert_type(arr.date, np_1darray_object), np_1darray_object, date)

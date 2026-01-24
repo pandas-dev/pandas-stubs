@@ -1,3 +1,4 @@
+# TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
 import datetime as dt
@@ -19,8 +20,6 @@ from pandas.api.typing import (
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.groupby.grouper import Grouper
 import pandas.util as pdutil
-
-# TODO: pandas-dev/pandas#55023
 import pytest
 
 from pandas._typing import Scalar
@@ -951,32 +950,14 @@ def test_index_unqiue() -> None:
     interval_i = pd.interval_range(1, 10, periods=10)
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
-    check(
-        assert_type(pd.unique(dti), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(pd.unique(dti_zoned), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(pd.unique(i), pd.Index),
-        pd.Index,
-    )
+    check(assert_type(pd.unique(dti), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(pd.unique(dti_zoned), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(pd.unique(i), pd.Index), pd.Index)
     check(assert_type(pd.unique(ii_pd), pd.Index), pd.Index)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
-    check(
-        assert_type(pd.unique(ri), "pd.Index[int]"),
-        pd.Index,
-    )
-    check(
-        assert_type(pd.unique(tdi), pd.TimedeltaIndex),
-        pd.TimedeltaIndex,
-    )
-    check(
-        assert_type(pd.unique(mi), np_ndarray),
-        pd.MultiIndex,
-    )
+    check(assert_type(pd.unique(ri), "pd.Index[int]"), pd.Index)
+    check(assert_type(pd.unique(tdi), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(pd.unique(mi), np_ndarray), pd.MultiIndex)
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
