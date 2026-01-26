@@ -10,7 +10,6 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from typing_extensions import assert_type
 
 from pandas._libs import NaTType
-from pandas._libs.tslibs.offsets import Minute
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import TimeUnit
 
@@ -23,6 +22,8 @@ from tests._typing import (
     np_1darray_object,
     np_1darray_td,
 )
+
+from pandas.tseries.offsets import Minute
 
 
 def test_construction() -> None:
@@ -110,9 +111,8 @@ def test_timedelta_array_mod() -> None:
 
 def test_timedelta_takes_tick_object() -> None:
     """Test that Timedelta objects can be built using tick objects such as Minute."""
-    tick = Minute(15)
-    seconds = pd.Timedelta(tick).total_seconds()
-    assert seconds == 900.0
+    td = pd.Timedelta(Minute(15))
+    check(assert_type(td, pd.Timedelta), pd.Timedelta)
 
 
 def test_timedelta_array_divmod() -> None:

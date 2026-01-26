@@ -22,7 +22,6 @@ from typing_extensions import Self
 
 from pandas._libs.tslibs import (
     NaTType,
-    Tick,
 )
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timestamps import Timestamp
@@ -38,6 +37,8 @@ from pandas._typing import (
     np_ndarray_float,
     np_ndarray_td,
 )
+
+from pandas.tseries.offsets import Tick
 
 class Components(NamedTuple):
     days: int
