@@ -26,7 +26,7 @@ import numpy as np
 from pandas import Index
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
-import sqlalchemy.engine
+from sqlalchemy.engine import Connectable
 
 from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._typing import (
@@ -168,7 +168,7 @@ class NDFrame:
     def to_sql(
         self,
         name: _str,
-        con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
+        con: str | Connectable | sqlite3.Connection,
         *,
         schema: _str | None = None,
         if_exists: Literal["fail", "replace", "append", "delete_rows"] = "fail",
