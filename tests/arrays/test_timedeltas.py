@@ -25,6 +25,8 @@ from tests._typing import (
     np_1darray_td,
 )
 
+from pandas.tseries.offsets import Minute
+
 
 def test_construction() -> None:
     """Test pd.array method for TimedeltaArray."""
@@ -107,6 +109,12 @@ def test_timedelta_array_mod() -> None:
 
     result = arr % Timedelta("12 hours")
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
+
+
+def test_timedelta_takes_tick_object() -> None:
+    """Test that Timedelta objects can be built using tick objects such as Minute."""
+    td = pd.Timedelta(Minute(15))
+    check(assert_type(td, pd.Timedelta), pd.Timedelta)
 
 
 def test_timedelta_array_divmod() -> None:
