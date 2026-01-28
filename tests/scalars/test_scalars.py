@@ -5,7 +5,6 @@ import datetime as dt
 from typing import (
     Any,
     Literal,
-    TypeAlias,
     assert_type,
 )
 
@@ -17,9 +16,9 @@ import pytz
 
 from pandas._libs.tslibs.timedeltas import Components
 from pandas._typing import TimeUnit
+from pandas.errors import Pandas4Warning
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -39,11 +38,6 @@ from pandas.tseries.offsets import (
     BaseOffset,
     Day,
 )
-
-if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
-else:
-    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 
 def test_interval() -> None:
@@ -385,12 +379,11 @@ def test_timedelta_construction() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
         "'w' is deprecated and will",
-        lower="2.3.99",
-        upper="3.0.99",
+        upper="3.1.99",
     ):
         check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", upper="3.1.99"):
         check(assert_type(pd.Timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
@@ -424,10 +417,10 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
 
     check(assert_type(pd.Timedelta("1 W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", upper="3.1.99"):
         check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", upper="3.1.99"):
         check(assert_type(pd.Timedelta("1 d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)

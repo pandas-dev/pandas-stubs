@@ -29,7 +29,6 @@ from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar  # noqa: F401
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -1039,7 +1038,7 @@ def test_getitem() -> None:
     check(
         assert_type(iri[[0, 2, 4]], pd.Index),
         pd.Index,
-        np.integer if PD_LTE_23 else int,
+        int,
     )
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])

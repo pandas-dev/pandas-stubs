@@ -17,7 +17,6 @@ from pandas._typing import Scalar
 from pandas.core.dtypes.dtypes import SparseDtype
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -209,17 +208,10 @@ def test_sparse_sum() -> None:
 
 
 def test_sparse_cumsum() -> None:
-    """
-    Test cumsum method for SparseArray.
-
-    Note: At runtime, cumsum has a recursion bug in pandas.
-    This test only validates the type signature.
-    """
+    """Test cumsum method for SparseArray."""
     arr = SparseArray([1, 0, 0, 2, 3], fill_value=0)
-    if not PD_LTE_23:
-        # TODO: pandas-dev/pandas#62669 fix is in 3.0
-        check(assert_type(arr.cumsum(), SparseArray), SparseArray)
-        check(assert_type(arr.cumsum(axis=0), SparseArray), SparseArray)
+    check(assert_type(arr.cumsum(), SparseArray), SparseArray)
+    check(assert_type(arr.cumsum(axis=0), SparseArray), SparseArray)
 
 
 def test_sparse_mean() -> None:

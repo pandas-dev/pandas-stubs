@@ -46,7 +46,6 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -73,10 +72,7 @@ if TYPE_CHECKING:
 else:
     PandasNamedTuple: TypeAlias = tuple
 
-if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
-else:
-    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
+from pandas.errors import Pandas4Warning
 
 
 def getCols(k: int) -> str:
@@ -458,21 +454,14 @@ def test_types_drop_duplicates() -> None:
         pd.DataFrame,
     )
 
-    if not PD_LTE_23:
-        check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
-        check(
-            assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame
-        )
+    check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_fillna() -> None:
     df = pd.DataFrame(data={"col1": [np.nan, np.nan], "col2": [3, np.nan]})
     check(assert_type(df.fillna(0), pd.DataFrame), pd.DataFrame)
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(assert_type(df.fillna(0, axis=1, inplace=True), None), type(None))
-    else:
-        check(assert_type(df.fillna(0, axis=1, inplace=True), None), pd.DataFrame)
+    check(assert_type(df.fillna(0, axis=1, inplace=True), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_sort_index() -> None:
@@ -780,25 +769,18 @@ def test_dataframe_clip() -> None:
         ),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(
-            assert_type(df.clip(lower=5, upper=None, axis=None, inplace=True), None),
-            type(None),
-        )
-        check(
-            assert_type(df.clip(lower=None, upper=15, axis=None, inplace=True), None),
-            type(None),
-        )
-    else:
-        check(
-            assert_type(df.clip(lower=5, upper=None, axis=None, inplace=True), None),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(df.clip(lower=None, upper=15, axis=None, inplace=True), None),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(
+            df.clip(lower=5, upper=None, axis=None, inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=None, upper=15, axis=None, inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
     check(
         assert_type(df.clip(lower=None, upper=None, axis=0), pd.DataFrame), pd.DataFrame
@@ -821,65 +803,32 @@ def test_dataframe_clip() -> None:
         ),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(
-            assert_type(df.clip(lower=5, upper=None, axis="index", inplace=True), None),
-            type(None),
-        )
-        check(
-            assert_type(
-                df.clip(lower=None, upper=15, axis="index", inplace=True), None
-            ),
-            type(None),
-        )
-        check(
-            assert_type(
-                df.clip(
-                    lower=pd.Series([1, 2]), upper=None, axis="index", inplace=True
-                ),
-                None,
-            ),
-            type(None),
-        )
-        check(
-            assert_type(
-                df.clip(
-                    lower=None, upper=pd.Series([1, 2]), axis="index", inplace=True
-                ),
-                None,
-            ),
-            type(None),
-        )
-    else:
-        check(
-            assert_type(df.clip(lower=5, upper=None, axis="index", inplace=True), None),
+    check(
+        assert_type(
+            df.clip(lower=5, upper=None, axis="index", inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=None, upper=15, axis="index", inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=pd.Series([1, 2]), upper=None, axis="index", inplace=True),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                df.clip(lower=None, upper=15, axis="index", inplace=True), None
-            ),
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=None, upper=pd.Series([1, 2]), axis="index", inplace=True),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                df.clip(
-                    lower=pd.Series([1, 2]), upper=None, axis="index", inplace=True
-                ),
-                None,
-            ),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
-                df.clip(
-                    lower=None, upper=pd.Series([1, 2]), axis="index", inplace=True
-                ),
-                None,
-            ),
-            pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(df.clip(lower=None, upper=None, axis="index"), pd.DataFrame),
         pd.DataFrame,
@@ -910,25 +859,14 @@ def test_dataframe_clip() -> None:
         ),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(
-            assert_type(df.clip(lower=5, upper=None, axis=0, inplace=True), None),
-            type(None),
-        )
-        check(
-            assert_type(df.clip(lower=None, upper=15, axis=0, inplace=True), None),
-            type(None),
-        )
-    else:
-        check(
-            assert_type(df.clip(lower=5, upper=None, axis=0, inplace=True), None),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(df.clip(lower=None, upper=15, axis=0, inplace=True), None),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.clip(lower=5, upper=None, axis=0, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=None, upper=15, axis=0, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     # without lower
     check(assert_type(df.clip(upper=None, axis=None), pd.DataFrame), pd.DataFrame)
@@ -937,13 +875,10 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(upper=None, axis=None, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(assert_type(df.clip(upper=15, axis=None, inplace=True), None), type(None))
-    else:
-        check(
-            assert_type(df.clip(upper=15, axis=None, inplace=True), None), pd.DataFrame
-        )
+    check(
+        assert_type(df.clip(upper=15, axis=None, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     check(assert_type(df.clip(upper=None, axis=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(upper=15, axis=0), pd.DataFrame), pd.DataFrame)
@@ -955,28 +890,16 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(upper=None, axis="index", inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(
-            assert_type(df.clip(upper=15, axis="index", inplace=True), None), type(None)
-        )
-        check(
-            assert_type(
-                df.clip(upper=pd.Series([1, 2]), axis="index", inplace=True), None
-            ),
-            type(None),
-        )
-    else:
-        check(
-            assert_type(df.clip(upper=15, axis="index", inplace=True), None),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
-                df.clip(upper=pd.Series([1, 2]), axis="index", inplace=True), None
-            ),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.clip(upper=15, axis="index", inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(upper=pd.Series([1, 2]), axis="index", inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     check(assert_type(df.clip(upper=None, axis="index"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(upper=15, axis="index"), pd.DataFrame), pd.DataFrame)
     check(
@@ -988,13 +911,10 @@ def test_dataframe_clip() -> None:
         pd.DataFrame,
     )
     # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(assert_type(df.clip(upper=15, axis=0, inplace=True), None), type(None))
-    else:
-        check(
-            assert_type(df.clip(upper=15, axis=0, inplace=True), None),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.clip(upper=15, axis=0, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     # without upper
     check(
@@ -1007,16 +927,10 @@ def test_dataframe_clip() -> None:
         pd.DataFrame,
     )
     # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(
-            assert_type(df.clip(lower=5, axis=None, inplace=True), None),
-            type(None),
-        )
-    else:
-        check(
-            assert_type(df.clip(lower=5, axis=None, inplace=True), None),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.clip(lower=5, axis=None, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(
         assert_type(df.clip(lower=None, axis=None, inplace=True), pd.DataFrame),
         pd.DataFrame,
@@ -1032,32 +946,16 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(lower=None, axis="index", inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(
-            assert_type(df.clip(lower=5, axis="index", inplace=True), None),
-            type(None),
-        )
-    else:
-        check(
-            assert_type(df.clip(lower=5, axis="index", inplace=True), None),
-            pd.DataFrame,
-        )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(
-            assert_type(
-                df.clip(lower=pd.Series([1, 2]), axis="index", inplace=True), None
-            ),
-            type(None),
-        )
-    else:
-        check(
-            assert_type(
-                df.clip(lower=pd.Series([1, 2]), axis="index", inplace=True), None
-            ),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.clip(lower=5, axis="index", inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=pd.Series([1, 2]), axis="index", inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(df.clip(lower=None, axis="index"), pd.DataFrame),
         pd.DataFrame,
@@ -1074,14 +972,10 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(lower=None, axis=0, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(assert_type(df.clip(lower=5, axis=0, inplace=True), None), type(None))
-    else:
-        check(
-            assert_type(df.clip(lower=5, axis=0, inplace=True), None),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.clip(lower=5, axis=0, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_abs() -> None:
@@ -2830,6 +2724,17 @@ def test_types_rename() -> None:
     )
 
 
+def test_types_rename_inplace() -> None:
+    """Test DataFrame.rename with inplace argument."""
+    df = pd.DataFrame(columns=["a"])
+    check(assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None))
+    check(assert_type(df.rename(columns={"a": "b"}), pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df.rename(columns={"a": "b"}, copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
+
 def test_types_rename_axis() -> None:
     df = pd.DataFrame({"col_name": [1, 2, 3]})
     df.index.name = "a"
@@ -3007,54 +2912,24 @@ def test_read_csv(tmp_path: Path) -> None:
         ),
         pd.DataFrame,
     )
-    if PD_LTE_23:
-        parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
-        with pytest_warns_bounded(
-            FutureWarning, "Support for nested sequences", lower="2.1.99"
-        ):
-            check(
-                assert_type(
-                    pd.read_csv(path_str, parse_dates=parse_dates_2), pd.DataFrame
-                ),
-                pd.DataFrame,
-            )
-        parse_dates_3 = {"combined_date": [1, 2, 3]}
-        with pytest_warns_bounded(
-            FutureWarning, "Support for nested sequences", lower="2.1.99"
-        ):
-            check(
-                assert_type(
-                    pd.read_csv(path_str, parse_dates=parse_dates_3), pd.DataFrame
-                ),
-                pd.DataFrame,
-            )
-        # MyPy calls this Dict[str, object] by default which necessitates the explicit annotation (Pyright does not)
-        parse_dates_4: dict[str, list[str | int]] = {"combined_date": [1, "Month", 3]}
-        with pytest_warns_bounded(
-            FutureWarning, "Support for nested sequences", lower="2.1.99"
-        ):
-            check(
-                assert_type(
-                    pd.read_csv(path_str, parse_dates=parse_dates_4), pd.DataFrame
-                ),
-                pd.DataFrame,
-            )
-
-        parse_dates_6 = [[1, 2, 3]]
-        with pytest_warns_bounded(
-            FutureWarning, "Support for nested sequences", lower="2.1.99"
-        ):
-            check(
-                assert_type(
-                    pd.read_csv(path_str, parse_dates=parse_dates_6), pd.DataFrame
-                ),
-                pd.DataFrame,
-            )
     parse_dates_5 = [0]
     check(
         assert_type(pd.read_csv(path_str, parse_dates=parse_dates_5), pd.DataFrame),
         pd.DataFrame,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
+        _0 = pd.read_csv(path_str, parse_dates=parse_dates_2)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+
+        parse_dates_3 = {"combined_date": [1, 2, 3]}
+        _1 = pd.read_csv(path_str, parse_dates=parse_dates_3)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+
+        parse_dates_4: dict[str, list[str | int]] = {"combined_date": [1, "Month", 3]}
+        _2 = pd.read_csv(path_str, parse_dates=parse_dates_4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+
+        parse_dates_6 = [[1, 2, 3]]
+        _3 = pd.read_csv(path_str, parse_dates=parse_dates_6)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_dataframe_pct_change() -> None:
@@ -3145,18 +3020,11 @@ def test_types_ffill() -> None:
         assert_type(df.ffill(inplace=False, limit_area="inside"), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(assert_type(df.ffill(inplace=True), None), type(None))
-        check(
-            assert_type(df.ffill(inplace=True, limit_area="outside"), None), type(None)
-        )
-    else:
-        check(assert_type(df.ffill(inplace=True), None), pd.DataFrame)
-        check(
-            assert_type(df.ffill(inplace=True, limit_area="outside"), None),
-            pd.DataFrame,
-        )
+    check(assert_type(df.ffill(inplace=True), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.ffill(inplace=True, limit_area="outside"), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_bfill() -> None:
@@ -3168,18 +3036,11 @@ def test_types_bfill() -> None:
         assert_type(df.bfill(inplace=False, limit_area="inside"), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(assert_type(df.bfill(inplace=True), None), type(None))
-        check(
-            assert_type(df.bfill(inplace=True, limit_area="outside"), None), type(None)
-        )
-    else:
-        check(assert_type(df.bfill(inplace=True), None), pd.DataFrame)
-        check(
-            assert_type(df.bfill(inplace=True, limit_area="outside"), None),
-            pd.DataFrame,
-        )
+    check(assert_type(df.bfill(inplace=True), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.bfill(inplace=True, limit_area="outside"), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_replace() -> None:
@@ -3187,11 +3048,7 @@ def test_types_replace() -> None:
     df = pd.DataFrame([[1, 2, 3]])
     check(assert_type(df.replace(1, 2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(1, 2, inplace=False), pd.DataFrame), pd.DataFrame)
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(assert_type(df.replace(1, 2, inplace=True), None), type(None))
-    else:
-        check(assert_type(df.replace(1, 2, inplace=True), None), pd.DataFrame)
+    check(assert_type(df.replace(1, 2, inplace=True), pd.DataFrame), pd.DataFrame)
 
 
 def test_dataframe_replace() -> None:
@@ -3369,37 +3226,21 @@ def test_frame_stack() -> None:
         [[1.0, 2.0], [3.0, 4.0]], index=["cat", "dog"], columns=multicol2
     )
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "The previous implementation of stack is deprecated",
-        upper="2.3.99",
-    ):
-        check(
-            assert_type(df_multi_level_cols2.stack(0), pd.DataFrame | pd.Series),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
-                df_multi_level_cols2.stack([0, 1]),
-                pd.DataFrame | pd.Series,
-            ),
-            pd.Series,
-        )
-        if PD_LTE_23:
-            check(
-                assert_type(
-                    df_multi_level_cols2.stack(0, future_stack=False),
-                    pd.DataFrame | pd.Series,
-                ),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    df_multi_level_cols2.stack(0, dropna=True, sort=True),
-                    pd.DataFrame | pd.Series,
-                ),
-                pd.DataFrame,
-            )
+    check(
+        assert_type(df_multi_level_cols2.stack(0), pd.DataFrame | pd.Series),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df_multi_level_cols2.stack([0, 1]),
+            pd.DataFrame | pd.Series,
+        ),
+        pd.Series,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = df_multi_level_cols2.stack(0, future_stack=False)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _1 = df_multi_level_cols2.stack(0, dropna=True, sort=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_frame_reindex() -> None:
@@ -3432,19 +3273,10 @@ def test_frame_reindex_like() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
-    with (
-        pytest_warns_bounded(
-            FutureWarning,
-            "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-            lower="2.3.99",
-            upper="2.99",
-        ),
-        pytest_warns_bounded(
-            Pandas4Warning,
-            "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-            lower="2.99",
-            upper="3.0.99",
-        ),
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
+        upper="3.1.99",
     ):
         check(
             assert_type(
@@ -3709,20 +3541,15 @@ def test_where(
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
 
     check(df.where(cond), pd.DataFrame)
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(df.where(cond, inplace=True), type(None))
-    else:
-        check(df.where(cond, inplace=True), pd.DataFrame)
+    check(df.where(cond, inplace=True), pd.DataFrame)
 
     if TYPE_CHECKING:
         assert_type(df.where(where_cond1), pd.DataFrame)
         assert_type(df.where(where_cond2), pd.DataFrame)
         assert_type(df.where(where_cond3), pd.DataFrame)
-        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-        assert_type(df.where(where_cond1, inplace=True), None)
-        assert_type(df.where(where_cond2, inplace=True), None)
-        assert_type(df.where(where_cond3, inplace=True), None)
+        assert_type(df.where(where_cond1, inplace=True), pd.DataFrame)
+        assert_type(df.where(where_cond2, inplace=True), pd.DataFrame)
+        assert_type(df.where(where_cond3, inplace=True), pd.DataFrame)
 
 
 def test_mask() -> None:
@@ -3732,11 +3559,7 @@ def test_mask() -> None:
         return x % 2 == 0
 
     check(assert_type(df.mask(cond1), pd.DataFrame), pd.DataFrame)
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(assert_type(df.mask(cond1, inplace=True), None), type(None))
-    else:
-        check(assert_type(df.mask(cond1, inplace=True), None), pd.DataFrame)
+    check(assert_type(df.mask(cond1, inplace=True), pd.DataFrame), pd.DataFrame)
 
 
 def test_replace_na() -> None:
@@ -3765,6 +3588,8 @@ def test_reset_index_150_changes() -> None:
     df4 = df3.reset_index()
     check(assert_type(df4, pd.DataFrame), pd.DataFrame)
     check(assert_type(df4[["num"]], pd.DataFrame), pd.DataFrame)
+
+    check(assert_type(frame.reset_index(inplace=True), None), type(None))
 
 
 def test_compare_150_changes() -> None:
@@ -4133,16 +3958,10 @@ def test_interpolate() -> None:
         assert_type(df.interpolate(method="linear", inplace=False), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    if PD_LTE_23:
-        check(
-            assert_type(df.interpolate(method="linear", inplace=True), None), type(None)
-        )
-    else:
-        check(
-            assert_type(df.interpolate(method="linear", inplace=True), None),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.interpolate(method="linear", inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_itertuples() -> None:

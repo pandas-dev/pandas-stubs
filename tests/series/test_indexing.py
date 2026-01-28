@@ -10,23 +10,13 @@ import numpy as np
 import pandas as pd
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 
 
 def test_types_select() -> None:
     s = pd.Series(data={"row1": 1, "row2": 2})
-    if PD_LTE_23:
-        # Not valid in 3.0
-        with pytest_warns_bounded(
-            FutureWarning,
-            "Series.__getitem__ treating keys as positions is deprecated",
-            lower="2.0.99",
-        ):
-            s[0]
     check(assert_type(s[1:], "pd.Series[int]"), pd.Series, np.integer)
 
 
