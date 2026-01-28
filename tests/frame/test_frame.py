@@ -3273,12 +3273,10 @@ def test_frame_reindex_like() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
-    with (
-        pytest_warns_bounded(
-            Pandas4Warning,
-            "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-            upper="3.1.99",
-        )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
+        upper="3.1.99",
     ):
         check(
             assert_type(
