@@ -247,6 +247,8 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
+MaskTypeNoList: TypeAlias = Series[bool] | np_ndarray_bool
+
 @type_check_only
 class _SupportsAdd(Protocol[T_co]):
     def __add__(self, value: Self, /) -> T_co: ...
@@ -2191,7 +2193,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __and__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | list[int] | MaskType
+        self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
     def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
@@ -2942,14 +2944,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __or__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | list[int] | MaskType
+        self, other: bool | Series[bool] | np_1darray_bool
     ) -> Series[bool]: ...
     @overload
-    def __or__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __or__(self, other: int | Series[int] | np_ndarray_anyint) -> Series[int]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __rand__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | MaskType | list[int]
+    def __rand__(  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
+        self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
     def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
@@ -2958,15 +2960,15 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __rpow__(self, other: complex | ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __ror__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | MaskType | list[int]
+    def __ror__(  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
+        self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
     def __ror__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __rxor__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | MaskType | list[int]
+    def __rxor__(  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload]  # pyrefly: ignore[bad-override]
+        self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
     def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
@@ -4007,7 +4009,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __xor__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | MaskType | list[int]
+        self, other: bool | Series[bool] | np_1darray_bool
     ) -> Series[bool]: ...
     @overload
     def __xor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...

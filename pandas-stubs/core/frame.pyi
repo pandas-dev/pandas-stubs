@@ -889,6 +889,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         limit: int | None = None,
         tolerance: float | Timedelta | None = ...,
     ) -> Self: ...
+    @overload
     def rename(
         self,
         mapper: Renamer | None = ...,
@@ -896,8 +897,19 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         index: Renamer | None = ...,
         columns: Renamer | None = ...,
         axis: Axis | None = ...,
-        copy: bool = ...,
-        inplace: bool = False,
+        inplace: Literal[True],
+        level: Level | None = None,
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def rename(
+        self,
+        mapper: Renamer | None = ...,
+        *,
+        index: Renamer | None = ...,
+        columns: Renamer | None = ...,
+        axis: Axis | None = ...,
+        inplace: Literal[False] = False,
         level: Level | None = None,
         errors: IgnoreRaise = ...,
     ) -> Self: ...

@@ -362,6 +362,7 @@ def test_ewm_basic_math_series() -> None:
 
 
 def test_ewm_aggregate_series() -> None:
+    # TODO: pandas-dev/pandas#63855, only str function names are possible, not callable, add tests
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
 
 

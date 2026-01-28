@@ -725,7 +725,7 @@ def test_types_clip() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.clip(lower=lower, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        s.clip(lower=lower, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType]
         s.clip(lower=lower, axis="column")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType]
 
 
@@ -2039,6 +2039,16 @@ def test_bitwise_operators() -> None:
     check(assert_type(s ^ s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2 ^ s, "pd.Series[int]"), pd.Series, np.integer)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = s & [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = [1, 2, 3, 4] & s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+
+        _2 = s | [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _3 = [1, 2, 3, 4] | s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+
+        _4 = s ^ [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _5 = [1, 2, 3, 4] ^ s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+
 
 def test_logical_operators() -> None:
     # GH 380
@@ -2060,16 +2070,19 @@ def test_logical_operators() -> None:
         np.bool_,
     )
     check(assert_type((df["a"] >= 2) & True, "pd.Series[bool]"), pd.Series, np.bool_)
-
     check(assert_type((df["a"] >= 2) | True, "pd.Series[bool]"), pd.Series, np.bool_)
-
     check(assert_type((df["a"] >= 2) ^ True, "pd.Series[bool]"), pd.Series, np.bool_)
-
     check(assert_type(True & (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
-
     check(assert_type(True | (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
-
     check(assert_type(True ^ (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = (df["a"] >= 2) & [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = [True, False, True] & (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _2 = (df["a"] >= 2) | [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _3 = [True, False, True] | (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _4 = (df["a"] >= 2) ^ [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _5 = [True, False, True] ^ (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
 
 def test_AnyArrayLike_and_clip() -> None:

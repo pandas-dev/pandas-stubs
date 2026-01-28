@@ -957,7 +957,7 @@ def test_index_unqiue() -> None:
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(pd.unique(ri), "pd.Index[int]"), pd.Index)
     check(assert_type(pd.unique(tdi), pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(pd.unique(mi), np_ndarray), pd.MultiIndex)
+    check(assert_type(pd.unique(mi), pd.MultiIndex), pd.MultiIndex)
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,

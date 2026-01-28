@@ -890,6 +890,8 @@ def test_series_groupby_ewm() -> None:
     check(assert_type(next(iterator), "Series[float]"), Series, float)
     check(assert_type(list(GB_S.ewm(1)), "list[Series[float]]"), list, Series)
 
+    # TODO: pandas-dev/pandas-stubes#1641 in pandas 3.0 agg only supports str function and not callable
+
 
 def test_engine() -> None:
     if TYPE_CHECKING_INVALID_USAGE:

@@ -353,17 +353,11 @@ def test_series_dt_accessors() -> None:
         assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
     )
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "The behavior of DatetimeProperties.to_pydatetime is deprecated",
-        upper="2.3.99",
-    ):
-        # TODO: pandas-dev/pandas-stubs#1641 discuss deprecation
-        check(
-            assert_type(s0.dt.to_pydatetime(), np_1darray_object),
-            pd.Series,
-            dt.datetime,
-        )
+    check(
+        assert_type(s0.dt.to_pydatetime(), "pd.Series"),
+        pd.Series,
+        dt.datetime,
+    )
     s0_local = s0.dt.tz_localize("UTC")
     check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(
@@ -530,19 +524,10 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s2.dt.microseconds, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2.dt.nanoseconds, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2.dt.components, pd.DataFrame), pd.DataFrame)
-    with (
-        pytest_warns_bounded(
-            FutureWarning,
-            "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
-            lower="2.3.99",
-            upper="2.99",
-        ),
-        pytest_warns_bounded(
-            Pandas4Warning,
-            "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
-            lower="2.99",
-            upper="3.0.99",
-        ),
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
+        upper="3.0.99",
     ):
         check(
             assert_type(s2.dt.to_pytimedelta(), np_1darray_object),

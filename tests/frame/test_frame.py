@@ -2724,6 +2724,17 @@ def test_types_rename() -> None:
     )
 
 
+def test_types_rename_inplace() -> None:
+    """Test DataFrame.rename with inplace argument."""
+    df = pd.DataFrame(columns=["a"])
+    check(assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None))
+    check(assert_type(df.rename(columns={"a": "b"}), pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df.rename(columns={"a": "b"}, copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
+
 def test_types_rename_axis() -> None:
     df = pd.DataFrame({"col_name": [1, 2, 3]})
     df.index.name = "a"
@@ -2906,6 +2917,19 @@ def test_read_csv(tmp_path: Path) -> None:
         assert_type(pd.read_csv(path_str, parse_dates=parse_dates_5), pd.DataFrame),
         pd.DataFrame,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
+        _0 = pd.read_csv(path_str, parse_dates=parse_dates_2)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+
+        parse_dates_3 = {"combined_date": [1, 2, 3]}
+        _1 = pd.read_csv(path_str, parse_dates=parse_dates_3)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+
+        parse_dates_4: dict[str, list[str | int]] = {"combined_date": [1, "Month", 3]}
+        _2 = pd.read_csv(path_str, parse_dates=parse_dates_4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+
+        parse_dates_6 = [[1, 2, 3]]
+        _3 = pd.read_csv(path_str, parse_dates=parse_dates_6)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_dataframe_pct_change() -> None:
@@ -3213,6 +3237,10 @@ def test_frame_stack() -> None:
         ),
         pd.Series,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = df_multi_level_cols2.stack(0, future_stack=False)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _1 = df_multi_level_cols2.stack(0, dropna=True, sort=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_frame_reindex() -> None:

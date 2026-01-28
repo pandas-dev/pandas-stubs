@@ -93,6 +93,7 @@ def test_construction_dtype(
 
     if TYPE_CHECKING:
         # TODO: pandas-dev/pandas#54466 should give BaseStringArray after 3.0
+        # TODO: pandas-dev/pandas-stubs#1641 should give BaseStringArray after 3.0 with the stubs
         # The following one still gives NumpyExtensionArray because issubclass(str, object),
         # and pd.array([], object) gives NumpyExtensionArray
         assert_type(pd.array([], str), NumpyExtensionArray)
