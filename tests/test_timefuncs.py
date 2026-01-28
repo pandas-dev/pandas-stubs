@@ -527,7 +527,7 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
-        upper="3.0.99",
+        upper="3.1.99",
     ):
         check(
             assert_type(s2.dt.to_pytimedelta(), np_1darray_object),
