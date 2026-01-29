@@ -701,7 +701,8 @@ CompressionOptions: TypeAlias = (
 FormattersType: TypeAlias = (
     list[Callable[..., Any]]
     | tuple[Callable[..., Any], ...]
-    | Mapping[str | int, Callable[..., Any]]
+    | Mapping[str, Callable[..., Any]]
+    | Mapping[int, Callable[..., Any]]
 )
 # ColspaceType = Mapping[Hashable, Union[str, int]] not used in stubs
 FloatFormatType: TypeAlias = str | Callable[[float], str] | EngFormatter
