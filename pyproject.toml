@@ -135,6 +135,9 @@ args = [
   { name = "nightly", positional = false, default = false, type = "boolean", required = false, help = "Compare against pandas nightly (off by default)" },
 ]
 
+[tool.poe.tasks.type_completeness]
+help = "Check type completeness"
+script = "scripts.test.run:type_completeness"
 
 [tool.black]
 target-version = ["py311"]
