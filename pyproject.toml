@@ -23,7 +23,6 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
-packages = [{ include = "pandas-stubs" }]
 exclude = ["pandas-stubs/__init__.py"]
 
 [tool.poetry.urls]
