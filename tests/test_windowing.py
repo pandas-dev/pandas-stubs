@@ -21,8 +21,8 @@ from pandas.core.window import (
 from pandas._libs.tslibs.offsets import BaseOffset
 
 from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray_intp,
@@ -107,22 +107,17 @@ def test_rolling_apply() -> None:
 
 
 def test_rolling_aggregate() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(assert_type(DF.rolling(10).aggregate(np.mean), DataFrame), DataFrame)
-        check(
-            assert_type(DF.rolling(10).aggregate(["mean", np.mean]), DataFrame),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                DF.rolling(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
-            ),
-            DataFrame,
-        )
+    check(assert_type(DF.rolling(10).aggregate(np.mean), DataFrame), DataFrame)
+    check(
+        assert_type(DF.rolling(10).aggregate(["mean", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.rolling(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
     check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
 
     check(assert_type(DF.rolling(10).aggregate("mean"), DataFrame), DataFrame)
@@ -132,29 +127,24 @@ def test_rolling_aggregate() -> None:
 
     check(assert_type(DF.rolling(10).aggregate(_mean), DataFrame), DataFrame)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
-        check(
-            assert_type(DF.rolling(10).aggregate([np.mean, "mean"]), DataFrame),
+    check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(DF.rolling(10).aggregate([np.mean, "mean"]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.rolling(10).aggregate({"col1": np.mean, "col2": "mean"}), DataFrame
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.rolling(10).aggregate({"col1": [np.mean, "mean"], "col2": "mean"}),
             DataFrame,
-        )
-        check(
-            assert_type(
-                DF.rolling(10).aggregate({"col1": np.mean, "col2": "mean"}), DataFrame
-            ),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                DF.rolling(10).aggregate({"col1": [np.mean, "mean"], "col2": "mean"}),
-                DataFrame,
-            ),
-            DataFrame,
-        )
+        ),
+        DataFrame,
+    )
 
     # func: np.ufunc | Callable[..., Any] | str | list[Callable[..., Any] | str, np.ufunc] | dict[Hashable, Callable[..., Any] | str | np.ufunc | list[Callable[..., Any] | str]]
     check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
@@ -202,27 +192,20 @@ def test_rolling_aggregate_series() -> None:
 
     check(assert_type(S.rolling(10).aggregate(_mean), Series), Series)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function mean .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
+    check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
 
-        check(assert_type(S.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
-        check(
-            assert_type(S.rolling(10).aggregate([np.mean, "mean"]), DataFrame),
+    check(assert_type(S.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(S.rolling(10).aggregate([np.mean, "mean"]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            S.rolling(10).aggregate({"col1": np.mean, "col2": "mean", "col3": _mean}),
             DataFrame,
-        )
-        check(
-            assert_type(
-                S.rolling(10).aggregate(
-                    {"col1": np.mean, "col2": "mean", "col3": _mean}
-                ),
-                DataFrame,
-            ),
-            DataFrame,
-        )
+        ),
+        DataFrame,
+    )
     check(assert_type(S.rolling(10).agg("sum"), Series), Series)
 
 
@@ -266,22 +249,17 @@ def test_expanding_apply() -> None:
 
 
 def test_expanding_aggregate() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(assert_type(DF.expanding(10).aggregate(np.mean), DataFrame), DataFrame)
-        check(
-            assert_type(DF.expanding(10).aggregate(["mean", np.mean]), DataFrame),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                DF.expanding(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
-            ),
-            DataFrame,
-        )
+    check(assert_type(DF.expanding(10).aggregate(np.mean), DataFrame), DataFrame)
+    check(
+        assert_type(DF.expanding(10).aggregate(["mean", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.expanding(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
     check(assert_type(DF.expanding(10).agg("sum"), DataFrame), DataFrame)
 
 
@@ -320,22 +298,17 @@ def test_expanding_apply_series() -> None:
 
 
 def test_expanding_aggregate_series() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(assert_type(S.expanding(10).aggregate(np.mean), Series), Series)
-        check(
-            assert_type(S.expanding(10).aggregate(["mean", np.mean]), DataFrame),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                S.expanding(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
-            ),
-            DataFrame,
-        )
+    check(assert_type(S.expanding(10).aggregate(np.mean), Series), Series)
+    check(
+        assert_type(S.expanding(10).aggregate(["mean", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            S.expanding(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
     check(assert_type(S.expanding(10).agg("sum"), Series), Series)
 
 
@@ -351,6 +324,12 @@ def test_ewm_basic_math() -> None:
 def test_ewm_aggregate() -> None:
     check(assert_type(DF.ewm(span=10).agg("sum"), DataFrame), DataFrame)
 
+    # TODO: pandas-dev/pandas#63855, see if ewm.aggregate(any callable) is implemented
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyright: ignore[reportArgumentType]
+        _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+
 
 def test_ewm_basic_math_series() -> None:
     check(assert_type(S.ewm(span=10).sum(), Series), Series)
@@ -363,6 +342,24 @@ def test_ewm_basic_math_series() -> None:
 
 def test_ewm_aggregate_series() -> None:
     # TODO: pandas-dev/pandas#63855, only str function names are possible, not callable, add tests
+    # with pytest_warns_bounded(
+    #     FutureWarning,
+    #     r"The provided callable <function (sum|mean) .*> is currently using ",
+    #     upper="2.3.99",
+    # ):
+    #     check(assert_type(S.ewm(span=10).aggregate(np.mean), Series), Series)
+    #     check(
+    #         assert_type(S.ewm(span=10).aggregate(["mean", np.mean]), DataFrame),
+    #         DataFrame,
+    #     )
+    #     check(
+    #         assert_type(
+    #             S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean}),
+    #             DataFrame,
+    #         ),
+    #         DataFrame,
+    #     )
+
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
 
 

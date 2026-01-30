@@ -1055,20 +1055,15 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
     # categorical indexes are also ambiguous
-    # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
-    with pytest_warns_bounded(
-        FutureWarning,
-        "The default of observed=False is deprecated",
-        upper="2.3.99",
-    ):
-        categorical_index = pd.CategoricalIndex(s.index)
-        iterator2 = s.groupby(categorical_index).__iter__()
-        assert_type(iterator2, Iterator[tuple[Any, "pd.Series[int]"]])
-        index2, value2 = next(iterator2)
-        assert_type((index2, value2), tuple[Any, "pd.Series[int]"])
+    # TODO: pandas-dev/pandas#54054, needs to be fixed
+    categorical_index = pd.CategoricalIndex(s.index)
+    iterator2 = s.groupby(categorical_index).__iter__()
+    assert_type(iterator2, Iterator[tuple[Any, "pd.Series[int]"]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), tuple[Any, "pd.Series[int]"])
 
-        check(assert_type(index2, Any), str)
-        check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(index2, Any), str)
+    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_groupby_agg() -> None:
@@ -1077,24 +1072,17 @@ def test_types_groupby_agg() -> None:
     check(
         assert_type(s.groupby(level=0).agg(["min", "sum"]), pd.DataFrame), pd.DataFrame
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <built-in function (min|sum)> is currently using",
-        upper="2.3.99",
-    ):
 
-        def sum_sr(s: pd.Series[int]) -> int:
-            # type of `sum` not well inferred by mypy
-            return s.sum()
+    def sum_sr(s: pd.Series[int]) -> int:
+        # type of `sum` not well inferred by mypy
+        return s.sum()
 
-        check(
-            assert_type(s.groupby(level=0).agg(sum_sr), "pd.Series[int]"),
-            pd.Series,
-            np.integer,
-        )
-        check(
-            assert_type(s.groupby(level=0).agg([min, sum]), pd.DataFrame), pd.DataFrame
-        )
+    check(
+        assert_type(s.groupby(level=0).agg(sum_sr), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.groupby(level=0).agg([min, sum]), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_groupby_transform() -> None:
@@ -1177,26 +1165,19 @@ def test_types_groupby_aggregate() -> None:
 
     # test below fails with mypy but pyright correctly sees it as pd.Series[float]
     # check(assert_type(s.groupby([1,1,2,2]).agg(lambda x: x.astype(float).min()), "pd.Series[float]"), pd.Series, float)
+    def sum_sr(s: pd.Series[int]) -> int:
+        # type of `sum` not well inferred by mypy
+        return s.sum()
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <built-in function (min|sum)> is currently using",
-        upper="2.3.99",
-    ):
-
-        def sum_sr(s: pd.Series[int]) -> int:
-            # type of `sum` not well inferred by mypy
-            return s.sum()
-
-        check(
-            assert_type(s.groupby(level=0).aggregate(sum_sr), "pd.Series[int]"),
-            pd.Series,
-            np.integer,
-        )
-        check(
-            assert_type(s.groupby(level=0).aggregate([min, sum]), pd.DataFrame),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(s.groupby(level=0).aggregate(sum_sr), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.groupby(level=0).aggregate([min, sum]), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 # This added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -1239,19 +1220,14 @@ def test_types_window() -> None:
         assert_type(s.rolling(2).agg(["max", "min"]), pd.DataFrame),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <built-in function (min|max|sum)> is currently using",
-        upper="2.3.99",
-    ):
-        check(
-            assert_type(s.rolling(2).agg(sum), pd.Series),
-            pd.Series,
-        )
-        check(
-            assert_type(s.rolling(2).agg([max, min]), pd.DataFrame),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(s.rolling(2).agg(sum), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(s.rolling(2).agg([max, min]), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_cov() -> None:
@@ -1309,19 +1285,12 @@ def test_types_agg() -> None:
     check(assert_type(s.agg(["min", "max"]), pd.Series), pd.Series, np.integer)
     check(assert_type(s.agg({"a": "min"}), pd.Series), pd.Series, np.integer)
     check(assert_type(s.agg("mean", axis=0), float), np.float64)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
-        upper="2.3.99",
-    ):
-        check(assert_type(s.agg(min), int), int)
-        check(assert_type(s.agg([min, max]), pd.Series), pd.Series, np.integer)
-        check(assert_type(s.agg({0: min}), pd.Series), pd.Series, np.integer)
-        check(
-            assert_type(s.agg(x=max, y="min", z=np.mean), pd.Series),
-            pd.Series,
-            np.float64,
-        )
+    check(assert_type(s.agg(min), int), int)
+    check(assert_type(s.agg([min, max]), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.agg({0: min}), pd.Series), pd.Series, np.integer)
+    check(
+        assert_type(s.agg(x=max, y="min", z=np.mean), pd.Series), pd.Series, np.float64
+    )
 
 
 def test_types_aggregate() -> None:
@@ -1329,14 +1298,9 @@ def test_types_aggregate() -> None:
     check(assert_type(s.aggregate("min"), int), np.integer)
     check(assert_type(s.aggregate(["min", "max"]), pd.Series), pd.Series, np.integer)
     check(assert_type(s.aggregate({"a": "min"}), pd.Series), pd.Series, np.integer)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.3.99",
-    ):
-        check(assert_type(s.aggregate(min), int), int)
-        check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series, np.integer)
-        check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.aggregate(min), int), int)
+    check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series, np.integer)
 
 
 def test_types_transform() -> None:
@@ -2941,16 +2905,12 @@ def test_align() -> None:
     check(assert_type(aligned_s0, pd.Series), pd.Series)
     check(assert_type(aligned_s1, pd.Series), pd.Series)
 
-    msg = "The copy keyword is deprecated and will be removed in a future version.*"
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        msg,
-        lower="2.3.99",
-    ):
-        aligned_s0, aligned_s1 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)
-
+    aligned_s0, aligned_s1 = s0.align(s1, fill_value=0, axis=0, level=0)
     check(assert_type(aligned_s0, pd.Series), pd.Series)
     check(assert_type(aligned_s1, pd.Series), pd.Series)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_unknown() -> None:

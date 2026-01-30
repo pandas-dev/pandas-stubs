@@ -17,10 +17,7 @@ import pandas as pd
 
 from pandas._typing import Scalar
 
-from tests import (
-    check,
-    pytest_warns_bounded,
-)
+from tests import check
 
 if TYPE_CHECKING:
     from pandas._typing import S1
@@ -205,34 +202,23 @@ def test_types_groupby_agg() -> None:
     def wrapped_min(x: pd.Series[S1]) -> S1:
         return x.min()
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.3.99",
-    ):
-        check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
-        check(
-            assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
-            pd.DataFrame,
-        )
-        check(assert_type(df.groupby("col1").agg(min), pd.DataFrame), pd.DataFrame)
-        check(
-            assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame
-        )
-        agg_dict2 = {"col2": min, "col3": max, 0: min}
-        check(
-            assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame
-        )
+    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
+    check(
+        assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.groupby("col1").agg(min), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame)
+    agg_dict2 = {"col2": min, "col3": max, 0: min}
+    check(assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame)
 
-        # Here, MyPy infers dict[object, object], so it must be explicitly annotated
-        agg_dict3: dict[str | int, str | Callable[..., Any]] = {
-            "col2": min,
-            "col3": "max",
-            0: wrapped_min,
-        }
-        check(
-            assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame
-        )
+    # Here, MyPy infers dict[object, object], so it must be explicitly annotated
+    agg_dict3: dict[str | int, str | Callable[..., Any]] = {
+        "col2": min,
+        "col3": "max",
+        0: wrapped_min,
+    }
+    check(assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame)
     agg_dict4 = {"col2": "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict4), pd.DataFrame), pd.DataFrame)
     agg_dict5 = {0: "sum"}
@@ -471,19 +457,14 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     # categorical indexes are also ambiguous
 
     # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
-    with pytest_warns_bounded(
-        FutureWarning,
-        "The default of observed=False is deprecated",
-        upper="2.3.99",
-    ):
-        categorical_index = pd.CategoricalIndex(df.a)
-        iterator2 = df.groupby(categorical_index).__iter__()
-        assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]])
-        index2, value2 = next(iterator2)
-        assert_type((index2, value2), tuple[Any, pd.DataFrame])
+    categorical_index = pd.CategoricalIndex(df.a)
+    iterator2 = df.groupby(categorical_index).__iter__()
+    assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), tuple[Any, pd.DataFrame])
 
-        check(assert_type(index2, Any), int)
-        check(assert_type(value2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(index2, Any), int)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
 
 def test_groupby_apply() -> None:
@@ -493,66 +474,36 @@ def test_groupby_apply() -> None:
     def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.2.99",
-        upper="2.99",
-    ):
-        check(
-            assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
-            pd.Series,
-        )
+    check(
+        assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
+        pd.Series,
+    )
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.2.99",
-        upper="2.99",
-    ):
-        check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
     def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.2.99",
-        upper="2.99",
-    ):
-        check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
 
     def sum_to_series(x: pd.DataFrame) -> pd.Series:
         return x.sum()
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.2.99",
-        upper="2.99",
-    ):
-        check(
-            assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
         return x.sample()
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.2.99",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
-            ),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(
+            df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_series_groupby_and_value_counts() -> None:
@@ -598,13 +549,8 @@ def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.3.99",
-    ):
-        check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
-        check(
-            assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
-            pd.DataFrame,
-        )
+    check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
+    check(
+        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
+        pd.DataFrame,
+    )

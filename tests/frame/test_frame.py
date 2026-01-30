@@ -1681,13 +1681,7 @@ def test_pivot_table_aggfunc_string_transformation(sample_df: pd.DataFrame) -> N
 
 def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using np.ufunc."""
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=np.sum
@@ -1696,13 +1690,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=np.mean
@@ -1711,13 +1699,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=np.min
@@ -1727,13 +1709,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
             pd.DataFrame,
         )
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=np.max
@@ -1742,13 +1718,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=np.std
@@ -1757,13 +1727,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=np.var
@@ -1772,13 +1736,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=np.prod
@@ -1787,13 +1745,7 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=np.median
@@ -1842,14 +1794,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         ),
         pd.DataFrame,
     )
-
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=[np.sum, np.mean]
@@ -1858,14 +1803,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=[np.min, np.max]
@@ -1874,14 +1812,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=["sum", np.mean]
@@ -1890,14 +1821,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
             ),
             pd.DataFrame,
         )
-
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values="C", index="A", columns="B", aggfunc=[np.sum, "mean", np.max]
@@ -1947,13 +1871,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
         pd.DataFrame,
     )
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values=["C", "D"],
@@ -1966,13 +1884,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
             pd.DataFrame,
         )
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
+    check(
             assert_type(
                 sample_df.pivot_table(
                     values=["C", "D"],
@@ -2066,24 +1978,19 @@ def test_types_window() -> None:
         assert_type(df.rolling(2).agg("max"), pd.DataFrame),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.3.99",
-    ):
-        check(
+    check(
             assert_type(df.rolling(2).agg(max), pd.DataFrame),
             pd.DataFrame,
         )
-        check(
+    check(
             assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
             pd.DataFrame,
         )
-        check(
+    check(
             assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
             pd.DataFrame,
         )
-        check(
+    check(
             assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
             pd.DataFrame,
         )
@@ -2182,14 +2089,9 @@ def test_types_agg() -> None:
     check(assert_type(df.agg("min"), pd.Series), pd.Series)
     check(assert_type(df.agg(["min", "max"]), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
-        upper="2.3.99",
-    ):
-        check(assert_type(df.agg(min), pd.Series), pd.Series)
-        check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
-        check(
+    check(assert_type(df.agg(min), pd.Series), pd.Series)
+    check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
+    check(
             assert_type(
                 df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean)), pd.DataFrame
             ),
@@ -2209,14 +2111,9 @@ def test_types_aggregate() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
     check(assert_type(df.aggregate("min"), pd.Series), pd.Series)
     check(assert_type(df.aggregate(["min", "max"]), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.3.99",
-    ):
-        check(assert_type(df.aggregate(min), pd.Series), pd.Series)
-        check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
-        check(
+    check(assert_type(df.aggregate(min), pd.Series), pd.Series)
+    check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
+    check(
             assert_type(df.aggregate({"A": [min, max], "B": min}), pd.DataFrame),
             pd.DataFrame,
         )
@@ -2356,14 +2253,6 @@ def test_types_to_html() -> None:
 def test_types_resample() -> None:
     df = pd.DataFrame({"values": [2, 11, 3, 13, 14, 18, 17, 19]})
     df["date"] = pd.date_range("01/01/2018", periods=8, freq="W")
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'M' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        df.resample("M", on="date")
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
     df.resample("20min", origin="epoch", offset=datetime.timedelta(2), on="date")
     df.resample(pd.Timedelta(20, "minutes"), origin="epoch", on="date")
@@ -2485,25 +2374,6 @@ def test_pipe() -> None:
     def resampler_foo(resampler: Resampler[pd.DataFrame]) -> pd.DataFrame:
         assert isinstance(resampler, Resampler)
         return pd.DataFrame(resampler)
-
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'M' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        (
-            pd.DataFrame(
-                {
-                    "price": [10, 11, 9, 13, 14, 18, 17, 19],
-                    "volume": [50, 60, 40, 100, 50, 100, 40, 50],
-                }
-            )
-            .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-            .resample("M", on="week_starting")
-            .pipe(resampler_foo)
-        )
 
     val = (
         pd.DataFrame(
@@ -3618,14 +3488,6 @@ def test_quantile_150_changes() -> None:
 def test_resample_150_changes() -> None:
     idx = pd.date_range("2020-1-1", periods=700)
     frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'M' is deprecated",
-        lower="2.1.99",
-        upper="2.99",
-        upper_exception=ValueError,
-    ):
-        frame.resample("M", group_keys=True)
 
     resampler = frame.resample("MS", group_keys=True)
     check(
@@ -4089,13 +3951,9 @@ def test_transpose() -> None:
     df = pd.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
     check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
-    msg = "The copy keyword is deprecated and will be removed in a future"
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        msg,
-        lower="2.3.99",
-    ):
-        check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = df.transpose(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_combine() -> None:

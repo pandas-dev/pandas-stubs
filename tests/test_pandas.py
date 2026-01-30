@@ -18,7 +18,6 @@ from pandas.api.typing import (
     NAType,
 )
 from pandas.core.arrays.integer import IntegerArray
-from pandas.core.groupby.grouper import Grouper
 import pandas.util as pdutil
 import pytest
 
@@ -352,12 +351,9 @@ def test_concat_args() -> None:
         pd.DataFrame,
     )
     check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        "The copy keyword is deprecated and will be removed in a future version.",
-        lower="2.3.99",
-    ):
-        check(assert_type(pd.concat([df, df2], copy=True), pd.DataFrame), pd.DataFrame)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
     check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], axis=0), pd.DataFrame), pd.DataFrame)
@@ -955,7 +951,7 @@ def test_index_unqiue() -> None:
     check(assert_type(pd.unique(i), pd.Index), pd.Index)
     check(assert_type(pd.unique(ii_pd), pd.Index), pd.Index)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(pd.unique(ri), "pd.Index[int]"), pd.Index)
+    check(assert_type(pd.unique(ri), "pd.Index[int]"), pd.Index, int)
     check(assert_type(pd.unique(tdi), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(pd.unique(mi), pd.MultiIndex), pd.MultiIndex)
     check(
@@ -1632,35 +1628,27 @@ def test_crosstab_args() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using",
-        upper="2.3.99",
-    ):
-        check(
-            assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.crosstab(a, b, values=pd.Index(values), aggfunc=np.sum), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.crosstab(a, b, values=pd.Series(values), aggfunc=np.sum),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.crosstab(a, b, values=pd.Index(values), aggfunc=np.sum), pd.DataFrame
-            ),
-            pd.DataFrame,
-        )
-
-        check(
-            assert_type(
-                pd.crosstab(a, b, values=pd.Series(values), aggfunc=np.sum),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.crosstab(a, b, values=values, aggfunc=np.mean), pd.DataFrame
-            ),
-            pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=np.mean), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(
         assert_type(pd.crosstab(a, b, values=values, aggfunc="mean"), pd.DataFrame),
         pd.DataFrame,
@@ -1859,20 +1847,15 @@ def test_pivot_table() -> None:
             ],
         }
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function sum .*> is currently using",
-        upper="2.3.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum
-                ),
-                pd.DataFrame,
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(
             pd.pivot_table(
@@ -1949,37 +1932,32 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function sum .*> is currently using",
-        upper="2.3.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=[(7, "seven")],
-                    aggfunc=np.sum,
-                ),
-                pd.DataFrame,
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=[(7, "seven")],
+                aggfunc=np.sum,
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=[("col5",), ("col6", 6)],
-                    columns=[(7, "seven")],
-                    aggfunc=np.sum,
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=[("col5",), ("col6", 6)],
+                columns=[(7, "seven")],
+                aggfunc=np.sum,
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(
             pd.pivot_table(
@@ -2017,24 +1995,19 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function sum .*> is currently using",
-        upper="2.3.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=["C"],
-                    aggfunc={"D": np.sum},
-                ),
-                pd.DataFrame,
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc={"D": np.sum},
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(
             pd.pivot_table(
@@ -2044,95 +2017,90 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function sum .*> is currently using",
-        upper="2.3.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=["C"],
-                    aggfunc=[f, np.sum, "sum"],
-                ),
-                pd.DataFrame,
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=[f, np.sum, "sum"],
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=["C"],
-                    aggfunc=np.sum,
-                    margins=True,
-                    margins_name="Total",
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                margins=True,
+                margins_name="Total",
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=["C"],
-                    aggfunc=np.sum,
-                    dropna=True,
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                dropna=True,
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=["C"],
-                    aggfunc=np.sum,
-                    dropna=True,
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                dropna=True,
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=["C"],
-                    aggfunc=np.sum,
-                    observed=True,
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                observed=True,
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=["C"],
-                    aggfunc=np.sum,
-                    sort=False,
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                sort=False,
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
     idx = pd.DatetimeIndex(
         ["2011-01-01", "2011-02-01", "2011-01-02", "2011-01-01", "2011-01-02"]
@@ -2144,65 +2112,6 @@ def test_pivot_table() -> None:
         },
         index=idx,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'M' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
-                ),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'(M|A)' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=np.array(idx.month), columns=Grouper(key="dt", freq="M")
-                ),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=Grouper(key="dt", freq="M"), columns=pd.Index(idx.month)
-                ),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=Grouper(key="dt", freq="M"), columns=np.array(idx.month)
-                ),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=Grouper(freq="YE"), columns=Grouper(key="dt", freq="M")
-                ),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
 
 
 def test_pivot_table_aggfunc_string_reduction(sample_df: pd.DataFrame) -> None:

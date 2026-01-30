@@ -1419,121 +1419,17 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.round("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.round("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'H' is deprecated ",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        check(
-            assert_type(ts2.round("2H", nonexistent="shift_forward"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(ts2.round("2H", nonexistent="shift_backward"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(ts2.round("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp
-        )
-        check(
-            assert_type(ts2.round("2H", nonexistent="raise"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(
-                ts2.round("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
-            ),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(
-                ts2.round("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp
-            ),
-            pd.Timestamp,
-        )
-
     check(assert_type(ts2.ceil("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'H' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        check(
-            assert_type(ts2.ceil("2H", nonexistent="shift_forward"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(ts2.ceil("2H", nonexistent="shift_backward"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(ts2.ceil("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp
-        )
-        check(
-            assert_type(ts2.ceil("2H", nonexistent="raise"), pd.Timestamp), pd.Timestamp
-        )
-        check(
-            assert_type(
-                ts2.ceil("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
-            ),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(
-                ts2.ceil("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp
-            ),
-            pd.Timestamp,
-        )
-
     check(assert_type(ts2.floor("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
-
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'H' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        check(
-            assert_type(ts2.floor("2H", nonexistent="shift_forward"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(ts2.floor("2H", nonexistent="shift_backward"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(ts2.floor("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp
-        )
-        check(
-            assert_type(ts2.floor("2H", nonexistent="raise"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(
-                ts2.floor("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
-            ),
-            pd.Timestamp,
-        )
-        check(
-            assert_type(
-                ts2.floor("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp
-            ),
-            pd.Timestamp,
-        )
 
     check(assert_type(ts2.as_unit("s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.as_unit("ms"), pd.Timestamp), pd.Timestamp)

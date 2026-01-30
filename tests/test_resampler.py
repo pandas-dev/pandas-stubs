@@ -17,12 +17,9 @@ from pandas.core.indexes.datetimes import date_range
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 
-from pandas.errors import Pandas4Warning
-
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 
 DR = date_range("1999-1-1", periods=365, freq="D")
@@ -88,38 +85,31 @@ def test_fillna() -> None:
 
 
 def test_aggregate() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(assert_type(DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
-        check(assert_type(DF.resample("ME").agg(np.sum), DataFrame), DataFrame)
-        check(assert_type(DF.resample("ME").apply(np.sum), DataFrame), DataFrame)
-        check(
-            assert_type(DF.resample("ME").aggregate([np.sum, np.mean]), DataFrame),
+    check(assert_type(DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").agg(np.sum), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").apply(np.sum), DataFrame), DataFrame)
+    check(
+        assert_type(DF.resample("ME").aggregate([np.sum, np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(DF.resample("ME").aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
             DataFrame,
-        )
-        check(
-            assert_type(DF.resample("ME").aggregate(["sum", np.mean]), DataFrame),
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.resample("ME").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
             DataFrame,
-        )
-        check(
-            assert_type(
-                DF.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
-                DataFrame,
-            ),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                DF.resample("ME").aggregate(
-                    {"col1": ["sum", np.mean], "col2": np.mean}
-                ),
-                DataFrame,
-            ),
-            DataFrame,
-        )
+        ),
+        DataFrame,
+    )
 
     def f(val: DataFrame) -> Series:
         return val.mean()
@@ -141,21 +131,6 @@ def test_interpolate() -> None:
         assert_type(DF.resample("ME").interpolate(method="time"), DataFrame),
         DataFrame,
     )
-
-
-# TODO: remove the whole test function when the warning and ValueError in pandas-dev/pandas#62847 are removed
-def test_interpolate_inplace() -> None:
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        r"The 'inplace' keyword in DatetimeIndexResampler.interpolate is deprecated and will be removed in a future version. resample\(...\).interpolate is never inplace.",
-        lower="2.99",
-    ):
-        check(
-            assert_type(DF.resample("ME").interpolate(inplace=False), DataFrame),
-            DataFrame,
-        )
-    if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_pipe() -> None:
@@ -322,29 +297,24 @@ def test_fillna_series() -> None:
 
 
 def test_aggregate_series() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(assert_type(S.resample("ME").aggregate(np.sum), _AggRetType), Series)
-        check(assert_type(S.resample("ME").agg(np.sum), _AggRetType), Series)
-        check(assert_type(S.resample("ME").apply(np.sum), _AggRetType), Series)
-        check(
-            assert_type(S.resample("ME").aggregate([np.sum, np.mean]), _AggRetType),
-            DataFrame,
-        )
-        check(
-            assert_type(S.resample("ME").aggregate(["sum", np.mean]), _AggRetType),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                S.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
-                _AggRetType,
-            ),
-            DataFrame,
-        )
+    check(assert_type(S.resample("ME").aggregate(np.sum), _AggRetType), Series)
+    check(assert_type(S.resample("ME").agg(np.sum), _AggRetType), Series)
+    check(assert_type(S.resample("ME").apply(np.sum), _AggRetType), Series)
+    check(
+        assert_type(S.resample("ME").aggregate([np.sum, np.mean]), _AggRetType),
+        DataFrame,
+    )
+    check(
+        assert_type(S.resample("ME").aggregate(["sum", np.mean]), _AggRetType),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            S.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
+            _AggRetType,
+        ),
+        DataFrame,
+    )
 
     def f(val: Series) -> float:
         return val.mean()
@@ -395,16 +365,11 @@ def test_aggregate_series_combinations() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(S.resample("ME").aggregate(np.sum), Series)
-        check(S.resample("ME").aggregate([np.mean]), DataFrame)
-        check(S.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-        check(S.resample("ME").aggregate({"sum": np.sum}), DataFrame)
-        check(S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
+    check(S.resample("ME").aggregate(np.sum), Series)
+    check(S.resample("ME").aggregate([np.mean]), DataFrame)
+    check(S.resample("ME").aggregate(["sum", np.mean]), DataFrame)
+    check(S.resample("ME").aggregate({"sum": np.sum}), DataFrame)
+    check(S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
     check(S.resample("ME").aggregate("sum"), Series)
     check(S.resample("ME").aggregate(s2series), Series)
     check(S.resample("ME").aggregate(s2scalar), Series)
@@ -420,31 +385,26 @@ def test_aggregate_frame_combinations() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.3.99",
-    ):
-        check(DF.resample("ME").aggregate(np.sum), DataFrame)
-        check(DF.resample("ME").aggregate([np.mean]), DataFrame)
-        check(DF.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-        check(DF.resample("ME").aggregate({"col1": np.sum}), DataFrame)
-        check(
-            DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}),
-            DataFrame,
-        )
-        check(
-            DF.resample("ME").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
-            DataFrame,
-        )
-        check(
-            DF.resample("ME").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
-            DataFrame,
-        )
-        check(
-            DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}),
-            DataFrame,
-        )
+    check(DF.resample("ME").aggregate(np.sum), DataFrame)
+    check(DF.resample("ME").aggregate([np.mean]), DataFrame)
+    check(DF.resample("ME").aggregate(["sum", np.mean]), DataFrame)
+    check(DF.resample("ME").aggregate({"col1": np.sum}), DataFrame)
+    check(
+        DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}),
+        DataFrame,
+    )
+    check(
+        DF.resample("ME").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
+        DataFrame,
+    )
+    check(
+        DF.resample("ME").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
+        DataFrame,
+    )
+    check(
+        DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}),
+        DataFrame,
+    )
 
     check(DF.resample("ME").aggregate("sum"), DataFrame)
     check(DF.resample("ME").aggregate(df2frame), DataFrame)

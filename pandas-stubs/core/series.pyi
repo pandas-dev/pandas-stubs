@@ -1201,7 +1201,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         join: JoinHow = "outer",
         axis: Axis | None = 0,
         level: Level | None = None,
-        copy: _bool = True,
         fill_value: Scalar | NAType | None = None,
     ) -> tuple[Series, Series]: ...
     @overload

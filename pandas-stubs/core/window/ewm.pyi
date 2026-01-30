@@ -1,3 +1,8 @@
+from typing import (
+    Any,
+    overload,
+)
+
 from pandas import (
     DataFrame,
     Series,
@@ -41,6 +46,20 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
         pairwise: bool | None = None,
         numeric_only: bool = False,
     ) -> NDFrameT: ...
+    @overload  # type: ignore[override]
+    def aggregate(  # pyrefly: ignore[bad-override]
+        self: BaseWindow[Series],
+        func: str,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Series | DataFrame: ...
+    @overload
+    def aggregate(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
+        self: BaseWindow[DataFrame],
+        func: str,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
 
 class ExponentialMovingWindowGroupby(
     BaseWindowGroupby[NDFrameT], ExponentialMovingWindow[NDFrameT]
