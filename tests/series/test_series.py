@@ -2775,7 +2775,10 @@ def test_diff() -> None:
     df = pd.DataFrame({"a": range(4), "b": pd.date_range("2026-01-30", "2026-02-02")})
     check(assert_type(df["a"].diff(), "pd.Series[Any]"), pd.Series, float)
     check(
-        assert_type(df["b"].diff(), "pd.Series[Any]"), pd.Series, pd.Timedelta, -1)
+        assert_type(df["b"].diff(), "pd.Series[Any]"),
+        pd.Series,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
     )
     # complex -> complex
     check(
