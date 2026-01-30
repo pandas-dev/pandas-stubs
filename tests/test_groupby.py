@@ -769,6 +769,24 @@ def test_frame_groupby_ewm() -> None:
     check(assert_type(next(iterator), DataFrame), DataFrame)
     check(assert_type(list(GB_DF.ewm(1)), list[DataFrame]), list, DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _1 = GB_DF.ewm(1).agg(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _2 = GB_DF.ewm(1).aggregate([np.sum, np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _3 = GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _4 = GB_DF.ewm(1).aggregate({"col1": "sum", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _5 = GB_DF.ewm(1).aggregate({"col1": ["sum", np.mean], "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+
+        # aggregate combinations
+        _6 = GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _7 = GB_DF.ewm(1).aggregate([np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _8 = GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _9 = GB_DF.ewm(1).aggregate({"col1": np.sum})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _10 = GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _11 = GB_DF.ewm(1).aggregate({"col1": [np.sum], "col2": ["sum", np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _12 = GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": ["sum", np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _13 = GB_DF.ewm(1).aggregate({"col1": "sum", "col2": [np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+
 
 def test_series_groupby_ewm() -> None:
     # basic

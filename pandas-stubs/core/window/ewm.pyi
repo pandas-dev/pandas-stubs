@@ -52,7 +52,7 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
         func: str,
         *args: Any,
         **kwargs: Any,
-    ) -> Series | DataFrame: ...
+    ) -> Series: ...
     @overload
     def aggregate(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self: BaseWindow[DataFrame],
@@ -60,6 +60,7 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
+    agg = aggregate  # type: ignore[assignment]  # ty: ignore[invalid-method-override]  # pyrefly: ignore[bad-override]
 
 class ExponentialMovingWindowGroupby(
     BaseWindowGroupby[NDFrameT], ExponentialMovingWindow[NDFrameT]

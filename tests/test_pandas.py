@@ -2332,126 +2332,78 @@ def test_pivot_table_aggfunc_string_transformation(sample_df: pd.DataFrame) -> N
 def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using np.ufunc."""
     # Test with pd.pivot_table using np.ufunc
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    sample_df, values="C", index="A", columns="B", aggfunc=np.sum
-                ),
-                pd.DataFrame,
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=np.sum
             ),
             pd.DataFrame,
-        )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    sample_df, values="C", index="A", columns="B", aggfunc=np.mean
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=np.mean
             ),
             pd.DataFrame,
-        )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    sample_df, values="C", index="A", columns="B", aggfunc=np.min
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=np.min
             ),
             pd.DataFrame,
-        )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    sample_df, values="C", index="A", columns="B", aggfunc=np.max
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=np.max
             ),
             pd.DataFrame,
-        )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    sample_df, values="C", index="A", columns="B", aggfunc=np.std
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=np.std
             ),
             pd.DataFrame,
-        )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    sample_df, values="C", index="A", columns="B", aggfunc=np.var
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=np.var
             ),
             pd.DataFrame,
-        )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    sample_df, values="C", index="A", columns="B", aggfunc=np.prod
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=np.prod
             ),
             pd.DataFrame,
-        )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable.*",
-        lower="2.3.0",
-        upper="2.99",
-    ):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    sample_df, values="C", index="A", columns="B", aggfunc=np.median
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=np.median
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:

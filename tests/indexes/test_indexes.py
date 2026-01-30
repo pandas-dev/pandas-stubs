@@ -31,7 +31,6 @@ from pandas._typing import Scalar  # noqa: F401
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -691,15 +690,6 @@ def test_interval_index_arrays() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'Y' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
-        pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="Y"))
 
     left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="YS"))
     right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="YS"))
@@ -1172,19 +1162,6 @@ def test_index_constructors() -> None:
         # to specify all the possible dtype options.  For right now, we will leave the
         # test here as a reminder that we would like this to be seen as incorrect usage.
         pd.Index(flist, dtype=np.float16)
-
-
-def test_iter() -> None:
-    # GH 723
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'H' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
-            check(assert_type(ts, pd.Timestamp), pd.Timestamp)
 
 
 def test_annotate() -> None:

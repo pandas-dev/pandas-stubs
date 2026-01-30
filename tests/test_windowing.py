@@ -342,23 +342,10 @@ def test_ewm_basic_math_series() -> None:
 
 def test_ewm_aggregate_series() -> None:
     # TODO: pandas-dev/pandas#63855, only str function names are possible, not callable, add tests
-    # with pytest_warns_bounded(
-    #     FutureWarning,
-    #     r"The provided callable <function (sum|mean) .*> is currently using ",
-    #     upper="2.3.99",
-    # ):
-    #     check(assert_type(S.ewm(span=10).aggregate(np.mean), Series), Series)
-    #     check(
-    #         assert_type(S.ewm(span=10).aggregate(["mean", np.mean]), DataFrame),
-    #         DataFrame,
-    #     )
-    #     check(
-    #         assert_type(
-    #             S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean}),
-    #             DataFrame,
-    #         ),
-    #         DataFrame,
-    #     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = S.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _1 = S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _2 = S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
 

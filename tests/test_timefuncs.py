@@ -1857,16 +1857,6 @@ def test_timestamp_sub_series() -> None:
 
 
 def test_creating_date_range() -> None:
-    # https://github.com/microsoft/pylance-release/issues/2133
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'H' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        pd.date_range(start="2021-12-01", periods=24, freq="H")
-
     dr = pd.date_range(start="2021-12-01", periods=24, freq="h")
     check(assert_type(dr.strftime("%H:%M:%S"), pd.Index), pd.Index, str)
 
