@@ -2551,6 +2551,10 @@ def test_types_to_latex() -> None:
     check(assert_type(df.to_latex(position="some"), str), str)
     check(assert_type(df.to_latex(caption=("cap1", "cap2")), str), str)
 
+    # https://github.com/pandas-dev/pandas-stubs/issues/1647
+    formatters: dict[str, Callable[[float], str]] = {"A": lambda x: f"{x:.2f}"}
+    check(assert_type(df.to_latex(formatters=formatters), str), str)
+
 
 def test_types_explode() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])

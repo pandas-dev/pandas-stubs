@@ -1479,6 +1479,22 @@ def test_to_datetime_array() -> None:
         assert_type(pd.to_datetime(np.array([1, 2, 3])), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
+    check(
+        assert_type(pd.to_datetime(np.array([1.0, 2.0, 3.0])), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(np.array([1, 2, 3], np.uint8)), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(np.array([1, 2, 3], np.int16)), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(np.array([1, 2, 3], np.float32)), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
     pd.to_datetime(
         pd.Index([2451544.5, 2451545.5, 2451546.5]), unit="D", origin="julian"
     )

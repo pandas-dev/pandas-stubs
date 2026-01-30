@@ -26,8 +26,9 @@ from pandas._typing import (
     DictConvertible,
     RaiseCoerce,
     TimestampConvertibleTypes,
+    np_ndarray_anyint,
     np_ndarray_dt,
-    np_ndarray_int64,
+    np_ndarray_float,
     np_ndarray_str,
 )
 
@@ -104,7 +105,8 @@ def to_datetime(
         | tuple[float | str | date, ...]
         | np_ndarray_dt
         | np_ndarray_str
-        | np_ndarray_int64
+        | np_ndarray_anyint
+        | np_ndarray_float
         | Index
         | ExtensionArray
     ),
