@@ -2771,7 +2771,12 @@ def test_diff() -> None:
     # Any -> Any
     s_o = s.astype(object)
     assert_type(s_o, pd.Series)
-    assert_type(s_o.diff(), "pd.Series[Any]")
+    check(assert_type(s_o.diff(), "pd.Series[Any]"), pd.Series, float)
+    df = pd.DataFrame({"a": range(4), "b": pd.date_range("2026-01-30", "2026-02-02")})
+    check(assert_type(df["a"].diff(), "pd.Series[Any]"), pd.Series, float)
+    check(
+        assert_type(df["b"].diff(), "pd.Series[Any]"), pd.Series, pd.api.typing.NaTType
+    )
     # complex -> complex
     check(
         assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
