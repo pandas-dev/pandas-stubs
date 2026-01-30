@@ -1682,78 +1682,64 @@ def test_pivot_table_aggfunc_string_transformation(sample_df: pd.DataFrame) -> N
 def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using np.ufunc."""
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=np.sum
-                ),
-                pd.DataFrame,
-            ),
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc=np.sum),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=np.mean
-                ),
-                pd.DataFrame,
-            ),
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc=np.mean),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=np.min
-                ),
-                pd.DataFrame,
-            ),
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc=np.min),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=np.max
-                ),
-                pd.DataFrame,
-            ),
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc=np.max),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=np.std
-                ),
-                pd.DataFrame,
-            ),
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc=np.std),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=np.var
-                ),
-                pd.DataFrame,
-            ),
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc=np.var),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=np.prod
-                ),
-                pd.DataFrame,
-            ),
+        assert_type(
+            sample_df.pivot_table(values="C", index="A", columns="B", aggfunc=np.prod),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=np.median
-                ),
-                pd.DataFrame,
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=np.median
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
@@ -1795,41 +1781,41 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         pd.DataFrame,
     )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=[np.sum, np.mean]
-                ),
-                pd.DataFrame,
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=[np.sum, np.mean]
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=[np.min, np.max]
-                ),
-                pd.DataFrame,
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=[np.min, np.max]
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=["sum", np.mean]
-                ),
-                pd.DataFrame,
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=["sum", np.mean]
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values="C", index="A", columns="B", aggfunc=[np.sum, "mean", np.max]
-                ),
-                pd.DataFrame,
+        assert_type(
+            sample_df.pivot_table(
+                values="C", index="A", columns="B", aggfunc=[np.sum, "mean", np.max]
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
@@ -1872,30 +1858,30 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
     )
 
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values=["C", "D"],
-                    index="A",
-                    columns="B",
-                    aggfunc={"C": np.sum, "D": np.mean},
-                ),
-                pd.DataFrame,
+        assert_type(
+            sample_df.pivot_table(
+                values=["C", "D"],
+                index="A",
+                columns="B",
+                aggfunc={"C": np.sum, "D": np.mean},
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
     check(
-            assert_type(
-                sample_df.pivot_table(
-                    values=["C", "D"],
-                    index="A",
-                    columns="B",
-                    aggfunc={"C": "sum", "D": np.mean},
-                ),
-                pd.DataFrame,
+        assert_type(
+            sample_df.pivot_table(
+                values=["C", "D"],
+                index="A",
+                columns="B",
+                aggfunc={"C": "sum", "D": np.mean},
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_pivot_table_sort() -> None:
@@ -1979,21 +1965,21 @@ def test_types_window() -> None:
         pd.DataFrame,
     )
     check(
-            assert_type(df.rolling(2).agg(max), pd.DataFrame),
-            pd.DataFrame,
-        )
+        assert_type(df.rolling(2).agg(max), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(
-            assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
-            pd.DataFrame,
-        )
+        assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(
-            assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
-            pd.DataFrame,
-        )
+        assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(
-            assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
-            pd.DataFrame,
-        )
+        assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     check(
         assert_type(df.rolling(2).agg(["max", "min"]), pd.DataFrame),
@@ -2092,11 +2078,11 @@ def test_types_agg() -> None:
     check(assert_type(df.agg(min), pd.Series), pd.Series)
     check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
     check(
-            assert_type(
-                df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean)), pd.DataFrame
-            ),
-            pd.DataFrame,
-        )
+        assert_type(
+            df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean)), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(df.agg({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
         pd.DataFrame,
@@ -2114,9 +2100,9 @@ def test_types_aggregate() -> None:
     check(assert_type(df.aggregate(min), pd.Series), pd.Series)
     check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
     check(
-            assert_type(df.aggregate({"A": [min, max], "B": min}), pd.DataFrame),
-            pd.DataFrame,
-        )
+        assert_type(df.aggregate({"A": [min, max], "B": min}), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     check(
         assert_type(df.aggregate({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
