@@ -183,6 +183,20 @@ def test_indexslice_getitem() -> None:
     )
 
 
+def test_indexslice_getitem_multiindex_columns() -> None:
+    mic = pd.MultiIndex.from_product([["a", "b"], [1, 2, 3]], names=["let", "num"])
+    df = pd.DataFrame.from_records(
+        [list(range(6)), [k * 10 + 1 for k in range(6)]], columns=mic
+    )
+
+    check(assert_type(df.loc[:, pd.IndexSlice["a", :]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[:, pd.IndexSlice[:, 1]], pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.loc[:, pd.IndexSlice["a", 3]], pd.DataFrame | pd.Series),
+        pd.Series,
+    )
+
+
 def test_getset_untyped() -> None:
     """Test that Dataframe.__getitem__ needs to return untyped series."""
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [10, 20, 30, 40, 50]})
@@ -467,7 +481,7 @@ def test_loc_iterable(col: Hashable, typ: type) -> None:
         assert_type(df.loc[:, [1]], pd.DataFrame)
 
         assert_type(df.loc[:, (None,)], pd.DataFrame)
-        assert_type(df.loc[:, (1,)], pd.DataFrame)
+        assert_type(df.loc[:, (1,)], pd.DataFrame | pd.Series)
 
         assert_type(df.loc[:, deque([None])], pd.DataFrame)
         assert_type(df.loc[:, deque([1])], pd.DataFrame)
