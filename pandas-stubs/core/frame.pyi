@@ -265,7 +265,9 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __getitem__(self, idx: Scalar) -> Series | _T: ...
     @overload
-    def __getitem__(self, idx: tuple[Scalar, slice]) -> Series | _T: ...
+    def __getitem__(
+        self, idx: tuple[Scalar, slice] | tuple[slice, tuple[Scalar, ...]]
+    ) -> Series | _T: ...
     @overload
     def __getitem__(
         self,
@@ -281,7 +283,11 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | slice
                 | _IndexSliceTuple
                 | Callable[..., Any],
-                MaskType | Iterable[HashableT] | IndexType | Callable[..., Any],
+                MaskType
+                | Iterable[HashableT]
+                | IndexType
+                | Callable[..., Any]
+                | _IndexSliceTuple,
             ]
         ),
     ) -> _T: ...
