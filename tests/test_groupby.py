@@ -215,6 +215,22 @@ def test_frame_groupby_resample() -> None:
         DataFrame,
     )
 
+    # TODO: pandas-dev/pandas-stubs#1641, pandas 3.0 support
+    # check(
+    #     assert_type(
+    #         GB_DF.apply(lambda x: x.resample("ME").interpolate(method="linear")),
+    #         DataFrame,
+    #     ),
+    #     DataFrame,
+    # )
+    # check(
+    #     assert_type(
+    #         GB_DF.apply(lambda x: x.resample("ME").interpolate()),
+    #         DataFrame,
+    #     ),
+    #     DataFrame,
+    # )
+
     # pipe
     def g(val: Resampler[DataFrame]) -> DataFrame:
         assert isinstance(val, Resampler)
