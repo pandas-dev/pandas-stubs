@@ -15,11 +15,9 @@ from pandas.core.arrays.floating import (
     FloatingArray,
     FloatingDtype,
 )
-from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pytest
 
 from tests import (
-    PD_LTE_23,
     check,
     exception_on_platform,
 )
@@ -67,10 +65,7 @@ def test_construction_sequence(
 def test_construction_sequence_nan(
     data: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
-    expected_type = (
-        NumpyExtensionArray if data == (np.nan,) and PD_LTE_23 else FloatingArray
-    )
-    check(pd.array(typ(data)), expected_type)
+    check(pd.array(typ(data)), FloatingArray)
 
     if TYPE_CHECKING:
         assert_type(pd.array([]), FloatingArray)

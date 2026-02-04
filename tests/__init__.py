@@ -38,7 +38,6 @@ TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 LINUX = sys.platform == "linux"
 WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
-PD_LTE_23 = Version(pd.__version__) < Version("2.3.999")
 
 
 def check(
@@ -123,7 +122,7 @@ def pytest_warns_bounded(
 
     Returns a context manager that will raise an error if
     the warning is not issued when pandas version is
-    between the lower and upper version given.
+    between the lower and upper version given (bounds are excluded).
 
     Parameters
     ----------

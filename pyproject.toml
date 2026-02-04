@@ -32,12 +32,11 @@ exclude = ["pandas-stubs/__init__.py"]
 
 [tool.poetry.dependencies]
 python = ">=3.11"
-types-pytz = ">=2022.1.1"
 numpy = ">=1.23.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = ">=1.19.1"
-pandas = "2.3.3"
+pandas = "3.0.0"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.408"
@@ -71,6 +70,8 @@ python-calamine = ">=0.2.0"
 pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
 fsspec = "^2025.10.0"
 tables = { version = ">=3.10.2", python = "<3.14" }  # TODO: add py314 when PyTables/PyTables#1261 is resolved
+pytz = "^2025.2"
+types-pytz = ">=2022.1.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

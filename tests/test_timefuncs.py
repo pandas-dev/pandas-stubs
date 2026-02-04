@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import (
-    TypeAlias,
     assert_never,
     assert_type,
 )
@@ -23,9 +22,9 @@ from pandas.core.tools.datetimes import FulldatetimeDict
 import pytz
 
 from pandas._typing import TimeUnit
+from pandas.errors import Pandas4Warning
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -50,11 +49,6 @@ from pandas.tseries.offsets import (
     DateOffset,
     Day,
 )
-
-if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
-else:
-    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 
 def test_types_init() -> None:
@@ -359,16 +353,11 @@ def test_series_dt_accessors() -> None:
         assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
     )
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "The behavior of DatetimeProperties.to_pydatetime is deprecated",
-        upper="2.3.99",
-    ):
-        check(
-            assert_type(s0.dt.to_pydatetime(), np_1darray_object),
-            np_1darray_object if PD_LTE_23 else pd.Series,
-            dt.datetime,
-        )
+    check(
+        assert_type(s0.dt.to_pydatetime(), "pd.Series"),
+        pd.Series,
+        dt.datetime,
+    )
     s0_local = s0.dt.tz_localize("UTC")
     check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(
@@ -535,19 +524,10 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s2.dt.microseconds, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2.dt.nanoseconds, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2.dt.components, pd.DataFrame), pd.DataFrame)
-    with (
-        pytest_warns_bounded(
-            FutureWarning,
-            "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
-            lower="2.3.99",
-            upper="2.99",
-        ),
-        pytest_warns_bounded(
-            Pandas4Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
-            "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
-            lower="2.99",
-            upper="3.0.99",
-        ),
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
+        upper="3.1.99",
     ):
         check(
             assert_type(s2.dt.to_pytimedelta(), np_1darray_object),
@@ -1100,10 +1080,10 @@ def test_index_types_to_numpy() -> None:
 
 def test_to_timedelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", lower="2.99"):
         check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.99"):
         check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
@@ -1877,16 +1857,6 @@ def test_timestamp_sub_series() -> None:
 
 
 def test_creating_date_range() -> None:
-    # https://github.com/microsoft/pylance-release/issues/2133
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'H' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        pd.date_range(start="2021-12-01", periods=24, freq="H")
-
     dr = pd.date_range(start="2021-12-01", periods=24, freq="h")
     check(assert_type(dr.strftime("%H:%M:%S"), pd.Index), pd.Index, str)
 
@@ -1897,8 +1867,12 @@ def test_timestamp_to_list_add() -> None:
     tslist = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
     sseries = pd.Series(tslist)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
-        _0 = sseries + pd.Timedelta(1, "d")
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.99"):
+        check(
+            assert_type(sseries + pd.Timedelta(1, "d"), "pd.Series[pd.Timestamp]"),
+            pd.Series,
+            pd.Timestamp,
+        )
 
     check(
         assert_type(sseries + pd.Timedelta(1, "D"), "pd.Series[pd.Timestamp]"),

@@ -29,10 +29,8 @@ from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar  # noqa: F401
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -366,23 +364,6 @@ def test_interval_range() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'M' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        check(
-            assert_type(
-                pd.interval_range(
-                    pd.Timestamp(2000, 1, 1), pd.Timestamp(2010, 1, 1), freq="1M"
-                ),
-                "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
-            ),
-            pd.IntervalIndex,
-            pd.Interval,
-        )
     check(
         assert_type(
             pd.interval_range(
@@ -709,15 +690,6 @@ def test_interval_index_arrays() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'Y' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
-        pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="Y"))
 
     left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="YS"))
     right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="YS"))
@@ -917,47 +889,47 @@ def test_index_operators() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(
             i1
-            & i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            & i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
             i1
-            & 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            & 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
             10
-            & i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            & i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
             i1
-            | i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            | i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
             i1
-            | 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            | 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
             10
-            | i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            | i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
             i1
-            ^ i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            ^ i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
             i1
-            ^ 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            ^ 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
             10
-            ^ i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
+            ^ i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
 
@@ -1039,7 +1011,7 @@ def test_getitem() -> None:
     check(
         assert_type(iri[[0, 2, 4]], pd.Index),
         pd.Index,
-        np.integer if PD_LTE_23 else int,
+        int,
     )
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
@@ -1190,19 +1162,6 @@ def test_index_constructors() -> None:
         # to specify all the possible dtype options.  For right now, we will leave the
         # test here as a reminder that we would like this to be seen as incorrect usage.
         pd.Index(flist, dtype=np.float16)
-
-
-def test_iter() -> None:
-    # GH 723
-    with pytest_warns_bounded(
-        FutureWarning,
-        "'H' is deprecated",
-        lower="2.1.99",
-        upper="2.3.99",
-        upper_exception=ValueError,
-    ):
-        for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
-            check(assert_type(ts, pd.Timestamp), pd.Timestamp)
 
 
 def test_annotate() -> None:

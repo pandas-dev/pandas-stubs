@@ -247,6 +247,8 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
+MaskTypeNoList: TypeAlias = Series[bool] | np_ndarray_bool
+
 @type_check_only
 class _SupportsAdd(Protocol[T_co]):
     def __add__(self, value: Self, /) -> T_co: ...
@@ -1197,7 +1199,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         join: JoinHow = "outer",
         axis: Axis | None = 0,
         level: Level | None = None,
-        copy: _bool = True,
         fill_value: Scalar | NAType | None = None,
     ) -> tuple[Series, Series]: ...
     @overload
@@ -1253,42 +1254,21 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         limit: int | None = None,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
     ) -> Self: ...
-    @overload
     def fillna(
         self,
         value: Scalar | NAType | dict[Any, Any] | Series[S1] | DataFrame | None = ...,
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
-        inplace: Literal[True],
-    ) -> None: ...
-    @overload
-    def fillna(
-        self,
-        value: Scalar | NAType | dict[Any, Any] | Series[S1] | DataFrame | None = ...,
-        *,
-        axis: AxisIndex = ...,
-        limit: int | None = ...,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
     ) -> Series[S1]: ...
-    @overload
     def replace(
         self,
         to_replace: ReplaceValue = ...,
         value: ReplaceValue = ...,
         *,
         regex: ReplaceValue = ...,
-        inplace: Literal[True],
-        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    ) -> None: ...
-    @overload
-    def replace(
-        self,
-        to_replace: ReplaceValue = ...,
-        value: ReplaceValue = ...,
-        *,
-        regex: ReplaceValue = ...,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
     ) -> Series[S1]: ...
     def shift(
         self,
@@ -1496,63 +1476,29 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def copy(self, deep: _bool = True) -> Series[S1]: ...
     @final
     def infer_objects(self, copy: _bool = True) -> Series[S1]: ...
-    @overload
     def ffill(
         self,
         *,
         axis: AxisIndex | None = 0,
-        inplace: Literal[True],
-        limit: int | None = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-    ) -> None: ...
-    @overload
-    def ffill(
-        self,
-        *,
-        axis: AxisIndex | None = 0,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
     ) -> Series[S1]: ...
-    @overload
     def bfill(
         self,
         *,
         axis: AxisIndex | None = 0,
-        inplace: Literal[True],
-        limit: int | None = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-    ) -> None: ...
-    @overload
-    def bfill(
-        self,
-        *,
-        axis: AxisIndex | None = 0,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
     ) -> Series[S1]: ...
-    @overload
     def interpolate(
         self,
         method: InterpolateOptions = ...,
         *,
         axis: AxisIndex | None = 0,
         limit: int | None = ...,
-        inplace: Literal[True],
-        limit_direction: Literal["forward", "backward", "both"] | None = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-        **kwargs: Any,
-        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    ) -> None: ...
-    @overload
-    def interpolate(
-        self,
-        method: InterpolateOptions = ...,
-        *,
-        axis: AxisIndex | None = 0,
-        limit: int | None = ...,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
         limit_direction: Literal["forward", "backward", "both"] | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         **kwargs: Any,
@@ -1564,13 +1510,13 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         subset: None = None,
     ) -> Scalar | Series[S1]: ...
     @overload
-    def clip(  # pyright: ignore[reportOverlappingOverload]
+    def clip(
         self,
         lower: None = None,
         upper: None = None,
         *,
         axis: AxisIndex | None = 0,
-        inplace: Literal[True],
+        inplace: _bool = False,
         **kwargs: Any,
     ) -> Self: ...
     @overload
@@ -1580,18 +1526,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         upper: AnyArrayLike | float | None = ...,
         *,
         axis: AxisIndex | None = 0,
-        inplace: Literal[True],
-        **kwargs: Any,
-        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
-    ) -> None: ...
-    @overload
-    def clip(
-        self,
-        lower: AnyArrayLike | float | None = ...,
-        upper: AnyArrayLike | float | None = ...,
-        *,
-        axis: AxisIndex | None = 0,
-        inplace: Literal[False] = False,
+        inplace: _bool = False,
         **kwargs: Any,
     ) -> Series[S1]: ...
     @final
@@ -2255,7 +2190,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __and__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | list[int] | MaskType
+        self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
     def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
@@ -3006,14 +2941,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __or__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | list[int] | MaskType
+        self, other: bool | Series[bool] | np_1darray_bool
     ) -> Series[bool]: ...
     @overload
-    def __or__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __or__(self, other: int | Series[int] | np_ndarray_anyint) -> Series[int]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __rand__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | MaskType | list[int]
+    def __rand__(  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
+        self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
     def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
@@ -3022,15 +2957,15 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __rpow__(self, other: complex | ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __ror__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | MaskType | list[int]
+    def __ror__(  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
+        self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
     def __ror__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __rxor__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | MaskType | list[int]
+    def __rxor__(  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload]  # pyrefly: ignore[bad-override]
+        self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
     def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
@@ -4071,7 +4006,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __xor__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | MaskType | list[int]
+        self, other: bool | Series[bool] | np_1darray_bool
     ) -> Series[bool]: ...
     @overload
     def __xor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...

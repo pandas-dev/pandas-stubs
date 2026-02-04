@@ -11,7 +11,7 @@ from jinja2.environment import (
     Environment,
     Template,
 )
-from jinja2.loaders import PackageLoader
+from jinja2.loaders import FileSystemLoader
 import numpy as np
 from pandas import (
     DataFrame,
@@ -22,10 +22,7 @@ import pytest
 
 from pandas._typing import Scalar
 
-from tests import (
-    PD_LTE_23,
-    check,
-)
+from tests import check
 from tests._typing import np_ndarray_str
 
 from pandas.io.formats.style import Styler
@@ -144,9 +141,7 @@ def test_highlight_quantile() -> None:
 
 
 def test_loader() -> None:
-    if PD_LTE_23:
-        # see GH62123 for pandas main repo, type changes in pandas 3.0
-        check(assert_type(DF.style.loader, PackageLoader), PackageLoader)
+    check(assert_type(DF.style.loader, FileSystemLoader), FileSystemLoader)
 
 
 def test_pipe() -> None:

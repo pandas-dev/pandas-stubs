@@ -55,14 +55,9 @@ def test_agg_complex() -> None:
         r"Casting complex values to real discards the imaginary part",
     ):
         check(assert_type(series.median(), float), np.float64)
-    with (
-        pytest_warns_bounded(
-            np.exceptions.ComplexWarning,
-            r"Casting complex values to real discards the imaginary part",
-        ),
-        pytest_warns_bounded(
-            RuntimeWarning, r"invalid value encountered in sqrt", upper="2.3.99"
-        ),
+    with pytest_warns_bounded(
+        np.exceptions.ComplexWarning,
+        r"Casting complex values to real discards the imaginary part",
     ):
         check(assert_type(series.std(), np.float64), np.float64)
     with pytest_warns_bounded(

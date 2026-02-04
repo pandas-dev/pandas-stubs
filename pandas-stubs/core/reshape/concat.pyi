@@ -35,7 +35,6 @@ def concat(
     names: list[HashableT4] | None = None,
     verify_integrity: bool = False,
     sort: bool = False,
-    copy: bool = True,
 ) -> Never: ...
 @overload
 def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
@@ -49,7 +48,6 @@ def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappin
     names: list[HashableT4] | None = None,
     verify_integrity: bool = False,
     sort: bool = False,
-    copy: bool = True,
 ) -> Series[S2]: ...
 @overload
 def concat(  # type: ignore[overload-overlap]
@@ -63,7 +61,6 @@ def concat(  # type: ignore[overload-overlap]
     names: list[HashableT4] | None = None,
     verify_integrity: bool = False,
     sort: bool = False,
-    copy: bool = True,
 ) -> Series: ...
 @overload
 def concat(
@@ -77,5 +74,4 @@ def concat(
     names: list[HashableT4] | None = None,
     verify_integrity: bool = False,
     sort: bool = False,
-    copy: bool = True,
 ) -> DataFrame: ...
