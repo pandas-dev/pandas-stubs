@@ -1867,8 +1867,12 @@ def test_timestamp_to_list_add() -> None:
     tslist = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
     sseries = pd.Series(tslist)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
-        _0 = sseries + pd.Timedelta(1, "d")
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.99"):
+        check(
+            assert_type(sseries + pd.Timedelta(1, "d"), "pd.Series[pd.Timestamp]"),
+            pd.Series,
+            pd.Timestamp,
+        )
 
     check(
         assert_type(sseries + pd.Timedelta(1, "D"), "pd.Series[pd.Timestamp]"),
