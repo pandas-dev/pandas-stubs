@@ -4,6 +4,7 @@ from collections.abc import (
     Iterator,
 )
 from typing import (
+    Never,
     assert_type,
 )
 
@@ -131,6 +132,9 @@ def test_interpolate() -> None:
         assert_type(DF.resample("ME").interpolate(method="time"), DataFrame),
         DataFrame,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(DF.resample("ME").interpolate(inplace=True), Never)
 
 
 def test_pipe() -> None:

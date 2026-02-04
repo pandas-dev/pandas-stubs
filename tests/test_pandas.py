@@ -12,6 +12,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
 from pandas.api.typing import (
     NaTType,
@@ -2232,18 +2233,26 @@ def test_pivot_table_aggfunc_string_reduction(sample_df: pd.DataFrame) -> None:
         ),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas-stubs#1641, pandas 3.0 support
-    # check(
-    #     assert_type(
-    #         pd.pivot_table(
-    #             sample_df,
-    #             index=Grouper(freq="YE"),
-    #             columns=Grouper(freq="ME"),
-    #         ),
-    #         pd.DataFrame,
-    #     ),
-    #     pd.DataFrame,
-    # )
+
+    idx = pd.DatetimeIndex(
+        ["2011-01-01", "2011-02-01", "2011-01-02", "2011-01-01", "2011-01-02"]
+    )
+    df = pd.DataFrame(
+        {
+            "A": [1, 2, 3, 4, 5],
+            "dt": pd.date_range("2011-01-01", freq="D", periods=5),
+        },
+        index=idx,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(freq="YE"), columns=Grouper(key="dt", freq="ME")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_pivot_table_aggfunc_string_transformation(sample_df: pd.DataFrame) -> None:

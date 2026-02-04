@@ -123,7 +123,7 @@ def pytest_warns_bounded(
 
     Returns a context manager that will raise an error if
     the warning is not issued when pandas version is
-    between the lower and upper version given.
+    between the lower and upper version given (bounds are excluded).
 
     Parameters
     ----------

@@ -1080,10 +1080,10 @@ def test_index_types_to_numpy() -> None:
 
 def test_to_timedelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", lower="2.99"):
         check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.99"):
         check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
