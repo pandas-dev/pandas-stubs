@@ -1,3 +1,5 @@
+from typing import Any
+
 from pandas.core.frame import DataFrame
 
 from pandas._libs.lib import NoDefaultDoNotUse
@@ -12,4 +14,5 @@ def read_spss(
     usecols: list[HashableT] | None = None,
     convert_categoricals: bool = True,
     dtype_backend: DtypeBackend | NoDefaultDoNotUse = "numpy_nullable",
+    **kwargs: Any,
 ) -> DataFrame: ...

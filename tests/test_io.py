@@ -59,6 +59,7 @@ from tests import (
     check,
 )
 
+from pandas.io.iceberg import read_iceberg
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
     TableIterator,
@@ -423,6 +424,18 @@ def test_spss() -> None:
     )
 
 
+def test_spss_kwargs() -> None:
+    """Test passing kwargs to read_spss."""
+    path_str = Path(CWD, "data", "labelled-num.sav")
+
+    check(
+        assert_type(
+            pd.read_spss(path_str, convert_categoricals=True, row_limit=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
 def test_json(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_json(path_str), None), type(None))
@@ -515,6 +528,13 @@ def test_parquet(tmp_path: Path) -> None:
     check(assert_type(DF.to_parquet(path_str), None), type(None))
     check(assert_type(DF.to_parquet(), bytes), bytes)
     check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
+
+
+def test_parquet_to_pandas() -> None:
+    """Test passing `to_pandas_kwargs` in read_parquet."""
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
 
 
 def test_parquet_options(tmp_path: Path) -> None:
@@ -1683,3 +1703,11 @@ def test_converters_partial(tmp_path: Path) -> None:
 
     result = pd.read_excel(path_str, converters={"field_1": partial_func})
     check(assert_type(result, pd.DataFrame), pd.DataFrame)
+
+
+def test_iceberg(tmp_path: Path) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+
+    if TYPE_CHECKING:
+        assert_type(DF.to_iceberg(path_str), None)
+        assert_type(read_iceberg(path_str), DataFrame)
