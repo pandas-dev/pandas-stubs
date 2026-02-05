@@ -14,6 +14,10 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.core.groupby.generic import (
+    AggScalar,
+    NamedAgg,
+)
 
 from pandas._typing import Scalar
 
@@ -554,3 +558,103 @@ def test_getattr_and_dataframe_groupby() -> None:
         assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
         pd.DataFrame,
     )
+
+
+def test_named_arg_args() -> None:
+    """Test support for args and kwargs in NamedAgg."""
+
+    def n_between(ser: pd.Series, low: Scalar, high: Scalar, **kwargs: Any) -> Scalar:
+        return ser.between(low, high, **kwargs).sum()
+
+    df = pd.DataFrame({"A": [0, 0, 1, 1], "B": [-1, 0, 1, 2]})
+    named_agg = pd.NamedAgg("B", n_between, 0, 1)
+    check(assert_type(named_agg, NamedAgg), NamedAgg)
+    check(
+        assert_type(
+            df.groupby("A").agg(count_between=named_agg),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("A").agg(
+                count_between_kw=pd.NamedAgg("B", n_between, 0, 1, inclusive="both")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("A").agg(
+                count_between_mix=pd.NamedAgg("B", n_between, 0, 1, inclusive="neither")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("A").agg(
+                n_between01=pd.NamedAgg("B", n_between, 0, 1),
+                n_between13=pd.NamedAgg("B", n_between, 1, 3),
+                n_between02=pd.NamedAgg("B", n_between, 0, 2),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(assert_type(named_agg.column, str), str)
+    check(assert_type(named_agg.aggfunc, AggScalar), type(n_between))
+
+
+def test_groupby_skipna_dataframe() -> None:
+    """Test skipna parameter for DataFrameGroupBy aggregation methods."""
+    df = pd.DataFrame(
+        data={"col1": [1, 1, 2], "col2": [3.0, 4.0, 5.0], "col3": [0.0, 1.0, 0.0]}
+    )
+    gb = df.groupby("col1")
+    check(assert_type(gb.sum(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.sum(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.mean(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.mean(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.median(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.median(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.prod(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.prod(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.min(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.min(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.max(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.max(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.std(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.std(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.var(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.var(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.sem(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.sem(skipna=False), pd.DataFrame), pd.DataFrame)
+
+
+def test_groupby_skipna_series() -> None:
+    """Test skipna parameter for SeriesGroupBy aggregation methods."""
+    df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10.0, 20.0, 30.0, 40.0, 50.0]})
+    gb = df.groupby("x")["y"]
+    check(assert_type(gb.sum(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.sum(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.mean(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.mean(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.median(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.median(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.prod(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.prod(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.min(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.min(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.max(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.max(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.std(skipna=True), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.std(skipna=False), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.var(skipna=True), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.var(skipna=False), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.sem(skipna=True), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.sem(skipna=False), "pd.Series[float]"), pd.Series, float)
