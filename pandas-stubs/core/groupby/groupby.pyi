@@ -112,53 +112,53 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @overload
     def std(
         self: GroupBy[Series],
-        ddof: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = False,
         skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def std(
         self: GroupBy[DataFrame],
-        ddof: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = False,
         skipna: bool = True,
     ) -> DataFrame: ...
     @final
     @overload
     def var(
         self: GroupBy[Series],
-        ddof: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = False,
         skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def var(
         self: GroupBy[DataFrame],
-        ddof: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = False,
         skipna: bool = True,
     ) -> DataFrame: ...
     @final
     @overload
     def sem(
         self: GroupBy[Series],
-        ddof: int = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        numeric_only: bool = False,
         skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def sem(
         self: GroupBy[DataFrame],
-        ddof: int = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        numeric_only: bool = False,
         skipna: bool = True,
     ) -> DataFrame: ...
     def size(self: GroupBy[Series]) -> Series[int]: ...
@@ -167,9 +167,9 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         numeric_only: bool = False,
         min_count: int = 0,
+        skipna: bool = True,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
-        skipna: bool = True,
     ) -> NDFrameT: ...
     @final
     def prod(
@@ -180,18 +180,18 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         numeric_only: bool = False,
         min_count: int = -1,
+        skipna: bool = True,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
-        skipna: bool = True,
     ) -> NDFrameT: ...
     @final
     def max(
         self,
         numeric_only: bool = False,
         min_count: int = -1,
+        skipna: bool = True,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
-        skipna: bool = True,
     ) -> NDFrameT: ...
     @final
     def first(
@@ -307,14 +307,14 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def cummin(
         self,
         axis: AxisInt | NoDefaultDoNotUse = ...,
-        numeric_only: bool = ...,
+        numeric_only: bool = False,
         **kwargs: Any,
     ) -> NDFrameT: ...
     @final
     def cummax(
         self,
         axis: AxisInt | NoDefaultDoNotUse = ...,
-        numeric_only: bool = ...,
+        numeric_only: bool = False,
         **kwargs: Any,
     ) -> NDFrameT: ...
     @final
