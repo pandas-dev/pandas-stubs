@@ -1706,6 +1706,7 @@ def test_converters_partial(tmp_path: Path) -> None:
     check(assert_type(result, pd.DataFrame), pd.DataFrame)
 
 
+@pytest.mark.filterwarnings("ignore::ResourceWarning")
 def test_iceberg(tmp_path: Path) -> None:
     """Test read_iceberg and DataFrame.to_iceberg GH1654."""
 
@@ -1829,5 +1830,4 @@ def test_iceberg(tmp_path: Path) -> None:
     # Force GC to flush unclosed sqlite3 connections from pyiceberg internals
     import gc
 
-    with pytest_warns_bounded(ResourceWarning, match="unclosed database"):
-        gc.collect()
+    gc.collect()
