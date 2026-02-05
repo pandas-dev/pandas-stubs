@@ -7,7 +7,6 @@ from collections.abc import (
 )
 import re
 from typing import (
-    Any,
     Generic,
     Literal,
     TypeVar,
@@ -141,7 +140,7 @@ class StringMethods(
     @overload
     def replace(
         self,
-        pat: dict[Any, Any],
+        pat: dict[str, str],
         repl: None = None,
         n: int = -1,
         case: bool | None = None,

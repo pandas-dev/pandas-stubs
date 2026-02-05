@@ -503,6 +503,7 @@ def test_series_str_replace() -> None:
     check(
         assert_type(sr.str.replace(pat={"A": "a", "B": "b"}), "pd.Series[str]"),
         pd.Series,
+        str,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
