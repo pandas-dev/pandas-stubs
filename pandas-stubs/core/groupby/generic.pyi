@@ -10,7 +10,6 @@ from typing import (
     Concatenate,
     Generic,
     Literal,
-    NamedTuple,
     Protocol,
     Self,
     TypeAlias,
@@ -51,9 +50,18 @@ from pandas._typing import (
 
 AggScalar: TypeAlias = str | Callable[..., Any]
 
-class NamedAgg(NamedTuple):
-    column: str
-    aggfunc: AggScalar
+class NamedAgg:
+    def __init__(
+        self,
+        column: Hashable,
+        aggfunc: Callable[..., Any] | str,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None: ...
+    @property
+    def column(self) -> str: ...
+    @property
+    def aggfunc(self) -> AggScalar: ...
 
 class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
