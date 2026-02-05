@@ -107,6 +107,7 @@ class Timedelta(timedelta):
         microseconds: float | np.integer | np.floating = ...,
         milliseconds: float | np.integer | np.floating = ...,
         minutes: float | np.integer | np.floating = ...,
+        nanoseconds: float | np.integer | np.floating = ...,
         hours: float | np.integer | np.floating = ...,
         weeks: float | np.integer | np.floating = ...,
     ) -> Self: ...
