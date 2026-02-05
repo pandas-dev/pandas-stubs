@@ -50,7 +50,7 @@ def read_sql_table(
     *,
     chunksize: int,
     dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
-) -> Generator[DataFrame, None, None]: ...
+) -> Generator[DataFrame]: ...
 @overload
 def read_sql_table(
     table_name: str,
@@ -82,7 +82,7 @@ def read_sql_query(
     chunksize: int,
     dtype: DtypeArg | None = ...,
     dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
-) -> Generator[DataFrame, None, None]: ...
+) -> Generator[DataFrame]: ...
 @overload
 def read_sql_query(
     sql: _SQLStatement,
@@ -121,7 +121,7 @@ def read_sql(
     chunksize: int,
     dtype: DtypeArg | None = ...,
     dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
-) -> Generator[DataFrame, None, None]: ...
+) -> Generator[DataFrame]: ...
 @overload
 def read_sql(
     sql: _SQLStatement,
@@ -199,4 +199,4 @@ class SQLTable:
         parse_dates: bool | list[str] | None = ...,
         columns: list[str] | None = ...,
         chunksize: int | None = ...,
-    ) -> DataFrame | Generator[DataFrame, None, None]: ...
+    ) -> DataFrame | Generator[DataFrame]: ...
