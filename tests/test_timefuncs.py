@@ -21,13 +21,6 @@ from pandas.api.typing import NaTType
 from pandas.core.tools.datetimes import FulldatetimeDict
 import pytz
 
-from pandas._libs.tslibs.offsets import (
-    BHalfYearBegin,
-    BHalfYearEnd,
-    Easter,
-    HalfYearBegin,
-    HalfYearEnd,
-)
 from pandas._typing import TimeUnit
 from pandas.errors import Pandas4Warning
 
@@ -49,12 +42,17 @@ from pandas.tseries.frequencies import to_offset
 from pandas.tseries.holiday import USFederalHolidayCalendar
 from pandas.tseries.offsets import (
     BaseOffset,
+    BHalfYearBegin,
+    BHalfYearEnd,
     BusinessDay,
     BusinessHour,
     CustomBusinessDay,
     CustomBusinessHour,
     DateOffset,
     Day,
+    Easter,
+    HalfYearBegin,
+    HalfYearEnd,
 )
 
 
