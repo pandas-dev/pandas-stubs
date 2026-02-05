@@ -137,3 +137,6 @@ def test_dtype() -> None:
     arr_str = pd.array([pd.NA], str)
     check(assert_type(arr_str, BaseStringArray), BaseStringArray, float)
     assert pd.isna(assert_type(arr_str.dtype.na_value, NAType | float))
+
+    arr_str = pd.array([pd.NA], pd.StringDtype(na_value=pd.NA))
+    check(assert_type(arr_str, BaseStringArray), BaseStringArray, NAType)
