@@ -21,6 +21,13 @@ from pandas.api.typing import NaTType
 from pandas.core.tools.datetimes import FulldatetimeDict
 import pytz
 
+from pandas._libs.tslibs.offsets import (
+    BHalfYearBegin,
+    BHalfYearEnd,
+    Easter,
+    HalfYearBegin,
+    HalfYearEnd,
+)
 from pandas._typing import TimeUnit
 from pandas.errors import Pandas4Warning
 
@@ -1879,3 +1886,24 @@ def test_timestamp_to_list_add() -> None:
         pd.Series,
         pd.Timestamp,
     )
+
+
+def test_easter_constructor() -> None:
+    """Test Easter constructor."""
+    from dateutil.easter import (
+        EASTER_ORTHODOX,
+        EASTER_WESTERN,
+    )
+
+    check(assert_type(Easter(method=EASTER_ORTHODOX), Easter), Easter)
+    check(assert_type(Easter(method=EASTER_WESTERN), Easter), Easter)
+
+
+def test_half_year_offsets() -> None:
+    """Test half-year offsets introduced in pandas 3.0 GH1654."""
+    ts = pd.Timestamp(2024, 2, 1)
+
+    check(assert_type(ts + HalfYearBegin(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts + HalfYearEnd(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts + BHalfYearBegin(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts + BHalfYearEnd(), pd.Timestamp), pd.Timestamp)
