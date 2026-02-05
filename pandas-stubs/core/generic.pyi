@@ -473,13 +473,3 @@ class NDFrame:
         level: IndexLabel | None = None,
         drop_level: _bool = True,
     ) -> Self | Series: ...
-    def to_iceberg(
-        self,
-        table_identifier: str,
-        catalog_name: str | None = None,
-        *,
-        catalog_properties: dict[str, Any] | None = None,
-        location: str | None = None,
-        append: _bool = False,
-        snapshot_properties: dict[str, str] | None = None,
-    ) -> None: ...
