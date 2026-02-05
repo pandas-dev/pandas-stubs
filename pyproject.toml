@@ -72,6 +72,7 @@ fsspec = "^2025.10.0"
 tables = { version = ">=3.10.2", python = "<3.14" }  # TODO: add py314 when PyTables/PyTables#1261 is resolved
 pytz = "^2025.2"
 types-pytz = ">=2022.1.1"
+pyiceberg = "^0.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
