@@ -99,6 +99,7 @@ if TYPE_CHECKING:
 _T_co = TypeVar("_T_co", covariant=True)
 _T_contra = TypeVar("_T_contra", contravariant=True)
 
+
 class SequenceNotStr(Protocol[_T_co]):
     @overload
     def __getitem__(self, index: SupportsIndex, /) -> _T_co: ...
@@ -110,6 +111,7 @@ class SequenceNotStr(Protocol[_T_co]):
     def index(self, value: Any, start: int = ..., stop: int = ..., /) -> int: ...
     def count(self, value: Any, /) -> int: ...
     def __reversed__(self) -> Iterator[_T_co]: ...
+
 
 ListLike: TypeAlias = AnyArrayLike | SequenceNotStr[Any] | range
 
@@ -629,6 +631,7 @@ AggFuncType: TypeAlias = (
 AnyStr_co = TypeVar("AnyStr_co", str, bytes, covariant=True)
 AnyStr_contra = TypeVar("AnyStr_contra", str, bytes, contravariant=True)
 
+
 class BaseBuffer(Protocol):
     @property
     def mode(self) -> str:
@@ -648,10 +651,12 @@ class BaseBuffer(Protocol):
         # for zip.ZipFile, read_stata, to_stata
         ...
 
+
 class ReadBuffer(BaseBuffer, Protocol[AnyStr_co]):
     def read(self, n: int = ..., /) -> AnyStr_co:
         # for BytesIOWrapper, gzip.GzipFile, bz2.BZ2File
         ...
+
 
 class WriteBuffer(BaseBuffer, Protocol[AnyStr_contra]):
     def write(self, b: AnyStr_contra, /) -> Any:
@@ -662,11 +667,14 @@ class WriteBuffer(BaseBuffer, Protocol[AnyStr_contra]):
         # for gzip.GzipFile, bz2.BZ2File
         ...
 
+
 class ReadPickleBuffer(ReadBuffer[bytes], Protocol):
     def readline(self) -> bytes: ...
 
+
 class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
     def truncate(self, size: int | None = ..., /) -> int: ...
+
 
 class ReadCsvBuffer(ReadBuffer[AnyStr_co], Protocol):
     def __iter__(self) -> Iterator[AnyStr_co]:
@@ -685,6 +693,7 @@ class ReadCsvBuffer(ReadBuffer[AnyStr_co], Protocol):
     def closed(self) -> bool:
         # for engine=pyarrow
         ...
+
 
 FilePath: TypeAlias = str | PathLike[str]
 
@@ -980,9 +989,11 @@ ListLikeHashable: TypeAlias = (
     MutableSequence[HashableT0] | np_1darray | tuple[HashableT0, ...] | range
 )
 
+
 class SupportsDType(Protocol[GenericT_co]):
     @property
     def dtype(self) -> np.dtype[GenericT_co]: ...
+
 
 # Similar to npt.DTypeLike but leaves out np.dtype and None for use in overloads
 DTypeLike: TypeAlias = type[Any] | tuple[Any, Any] | list[Any] | str
@@ -1174,12 +1185,15 @@ FileWriteMode: TypeAlias = Literal[
 
 WindowingEngine: TypeAlias = Literal["cython", "numba"] | None
 
+
 class _WindowingNumbaKwargs(TypedDict, total=False):
     nopython: bool
     nogil: bool
     parallel: bool
 
+
 WindowingEngineKwargs: TypeAlias = _WindowingNumbaKwargs | None
+
 
 class StyleExportDict(TypedDict, total=False):
     apply: Any
@@ -1190,6 +1204,7 @@ class StyleExportDict(TypedDict, total=False):
     hide_index_names: bool
     hide_column_names: bool
     css: dict[str, str | int]
+
 
 CalculationMethod: TypeAlias = Literal["single", "table"]
 
@@ -1223,6 +1238,7 @@ DictConvertible: TypeAlias = FulldatetimeDict | DataFrame
 # where it is the only acceptable type.
 Incomplete: TypeAlias = Any
 
+
 # differentiating between bool and int/float/complex
 # https://github.com/pandas-dev/pandas-stubs/pull/1312#pullrequestreview-3126128971
 class Just(Protocol, Generic[T]):
@@ -1233,10 +1249,13 @@ class Just(Protocol, Generic[T]):
     @override
     def __class__(self, t: type[T], /) -> None: ...
 
+
 class SupportsTrueDiv(Protocol[_T_contra, _T_co]):
     def __truediv__(self, x: _T_contra, /) -> _T_co: ...
 
+
 class SupportsRTrueDiv(Protocol[_T_contra, _T_co]):
     def __rtruediv__(self, x: _T_contra, /) -> _T_co: ...
+
 
 __all__ = ["npt", "type_t"]
