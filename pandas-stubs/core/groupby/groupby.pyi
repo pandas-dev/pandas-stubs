@@ -104,9 +104,10 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         numeric_only: bool = False,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
+        skipna: bool = True,
     ) -> NDFrameT: ...
     @final
-    def median(self, numeric_only: bool = False) -> NDFrameT: ...
+    def median(self, numeric_only: bool = False, skipna: bool = True) -> NDFrameT: ...
     @final
     @overload
     def std(
@@ -115,6 +116,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         numeric_only: bool = ...,
+        skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def std(
@@ -123,6 +125,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         numeric_only: bool = ...,
+        skipna: bool = True,
     ) -> DataFrame: ...
     @final
     @overload
@@ -132,6 +135,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         numeric_only: bool = ...,
+        skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def var(
@@ -140,15 +144,22 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         numeric_only: bool = ...,
+        skipna: bool = True,
     ) -> DataFrame: ...
     @final
     @overload
     def sem(
-        self: GroupBy[Series], ddof: int = ..., numeric_only: bool = ...
+        self: GroupBy[Series],
+        ddof: int = ...,
+        numeric_only: bool = ...,
+        skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def sem(
-        self: GroupBy[DataFrame], ddof: int = ..., numeric_only: bool = ...
+        self: GroupBy[DataFrame],
+        ddof: int = ...,
+        numeric_only: bool = ...,
+        skipna: bool = True,
     ) -> DataFrame: ...
     def size(self: GroupBy[Series]) -> Series[int]: ...
     @final
@@ -158,9 +169,12 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         min_count: int = 0,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
+        skipna: bool = True,
     ) -> NDFrameT: ...
     @final
-    def prod(self, numeric_only: bool = False, min_count: int = 0) -> NDFrameT: ...
+    def prod(
+        self, numeric_only: bool = False, min_count: int = 0, skipna: bool = True
+    ) -> NDFrameT: ...
     @final
     def min(
         self,
@@ -168,6 +182,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         min_count: int = -1,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
+        skipna: bool = True,
     ) -> NDFrameT: ...
     @final
     def max(
@@ -176,6 +191,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         min_count: int = -1,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
+        skipna: bool = True,
     ) -> NDFrameT: ...
     @final
     def first(
