@@ -12,6 +12,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     assert_type,
+    cast,
 )
 from zoneinfo import ZoneInfo
 
@@ -45,7 +46,15 @@ from tests.utils import powerset
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
 @pytest.mark.parametrize(
-    "data", powerset([datetime(2026, 1, 4), pd.Timestamp(2026, 1, 8)], 1)
+    "data",
+    powerset(
+        [
+            datetime(2026, 1, 4),
+            pd.Timestamp(2026, 1, 8),
+            np.datetime64("2131-01-05 01:25"),
+        ],
+        1,
+    ),
 )
 @pytest.mark.parametrize("missing_values", powerset([None, pd.NaT]))
 def test_construction_sequence_pandas(
@@ -53,8 +62,6 @@ def test_construction_sequence_pandas(
     missing_values: tuple[Any, ...],
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
-    # TODO: pandas-dev/pandas#57064
-    # In Pandas 3.0, mixing np.datetime64, datetime and pd.Timestamp also gives DatetimeArray
     check(pd.array(typ([*data, *missing_values])), DatetimeArray)
     check(pd.array(typ([datetime(2077, 1, 1), *data, *missing_values])), DatetimeArray)
     check(
@@ -67,6 +74,7 @@ def test_construction_sequence_pandas(
             pd.array([pd.Timestamp(2026, 1, 5, tzinfo=ZoneInfo("Africa/Ouagadougou"))]),
             DatetimeArray,
         )
+        assert_type(pd.array([np.datetime64("2026-01-05 23:27:59")]), DatetimeArray)
 
         assert_type(
             pd.array([datetime(2100, 1, 5, 1), datetime(1, 1, 6, 2)]), DatetimeArray
@@ -77,67 +85,39 @@ def test_construction_sequence_pandas(
         assert_type(
             pd.array([datetime(2052, 1, 5), pd.Timestamp(2, 1, 6)]), DatetimeArray
         )
+        assert_type(
+            pd.array([np.datetime64("2131-01-05 01:25"), np.datetime64("1748-01-06")]),
+            DatetimeArray,
+        )
+        assert_type(
+            pd.array([np.datetime64("2130-01-01 01:25"), datetime(1749, 1, 6)]),
+            DatetimeArray,
+        )
+        assert_type(
+            pd.array([np.datetime64("2129-01-05 01:25"), pd.Timestamp("1760-01-06")]),
+            DatetimeArray,
+        )
 
         assert_type(pd.array([datetime(2061, 1, 5, 1), None]), DatetimeArray)
         assert_type(pd.array([pd.Timestamp(1902, 1, 5, 3), None]), DatetimeArray)
+        assert_type(pd.array([np.datetime64("2111-01-05"), None]), DatetimeArray)
 
-        assert_type(pd.array([datetime(1921, 1, 5, 1), pd.NaT]), DatetimeArray)  # type: ignore[assert-type]
-        assert_type(pd.array([pd.Timestamp(1872, 1, 5, 3), pd.NaT]), DatetimeArray)  # type: ignore[assert-type]
+        assert_type(pd.array([datetime(1921, 1, 5, 1), pd.NaT]), DatetimeArray)
+        assert_type(pd.array([pd.Timestamp(1872, 1, 5, 3), pd.NaT]), DatetimeArray)
+        assert_type(pd.array([np.datetime64("2113-01-05"), pd.NaT]), DatetimeArray)
 
         assert_type(pd.array([datetime(1751, 1, 5, 1), None, pd.NaT]), DatetimeArray)
         assert_type(
             pd.array([pd.Timestamp(2102, 1, 5, 3), None, pd.NaT]), DatetimeArray
         )
+        assert_type(
+            pd.array([np.datetime64("2114-01-05"), None, pd.NaT]), DatetimeArray
+        )
 
         assert_type(pd.array((datetime(2026, 1, 5),)), DatetimeArray)
         assert_type(pd.array(UserList([pd.Timestamp(2026, 1, 5)])), DatetimeArray)
-
-
-def test_construction_sequence_numpy() -> None:
-    # TODO: pandas-dev/pandas#57064
-    # In Pandas 3.0, mixing np.datetime64, datetime and pd.Timestamp also gives DatetimeArray
-    check(
-        assert_type(pd.array([np.datetime64("2026-01-05 23:27:59")]), DatetimeArray),
-        DatetimeArray,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(
-            pd.array([np.datetime64("2131-01-05 01:25"), np.datetime64("1748-01-06")]),
-            DatetimeArray,
-        ),
-        DatetimeArray,
-        pd.Timestamp,
-    )
-
-    check(
-        assert_type(pd.array([np.datetime64("2111-01-05"), None]), DatetimeArray),
-        DatetimeArray,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(pd.array([np.datetime64("2113-01-05"), pd.NaT]), DatetimeArray),  # type: ignore[assert-type]
-        DatetimeArray,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(
-            pd.array([np.datetime64("2114-01-05"), None, pd.NaT]), DatetimeArray
-        ),
-        DatetimeArray,
-        pd.Timestamp,
-    )
-
-    check(
-        assert_type(pd.array((np.datetime64("1959-01-05"),)), DatetimeArray),
-        DatetimeArray,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(pd.array(UserList([np.datetime64("1701-01-05")])), DatetimeArray),
-        DatetimeArray,
-        pd.Timestamp,
-    )
+        assert_type(pd.array((np.datetime64("1959-01-05"),)), DatetimeArray)
+        assert_type(pd.array(UserList([np.datetime64("1701-01-05")])), DatetimeArray)
 
 
 @pytest.mark.parametrize("data", powerset([datetime(1710, 10, 10), "2020-11-11 10:00"]))
@@ -269,3 +249,26 @@ def test_properties() -> None:
         np_1darray,
         np.float64,
     )
+
+
+def test_constructor() -> None:
+    dt = datetime(2025, 11, 10)
+    check(assert_type(pd.array([dt]), DatetimeArray), DatetimeArray)
+    check(assert_type(pd.array([dt, pd.Timestamp(dt)]), DatetimeArray), DatetimeArray)
+    check(assert_type(pd.array([dt, None]), DatetimeArray), DatetimeArray)
+    check(assert_type(pd.array([dt, pd.NaT, None]), DatetimeArray), DatetimeArray)
+
+    np_dt = np.datetime64(dt)
+    check(assert_type(pd.array([np_dt]), DatetimeArray), DatetimeArray)
+    check(assert_type(pd.array([np_dt, None]), DatetimeArray), DatetimeArray)
+    dt_nat = cast(list[np.datetime64 | NaTType], [np_dt, pd.NaT])
+    check(assert_type(pd.array(dt_nat), DatetimeArray), DatetimeArray)
+
+    np_arr = np.array([dt], np.datetime64)
+    check(assert_type(pd.array(np_arr), DatetimeArray), DatetimeArray)
+
+    check(assert_type(pd.array(pd.array([dt])), DatetimeArray), DatetimeArray)
+
+    check(assert_type(pd.array(pd.Index([dt])), DatetimeArray), DatetimeArray)
+
+    check(assert_type(pd.array(pd.Series([dt])), DatetimeArray), DatetimeArray)

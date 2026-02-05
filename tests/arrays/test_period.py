@@ -24,6 +24,24 @@ from tests._typing import (
 )
 
 
+def test_construction_sequence() -> None:
+    prd = pd.Period("2023-01-01")
+    check(assert_type(pd.array([prd]), PeriodArray), PeriodArray)
+    check(assert_type(pd.array([prd, None]), PeriodArray), PeriodArray)
+    check(assert_type(pd.array([prd, pd.NaT, None]), PeriodArray), PeriodArray)
+
+
+def test_construction_array_like() -> None:
+    prd = pd.Period("2023-01-01")
+    check(assert_type(pd.array(pd.array([prd])), PeriodArray), PeriodArray)
+    check(assert_type(pd.array(pd.Index([prd])), PeriodArray), PeriodArray)
+    check(assert_type(pd.array(pd.Series([prd])), PeriodArray), PeriodArray)
+
+
+def test_construction_dtype() -> None:
+    check(assert_type(pd.array([], PeriodDtype("D")), PeriodArray), PeriodArray)
+
+
 def test_constructor() -> None:
     """Test init method for PeriodArray."""
     # From numpy array of integers (ordinals) with dtype
