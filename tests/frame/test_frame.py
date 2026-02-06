@@ -4228,7 +4228,6 @@ def test_frame_delitem() -> None:
     del df["B"]
 
 
-<<<<<<< gh1654_deprecate
 def test_frame_copy_deprecated() -> None:
     """Test that copy argument is deprecated from 3.0 for various DataFrame methods."""
     df = pd.DataFrame({"a": [1, 2, 3]})
@@ -4325,4 +4324,3 @@ def test_expanding_nunique() -> None:
         assert_type(df.expanding().nunique(numeric_only=False), pd.DataFrame),
         pd.DataFrame,
     )
->>>>>>> main
