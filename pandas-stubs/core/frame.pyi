@@ -2601,6 +2601,16 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     @final
     def __bool__(self) -> NoReturn: ...
+    def to_iceberg(
+        self,
+        table_identifier: str,
+        catalog_name: str | None = None,
+        *,
+        catalog_properties: dict[str, Any] | None = None,
+        location: str | None = None,
+        append: _bool = False,
+        snapshot_properties: dict[str, str] | None = None,
+    ) -> None: ...
 
 @type_check_only
 class PandasNamedTuple(tuple[Any, ...]):

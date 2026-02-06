@@ -57,8 +57,10 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
+    pytest_warns_bounded,
 )
 
+from pandas.io.iceberg import read_iceberg
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
     TableIterator,
@@ -423,6 +425,18 @@ def test_spss() -> None:
     )
 
 
+def test_spss_kwargs() -> None:
+    """Test passing kwargs to read_spss."""
+    path_str = Path(CWD, "data", "labelled-num.sav")
+
+    check(
+        assert_type(
+            pd.read_spss(path_str, convert_categoricals=True, row_limit=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
 def test_json(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_json(path_str), None), type(None))
@@ -515,6 +529,13 @@ def test_parquet(tmp_path: Path) -> None:
     check(assert_type(DF.to_parquet(path_str), None), type(None))
     check(assert_type(DF.to_parquet(), bytes), bytes)
     check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
+
+
+def test_parquet_to_pandas() -> None:
+    """Test passing `to_pandas_kwargs` in read_parquet."""
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
 
 
 def test_parquet_options(tmp_path: Path) -> None:
@@ -1683,3 +1704,130 @@ def test_converters_partial(tmp_path: Path) -> None:
 
     result = pd.read_excel(path_str, converters={"field_1": partial_func})
     check(assert_type(result, pd.DataFrame), pd.DataFrame)
+
+
+@pytest.mark.filterwarnings("ignore::ResourceWarning")
+def test_iceberg(tmp_path: Path) -> None:
+    """Test read_iceberg and DataFrame.to_iceberg GH1654."""
+
+    from pydantic.warnings import PydanticDeprecatedSince212
+    from pyparsing.warnings import PyparsingDeprecationWarning
+
+    with (
+        pytest_warns_bounded(PydanticDeprecatedSince212, match="Using"),
+        pytest_warns_bounded(PyparsingDeprecationWarning, match="deprecat"),
+    ):
+        from pyiceberg.catalog.sql import SqlCatalog
+
+    warehouse_path = tmp_path / "warehouse"
+    warehouse_path.mkdir()
+    warehouse = warehouse_path.as_posix()
+    catalog_properties = {
+        "uri": f"sqlite:///{warehouse}/catalog.db",
+        "warehouse": f"file://{warehouse}",
+    }
+    with SqlCatalog("test_catalog", **catalog_properties) as catalog:
+        catalog.create_namespace("default")
+
+        table_identifier = "default.test_table"
+
+        with pytest_warns_bounded(UserWarning, match="Delete operation"):
+            check(
+                assert_type(
+                    DF.to_iceberg(
+                        table_identifier,
+                        catalog_name="test_catalog",
+                        catalog_properties=catalog_properties,
+                    ),
+                    None,
+                ),
+                type(None),
+            )
+        check(
+            assert_type(
+                read_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+
+        # Test append
+        check(
+            assert_type(
+                DF.to_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                    append=True,
+                ),
+                None,
+            ),
+            type(None),
+        )
+
+        # Test read_iceberg with columns
+        check(
+            assert_type(
+                read_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                    columns=["a"],
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+
+        # Test read_iceberg with limit
+        check(
+            assert_type(
+                read_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                    limit=2,
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+
+        # Test read_iceberg with row_filter
+        check(
+            assert_type(
+                read_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                    row_filter="a > 1",
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+
+        # Test to_iceberg with snapshot_properties and location
+        with pytest_warns_bounded(UserWarning, match="Delete operation"):
+            check(
+                assert_type(
+                    DF.to_iceberg(
+                        "default.test_table2",
+                        catalog_name="test_catalog",
+                        catalog_properties=catalog_properties,
+                        location=f"file://{warehouse}/custom",
+                        snapshot_properties={"test_key": "test_val"},
+                    ),
+                    None,
+                ),
+                type(None),
+            )
+
+    # Force GC to flush unclosed sqlite3 connections from pyiceberg internals
+    import gc
+
+    gc.collect()

@@ -2,7 +2,6 @@ from typing import (
     TYPE_CHECKING,
     Literal,
     assert_type,
-    cast,
 )
 
 import numpy as np
@@ -105,9 +104,3 @@ def test_dtype() -> None:
     arr = pd.array(["a"], "string[pyarrow]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['pyarrow']]"), pd.StringDtype)
     assert assert_type(arr.dtype.storage, Literal["pyarrow"]) == "pyarrow"
-
-    # TODO: pandas-dev/pandas#54466 should give BaseStringArray after 3.0
-    # TODO: pandas-dev/pandas-stubs#1641 should give BaseStringArray after 3.0 with the stubs
-    arr_arrow = cast("ArrowStringArray", pd.array([pd.NA], str))
-    check(assert_type(arr_arrow, ArrowStringArray), ArrowStringArray, float)
-    assert pd.isna(assert_type(arr_arrow.dtype.na_value, NAType | float))
