@@ -18,6 +18,7 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 from pandas._stubs_only import T_contra
+from pandas.core.accessor import DirNamesMixin
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -56,6 +57,8 @@ T_INTERVAL_NP = TypeVar("T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...
+
+class PandasObject(DirNamesMixin): ...
 
 class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     __array_priority__: int = ...
