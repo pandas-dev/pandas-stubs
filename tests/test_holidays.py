@@ -34,7 +34,7 @@ def test_custom_calendar() -> None:
 
 
 def test_holiday_exclude_dates() -> None:
-    """Test construction of a Holiday with dates excluded from it GH1654."""
+    """Test construction of a Holiday with dates excluded from it."""
     exclude = pd.DatetimeIndex([pd.Timestamp("2022-05-30")])  # Queen's platinum Jubilee
 
     queens_jubilee_uk_spring_bank_holiday = Holiday(
