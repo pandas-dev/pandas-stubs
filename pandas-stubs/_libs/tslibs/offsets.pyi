@@ -13,7 +13,6 @@ from typing import (
     overload,
 )
 
-from dateutil.easter import EASTER_WESTERN
 from dateutil.relativedelta import weekday as WeekdayClass
 import numpy as np
 from pandas import Timestamp
@@ -215,7 +214,7 @@ class Easter(SingleConstructorOffset):
         self,
         n: int = 1,
         normalize: bool = False,
-        method: int = EASTER_WESTERN,  # noqa: PYI011
+        method: int = ...,
     ) -> None: ...
 
 class _CustomBusinessMonth(SingleConstructorOffset):
