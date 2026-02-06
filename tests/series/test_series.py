@@ -1455,6 +1455,8 @@ def test_types_rename() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
+        # copy argument is deprecated from 3.0
+        _s8 = pd.Series([1, 2, 3]).rename("A", copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_types_ne() -> None:
@@ -2872,6 +2874,10 @@ def test_series_reindex() -> None:
         np.integer,
     )
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = s.reindex([2, 1, 0], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
 
 def test_series_reindex_like() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
@@ -2889,6 +2895,10 @@ def test_series_reindex_like() -> None:
             pd.Series,
             np.integer,
         )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = s.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_info() -> None:
@@ -3032,3 +3042,28 @@ def test_series_delitem() -> None:
 
     check(assert_type(sr.__delitem__(0), None), type(None))
     del sr[1]
+
+
+def test_series_copy_deprecated() -> None:
+    """Test that copy argument is deprecated from 3.0 for various Series methods."""
+    s = pd.Series([1, 2, 3])
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # truncate
+        _0 = s.truncate(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # tz_convert
+        _1 = s.tz_convert("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # tz_localize
+        _2 = s.tz_localize("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # infer_objects
+        _3 = s.infer_objects(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # set_axis
+        _4 = s.set_axis([1, 2, 3], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # to_period
+        _5 = s.to_period(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # to_timestamp
+        _6 = s.to_timestamp(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # astype
+        _7 = s.astype(int, copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # swaplevel
+        _8 = s.swaplevel(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
