@@ -72,6 +72,7 @@ fsspec = "^2025.10.0"
 tables = { version = ">=3.10.2", python = "<3.14" }  # TODO: add py314 when PyTables/PyTables#1261 is resolved
 pytz = "^2025.2"
 types-pytz = ">=2022.1.1"
+pyiceberg = "^0.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -223,6 +224,7 @@ ignore = [
   "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
   "PD",      # Pandas is here
   "PLC0415", # https://docs.astral.sh/ruff/rules/import-outside-top-level/
+  "PLW0108", # https://docs.astral.sh/ruff/rules/unnecessary-lambda/
   "S101",    # https://docs.astral.sh/ruff/rules/assert/
   "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.

@@ -105,6 +105,7 @@ from pandas.io.api import (
     read_fwf as read_fwf,
     read_hdf as read_hdf,
     read_html as read_html,
+    read_iceberg as read_iceberg,
     read_json as read_json,
     read_orc as read_orc,
     read_parquet as read_parquet,

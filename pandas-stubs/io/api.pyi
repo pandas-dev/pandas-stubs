@@ -6,6 +6,7 @@ from pandas.io.excel import (
 )
 from pandas.io.feather_format import read_feather as read_feather
 from pandas.io.html import read_html as read_html
+from pandas.io.iceberg import read_iceberg as read_iceberg
 from pandas.io.json import read_json as read_json
 from pandas.io.orc import read_orc as read_orc
 from pandas.io.parquet import read_parquet as read_parquet

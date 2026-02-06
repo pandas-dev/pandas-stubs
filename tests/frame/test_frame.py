@@ -4210,6 +4210,84 @@ def test_frame_delitem() -> None:
     del df["B"]
 
 
+def test_rolling_first() -> None:
+    """Test DataFrame.rolling.first method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.rolling(3).first(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.rolling(3).first(numeric_only=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.rolling(3).first(numeric_only=False), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_rolling_last() -> None:
+    """Test DataFrame.rolling.last method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.rolling(3).last(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.rolling(3).last(numeric_only=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.rolling(3).last(numeric_only=False), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_rolling_nunique() -> None:
+    """Test DataFrame.rolling.nunique method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.rolling(3).nunique(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.rolling(3).nunique(numeric_only=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.rolling(3).nunique(numeric_only=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_expanding_first() -> None:
+    """Test DataFrame.expanding.first method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.expanding().first(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.expanding().first(numeric_only=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.expanding().first(numeric_only=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_expanding_last() -> None:
+    """Test DataFrame.expanding.last method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.expanding().last(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.expanding().last(numeric_only=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.expanding().last(numeric_only=False), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_expanding_nunique() -> None:
+    """Test DataFrame.expanding.nunique method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.expanding().nunique(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.expanding().nunique(numeric_only=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.expanding().nunique(numeric_only=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
 def test_frame_pipe() -> None:
     """Test Rolling.pipe and Expanding.pipe."""
     df = pd.DataFrame(

@@ -30,10 +30,24 @@ from pandas.tseries.offsets import Minute
 
 def test_construction() -> None:
     """Test pd.array method for TimedeltaArray."""
+
+    td = timedelta(2025, 11, 10)
+    np_dt = np.timedelta64(td)
+    check(assert_type(pd.array([td]), TimedeltaArray), TimedeltaArray)
+    check(
+        assert_type(pd.array([td, pd.Timedelta(td), np_dt]), TimedeltaArray),
+        TimedeltaArray,
+    )
+    check(assert_type(pd.array([td, None]), TimedeltaArray), TimedeltaArray)
+    check(assert_type(pd.array([td, pd.NaT, None]), TimedeltaArray), TimedeltaArray)
+
     # From TimedeltaIndex
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
     check(assert_type(arr, TimedeltaArray), TimedeltaArray)
+
+    # From Series
+    check(assert_type(pd.array(pd.Series(idx)), TimedeltaArray), TimedeltaArray)
 
     # From numpy array of timedelta64
     values = np.array(

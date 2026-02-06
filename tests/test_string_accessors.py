@@ -46,6 +46,7 @@ def test_string_accessors_boolean_series() -> None:
     _check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"))
     _check(assert_type(s.str.fullmatch(re.compile(r"apple")), "pd.Series[bool]"))
     _check(assert_type(s.str.isalnum(), "pd.Series[bool]"))
+    _check(assert_type(s.str.isascii(), "pd.Series[bool]"))
     _check(assert_type(s.str.isalpha(), "pd.Series[bool]"))
     _check(assert_type(s.str.isdecimal(), "pd.Series[bool]"))
     _check(assert_type(s.str.isdigit(), "pd.Series[bool]"))
@@ -72,6 +73,7 @@ def test_string_accessors_boolean_index() -> None:
     _check(assert_type(idx.str.fullmatch("apple"), np_1darray_bool))
     _check(assert_type(idx.str.fullmatch(re.compile(r"apple")), np_1darray_bool))
     _check(assert_type(idx.str.isalnum(), np_1darray_bool))
+    _check(assert_type(idx.str.isascii(), np_1darray_bool))
     _check(assert_type(idx.str.isalpha(), np_1darray_bool))
     _check(assert_type(idx.str.isdecimal(), np_1darray_bool))
     _check(assert_type(idx.str.isdigit(), np_1darray_bool))
@@ -288,6 +290,8 @@ def test_string_accessors_expanding_series() -> None:
     _check(assert_type(s.str.extractall(r"([ab])?(\d)"), pd.DataFrame))
     _check(assert_type(s.str.extractall(re.compile(r"([ab])?(\d)")), pd.DataFrame))
     _check(assert_type(s.str.get_dummies(), pd.DataFrame))
+    _check(assert_type(s.str.get_dummies(dtype="boolean"), pd.DataFrame))
+    _check(assert_type(s.str.get_dummies(dtype=bool), pd.DataFrame))
     _check(assert_type(s.str.partition("p"), pd.DataFrame))
     _check(assert_type(s.str.rpartition("p"), pd.DataFrame))
     _check(assert_type(s.str.rsplit("a", expand=True), pd.DataFrame))
@@ -298,6 +302,8 @@ def test_string_accessors_expanding_index() -> None:
     idx = pd.Index(["a1", "b2", "c3"])
     _check = functools.partial(check, klass=pd.MultiIndex)
     _check(assert_type(idx.str.get_dummies(), pd.MultiIndex))
+    _check(assert_type(idx.str.get_dummies(dtype=np.uint16), pd.MultiIndex))
+    _check(assert_type(idx.str.get_dummies(dtype=np.uint8), pd.MultiIndex))
     _check(assert_type(idx.str.partition("p"), pd.MultiIndex))
     _check(assert_type(idx.str.rpartition("p"), pd.MultiIndex))
     _check(assert_type(idx.str.rsplit("a", expand=True), pd.MultiIndex))
@@ -489,3 +495,16 @@ def test_index_overloads_extract() -> None:
         pd.Index,
         object,
     )
+
+
+def test_series_str_replace() -> None:
+    """Test replace method for Series.str GH1654."""
+    sr = pd.Series(data=["A", "B_junk", "C_gunk"], name="my_messy_col")
+    check(
+        assert_type(sr.str.replace(pat={"A": "a", "B": "b"}), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = sr.str.replace(pat={"A": "a", "B": "b"}, repl="A")  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
