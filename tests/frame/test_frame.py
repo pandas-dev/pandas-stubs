@@ -4247,7 +4247,8 @@ def test_frame_copy_deprecated() -> None:
         _5 = df.to_period(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
         # to_timestamp
         _6 = df.to_timestamp(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
-=======
+
+
 def test_rolling_first() -> None:
     """Test DataFrame.rolling.first method."""
     df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
