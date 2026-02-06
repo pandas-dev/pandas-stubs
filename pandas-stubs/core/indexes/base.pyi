@@ -58,6 +58,7 @@ from pandas.core.base import (
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.frozen import FrozenList
 from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
@@ -413,7 +414,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @name.setter
     def name(self, value: Hashable) -> None: ...
     @property
-    def names(self) -> list[Hashable | None]: ...
+    def names(self) -> FrozenList[Hashable | None]: ...
     @names.setter
     def names(self, names: SequenceNotStr[Hashable | None]) -> None: ...
     def set_names(
