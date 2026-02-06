@@ -13,6 +13,7 @@ from jinja2.environment import (
 )
 from jinja2.loaders import FileSystemLoader
 import numpy as np
+import pandas as pd
 from pandas import (
     DataFrame,
     Index,
@@ -26,6 +27,7 @@ from tests import check
 from tests._typing import np_ndarray_str
 
 from pandas.io.formats.style import Styler
+from pandas.io.formats.style_render import StylerRenderer
 
 if TYPE_CHECKING:
     from pandas.io.formats.style_render import StyleExportDict
@@ -182,6 +184,14 @@ def test_set() -> None:
         index=DF.index,
     )
     check(assert_type(DF.style.set_tooltips(ttips), Styler), Styler)
+    check(
+        assert_type(DF.style.set_tooltips(ttips, as_title_attribute=True), Styler),
+        Styler,
+    )
+    check(
+        assert_type(DF.style.set_tooltips(ttips, as_title_attribute=False), Styler),
+        Styler,
+    )
     check(assert_type(DF.style.set_uuid("r4nd0mc44r4c73r5"), Styler), Styler)
 
 
@@ -253,3 +263,35 @@ def test_styler_map() -> None:
     df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
 
     check(assert_type(df.style.map(color_negative, color="red"), Styler), Styler)
+
+
+def test_to_typst(tmp_path: Path) -> None:
+    """Test Styler.to_typst."""
+    path = tmp_path / f"{uuid.uuid4()}test.typ"
+    path_str = str(path)
+    check(assert_type(DF.style.to_typst(path), None), type(None))
+    check(assert_type(DF.style.to_typst(path_str), None), type(None))
+    check(assert_type(DF.style.to_typst(), str), str)
+
+
+def test_format_index_names() -> None:
+    """Test StyleRender.format_index_names."""
+    midx = pd.MultiIndex.from_arrays([["_", "_"], ["_", "_"]], names=["zero", "one"])
+    df = pd.DataFrame([[1, 2], [3, 4]])
+    df.index = midx
+
+    check(
+        assert_type(
+            df.style.format_index_names(lambda _: "X", level=0, axis=1), StylerRenderer
+        ),
+        StylerRenderer,
+    )
+
+    df.columns = midx
+
+    check(
+        assert_type(
+            df.style.format_index_names(lambda _: "X", level=1, axis=0), StylerRenderer
+        ),
+        StylerRenderer,
+    )
