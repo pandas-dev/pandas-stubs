@@ -42,12 +42,17 @@ from pandas.tseries.frequencies import to_offset
 from pandas.tseries.holiday import USFederalHolidayCalendar
 from pandas.tseries.offsets import (
     BaseOffset,
+    BHalfYearBegin,
+    BHalfYearEnd,
     BusinessDay,
     BusinessHour,
     CustomBusinessDay,
     CustomBusinessHour,
     DateOffset,
     Day,
+    Easter,
+    HalfYearBegin,
+    HalfYearEnd,
 )
 
 
@@ -1879,3 +1884,24 @@ def test_timestamp_to_list_add() -> None:
         pd.Series,
         pd.Timestamp,
     )
+
+
+def test_easter_constructor() -> None:
+    """Test Easter constructor."""
+    from dateutil.easter import (
+        EASTER_ORTHODOX,
+        EASTER_WESTERN,
+    )
+
+    check(assert_type(Easter(method=EASTER_ORTHODOX), Easter), Easter)
+    check(assert_type(Easter(method=EASTER_WESTERN), Easter), Easter)
+
+
+def test_half_year_offsets() -> None:
+    """Test half-year offsets introduced in pandas 3.0 GH1654."""
+    ts = pd.Timestamp(2024, 2, 1)
+
+    check(assert_type(ts + HalfYearBegin(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts + HalfYearEnd(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts + BHalfYearBegin(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts + BHalfYearEnd(), pd.Timestamp), pd.Timestamp)
