@@ -267,7 +267,9 @@ def test_styler_map() -> None:
 
 def test_to_typst(tmp_path: Path) -> None:
     """Test Styler.to_typst."""
-    path_str = str(tmp_path / f"{uuid.uuid4()}test.typ")
+    path = tmp_path / f"{uuid.uuid4()}test.typ"
+    path_str = str(path)
+    check(assert_type(DF.style.to_typst(path), None), type(None))
     check(assert_type(DF.style.to_typst(path_str), None), type(None))
     check(assert_type(DF.style.to_typst(), str), str)
 
