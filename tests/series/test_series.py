@@ -3032,3 +3032,13 @@ def test_series_delitem() -> None:
 
     check(assert_type(sr.__delitem__(0), None), type(None))
     del sr[1]
+
+
+def test_map_kwargs() -> None:
+    """Test Series.map when passing a callable with **kwargs for extra arguments."""
+    sr = pd.Series([2, 4, 5])
+
+    def func(x: int, y: int) -> int:
+        return x + y
+
+    check(assert_type(sr.map(func), "pd.Series[int]"), pd.Series, np.integer)

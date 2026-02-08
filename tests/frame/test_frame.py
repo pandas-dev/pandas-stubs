@@ -4315,15 +4315,17 @@ def test_expanding_nunique() -> None:
 def test_frame_corrwith() -> None:
     """Test DataFrame.corrwith with min_periods argument."""
     df1 = pd.DataFrame(
-            {
-                "A": [1, np.nan, 7, 8],
-                "B": [False, True, True, False],
-                "C": [10, 4, 9, 3],
-            }
-        )
+        {
+            "A": [1, np.nan, 7, 8],
+            "B": [False, True, True, False],
+            "C": [10, 4, 9, 3],
+        }
+    )
     df2 = df1[["B", "C"]]
     check(assert_type((df1 + 1).corrwith(df2["B"]), pd.Series), pd.Series)
-    check(assert_type((df1 + 1).corrwith(df2["B"], min_periods=2), pd.Series), pd.Series)
+    check(
+        assert_type((df1 + 1).corrwith(df2["B"], min_periods=2), pd.Series), pd.Series
+    )
 
     check(assert_type((df1 + 1).corrwith(df2), pd.Series), pd.Series)
     check(assert_type((df1 + 1).corrwith(df2, min_periods=2), pd.Series), pd.Series)
