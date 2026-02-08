@@ -77,7 +77,7 @@ from pandas.core.window.rolling import (
 )
 import xarray as xr
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
@@ -1167,7 +1167,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar, Literal[True]]: ...
     @overload
@@ -1178,7 +1178,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar, Literal[False]]: ...
     @overload
@@ -1189,7 +1189,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[True]]: ...
     @overload
@@ -1200,7 +1200,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[False]]: ...
     @overload
@@ -1211,7 +1211,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timedelta, Literal[True]]: ...
     @overload
@@ -1222,7 +1222,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timedelta, Literal[False]]: ...
     @overload
@@ -1233,7 +1233,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period, Literal[True]]: ...
     @overload
@@ -1244,7 +1244,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period, Literal[False]]: ...
     @overload
@@ -1255,7 +1255,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[IntervalT, Literal[True]]: ...
     @overload
@@ -1266,7 +1266,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[IntervalT, Literal[False]]: ...
     @overload
@@ -1277,7 +1277,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]: ...
     @overload
@@ -1288,7 +1288,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[False]]: ...
     @overload
@@ -1299,7 +1299,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[SeriesByT, Literal[True]]: ...
     @overload
@@ -1310,7 +1310,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[SeriesByT, Literal[False]]: ...
     @overload
@@ -1321,7 +1321,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Any, Literal[True]]: ...
     @overload
@@ -1332,7 +1332,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Any, Literal[False]]: ...
     def pivot(

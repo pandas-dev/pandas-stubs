@@ -28,7 +28,7 @@ from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 from sqlalchemy.engine import Connectable
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     Axis,
     CompressionOptions,
@@ -455,7 +455,7 @@ class NDFrame:
     def resample(
         self,
         rule: Frequency | dt.timedelta,
-        axis: Axis | NoDefaultDoNotUse = 0,
+        axis: Axis | NoDefault = 0,
         closed: Literal["right", "left"] | None = None,
         label: Literal["right", "left"] | None = None,
         on: Level | None = None,

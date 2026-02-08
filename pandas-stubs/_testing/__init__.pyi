@@ -26,7 +26,7 @@ from pandas.arrays import (
 )
 from pandas.core.arrays.base import ExtensionArray
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     AnyArrayLike,
     T,
@@ -106,14 +106,14 @@ def assert_series_equal(
     check_index_type: bool | Literal["equiv"] = "equiv",
     check_series_type: bool = True,
     check_names: bool = True,
-    check_exact: bool | NoDefaultDoNotUse = ...,
+    check_exact: bool | NoDefault = ...,
     check_datetimelike_compat: bool = False,
     check_categorical: bool = True,
     check_category_order: bool = True,
     check_freq: bool = True,
     check_flags: bool = True,
-    rtol: float | NoDefaultDoNotUse = ...,
-    atol: float | NoDefaultDoNotUse = ...,
+    rtol: float | NoDefault = ...,
+    atol: float | NoDefault = ...,
     obj: str = "Series",
     *,
     check_index: Literal[False],
@@ -127,14 +127,14 @@ def assert_series_equal(
     check_index_type: bool | Literal["equiv"] = "equiv",
     check_series_type: bool = True,
     check_names: bool = True,
-    check_exact: bool | NoDefaultDoNotUse = ...,
+    check_exact: bool | NoDefault = ...,
     check_datetimelike_compat: bool = False,
     check_categorical: bool = True,
     check_category_order: bool = True,
     check_freq: bool = True,
     check_flags: bool = True,
-    rtol: float | NoDefaultDoNotUse = ...,
-    atol: float | NoDefaultDoNotUse = ...,
+    rtol: float | NoDefault = ...,
+    atol: float | NoDefault = ...,
     obj: str = "Series",
     *,
     check_index: Literal[True] = True,
