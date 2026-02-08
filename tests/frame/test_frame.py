@@ -716,6 +716,32 @@ def test_types_cumsum() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.cumsum(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.cumsum(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumsum(numeric_only=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumsum(numeric_only=False), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_cummin() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    check(assert_type(df.cummin(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummin(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummin(numeric_only=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummin(numeric_only=False), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_cummax() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    check(assert_type(df.cummax(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummax(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummax(numeric_only=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummax(numeric_only=False), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_cumprod() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    check(assert_type(df.cumprod(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumprod(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumprod(numeric_only=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumprod(numeric_only=False), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_min() -> None:
@@ -4284,3 +4310,20 @@ def test_expanding_nunique() -> None:
         assert_type(df.expanding().nunique(numeric_only=False), pd.DataFrame),
         pd.DataFrame,
     )
+
+
+def test_frame_corrwith() -> None:
+    """Test DataFrame.corrwith with min_periods argument."""
+    df1 = pd.DataFrame(
+            {
+                "A": [1, np.nan, 7, 8],
+                "B": [False, True, True, False],
+                "C": [10, 4, 9, 3],
+            }
+        )
+    df2 = df1[["B", "C"]]
+    check(assert_type((df1 + 1).corrwith(df2["B"]), pd.Series), pd.Series)
+    check(assert_type((df1 + 1).corrwith(df2["B"], min_periods=2), pd.Series), pd.Series)
+
+    check(assert_type((df1 + 1).corrwith(df2), pd.Series), pd.Series)
+    check(assert_type((df1 + 1).corrwith(df2, min_periods=2), pd.Series), pd.Series)
