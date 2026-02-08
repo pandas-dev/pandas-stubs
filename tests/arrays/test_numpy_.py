@@ -20,13 +20,15 @@ from tests import (
     exception_on_platform,
 )
 from tests._typing import (
-    BuiltinNotStrDtypeArg,
+    BuiltinNotStrObjDtypeArg,
+    BuiltinObjectDtypeArg,
     NumpyNotTimeDtypeArg,
     np_ndarray,
 )
 from tests.dtypes import (
     NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS,
-    PYTHON_NOT_STR_DTYPE_ARGS,
+    PYTHON_NOT_STR_OBJ_DTYPE_ARGS,
+    PYTHON_OBJECT_ARGS,
 )
 from tests.utils import powerset
 
@@ -75,10 +77,15 @@ def test_construction_dtype_nan() -> None:
 
 @pytest.mark.parametrize(
     ("dtype", "target_dtype"),
-    (PYTHON_NOT_STR_DTYPE_ARGS | NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS).items(),
+    (
+        PYTHON_NOT_STR_OBJ_DTYPE_ARGS
+        | PYTHON_OBJECT_ARGS
+        | NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS
+    ).items(),
 )
 def test_construction_dtype(
-    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg, target_dtype: type
+    dtype: BuiltinNotStrObjDtypeArg | BuiltinObjectDtypeArg | NumpyNotTimeDtypeArg,
+    target_dtype: type,
 ) -> None:
     exc = exception_on_platform(dtype)
     if exc:

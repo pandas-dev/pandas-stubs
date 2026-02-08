@@ -890,15 +890,14 @@ SliceType: TypeAlias = Hashable | None
 ## All types below this point are only used in pandas-stubs
 ######
 
-BuiltinNotStrDtypeArg: TypeAlias = (
+BuiltinNotStrObjDtypeArg: TypeAlias = (
     BuiltinBooleanDtypeArg
     | BuiltinIntDtypeArg
     | BuiltinFloatDtypeArg
     | BuiltinComplexDtypeArg
     | BuiltinBytesDtypeArg
-    | BuiltinObjectDtypeArg
 )
-BuiltinDtypeArg: TypeAlias = BuiltinNotStrDtypeArg | BuiltinStrDtypeArg
+BuiltinNotObjDtypeArg: TypeAlias = BuiltinNotStrObjDtypeArg | BuiltinStrDtypeArg
 NumpyNotTimeDtypeArg: TypeAlias = (
     NumpyBooleanDtypeArg
     | NumpyIntDtypeArg
