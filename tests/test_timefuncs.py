@@ -18,10 +18,10 @@ from dateutil.relativedelta import (
 import numpy as np
 import pandas as pd
 from pandas.api.typing import NaTType
+from pandas.api.typing.aliases import TimeUnit
 from pandas.core.tools.datetimes import FulldatetimeDict
 import pytz
 
-from pandas._typing import TimeUnit
 from pandas.errors import Pandas4Warning
 
 from tests import (

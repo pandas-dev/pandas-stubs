@@ -8,12 +8,12 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing.aliases import TimeUnit
 from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs.timedeltas import Timedelta
-from pandas._typing import TimeUnit
 
 from tests import check
 from tests._typing import (

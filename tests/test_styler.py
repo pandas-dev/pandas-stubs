@@ -19,9 +19,8 @@ from pandas import (
     Index,
     Series,
 )
+from pandas.api.typing.aliases import Scalar
 import pytest
-
-from pandas._typing import Scalar
 
 from tests import check
 from tests._typing import np_ndarray_str

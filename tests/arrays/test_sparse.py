@@ -9,10 +9,10 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays.sparse import SparseArray
 
 from pandas._libs.sparse import SparseIndex
-from pandas._typing import Scalar
 
 from pandas.core.dtypes.dtypes import SparseDtype
 
