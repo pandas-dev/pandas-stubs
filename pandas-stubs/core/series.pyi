@@ -1132,14 +1132,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def map(
         self,
         arg: Callable[..., Any],
-        na_action: Literal["ignore"] | None = ...,
+        na_action: Literal["ignore"] | None = None,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def map(
         self,
         arg: Mapping[Any, Any] | Series,
-        na_action: Literal["ignore"] | None = ...,
+        na_action: Literal["ignore"] | None = None,
     ) -> Series: ...
     @overload
     def aggregate(

@@ -4322,10 +4322,22 @@ def test_frame_corrwith() -> None:
         }
     )
     df2 = df1[["B", "C"]]
-    check(assert_type((df1 + 1).corrwith(df2["B"]), pd.Series), pd.Series)
     check(
-        assert_type((df1 + 1).corrwith(df2["B"], min_periods=2), pd.Series), pd.Series
+        assert_type((df1 + 1).corrwith(df2["B"]), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type((df1 + 1).corrwith(df2["B"], min_periods=2), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
     )
 
-    check(assert_type((df1 + 1).corrwith(df2), pd.Series), pd.Series)
-    check(assert_type((df1 + 1).corrwith(df2, min_periods=2), pd.Series), pd.Series)
+    check(
+        assert_type((df1 + 1).corrwith(df2), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(
+        assert_type((df1 + 1).corrwith(df2, min_periods=2), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
