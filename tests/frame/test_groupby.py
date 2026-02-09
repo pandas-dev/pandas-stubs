@@ -7,24 +7,19 @@ from collections.abc import (
     Iterator,
 )
 from typing import (
-    TYPE_CHECKING,
     Any,
     assert_type,
 )
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing.aliases import Scalar
 from pandas.core.groupby.generic import (
     AggScalar,
     NamedAgg,
 )
 
-from pandas._typing import Scalar
-
 from tests import check
-
-if TYPE_CHECKING:
-    from pandas._typing import S1
 
 
 def test_types_groupby_as_index() -> None:
@@ -203,7 +198,7 @@ def test_types_groupby_agg() -> None:
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
-    def wrapped_min(x: pd.Series[S1]) -> S1:
+    def wrapped_min(x: pd.Series) -> Scalar:
         return x.min()
 
     check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)

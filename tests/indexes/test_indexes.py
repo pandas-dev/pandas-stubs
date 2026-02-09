@@ -25,9 +25,6 @@ from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 import pytest
 
-from pandas._typing import Dtype  # noqa: F401
-from pandas._typing import Scalar  # noqa: F401
-
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -39,6 +36,12 @@ from tests._typing import (
     np_1darray_intp,
     np_ndarray_dt,
 )
+
+if TYPE_CHECKING:
+    from pandas.api.typing.aliases import (  # noqa: F401
+        Dtype,
+        Scalar,
+    )
 
 
 def test_index_unique() -> None:

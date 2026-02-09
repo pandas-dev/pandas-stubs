@@ -36,14 +36,13 @@ import uuid
 import numpy as np
 import pandas as pd
 from pandas.api.typing import NAType
+from pandas.api.typing.aliases import Scalar
 from pandas.core.resample import (
     DatetimeIndexResampler,
     Resampler,
 )
 import pytest
 import xarray as xr
-
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

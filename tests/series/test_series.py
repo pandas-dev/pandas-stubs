@@ -34,6 +34,10 @@ from pandas.api.extensions import (
     ExtensionDtype,
 )
 from pandas.api.typing import NAType
+from pandas.api.typing.aliases import (
+    DtypeObj,
+    Scalar,
+)
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.string_ import BaseStringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
@@ -44,10 +48,6 @@ import pytest
 import xarray as xr
 
 from pandas._libs.tslibs.offsets import Day
-from pandas._typing import (
-    DtypeObj,
-    Scalar,
-)
 from pandas.errors import Pandas4Warning
 
 from tests import (

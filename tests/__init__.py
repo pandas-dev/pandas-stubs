@@ -15,6 +15,7 @@ from typing import (
     Any,
     Final,
     Literal,
+    TypeVar,
     cast,
     get_args,
     get_origin,
@@ -32,7 +33,7 @@ import pytest
 from pandas.core.dtypes.base import ExtensionDtype
 
 if TYPE_CHECKING:
-    from pandas._typing import T
+    T = TypeVar("T")
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 LINUX = sys.platform == "linux"
