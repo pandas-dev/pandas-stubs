@@ -2,7 +2,7 @@ from typing import Any
 
 from pandas.core.frame import DataFrame
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     CompressionOptions,
     ConvertersArg,
@@ -34,5 +34,5 @@ def read_xml(
     iterparse: dict[str, list[str]] | None = None,
     compression: CompressionOptions = "infer",
     storage_options: StorageOptions = None,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
