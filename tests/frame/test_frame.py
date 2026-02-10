@@ -41,6 +41,8 @@ from pandas.core.resample import (
     DatetimeIndexResampler,
     Resampler,
 )
+from pandas.core.window.expanding import Expanding
+from pandas.core.window.rolling import Rolling
 import pytest
 import xarray as xr
 
@@ -4324,3 +4326,31 @@ def test_expanding_nunique() -> None:
         assert_type(df.expanding().nunique(numeric_only=False), pd.DataFrame),
         pd.DataFrame,
     )
+
+
+def test_frame_pipe() -> None:
+    """Test Rolling.pipe and Expanding.pipe."""
+    df = pd.DataFrame(
+        {
+            "B": np.random.default_rng(2).standard_normal(10),
+            "C": np.random.default_rng(2).standard_normal(10),
+        }
+    )
+
+    def func_r(x: Rolling[pd.DataFrame], k: int) -> pd.DataFrame:
+        return x.max() - k * x.min()
+
+    def func_e(x: Expanding[pd.DataFrame], k: int) -> pd.DataFrame:
+        return x.max() - k * x.min()
+
+    check(
+        assert_type(df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.rolling(2).pipe(func_r, k=2), pd.DataFrame), pd.DataFrame)
+
+    check(
+        assert_type(df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.expanding().pipe(func_e, k=2), pd.DataFrame), pd.DataFrame)

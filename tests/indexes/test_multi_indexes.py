@@ -4,6 +4,7 @@ from typing import assert_type
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing import FrozenList
 
 from tests import check
 from tests._typing import (
@@ -29,7 +30,9 @@ def test_multiindex_set_levels() -> None:
 
 def test_multiindex_codes() -> None:
     mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]])
-    check(assert_type(mi.codes, list[np_1darray_int8]), list)
+    check(
+        assert_type(mi.codes, FrozenList[np_1darray_int8]), FrozenList[np_1darray_int8]
+    )
 
 
 def test_multiindex_set_codes() -> None:
