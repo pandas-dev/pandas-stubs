@@ -30,7 +30,9 @@ def test_multiindex_set_levels() -> None:
 
 def test_multiindex_codes() -> None:
     mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]])
-    check(assert_type(mi.codes, FrozenList[np_1darray_int8]), list)
+    check(
+        assert_type(mi.codes, FrozenList[np_1darray_int8]), FrozenList[np_1darray_int8]
+    )
 
 
 def test_multiindex_set_codes() -> None:

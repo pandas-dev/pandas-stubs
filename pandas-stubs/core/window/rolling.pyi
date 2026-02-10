@@ -184,9 +184,9 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     @overload
     def pipe(
         self,
-        func: tuple[Callable[..., T], str],
-        *args: Any,
-        **kwargs: Any,
+        func: tuple[Callable[Concatenate[Self, P], T], str],
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> T: ...
 
 class Rolling(RollingAndExpandingMixin[NDFrameT]): ...

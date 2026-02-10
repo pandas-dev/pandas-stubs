@@ -4297,19 +4297,23 @@ def test_frame_pipe() -> None:
         }
     )
 
-    def func(
-        x: Rolling[pd.DataFrame] | Expanding[pd.DataFrame], k: int
+    def func_r(
+        x: Rolling[pd.DataFrame] , k: int
     ) -> pd.DataFrame:
         return x.max() - k * x.min()
 
+    def func_e(
+        x:  Expanding[pd.DataFrame], k: int
+    ) -> pd.DataFrame:
+        return x.max() - k * x.min()
     check(
         assert_type(df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(df.rolling(2).pipe(func, k=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.rolling(2).pipe(func_r, k=2), pd.DataFrame), pd.DataFrame)
 
     check(
         assert_type(df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(df.expanding().pipe(func, k=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.expanding().pipe(func_e, k=2), pd.DataFrame), pd.DataFrame)

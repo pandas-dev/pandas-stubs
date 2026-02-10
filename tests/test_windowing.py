@@ -404,3 +404,23 @@ def test_indexer_fixed_forward() -> None:
         tuple,
         np.ndarray,
     )
+
+
+def test_groupby_kurt() -> None:
+    """Test groupby.transform/agg with `kurt`."""
+    check(
+        assert_type(DF.groupby("col1").transform("kurt"), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.groupby(S).transform("kurt"), Series),
+        Series,
+    )
+    check(
+        assert_type(DF.groupby("col1").agg("kurt"), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.groupby(S).agg("kurt"), Series),
+        Series,
+    )
