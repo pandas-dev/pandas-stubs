@@ -93,6 +93,12 @@ def test_series_loc_setitem() -> None:
     v = s.loc[[0, 2, 4]].values
     s.loc[[0, 2, 4]] = v
 
+    # GH 1669
+    s = pd.Series[int]([1, 2, 3, 4, 5], index=["a", "b", "c", "d", "e"])
+    idx = pd.Index[str](["a", "c", "e"])
+    v = s.loc[idx].values
+    s.loc[idx] = v
+
 
 def test_series_isin() -> None:
     s = pd.Series([1, 2, 3, 4, 5])
