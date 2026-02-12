@@ -317,7 +317,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __setitem__(
         self,
-        idx: IndexOpsMixin[S1] | MaskType | slice,
+        idx: IndexOpsMixin | MaskType | slice,
         value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
     @overload
