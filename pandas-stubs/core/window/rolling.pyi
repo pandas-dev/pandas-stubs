@@ -7,6 +7,7 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Any,
+    Concatenate,
     Generic,
     Self,
     overload,
@@ -28,7 +29,9 @@ from pandas._typing import (
     CalculationMethod,
     IntervalClosedType,
     NDFrameT,
+    P,
     QuantileInterpolation,
+    T,
     WindowingEngine,
     WindowingEngineKwargs,
     WindowingRankType,
@@ -171,6 +174,20 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def first(self, numeric_only: bool = False) -> NDFrameT: ...
     def last(self, numeric_only: bool = False) -> NDFrameT: ...
     def nunique(self, numeric_only: bool = False) -> NDFrameT: ...
+    @overload
+    def pipe(
+        self,
+        func: Callable[Concatenate[Self, P], T],
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> T: ...
+    @overload
+    def pipe(
+        self,
+        func: tuple[Callable[Concatenate[Self, P], T], str],
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> T: ...
 
 class Rolling(RollingAndExpandingMixin[NDFrameT]): ...
 class RollingGroupby(BaseWindowGroupby[NDFrameT], Rolling[NDFrameT]): ...

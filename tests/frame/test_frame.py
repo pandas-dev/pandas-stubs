@@ -36,14 +36,15 @@ import uuid
 import numpy as np
 import pandas as pd
 from pandas.api.typing import NAType
+from pandas.api.typing.aliases import Scalar
 from pandas.core.resample import (
     DatetimeIndexResampler,
     Resampler,
 )
+from pandas.core.window.expanding import Expanding
+from pandas.core.window.rolling import Rolling
 import pytest
 import xarray as xr
-
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -1960,6 +1961,10 @@ def test_types_merge() -> None:
     columns = ["col1", "col2"]
     check(assert_type(df.merge(df2, on=columns), pd.DataFrame), pd.DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df.merge(df2, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
     # https://github.com/microsoft/python-type-stubs/issues/60
     df1 = pd.DataFrame([["a", 1], ["b", 2]], columns=["let", "num"]).set_index("let")
     s2 = df1["num"]
@@ -3154,6 +3159,10 @@ def test_frame_reindex() -> None:
         pd.DataFrame,
     )
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df.reindex([2, 1, 0], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
 
 def test_frame_reindex_like() -> None:
     # GH 84
@@ -3171,6 +3180,10 @@ def test_frame_reindex_like() -> None:
             ),
             pd.DataFrame,
         )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_not_hashable() -> None:
@@ -3618,6 +3631,10 @@ def test_astype() -> None:
     df = pd.DataFrame({"x": [1.0, 2.0, 3.0], "y": [4.0, 5, 6]})
     check(assert_type(df.astype(int), pd.DataFrame), pd.DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = s.astype(int, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
 
 def test_xs_frame_new() -> None:
     d = {
@@ -3684,6 +3701,10 @@ def test_align() -> None:
     aligned_df0, aligned_df1 = df0.align(df1)
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
     check(assert_type(aligned_df1, pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df0.align(df1, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_to_dict_index() -> None:
@@ -4234,6 +4255,27 @@ def test_frame_delitem() -> None:
     del df["B"]
 
 
+def test_frame_copy_deprecated() -> None:
+    """Test that copy argument is deprecated from 3.0 for various DataFrame methods."""
+    df = pd.DataFrame({"a": [1, 2, 3]})
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # truncate
+        _0 = df.truncate(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # tz_convert
+        _1 = df.tz_convert("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # tz_localize
+        _2 = df.tz_localize("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # infer_objects
+        _3 = df.infer_objects(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # set_axis
+        _4 = df.set_axis([1, 2, 3], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # to_period
+        _5 = df.to_period(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # to_timestamp
+        _6 = df.to_timestamp(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
+
 def test_rolling_first() -> None:
     """Test DataFrame.rolling.first method."""
     df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
@@ -4341,3 +4383,31 @@ def test_frame_corrwith() -> None:
         pd.Series,
         np.floating,
     )
+
+
+def test_frame_pipe() -> None:
+    """Test Rolling.pipe and Expanding.pipe."""
+    df = pd.DataFrame(
+        {
+            "B": np.random.default_rng(2).standard_normal(10),
+            "C": np.random.default_rng(2).standard_normal(10),
+        }
+    )
+
+    def func_r(x: Rolling[pd.DataFrame], k: int) -> pd.DataFrame:
+        return x.max() - k * x.min()
+
+    def func_e(x: Expanding[pd.DataFrame], k: int) -> pd.DataFrame:
+        return x.max() - k * x.min()
+
+    check(
+        assert_type(df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.rolling(2).pipe(func_r, k=2), pd.DataFrame), pd.DataFrame)
+
+    check(
+        assert_type(df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.expanding().pipe(func_e, k=2), pd.DataFrame), pd.DataFrame)

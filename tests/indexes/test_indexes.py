@@ -23,10 +23,8 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.frozen import FrozenList
 import pytest
-
-from pandas._typing import Dtype  # noqa: F401
-from pandas._typing import Scalar  # noqa: F401
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -39,6 +37,12 @@ from tests._typing import (
     np_1darray_intp,
     np_ndarray_dt,
 )
+
+if TYPE_CHECKING:
+    from pandas.api.typing.aliases import (  # noqa: F401
+        Dtype,
+        Scalar,
+    )
 
 
 def test_index_unique() -> None:
@@ -1396,20 +1400,20 @@ def test_index_naming() -> None:
     """
     Test index names type both for the getter and the setter.
     The names of an index should be settable with a sequence (not str) and names
-    property is a list[Hashable | None] (FrozenList).
+    property is a FrozenList[Hashable | None].
     """
     df = pd.DataFrame({"a": ["a", "b", "c"], "i": [10, 11, 12]})
 
     df.index.names = ["idx"]
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
     df.index.names = [3]
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
     df.index.names = ("idx2",)
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
     df.index.names = [None]
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
     df.index.names = (None,)
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
 
 
 def test_index_searchsorted() -> None:

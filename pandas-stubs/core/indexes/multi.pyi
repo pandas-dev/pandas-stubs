@@ -14,6 +14,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing import FrozenList
 from pandas.core.indexes.base import Index
 
 from pandas._typing import (
@@ -87,7 +88,7 @@ class MultiIndex(Index):
         names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @property  # Should be read-only
-    def levels(self) -> list[Index]: ...
+    def levels(self) -> FrozenList[Index]: ...
     @overload
     def set_levels(
         self,
@@ -105,7 +106,7 @@ class MultiIndex(Index):
         verify_integrity: bool = True,
     ) -> MultiIndex: ...
     @property
-    def codes(self) -> list[np_1darray_int8]: ...
+    def codes(self) -> FrozenList[np_1darray_int8]: ...
     @overload
     def set_codes(
         self,

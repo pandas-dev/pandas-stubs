@@ -5,12 +5,14 @@ from typing import assert_type
 import numpy as np
 import pandas as pd
 from pandas import Categorical
+from pandas.api.typing.aliases import (
+    Ordered,
+    Scalar,
+)
 from pandas.core.arrays.categorical import CategoricalDtype
 from pandas.core.indexes.base import Index
 
 from pandas._libs.missing import NAType
-from pandas._typing import Ordered
-from pandas._typing import Scalar  # noqa: F401
 
 from tests import check
 from tests._typing import (

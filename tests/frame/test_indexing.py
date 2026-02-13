@@ -22,9 +22,8 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.api.typing.aliases import Scalar
 import pytest
-
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

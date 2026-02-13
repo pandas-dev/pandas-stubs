@@ -318,7 +318,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __setitem__(
         self,
-        idx: IndexOpsMixin[S1] | MaskType | slice,
+        idx: IndexOpsMixin | MaskType | slice,
         value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
     @overload
@@ -1091,9 +1091,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def nsmallest(
         self, n: int = 5, keep: NsmallestNlargestKeep = "first"
     ) -> Series[S1]: ...
-    def swaplevel(
-        self, i: Level = -2, j: Level = -1, copy: _bool = True
-    ) -> Series[S1]: ...
+    def swaplevel(self, i: Level = -2, j: Level = -1) -> Series[S1]: ...
     def reorder_levels(self, order: Sequence[int | np.integer]) -> Series[S1]: ...
     def explode(self, ignore_index: _bool = ...) -> Series[S1]: ...
     def unstack(
@@ -1229,7 +1227,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         index: Callable[[Any], Label],
         *,
         axis: Axis | None = ...,
-        copy: bool = ...,
         inplace: Literal[True],
         level: Level | None = ...,
         errors: IgnoreRaise = ...,
@@ -1240,7 +1237,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         index: Mapping[Any, Label],
         *,
         axis: Axis | None = ...,
-        copy: bool = ...,
         inplace: Literal[True],
         level: Level | None = ...,
         errors: IgnoreRaise = ...,
@@ -1251,7 +1247,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         index: Scalar | tuple[Hashable, ...] | None = None,
         *,
         axis: Axis | None = ...,
-        copy: bool = ...,
         inplace: Literal[True],
         level: Level | None = ...,
         errors: IgnoreRaise = ...,
@@ -1262,7 +1257,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         index: Renamer | Scalar | tuple[Hashable, ...] | None = ...,
         *,
         axis: Axis | None = ...,
-        copy: bool = ...,
         inplace: Literal[False] = False,
         level: Level | None = ...,
         errors: IgnoreRaise = ...,
@@ -1272,7 +1266,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Series[S1],
         method: FillnaOptions | Literal["nearest"] | None = None,
-        copy: _bool = True,
         limit: int | None = None,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
     ) -> Self: ...
@@ -1340,11 +1333,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         freq: PeriodFrequency | None = None,
         how: ToTimestampHow = "start",
-        copy: _bool = True,
     ) -> Series[S1]: ...
-    def to_period(
-        self, freq: PeriodFrequency | None = None, copy: _bool = True
-    ) -> DataFrame: ...
+    def to_period(self, freq: PeriodFrequency | None = None) -> DataFrame: ...
     @property
     def str(
         self,
@@ -1396,7 +1386,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         index: Axes | None = None,
         method: ReindexMethod | None = None,
-        copy: bool = True,
         level: int | _str | None = None,
         fill_value: Scalar | None = None,
         limit: int | None = None,
@@ -1428,76 +1417,66 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def astype(
         self,
         dtype: BooleanDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[bool]: ...
     @overload
     def astype(
         self,
         dtype: IntDtypeArg | UIntDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[int]: ...
     @overload
     def astype(
         self,
         dtype: StrDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[_str]: ...
     @overload
     def astype(
         self,
         dtype: BytesDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[bytes]: ...
     @overload
     def astype(
         self,
         dtype: FloatDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[float]: ...
     @overload
     def astype(
         self,
         dtype: ComplexDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[complex]: ...
     @overload
     def astype(
         self,
         dtype: TimedeltaDtypeArg | PandasAstypeTimedeltaDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timedelta]: ...
     @overload
     def astype(
         self,
         dtype: TimestampDtypeArg | PandasAstypeTimestampDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timestamp]: ...
     @overload
     def astype(
         self,
         dtype: CategoryDtypeArg,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[CategoricalDtype]: ...
     @overload
     def astype(
         self,
         dtype: ObjectDtypeArg | VoidDtypeArg | ExtensionDtype | DtypeObj,
-        copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series: ...
     @final
     def copy(self, deep: _bool = True) -> Series[S1]: ...
     @final
-    def infer_objects(self, copy: _bool = True) -> Series[S1]: ...
+    def infer_objects(self) -> Series[S1]: ...
     def ffill(
         self,
         *,
@@ -1671,7 +1650,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         before: date | _str | int | None = ...,
         after: date | _str | int | None = ...,
         axis: AxisIndex | None = 0,
-        copy: _bool = ...,
     ) -> Series[S1]: ...
     @final
     def tz_convert(
@@ -1679,7 +1657,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         tz: TimeZones,
         axis: AxisIndex = 0,
         level: Level | None = None,
-        copy: _bool = True,
     ) -> Series[S1]: ...
     @final
     def tz_localize(
@@ -1687,7 +1664,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         tz: TimeZones,
         axis: AxisIndex = 0,
         level: Level | None = None,
-        copy: _bool = True,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: _str = "raise",
     ) -> Series[S1]: ...
@@ -4650,7 +4626,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         labels: AxesData,
         *,
         axis: Axis = 0,
-        copy: _bool | NoDefault = ...,
     ) -> Self: ...
     @final
     def xs(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
