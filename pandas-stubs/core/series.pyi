@@ -131,7 +131,7 @@ from pandas.core.window.rolling import (
 import xarray as xr
 
 from pandas._libs.interval import Interval
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
@@ -784,7 +784,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Scalar]: ...
     @overload
@@ -795,7 +795,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Timestamp]: ...
     @overload
@@ -806,7 +806,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Timedelta]: ...
     @overload
@@ -817,7 +817,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Period]: ...
     @overload
@@ -828,7 +828,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, IntervalT]: ...
     @overload
@@ -839,7 +839,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, tuple[Hashable, ...]]: ...
     @overload
@@ -850,7 +850,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Scalar]: ...
     @overload
@@ -862,7 +862,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Scalar]: ...
     @overload
@@ -873,7 +873,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, SeriesByT]: ...
     @overload
@@ -884,7 +884,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefaultDoNotUse = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Any]: ...
     def count(self) -> int: ...
@@ -4650,7 +4650,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         labels: AxesData,
         *,
         axis: Axis = 0,
-        copy: _bool | NoDefaultDoNotUse = ...,
+        copy: _bool | NoDefault = ...,
     ) -> Self: ...
     @final
     def xs(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
