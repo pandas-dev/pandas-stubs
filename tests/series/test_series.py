@@ -3041,4 +3041,4 @@ def test_map_kwargs() -> None:
     def func(x: int, y: int) -> int:
         return x + y
 
-    check(assert_type(sr.map(func, y=2), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(sr.map(func, na_action="ignore", y=2), "pd.Series[int]"), pd.Series, np.integer)

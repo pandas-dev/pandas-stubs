@@ -1106,14 +1106,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def map(
         self,
         arg: Callable[Concatenate[S1, ...], S2 | NAType],
-        na_action: Literal["ignore"] = ...,
+        na_action: Literal["ignore"],
         **kwargs: Any,
     ) -> Series[S2]: ...
     @overload
     def map(
         self,
         arg: Mapping[S1, S2] | Series[S2],
-        na_action: Literal["ignore"] = ...,
+        na_action: Literal["ignore"],
     ) -> Series[S2]: ...
     @overload
     def map(
