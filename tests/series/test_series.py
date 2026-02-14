@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import UserDict
 from collections.abc import (
     Callable,
     Hashable,
@@ -2723,6 +2724,11 @@ def test_map_na() -> None:
     mapping = {1: "a", 2: "b", 3: "c"}
     check(assert_type(s.map(mapping, na_action=None), "pd.Series[str]"), pd.Series, str)
 
+    user_dict = UserDict({1: "a", 2: "b", 3: "c"})
+    check(
+        assert_type(s.map(user_dict, na_action=None), "pd.Series[str]"), pd.Series, str
+    )
+
     def callable(x: int | NAType) -> str | NAType:
         if isinstance(x, int):
             return str(x)
@@ -2734,6 +2740,17 @@ def test_map_na() -> None:
 
     series = pd.Series(["a", "b", "c"])
     check(assert_type(s.map(series, na_action=None), "pd.Series[str]"), pd.Series, str)
+
+    sr = pd.Series([2, 4, 5])
+
+    def func(x: int, y: int) -> int:
+        return x + y
+
+    check(
+        assert_type(sr.map(func, na_action="ignore", y=2), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
 
 
 def test_case_when() -> None:
@@ -3042,20 +3059,6 @@ def test_series_delitem() -> None:
 
     check(assert_type(sr.__delitem__(0), None), type(None))
     del sr[1]
-
-
-def test_map_kwargs() -> None:
-    """Test Series.map when passing a callable with **kwargs for extra arguments."""
-    sr = pd.Series([2, 4, 5])
-
-    def func(x: int, y: int) -> int:
-        return x + y
-
-    check(
-        assert_type(sr.map(func, na_action="ignore", y=2), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
 
 
 def test_series_copy_deprecated() -> None:
