@@ -5,6 +5,7 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Literal,
+    Never,
     assert_type,
     cast,
 )
@@ -255,6 +256,9 @@ def test_frame_groupby_resample() -> None:
         return -1 * val
 
     check(assert_type(GB_DF.resample("ME").transform(j), DataFrame), DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(GB_DF.resample("ME").interpolate(), Never)
 
 
 def test_series_groupby_resample() -> None:
