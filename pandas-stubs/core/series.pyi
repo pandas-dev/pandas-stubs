@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import (
     Any,
     ClassVar,
+    Concatenate,
     Generic,
     Literal,
     Never,
@@ -1102,20 +1103,41 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def map(
         self,
-        arg: Callable[[S1], S2 | NAType] | Mapping[S1, S2] | Series[S2],
-        na_action: Literal["ignore"] = ...,
+        arg: Callable[Concatenate[S1, ...], S2 | NAType],
+        na_action: Literal["ignore"],
+        **kwargs: Any,
     ) -> Series[S2]: ...
     @overload
     def map(
         self,
-        arg: Callable[[S1 | NAType], S2 | NAType] | Mapping[S1, S2] | Series[S2],
+        arg: Mapping[S1, S2] | Series[S2],
+        na_action: Literal["ignore"],
+    ) -> Series[S2]: ...
+    @overload
+    def map(
+        self,
+        arg: Callable[Concatenate[S1 | NAType, ...], S2 | NAType],
+        na_action: None = None,
+        **kwargs: Any,
+    ) -> Series[S2]: ...
+    @overload
+    def map(
+        self,
+        arg: Mapping[S1, S2] | Series[S2],
         na_action: None = None,
     ) -> Series[S2]: ...
     @overload
     def map(
         self,
-        arg: Callable[[Any], Any] | Mapping[Any, Any] | Series,
-        na_action: Literal["ignore"] | None = ...,
+        arg: Callable[..., Any],
+        na_action: Literal["ignore"] | None = None,
+        **kwargs: Any,
+    ) -> Series: ...
+    @overload
+    def map(
+        self,
+        arg: Mapping[Any, Any] | Series,
+        na_action: Literal["ignore"] | None = None,
     ) -> Series: ...
     @overload
     def aggregate(

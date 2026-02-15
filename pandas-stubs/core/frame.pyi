@@ -1602,7 +1602,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         drop: _bool = False,
         method: Literal["pearson", "kendall", "spearman"] = "pearson",
         numeric_only: _bool = False,
-    ) -> Series: ...
+        min_periods: int | None = None,
+    ) -> Series[float]: ...
     def count(self, axis: Axis = 0, numeric_only: _bool = False) -> Series[int]: ...
     def nunique(self, axis: Axis = 0, dropna: bool = True) -> Series[int]: ...
     def idxmax(
@@ -1952,6 +1953,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         axis: Axis | None = None,
         skipna: _bool = True,
+        numeric_only: _bool = False,
         *args: Any,
         **kwargs: Any,
     ) -> Self: ...
@@ -1959,6 +1961,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         axis: Axis | None = None,
         skipna: _bool = True,
+        numeric_only: _bool = False,
         *args: Any,
         **kwargs: Any,
     ) -> Self: ...
@@ -1966,6 +1969,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         axis: Axis | None = None,
         skipna: _bool = True,
+        numeric_only: _bool = False,
         *args: Any,
         **kwargs: Any,
     ) -> Self: ...
@@ -1973,6 +1977,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         axis: Axis | None = None,
         skipna: _bool = True,
+        numeric_only: _bool = False,
         *args: Any,
         **kwargs: Any,
     ) -> Self: ...
