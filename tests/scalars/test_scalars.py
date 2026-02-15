@@ -1845,3 +1845,26 @@ def test_period_methods() -> None:
 def test_nattype_hashable() -> None:
     # GH 827
     check(assert_type(pd.NaT.__hash__(), int), int)
+
+
+def test_nat_comparison_with_date() -> None:
+    # 2.0.0: inequality comparisons of NaT with datetime.date now raise TypeError
+    # pandas-dev/pandas#39196
+    date_obj = datetime.date(2023, 1, 1)
+
+    # Equality comparisons should still work
+    check(assert_type(pd.NaT == date_obj, bool), bool)
+    check(assert_type(pd.NaT != date_obj, bool), bool)
+    check(assert_type(date_obj == pd.NaT, bool), bool)
+    check(assert_type(date_obj != pd.NaT, bool), bool)
+
+    # Inequality comparisons should raise TypeError
+    if TYPE_CHECKING_INVALID_USAGE:
+        _llt = pd.NaT < date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _lgt = pd.NaT > date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _lle = pd.NaT <= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _lge = pd.NaT >= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _rlt = date_obj < pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _rgt = date_obj > pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _rle = date_obj <= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _rge = date_obj >= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
