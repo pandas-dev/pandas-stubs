@@ -55,18 +55,18 @@ _SeriesGroupByFuncArgs: TypeAlias = (
     _SeriesGroupByFuncTypes | Mapping[Hashable, _SeriesGroupByFunc | str]
 )
 
-class Resampler(BaseGroupBy[NDFrameT]):
+class BaseResampler(BaseGroupBy[NDFrameT]):
     def __getattr__(self, attr: str) -> SeriesGroupBy[Any, Any]: ...
     @overload
     def aggregate(
-        self: Resampler[DataFrame],
+        self: BaseResampler[DataFrame],
         func: _FrameGroupByFuncArgs | None = ...,
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
-        self: Resampler[Series],
+        self: BaseResampler[Series],
         func: _SeriesGroupByFuncArgs | None = ...,
         *args: Any,
         **kwargs: Any,
@@ -75,14 +75,14 @@ class Resampler(BaseGroupBy[NDFrameT]):
     apply = aggregate
     @overload
     def transform(
-        self: Resampler[Series],
+        self: BaseResampler[Series],
         arg: Callable[[Series], Series[S1]],
         *args: Any,
         **kwargs: Any,
     ) -> Series[S1]: ...
     @overload
     def transform(
-        self: Resampler[DataFrame],
+        self: BaseResampler[DataFrame],
         arg: Callable[[Series], Series[S1]],
         *args: Any,
         **kwargs: Any,
@@ -153,21 +153,23 @@ class Resampler(BaseGroupBy[NDFrameT]):
     @final
     def ohlc(self) -> DataFrame: ...
     @overload
-    def nunique(self: Resampler[Series]) -> Series[int]: ...
+    def nunique(self: BaseResampler[Series]) -> Series[int]: ...
     @overload
-    def nunique(self: Resampler[DataFrame]) -> DataFrame: ...
+    def nunique(self: BaseResampler[DataFrame]) -> DataFrame: ...
     @final
     def size(self) -> Series[int]: ...
     @overload
-    def count(self: Resampler[Series]) -> Series[int]: ...
+    def count(self: BaseResampler[Series]) -> Series[int]: ...
     @overload
-    def count(self: Resampler[DataFrame]) -> DataFrame: ...
+    def count(self: BaseResampler[DataFrame]) -> DataFrame: ...
     @final
     def quantile(
         self,
         q: float | list[float] | np_ndarray_float | Series[float] = 0.5,
         **kwargs: Any,
     ) -> NDFrameT: ...
+
+class Resampler(BaseResampler[NDFrameT]): ...
 
 # We lie about inheriting from Resampler because at runtime inherits all Resampler
 # attributes via setattr
@@ -182,6 +184,16 @@ class DatetimeIndexResamplerGroupby(
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def interpolate(
+        self,
+        method: InterpolateOptions = ...,
+        *,
+        axis: Axis = ...,
+        limit: int | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        **kwargs: Any,
+    ) -> Never: ...
 
 class PeriodIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
@@ -190,6 +202,16 @@ class PeriodIndexResamplerGroupby(
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def interpolate(
+        self,
+        method: InterpolateOptions = ...,
+        *,
+        axis: Axis = ...,
+        limit: int | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        **kwargs: Any,
+    ) -> Never: ...
 
 class TimedeltaIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
@@ -198,6 +220,16 @@ class TimedeltaIndexResamplerGroupby(
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def interpolate(
+        self,
+        method: InterpolateOptions = ...,
+        *,
+        axis: Axis = ...,
+        limit: int | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        **kwargs: Any,
+    ) -> Never: ...
 
 class TimeGrouper(Grouper):
     closed: Literal["left", "right"]
