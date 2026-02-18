@@ -3926,6 +3926,15 @@ def test_frame_subclass() -> None:
     check(assert_type(df[["a", "b"]], MyClass), MyClass)
 
 
+def test_frame_iloc_series_bool() -> None:
+    """Check that DataFrame.__getitem__ supports a Series of boolean."""
+    df = pd.DataFrame({"a": pd.Series([0, 1, 2])})
+    check(
+        assert_type(df.iloc[pd.Series([True, False, False])], pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
 def test_hashable_args(tmp_path: Path) -> None:
     # GH 1104
     df = pd.DataFrame([["abc"]], columns=["test"], index=["ind"])

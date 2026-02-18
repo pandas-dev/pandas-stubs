@@ -1227,7 +1227,7 @@ Incomplete: TypeAlias = Any
 
 # differentiating between bool and int/float/complex
 # https://github.com/pandas-dev/pandas-stubs/pull/1312#pullrequestreview-3126128971
-class Just(Protocol, Generic[T]):
+class Just(Protocol, Generic[T]):  # pyrefly: ignore[variance-mismatch]
     @property  # type: ignore[override]
     @override
     def __class__(self, /) -> type[T]: ...  # pyrefly: ignore[bad-override]

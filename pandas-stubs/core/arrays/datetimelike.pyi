@@ -74,7 +74,7 @@ class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
     @property
     def size(self) -> int: ...
     @overload
-    def __getitem__(  # pyrefly: ignore[bad-param-name-override]
+    def __getitem__(  # pyrefly: ignore[bad-override]
         self, key: ScalarIndexer
     ) -> DTScalarOrNaT: ...
     @overload

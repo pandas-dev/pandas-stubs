@@ -24,6 +24,7 @@ else:
 def test_option_tools() -> None:
     check(assert_type(pd.reset_option("display.width"), None), type(None))
     check(assert_type(pd.set_option("display.width", 80), None), type(None))
+    check(assert_type(pd.set_option({"display.width": 80}), None), type(None))
     check(assert_type(pd.describe_option("display.width", False), str), str)
     check(assert_type(pd.describe_option("display.width", True), None), type(None))
     check(assert_type(pd.options, Options), DictWrapper)
