@@ -1202,8 +1202,8 @@ ExcelWriteEngine: TypeAlias = Literal["openpyxl", "odf", "xlsxwriter"]
 # https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
 TimeZones: TypeAlias = str | tzinfo | None | int
 
-# Evaluates to a DataFrame column in DataFrame.assign context.
 ColumnValue: TypeAlias = AnyArrayLike | Scalar | Sequence[Scalar] | range | None
+# Evaluates to a DataFrame column in DataFrame.assign context.
 IntoColumn: TypeAlias = ColumnValue | Callable[[DataFrame], ColumnValue]
 
 DatetimeLike: TypeAlias = datetime.datetime | np.datetime64 | Timestamp
