@@ -12,11 +12,56 @@ from typing import (
 
 def get_option(pat: str) -> Any: ...
 @overload
-def set_option(pat: str, val: object) -> None: ...
-@overload
 def set_option(*args: dict[str, Any]) -> None: ...
 @overload
-def set_option(*args: object) -> None: ...
+def set_option(pat0: str, val0: object) -> None: ...
+@overload
+def set_option(pat0: str, val0: object, pat1: str, val1: object) -> None: ...
+@overload
+def set_option(
+    pat0: str, val0: object, pat1: str, val1: object, pat2: str, val2: object
+) -> None: ...
+@overload
+def set_option(
+    pat0: str,
+    val0: object,
+    pat1: str,
+    val1: object,
+    pat2: str,
+    val2: object,
+    pat3: str,
+    val3: object,
+) -> None: ...
+@overload
+def set_option(
+    pat0: str,
+    val0: object,
+    pat1: str,
+    val1: object,
+    pat2: str,
+    val2: object,
+    pat3: str,
+    val3: object,
+    pat4: str,
+    val4: object,
+) -> None: ...
+@overload
+def set_option(
+    pat0: str,
+    val0: object,
+    pat1: str,
+    val1: object,
+    pat2: str,
+    val2: object,
+    pat3: str,
+    val3: object,
+    pat4: str,
+    val4: object,
+    pat5: str,
+    val5: object,
+) -> None: ...
+@overload
+def set_option(*args: Any) -> None: ...
 def reset_option(pat: str) -> None: ...
 @overload
 def describe_option(pat: str, _print_desc: Literal[False]) -> str: ...
