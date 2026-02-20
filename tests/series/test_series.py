@@ -49,7 +49,6 @@ import pytest
 import xarray as xr
 
 from pandas._libs.tslibs.offsets import Day
-from pandas.errors import Pandas4Warning
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -2909,23 +2908,19 @@ def test_series_reindex() -> None:
 def test_series_reindex_like() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     other = pd.Series([1, 2], index=[1, 0])
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        upper="3.1.99",
-    ):
-        check(
-            assert_type(
-                s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]),
-                "pd.Series[int]",
-            ),
-            pd.Series,
-            np.integer,
-        )
+    check(
+        assert_type(
+            s.reindex_like(other),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
         _0 = s.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _1 = s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_info() -> None:
