@@ -2074,6 +2074,16 @@ def test_pandera_generic() -> None:
     assert result.iloc[1] == 2
 
 
+def test_series_iloc_series_bool() -> None:
+    """Check that Series.__getitem__ supports a Series of boolean."""
+    sr = pd.Series([0, 1, 2])
+    check(
+        assert_type(sr.iloc[pd.Series([True, False, False])], "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+
+
 def test_change_to_dict_return_type() -> None:
     id = [1, 2, 3]
     value = ["a", "b", "c"]
