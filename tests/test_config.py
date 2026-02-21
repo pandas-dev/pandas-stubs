@@ -25,6 +25,12 @@ def test_option_tools() -> None:
     check(assert_type(pd.reset_option("display.width"), None), type(None))
     check(assert_type(pd.set_option("display.width", 80), None), type(None))
     check(assert_type(pd.set_option({"display.width": 80}), None), type(None))
+    check(
+        assert_type(
+            pd.set_option("display.max_columns", 4, "display.precision", 1), None
+        ),
+        type(None),
+    )
     check(assert_type(pd.describe_option("display.width", False), str), str)
     check(assert_type(pd.describe_option("display.width", True), None), type(None))
     check(assert_type(pd.options, Options), DictWrapper)
@@ -32,6 +38,115 @@ def test_option_tools() -> None:
     check(assert_type(pd.get_option("display.width"), Any), int)
     with pd.option_context("display.width", 120):
         assert pd.get_option("display.width") == 120
+
+
+def test_set_option_overload() -> None:
+    """Test the different overloads of `pd.set_option`."""
+    # dict
+    check(assert_type(pd.set_option({"display.width": 80}), None), type(None))
+    check(
+        assert_type(pd.set_option({"display.width": 80, "display.precision": 6}), None),
+        type(None),
+    )
+
+    # one pair of arguments
+    check(assert_type(pd.set_option("display.width", 80), None), type(None))
+    check(assert_type(pd.set_option("display.precision", 6), None), type(None))
+    check(assert_type(pd.set_option("display.max_rows", 60), None), type(None))
+    check(assert_type(pd.set_option("display.max_rows", None), None), type(None))
+    check(
+        assert_type(pd.set_option("display.expand_frame_repr", True), None), type(None)
+    )
+
+    # two pairs of arguments
+    check(
+        assert_type(pd.set_option("display.width", 80, "display.precision", 6), None),
+        type(None),
+    )
+    check(
+        assert_type(
+            pd.set_option("display.max_rows", 60, "display.max_columns", 20), None
+        ),
+        type(None),
+    )
+
+    # three pairs of arguments
+    check(
+        assert_type(
+            pd.set_option(
+                "display.width",
+                80,
+                "display.precision",
+                6,
+                "display.max_rows",
+                60,
+            ),
+            None,
+        ),
+        type(None),
+    )
+
+    # four pairs of arguments
+    check(
+        assert_type(
+            pd.set_option(
+                "display.width",
+                80,
+                "display.precision",
+                6,
+                "display.max_rows",
+                60,
+                "display.max_columns",
+                20,
+            ),
+            None,
+        ),
+        type(None),
+    )
+
+    # five pairs of arguments
+    check(
+        assert_type(
+            pd.set_option(
+                "display.width",
+                80,
+                "display.precision",
+                6,
+                "display.max_rows",
+                60,
+                "display.max_columns",
+                20,
+                "display.max_colwidth",
+                50,
+            ),
+            None,
+        ),
+        type(None),
+    )
+
+
+def test_set_option_six_pairs() -> None:
+    # GH 1680: set_option(pat0..pat5, val0..val5)
+    check(
+        assert_type(
+            pd.set_option(
+                "display.width",
+                80,
+                "display.precision",
+                6,
+                "display.max_rows",
+                60,
+                "display.max_columns",
+                20,
+                "display.max_colwidth",
+                50,
+                "display.min_rows",
+                10,
+            ),
+            None,
+        ),
+        type(None),
+    )
 
 
 def test_specific_option() -> None:
