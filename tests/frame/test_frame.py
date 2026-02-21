@@ -498,15 +498,6 @@ def test_types_set_index() -> None:
     check(assert_type(df.set_index("col1"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The 'verify_integrity' keyword in DataFrame.set_index is deprecated and will be removed in a future version. Directly check the result.index.is_unique instead.",
-        lower="2.99",
-    ):
-        check(
-            assert_type(df.set_index("col1", verify_integrity=True), pd.DataFrame),
-            pd.DataFrame,
-        )
     check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
@@ -514,6 +505,9 @@ def test_types_set_index() -> None:
         assert_type(df.set_index(pd.Index(["w", "x", "y", "z"])), pd.DataFrame),
         pd.DataFrame,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = df.set_index("col1", verify_integrity=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_types_query() -> None:
@@ -3846,7 +3840,8 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
+        _0 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
+        _1 = df.to_json(date_format="epoch")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_interpolate() -> None:
