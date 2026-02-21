@@ -79,7 +79,6 @@ class Display(DictWrapper):
 class Future(DictWrapper):
     distiguish_nan_and_na: bool
     infer_string: bool
-    no_silent_downcasting: bool
     python_scalars: bool
 
 @type_check_only

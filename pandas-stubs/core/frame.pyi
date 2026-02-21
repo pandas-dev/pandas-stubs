@@ -954,7 +954,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         drop: _bool = ...,
         append: _bool = ...,
-        verify_integrity: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
     @overload
@@ -971,7 +970,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         drop: _bool = ...,
         append: _bool = ...,
-        verify_integrity: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...
     @overload
@@ -2426,7 +2424,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         path_or_buf: FilePath | WriteBuffer[str],
         *,
         orient: Literal["records"],
-        date_format: Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: TimeUnit = ...,
@@ -2444,7 +2442,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         path_or_buf: None = None,
         *,
         orient: Literal["records"],
-        date_format: Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: TimeUnit = ...,
@@ -2462,7 +2460,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         path_or_buf: None = None,
         *,
         orient: JsonFrameOrient | None = ...,
-        date_format: Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: TimeUnit = ...,
@@ -2480,7 +2478,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         path_or_buf: FilePath | WriteBuffer[str] | WriteBuffer[bytes],
         *,
         orient: JsonFrameOrient | None = ...,
-        date_format: Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: TimeUnit = ...,
