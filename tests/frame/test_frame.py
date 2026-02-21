@@ -3168,22 +3168,18 @@ def test_frame_reindex_like() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        upper="3.1.99",
-    ):
-        check(
-            assert_type(
-                df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]),
-                pd.DataFrame,
-            ),
+    check(
+        assert_type(
+            df.reindex_like(other),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
         _0 = df.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _1 = df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_not_hashable() -> None:
