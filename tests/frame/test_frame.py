@@ -49,7 +49,6 @@ import xarray as xr
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -72,8 +71,6 @@ if TYPE_CHECKING:
     from pandas.core.frame import PandasNamedTuple
 else:
     PandasNamedTuple: TypeAlias = tuple
-
-from pandas.errors import Pandas4Warning
 
 
 def getCols(k: int) -> str:
