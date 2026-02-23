@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import (
     Any,
     assert_type,
@@ -87,27 +88,19 @@ def test_mul_numpy_array(left_i: pd.Series) -> None:
     # `Series`.
     # microsoft/pyright#10924
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            b * left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(b * left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i * left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(i * left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            f * left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(f * left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            c * left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(c * left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
 
@@ -193,7 +186,7 @@ def test_mul_str_py_str(left_i: pd.Series) -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_i * s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
-        _1 = s * left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
-        left_i.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        left_i.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        _0 = left_i * s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = s * left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        left_i.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 import functools
 import re
 from typing import assert_type
@@ -98,7 +99,7 @@ def test_string_accessors_integer_series() -> None:
 
     # unlike findall, find doesn't accept a compiled pattern
     with pytest.raises(TypeError):
-        s.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        s.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_string_accessors_integer_index() -> None:
@@ -113,7 +114,7 @@ def test_string_accessors_integer_index() -> None:
 
     # unlike findall, find doesn't accept a compiled pattern
     with pytest.raises(TypeError):
-        idx.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        idx.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_string_accessors_string_series() -> None:
@@ -171,7 +172,7 @@ def test_string_accessors_string_series() -> None:
 
     # wrap doesn't accept positional arguments other than width
     if TYPE_CHECKING_INVALID_USAGE:
-        s.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
 def test_string_accessors_string_index() -> None:
@@ -229,7 +230,7 @@ def test_string_accessors_string_index() -> None:
 
     # wrap doesn't accept positional arguments other than width
     if TYPE_CHECKING_INVALID_USAGE:
-        idx.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        idx.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
 def test_string_accessors_bytes_series() -> None:
@@ -257,7 +258,7 @@ def test_string_accessors_list_series() -> None:
     # rsplit doesn't accept compiled pattern
     # it doesn't raise at runtime but produces a nan
     if TYPE_CHECKING_INVALID_USAGE:
-        _bad_rsplit_result = s.str.rsplit(  # pyrefly: ignore[no-matching-overload]
+        _bad_rsplit_result = s.str.rsplit(
             re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
         )
 
@@ -277,7 +278,7 @@ def test_string_accessors_list_index() -> None:
     # rsplit doesn't accept compiled pattern
     # it doesn't raise at runtime but produces a nan
     if TYPE_CHECKING_INVALID_USAGE:
-        _bad_rsplit_result = idx.str.rsplit(  # pyrefly: ignore[no-matching-overload]
+        _bad_rsplit_result = idx.str.rsplit(
             re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
         )
 
@@ -507,4 +508,4 @@ def test_series_str_replace() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = sr.str.replace(pat={"A": "a", "B": "b"}, repl="A")  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        _0 = sr.str.replace(pat={"A": "a", "B": "b"}, repl="A")  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]

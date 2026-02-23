@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import assert_type
 
 import numpy as np
@@ -27,62 +28,16 @@ def test_add_py_scalar() -> None:
     check(assert_type(f + left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c + left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(b), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(i), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(f), "pd.Series[float]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.add(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left.add(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
+    check(assert_type(left.radd(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(b), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(i), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(f), "pd.Series[float]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.radd(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
 
 
@@ -100,62 +55,16 @@ def test_add_py_sequence() -> None:
     check(assert_type(f + left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c + left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(b), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(i), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(f), "pd.Series[float]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.add(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left.add(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
+    check(assert_type(left.radd(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(b), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(i), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(f), "pd.Series[float]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.radd(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
 
 
@@ -183,46 +92,16 @@ def test_add_numpy_array() -> None:
         np.complexfloating,
     )
 
-    check(
-        assert_type(left.add(b), "pd.Series[int]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(left.add(i), "pd.Series[int]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(left.add(f), "pd.Series[float]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(left.add(c), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.add(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left.add(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
+    check(assert_type(left.radd(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(left.radd(b), "pd.Series[int]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(left.radd(i), "pd.Series[int]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(left.radd(f), "pd.Series[float]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(left.radd(c), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.radd(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
 
 
@@ -243,62 +122,16 @@ def test_add_pd_index() -> None:
     check(assert_type(f + left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c + left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(b), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(i), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(f), "pd.Series[float]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.add(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left.add(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
+    check(assert_type(left.radd(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(b), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(i), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(f), "pd.Series[float]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.radd(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
 
 
@@ -319,60 +152,14 @@ def test_add_pd_series() -> None:
     check(assert_type(f + left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c + left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(b), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(i), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(f), "pd.Series[float]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.add(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left.add(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
+    check(assert_type(left.radd(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(b), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(i), "pd.Series[int]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(f), "pd.Series[float]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.radd(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )

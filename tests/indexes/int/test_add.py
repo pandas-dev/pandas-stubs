@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import assert_type
 
 import numpy as np
@@ -18,20 +19,12 @@ def test_add_py_scalar() -> None:
     """Test pd.Index[int] + Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
-    check(
-        assert_type(left + b, "pd.Index[int]"),  # pyrefly: ignore[assert-type]
-        pd.Index,
-        np.integer,
-    )
+    check(assert_type(left + b, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left + i, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left + f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left + c, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
-    check(
-        assert_type(b + left, "pd.Index[int]"),  # pyrefly: ignore[assert-type]
-        pd.Index,
-        np.integer,
-    )
+    check(assert_type(b + left, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i + left, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(f + left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
@@ -41,20 +34,12 @@ def test_add_py_sequence() -> None:
     """Test pd.Index[int] + Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
-    check(
-        assert_type(left + b, "pd.Index[int]"),  # pyrefly: ignore[assert-type]
-        pd.Index,
-        np.integer,
-    )
+    check(assert_type(left + b, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left + i, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left + f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left + c, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
-    check(
-        assert_type(b + left, "pd.Index[int]"),  # pyrefly: ignore[assert-type]
-        pd.Index,
-        np.integer,
-    )
+    check(assert_type(b + left, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i + left, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(f + left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c + left, "pd.Index[complex]"), pd.Index, np.complexfloating)

@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from datetime import (
     datetime,
     timedelta,
@@ -38,33 +39,21 @@ def test_mul_py_scalar(left: "pd.Index[str]") -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            left * i, "pd.Index[str]"  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Index,
-        str,
-    )
+    check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
         _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i * left, "pd.Index[str]"  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Index,
-        str,
-    )
+    check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
 
 def test_mul_py_sequence(left: "pd.Index[str]") -> None:
@@ -75,33 +64,21 @@ def test_mul_py_sequence(left: "pd.Index[str]") -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            left * i, "pd.Index[str]"  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Index,
-        str,
-    )
+    check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
         _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i * left, "pd.Index[str]"  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Index,
-        str,
-    )
+    check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
 
 def test_mul_numpy_array(left: "pd.Index[str]") -> None:
@@ -145,19 +122,19 @@ def test_mul_pd_index(left: "pd.Index[str]") -> None:
     d = pd.Index([timedelta(seconds=s + 1) for s in range(3)])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]

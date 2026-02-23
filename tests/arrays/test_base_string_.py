@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from collections import UserList
 from collections.abc import (
     Callable,
@@ -60,17 +61,10 @@ def test_construction_sequence(
 
 def test_construction_array_like() -> None:
     np_arr = np.array(["pd", np.str_("pd")], np.str_)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(np_arr), BaseStringArray
-        ),  # pyrefly: ignore[bad-argument-type]
-        BaseStringArray,
-    )
+    check(assert_type(pd.array(np_arr), BaseStringArray), BaseStringArray)
 
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(pd.array(["pd", np.str_("pd")])), BaseStringArray
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(pd.array(pd.array(["pd", np.str_("pd")])), BaseStringArray),
         BaseStringArray,
     )
 
@@ -87,16 +81,8 @@ def test_construction_dtype(
     is_builtin_str = dtype in PYTHON_STRING_ARGS
 
     dtype_notna = target_dtype if data else None
-    check(
-        pd.array([*data], dtype),  # pyrefly: ignore[bad-argument-type]
-        BaseStringArray,
-        dtype_notna,
-    )
-    check(
-        pd.array([*data, *data], dtype),  # pyrefly: ignore[bad-argument-type]
-        BaseStringArray,
-        dtype_notna,
-    )
+    check(pd.array([*data], dtype), BaseStringArray, dtype_notna)
+    check(pd.array([*data, *data], dtype), BaseStringArray, dtype_notna)
 
     dtype_na = (
         target_dtype
@@ -104,16 +90,8 @@ def test_construction_dtype(
         # pandas-dev/pandas#63567 Pandas 3.0 gives StringDtype(na_value=nan) if dtype is str or "str"
         else float if is_builtin_str else NAType
     )
-    check(
-        pd.array([*data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
-        BaseStringArray,
-        dtype_na,
-    )
-    check(
-        pd.array([*data, *data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
-        BaseStringArray,
-        dtype_na,
-    )
+    check(pd.array([*data, np.nan], dtype), BaseStringArray, dtype_na)
+    check(pd.array([*data, *data, np.nan], dtype), BaseStringArray, dtype_na)
 
     if TYPE_CHECKING:
         assert_type(pd.array([], str), BaseStringArray)

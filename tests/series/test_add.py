@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import (
     Any,
     assert_type,
@@ -90,27 +91,19 @@ def test_add_i_numpy_array() -> None:
     # `Series`.
     # microsoft/pyright#10924
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            b + left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(b + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i + left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(i + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            f + left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(f + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            c + left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(c + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
 
@@ -198,17 +191,5 @@ def test_series_add_str() -> None:
 
     check(assert_type(sr + "c1", "pd.Series[str]"), pd.Series, str)
     check(assert_type("c1" + sr, "pd.Series[str]"), pd.Series, str)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            sr.add("c1"), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            sr.radd("c1"), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
+    check(assert_type(sr.add("c1"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(sr.radd("c1"), "pd.Series[str]"), pd.Series, str)

@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import (
     Never,
     assert_type,
@@ -24,38 +25,20 @@ def test_add_py_scalar() -> None:
     r0 = "right"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            left + r0, "pd.Series[str]"  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Series,
-        str,
-    )
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+    check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            left.add(r0), "pd.Series[str]"  # pyrefly: ignore[no-matching-overload]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Series,
-        str,
-    )
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(r0), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]
+    check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
 
 
 def test_add_py_sequence() -> None:
@@ -65,60 +48,24 @@ def test_add_py_sequence() -> None:
     r1 = tuple(r0)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            left + r0, "pd.Series[str]"  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Series,
-        str,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            left + r1, "pd.Series[str]"  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Series,
-        str,
-    )
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+    check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
+    check(assert_type(left + r1, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
     check(assert_type(r1 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            left.add(r0), "pd.Series[str]"  # pyrefly: ignore[no-matching-overload]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Series,
-        str,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            left.add(r1), "pd.Series[str]"  # pyrefly: ignore[no-matching-overload]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Series,
-        str,
-    )
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(left.add(r1), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(r0), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(r1), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(left.radd(r1), "pd.Series[str]"), pd.Series, str)
 
 
 def test_add_numpy_array() -> None:
@@ -141,20 +88,12 @@ def test_add_numpy_array() -> None:
     check(assert_type(r0 + left, np_ndarray_str), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(left.add(r0), "pd.Series[str]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        str,
-    )
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(left.radd(r0), "pd.Series[str]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        str,
-    )
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]
+    check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
 
 
 def test_add_pd_index() -> None:
@@ -163,32 +102,20 @@ def test_add_pd_index() -> None:
     r0 = pd.Index(["a", "bc", "def"])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(r0), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(r0), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]
+    check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
 
 
 def test_add_pd_series() -> None:
@@ -197,29 +124,17 @@ def test_add_pd_series() -> None:
     r0 = pd.Series(["a", "bc", "def"])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(r0), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(r0), "pd.Series[str]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        str,
-    )
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]
+    check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)

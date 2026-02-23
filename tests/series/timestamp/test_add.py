@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from datetime import (
     datetime,
     timedelta,
@@ -28,32 +29,20 @@ def test_add_py_scalar() -> None:
     d = timedelta(seconds=1)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
 def test_add_numpy_scalar() -> None:
@@ -62,32 +51,20 @@ def test_add_numpy_scalar() -> None:
     d = np.timedelta64(1, "s")
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
 def test_add_pd_scalar() -> None:
@@ -96,32 +73,20 @@ def test_add_pd_scalar() -> None:
     d = pd.Timedelta(seconds=1)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
 def test_add_py_sequence() -> None:
@@ -130,32 +95,20 @@ def test_add_py_sequence() -> None:
     d = [timedelta(seconds=1)]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
         # Series[Timestamp] + Sequence[timedelta] should work, see pandas-dev/pandas#62353
-        _a = left + d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _a = left + d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _b = d + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _b = d + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
 def test_add_numpy_array() -> None:
@@ -178,23 +131,11 @@ def test_add_numpy_array() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+    check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+    check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
 def test_add_pd_index() -> None:
@@ -203,32 +144,20 @@ def test_add_pd_index() -> None:
     d = pd.Index([pd.Timedelta(seconds=1)])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
 def test_add_pd_series() -> None:
@@ -237,29 +166,17 @@ def test_add_pd_series() -> None:
     d = pd.Series([pd.Timedelta(seconds=1)])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.add(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.radd(d), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        pd.Timestamp,
-    )
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)

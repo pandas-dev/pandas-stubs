@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 # pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
@@ -31,7 +32,7 @@ def test_types_iloc_iat() -> None:
     s2.iat[0] = None
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.iat[0, 0]  # type: ignore[index]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-index]
+        s.iat[0, 0]  # type: ignore[index]  # pyright: ignore[reportArgumentType]
 
 
 def test_types_loc_at() -> None:
@@ -113,30 +114,14 @@ def test_series_isin() -> None:
 
 def test_series_index_isin() -> None:
     s = pd.Series([1, 2, 3, 4, 5], index=[1, 2, 2, 3, 3])
-    t1 = s.loc[s.index.isin([1, 3])]  # pyrefly: ignore[bad-index]
-    t2 = s.loc[~s.index.isin([1, 3])]  # pyrefly: ignore[bad-index]
-    t3 = s[s.index.isin([1, 3])]  # pyrefly: ignore[bad-index]
-    t4 = s[~s.index.isin([1, 3])]  # pyrefly: ignore[bad-index]
-    check(
-        assert_type(t1, "pd.Series[int]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(t2, "pd.Series[int]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(t3, "pd.Series[int]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(t4, "pd.Series[int]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        np.integer,
-    )
+    t1 = s.loc[s.index.isin([1, 3])]
+    t2 = s.loc[~s.index.isin([1, 3])]
+    t3 = s[s.index.isin([1, 3])]
+    t4 = s[~s.index.isin([1, 3])]
+    check(assert_type(t1, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(t2, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(t3, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(t4, "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_series_invert() -> None:

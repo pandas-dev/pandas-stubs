@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from __future__ import annotations
 
 import datetime as dt
@@ -107,10 +108,10 @@ def test_types_arithmetic() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # TODO: pandas-dev/pandas-stubs#1511 numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
         )
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             ts_np_time - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
         )
 
@@ -325,21 +326,9 @@ def test_series_dt_accessors() -> None:
 
     s0 = pd.Series(i0)
 
-    check(
-        assert_type(s0.dt.date, "pd.Series[dt.date]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        dt.date,
-    )
-    check(
-        assert_type(s0.dt.time, "pd.Series[dt.time]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        dt.time,
-    )
-    check(
-        assert_type(s0.dt.timetz, "pd.Series[dt.time]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        dt.time,
-    )
+    check(assert_type(s0.dt.date, "pd.Series[dt.date]"), pd.Series, dt.date)
+    check(assert_type(s0.dt.time, "pd.Series[dt.time]"), pd.Series, dt.time)
+    check(assert_type(s0.dt.timetz, "pd.Series[dt.time]"), pd.Series, dt.time)
     check(assert_type(s0.dt.year, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.month, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.day, "pd.Series[int]"), pd.Series, np.integer)
@@ -364,14 +353,10 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.tz, dt.tzinfo | None), type(None))
-    check(assert_type(s0.dt.freq, str | None), str)  # pyrefly: ignore[assert-type]
+    check(assert_type(s0.dt.freq, str | None), str)
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.to_period("D"), "pd.Series[pd.Period]"
-        ),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        pd.Period,
+        assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
     )
 
     check(
@@ -380,29 +365,19 @@ def test_series_dt_accessors() -> None:
         dt.datetime,
     )
     s0_local = s0.dt.tz_localize("UTC")
+    check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0_local, "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0_local, "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0_local, "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0.dt.tz_localize(None), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.tz_localize(None), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             s0.dt.tz_localize(pytz.UTC, nonexistent=dt.timedelta(0)),
             "pd.Series[pd.Timestamp]",
         ),
@@ -410,42 +385,34 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             s0.dt.tz_localize(pytz.timezone("US/Eastern")), "pd.Series[pd.Timestamp]"
         ),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0_local.dt.tz_convert("EST"), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0_local.dt.tz_convert("EST"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0_local.dt.tz_convert(None), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0_local.dt.tz_convert(None), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0_local.dt.tz_convert(pytz.UTC), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0_local.dt.tz_convert(pytz.UTC), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0_local.dt.tz_convert(1), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0_local.dt.tz_convert(1), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             s0_local.dt.tz_convert(pytz.timezone("US/Eastern")),
             "pd.Series[pd.Timestamp]",
         ),
@@ -453,93 +420,64 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(assert_type(s0.dt.tz, dt.tzinfo | None), type(None))
+    check(assert_type(s0_local.dt.tz, dt.tzinfo | None), dt.tzinfo)
     check(
-        assert_type(s0_local.dt.tz, dt.tzinfo | None),  # pyrefly: ignore[assert-type]
-        dt.tzinfo,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.normalize(), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0.dt.normalize(), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
+    check(assert_type(s0.dt.strftime("%Y"), "pd.Series[str]"), pd.Series, str)
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.strftime("%Y"), "pd.Series[str]"
-        ),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        str,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             s0.dt.round("D", nonexistent=dt.timedelta(1)), "pd.Series[pd.Timestamp]"
         ),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.round("D", ambiguous="infer"), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0.dt.round("D", ambiguous="infer"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             s0.dt.floor("D", nonexistent=dt.timedelta(1)), "pd.Series[pd.Timestamp]"
         ),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.floor("D", ambiguous="raise"), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0.dt.floor("D", ambiguous="raise"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             s0.dt.ceil("D", nonexistent=dt.timedelta(1)), "pd.Series[pd.Timestamp]"
         ),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.ceil("D", ambiguous="NaT"), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0.dt.ceil("D", ambiguous="NaT"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.ceil("D", ambiguous=True), "pd.Series[pd.Timestamp]"
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(s0.dt.ceil("D", ambiguous=True), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             s0.dt.ceil("D", ambiguous=np.array([True, False])),
             "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
         pd.Timestamp,
     )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s0.dt.month_name(), "pd.Series[str]"
-        ),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        str,
-    )
-    check(
-        assert_type(s0.dt.day_name(), "pd.Series[str]"),  # pyrefly: ignore[assert-type]
-        pd.Series,
-        str,
-    )
+    check(assert_type(s0.dt.month_name(), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s0.dt.day_name(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s0.dt.unit, TimeUnit), str)
     check(
         assert_type(s0.dt.as_unit("s"), "pd.Series[pd.Timestamp]"),
@@ -685,11 +623,7 @@ def test_datetimeindex_accessors() -> None:
     i0 = pd.date_range(start="2022-06-01", periods=10)
     check(assert_type(i0, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
 
-    check(
-        assert_type(i0.date, np_1darray_object),  # pyrefly: ignore[assert-type]
-        np_1darray_object,
-        dt.date,
-    )
+    check(assert_type(i0.date, np_1darray_object), np_1darray_object, dt.date)
     check(assert_type(i0.time, np_1darray_object), np_1darray_object, dt.time)
     check(assert_type(i0.timetz, np_1darray_object), np_1darray_object, dt.time)
     check(assert_type(i0.year, "pd.Index[int]"), pd.Index, np.int32)
@@ -718,90 +652,33 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.tz, dt.tzinfo | None), type(None))
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(i0.to_period("D"), pd.PeriodIndex),  # pyrefly: ignore[assert-type]
-        pd.PeriodIndex,
-        pd.Period,
-    )
+    check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(
         assert_type(i0.to_pydatetime(), np_1darray_object),
         np_1darray_object,
         dt.datetime,
     )
     ilocal = i0.tz_localize("UTC")
+    check(assert_type(ilocal, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(i0.tz_localize(pytz.UTC), pd.DatetimeIndex), pd.DatetimeIndex)
     check(
-        assert_type(ilocal, pd.DatetimeIndex),  # pyrefly: ignore[assert-type]
+        assert_type(i0.tz_localize(pytz.timezone("US/Central")), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
+    check(assert_type(ilocal.tz_convert("EST"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(ilocal.tz_convert(pytz.UTC), pd.DatetimeIndex), pd.DatetimeIndex)
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i0.tz_localize(pytz.UTC), pd.DatetimeIndex
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(ilocal.tz_convert(pytz.timezone("US/Pacific")), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i0.tz_localize(pytz.timezone("US/Central")), pd.DatetimeIndex
-        ),  # pyrefly: ignore[assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            ilocal.tz_convert("EST"), pd.DatetimeIndex
-        ),  # pyrefly: ignore[assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            ilocal.tz_convert(pytz.UTC), pd.DatetimeIndex
-        ),  # pyrefly: ignore[assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            ilocal.tz_convert(pytz.timezone("US/Pacific")), pd.DatetimeIndex
-        ),  # pyrefly: ignore[assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(ilocal.tz, dt.tzinfo | None),  # pyrefly: ignore[assert-type]
-        dt.tzinfo,
-    )
-    check(
-        assert_type(i0.normalize(), pd.DatetimeIndex),  # pyrefly: ignore[assert-type]
-        pd.DatetimeIndex,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(i0.strftime("%Y"), pd.Index),  # pyrefly: ignore[assert-type]
-        pd.Index,
-        str,
-    )
-    check(
-        assert_type(i0.round("D"), pd.DatetimeIndex),  # pyrefly: ignore[assert-type]
-        pd.DatetimeIndex,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(i0.floor("D"), pd.DatetimeIndex),  # pyrefly: ignore[assert-type]
-        pd.DatetimeIndex,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(i0.ceil("D"), pd.DatetimeIndex),  # pyrefly: ignore[assert-type]
-        pd.DatetimeIndex,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(i0.month_name(), pd.Index),  # pyrefly: ignore[assert-type]
-        pd.Index,
-        str,
-    )
-    check(
-        assert_type(i0.day_name(), pd.Index),  # pyrefly: ignore[assert-type]
-        pd.Index,
-        str,
-    )
+    check(assert_type(ilocal.tz, dt.tzinfo | None), dt.tzinfo)
+    check(assert_type(i0.normalize(), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
+    check(assert_type(i0.round("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(assert_type(i0.floor("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(assert_type(i0.ceil("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(assert_type(i0.month_name(), pd.Index), pd.Index, str)
+    check(assert_type(i0.day_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.is_normalized, bool), bool)
     check(assert_type(i0.unit, TimeUnit), str)
     check(assert_type(i0.as_unit("s"), pd.DatetimeIndex), pd.DatetimeIndex)
@@ -826,20 +703,12 @@ def test_timedeltaindex_accessors() -> None:
     )
     check(assert_type(i0.total_seconds(), pd.Index), pd.Index, float)
     check(
-        assert_type(i0.round("D"), pd.TimedeltaIndex),  # pyrefly: ignore[assert-type]
-        pd.TimedeltaIndex,
-        pd.Timedelta,
+        assert_type(i0.round("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
     )
     check(
-        assert_type(i0.floor("D"), pd.TimedeltaIndex),  # pyrefly: ignore[assert-type]
-        pd.TimedeltaIndex,
-        pd.Timedelta,
+        assert_type(i0.floor("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
     )
-    check(
-        assert_type(i0.ceil("D"), pd.TimedeltaIndex),  # pyrefly: ignore[assert-type]
-        pd.TimedeltaIndex,
-        pd.Timedelta,
-    )
+    check(assert_type(i0.ceil("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
     check(assert_type(i0.unit, TimeUnit), str)
     check(assert_type(i0.as_unit("s"), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(i0.as_unit("ms"), pd.TimedeltaIndex), pd.TimedeltaIndex)
@@ -869,11 +738,7 @@ def test_periodindex_accessors() -> None:
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
-    check(
-        assert_type(i0.asfreq("D"), pd.PeriodIndex),  # pyrefly: ignore[assert-type]
-        pd.PeriodIndex,
-        pd.Period,
-    )
+    check(assert_type(i0.asfreq("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(assert_type(i0.end_time, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     check(assert_type(i0.start_time, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     check(
@@ -1201,23 +1066,17 @@ def test_index_types_to_numpy() -> None:
 
     # passed dtype-like with statically known generic
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            td_i.to_numpy(dtype=np.int64), np_1darray_int64
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(td_i.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
         np.int64,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            ts_i.to_numpy(dtype=np.int64), np_1darray_int64
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(ts_i.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
         np.int64,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            p_i.to_numpy(dtype=np.int64), np_1darray_int64
-        ),  # pyrefly: ignore[assert-type]
+        assert_type(p_i.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
         np.int64,
     )
@@ -1255,7 +1114,7 @@ def test_to_timedelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.to_timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "Âµs"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
@@ -1785,17 +1644,11 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     check(assert_type(s4 - td1, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     td = np.timedelta64(1, "D")
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            (s3 / td), "pd.Series[float]"  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Series,
-        float,
-    )
+    check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:
@@ -1809,8 +1662,8 @@ def test_timestamp_strptime_fails() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_never(
             pd.Timestamp.strptime(  # pyright: ignore[reportUnknownArgumentType]
-                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             )
         )
 
@@ -1920,12 +1773,12 @@ def test_date_range_overloads() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.date_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.date_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_timedelta_range_overloads() -> None:
@@ -1977,12 +1830,12 @@ def test_timedelta_range_overloads() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.timedelta_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.timedelta_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_DatetimeIndex_sub_timedelta() -> None:
@@ -2011,11 +1864,7 @@ def test_timestamp_sub_series() -> None:
 
 def test_creating_date_range() -> None:
     dr = pd.date_range(start="2021-12-01", periods=24, freq="h")
-    check(
-        assert_type(dr.strftime("%H:%M:%S"), pd.Index),  # pyrefly: ignore[assert-type]
-        pd.Index,
-        str,
-    )
+    check(assert_type(dr.strftime("%H:%M:%S"), pd.Index), pd.Index, str)
 
 
 def test_timestamp_to_list_add() -> None:

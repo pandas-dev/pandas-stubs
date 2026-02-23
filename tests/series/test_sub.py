@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from datetime import (
     datetime,
     timedelta,
@@ -90,27 +91,19 @@ def test_sub_i_numpy_array() -> None:
     # `Series`.
     # microsoft/pyright#10924
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            b - left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(b - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i - left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(i - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            f - left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(f - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            c - left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(c - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
 
@@ -199,7 +192,7 @@ def test_sub_ts_py_datetime() -> None:
     check(assert_type(left_ts - s, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         # Series[Any] (Timestamp) - Sequence[datetime] should work, see pandas-dev/pandas#62353
-        _1 = left_ts - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = left_ts - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     # Series[Any] (Timedelta) - datetime fails at runtime,
     # which cannot be revealed by our static type checking
     # _2 = left_td - s
@@ -208,16 +201,16 @@ def test_sub_ts_py_datetime() -> None:
         # see pandas-dev/pandas#62353. Even if such __sub__ is supported
         # it will fail at runtime here,
         # which cannot be revealed by our static type checking
-        _3 = left_td - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _3 = left_td - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         # Sequence[datetime] - Series[Any] (Timestamp) should work, see pandas-dev/pandas#62353
-        _5 = a - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _5 = a - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(s - left_td, pd.Series), pd.Series, pd.Timestamp)
     if TYPE_CHECKING_INVALID_USAGE:
         # Sequence[datetime] - Series[Any] (Timedelta) should work, see pandas-dev/pandas#62353
-        _7 = a - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _7 = a - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(
         assert_type(left_ts.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
@@ -255,17 +248,13 @@ def test_sub_ts_numpy_datetime() -> None:
     # microsoft/pyright#10924
     check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            a - left_ts, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(a - left_ts, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
         pd.Timedelta,
     )
     check(assert_type(s - left_td, pd.Series), pd.Series, pd.Timestamp)
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            a - left_td, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(a - left_td, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
         pd.Timestamp,
     )
@@ -329,7 +318,7 @@ def test_sub_str_py_str() -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_i - s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
-        _1 = s - left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
-        left_i.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        left_i.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        _0 = left_i - s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = s - left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        left_i.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

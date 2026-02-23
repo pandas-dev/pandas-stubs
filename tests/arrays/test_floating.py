@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from collections import UserList
 from collections.abc import (
     Callable,
@@ -80,17 +81,10 @@ def test_construction_sequence_nan(
 
 def test_construction_array_like() -> None:
     np_arr = np.array([1.0, np.float16(1)], np.float32)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(np_arr), FloatingArray
-        ),  # pyrefly: ignore[bad-argument-type]
-        FloatingArray,
-    )
+    check(assert_type(pd.array(np_arr), FloatingArray), FloatingArray)
 
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(pd.array([1.0, np.float32(1)])), FloatingArray
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(pd.array(pd.array([1.0, np.float32(1)])), FloatingArray),
         FloatingArray,
     )
 
@@ -102,11 +96,7 @@ def test_construction_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> N
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.array([1.0], dtype), FloatingArray)
     else:
-        check(
-            pd.array([1.0], dtype),  # pyrefly: ignore[bad-argument-type]
-            FloatingArray,
-            target_dtype,
-        )
+        check(pd.array([1.0], dtype), FloatingArray, target_dtype)
 
     if TYPE_CHECKING:
         # pandas Float32

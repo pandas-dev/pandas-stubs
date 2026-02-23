@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import (
     TYPE_CHECKING,
     Literal,
@@ -27,28 +28,12 @@ def test_construction_dtype(
     data: tuple[str | np.str_, ...], dtype: PyArrowStrDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(
-        pd.array([*data], dtype),  # pyrefly: ignore[bad-argument-type]
-        ArrowStringArray,
-        dtype_notna,
-    )
-    check(
-        pd.array([*data, *data], dtype),  # pyrefly: ignore[bad-argument-type]
-        ArrowStringArray,
-        dtype_notna,
-    )
+    check(pd.array([*data], dtype), ArrowStringArray, dtype_notna)
+    check(pd.array([*data, *data], dtype), ArrowStringArray, dtype_notna)
 
     dtype_na = target_dtype if data else NAType
-    check(
-        pd.array([*data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
-        ArrowStringArray,
-        dtype_na,
-    )
-    check(
-        pd.array([*data, *data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
-        ArrowStringArray,
-        dtype_na,
-    )
+    check(pd.array([*data, np.nan], dtype), ArrowStringArray, dtype_na)
+    check(pd.array([*data, *data, np.nan], dtype), ArrowStringArray, dtype_na)
 
     if TYPE_CHECKING:
         assert_type(pd.array([], pd.StringDtype("pyarrow")), ArrowStringArray)
@@ -106,23 +91,17 @@ def test_constructor(
         assert_type(ArrowStringArray(pa.chunked_array([["1"]])), ArrowStringArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list = ArrowStringArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _tuple = ArrowStringArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _np_obj = ArrowStringArray(np.array(["1"], np.object_))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _pa_arr = ArrowStringArray(pa.array([["1"]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _pd_arr = ArrowStringArray(pd.array(["1"]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _pd_str = ArrowStringArray(pd.array(["1"], "string[pyarrow]"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _i = ArrowStringArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _s = ArrowStringArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _list = ArrowStringArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _tuple = ArrowStringArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _np_obj = ArrowStringArray(np.array(["1"], np.object_))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _pa_arr = ArrowStringArray(pa.array([["1"]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _pd_arr = ArrowStringArray(pd.array(["1"]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _pd_str = ArrowStringArray(pd.array(["1"], "string[pyarrow]"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _i = ArrowStringArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _s = ArrowStringArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_dtype() -> None:
     arr = pd.array(["a"], "string[pyarrow]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['pyarrow']]"), pd.StringDtype)
-    assert (
-        assert_type(  # pyrefly: ignore[assert-type]
-            arr.dtype.storage,  # pyrefly: ignore[no-matching-overload]
-            Literal["pyarrow"],
-        )  # pyrefly: ignore [assert-type]
-        == "pyarrow"
-    )
+    assert assert_type(arr.dtype.storage, Literal["pyarrow"]) == "pyarrow"

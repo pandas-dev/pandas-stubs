@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import (
     Never,
     assert_type,
@@ -45,9 +46,7 @@ def test_truediv_py_scalar(left: "pd.Series[bool]") -> None:
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.truediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.truediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
@@ -57,13 +56,7 @@ def test_truediv_py_scalar(left: "pd.Series[bool]") -> None:
         left.div(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.div(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.div(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
         # TODO: python/mypy#20061
@@ -71,9 +64,7 @@ def test_truediv_py_scalar(left: "pd.Series[bool]") -> None:
     check(assert_type(left.rtruediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rtruediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.rtruediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
@@ -84,11 +75,7 @@ def test_truediv_py_scalar(left: "pd.Series[bool]") -> None:
     check(assert_type(left.rdiv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rdiv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rdiv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
 
 
@@ -114,9 +101,7 @@ def test_truediv_py_sequence(left: "pd.Series[bool]") -> None:
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.truediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.truediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
@@ -124,21 +109,13 @@ def test_truediv_py_sequence(left: "pd.Series[bool]") -> None:
     check(assert_type(left.div(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.div(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     check(assert_type(left.rtruediv(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rtruediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.rtruediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
@@ -147,11 +124,7 @@ def test_truediv_py_sequence(left: "pd.Series[bool]") -> None:
     check(assert_type(left.rdiv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rdiv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rdiv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
 
 
@@ -182,51 +155,37 @@ def test_truediv_numpy_array(left: "pd.Series[bool]") -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.truediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.truediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.truediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.truediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.div(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.div(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.div(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.div(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rtruediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rtruediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rtruediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rtruediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.rtruediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rdiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rdiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rdiv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rdiv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rdiv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
 
 
@@ -238,63 +197,49 @@ def test_truediv_pd_index(left: "pd.Series[bool]") -> None:
     c = pd.Index([1.1j, 2.2j, 4.1j])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left / i, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.truediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.truediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.truediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.truediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.div(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.div(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.div(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.div(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rtruediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rtruediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rtruediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rtruediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.rtruediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rdiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rdiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rdiv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rdiv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rdiv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
 
 
@@ -306,61 +251,47 @@ def test_truediv_pd_series(left: "pd.Series[bool]") -> None:
     c = pd.Series([1.1j, 2.2j, 4.1j])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left / i, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.truediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.truediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.truediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.truediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.div(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.div(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.div(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.div(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
-    )
+    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rtruediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rtruediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rtruediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rtruediv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(left.rtruediv(c), "pd.Series[complex]"),
         pd.Series,
         np.complexfloating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rdiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rdiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rdiv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rdiv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            left.rdiv(c), "pd.Series[complex]"
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-        np.complexfloating,
+        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )

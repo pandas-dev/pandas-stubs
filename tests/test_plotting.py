@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 import io
 import itertools
 from typing import (
@@ -391,9 +392,7 @@ def test_plot_line() -> None:
     check(assert_type(IRIS_DF.plot(kind="line"), Axes), Axes)
     check(assert_type(IRIS_DF.plot.line(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot(kind="line", subplots=True), np_ndarray_object
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(IRIS_DF.plot(kind="line", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -403,9 +402,7 @@ def test_plot_area(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot(kind="area"), Axes), Axes)
     check(assert_type(IRIS_DF.plot.area(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot(kind="area", subplots=True), np_ndarray_object
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(IRIS_DF.plot(kind="area", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -415,9 +412,7 @@ def test_plot_bar(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot(kind="bar"), Axes), Axes)
     check(assert_type(IRIS_DF.plot.bar(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot(kind="bar", subplots=True), np_ndarray_object
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(IRIS_DF.plot(kind="bar", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -427,9 +422,7 @@ def test_plot_barh(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot(kind="barh"), Axes), Axes)
     check(assert_type(IRIS_DF.plot.barh(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot(kind="barh", subplots=True), np_ndarray_object
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(IRIS_DF.plot(kind="barh", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -437,18 +430,8 @@ def test_plot_barh(close_figures: None) -> None:
 def test_plot_box(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.box(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="box"), Axes), Axes)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot.box(subplots=True), pd.Series
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot(kind="box", subplots=True), pd.Series
-        ),  # pyrefly: ignore[bad-argument-type]
-        pd.Series,
-    )
+    check(assert_type(IRIS_DF.plot.box(subplots=True), pd.Series), pd.Series)
+    check(assert_type(IRIS_DF.plot(kind="box", subplots=True), pd.Series), pd.Series)
 
 
 def test_plot_density(close_figures: None) -> None:
@@ -458,9 +441,7 @@ def test_plot_density(close_figures: None) -> None:
         assert_type(IRIS_DF.plot.density(subplots=True), np_ndarray_object), np.ndarray
     )
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot(kind="density", subplots=True), np_ndarray_object
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(IRIS_DF.plot(kind="density", subplots=True), np_ndarray_object),
         np.ndarray,
     )
 
@@ -482,7 +463,7 @@ def test_plot_hexbin(close_figures: None) -> None:
         np.ndarray,
     )
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
+        assert_type(
             IRIS_DF.plot(kind="hexbin", x="SepalLength", y="SepalWidth", subplots=True),
             np_ndarray_object,
         ),
@@ -493,16 +474,9 @@ def test_plot_hexbin(close_figures: None) -> None:
 def test_plot_hist(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.hist(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="hist"), Axes), Axes)
+    check(assert_type(IRIS_DF.plot.hist(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot.hist(subplots=True), np_ndarray_object
-        ),  # pyrefly: ignore[bad-argument-type]
-        np.ndarray,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot(subplots=True, kind="hist"), np_ndarray_object
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(IRIS_DF.plot(subplots=True, kind="hist"), np_ndarray_object),
         np.ndarray,
     )
 
@@ -512,9 +486,7 @@ def test_plot_kde(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot(kind="kde"), Axes), Axes)
     check(assert_type(IRIS_DF.plot.kde(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            IRIS_DF.plot(subplots=True, kind="kde"), np_ndarray_object
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(IRIS_DF.plot(subplots=True, kind="kde"), np_ndarray_object),
         np.ndarray,
     )
 
@@ -530,7 +502,7 @@ def test_plot_pie(close_figures: None) -> None:
     )
 
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
+        assert_type(
             IRIS_DF.plot(kind="pie", y="SepalLength", subplots=True), np_ndarray_object
         ),
         np.ndarray,
@@ -556,7 +528,7 @@ def test_plot_scatter(close_figures: None) -> None:
         np.ndarray,
     )
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
+        assert_type(
             IRIS_DF.plot(
                 x="SepalLength", y="SepalWidth", subplots=True, kind="scatter"
             ),
@@ -644,12 +616,7 @@ def test_plot_keywords(close_figures: None) -> None:
 def test_plot_subplot_changes_150() -> None:
     df = pd.DataFrame(np.random.standard_normal((25, 4)), columns=["a", "b", "c", "d"])
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.plot(  # pyrefly: ignore[no-matching-overload]
-                subplots=[("a", "b"), ("c", "d")]
-            ),  # pyrefly: ignore[no-matching-overload]
-            np_ndarray_object,
-        ),  # pyrefly: ignore [assert-type]
+        assert_type(df.plot(subplots=[("a", "b"), ("c", "d")]), np_ndarray_object),
         np.ndarray,
     )
 

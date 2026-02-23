@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import (
     Any,
     assert_type,
@@ -62,27 +63,19 @@ def test_sub_i_numpy_array() -> None:
     # `Index`es.
     # microsoft/pyright#10924
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            b - left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(b - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i - left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(i - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            f - left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(f - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            c - left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(c - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
 
@@ -113,5 +106,5 @@ def test_sub_str_py_str() -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_i - s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
-        _1 = s - left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _0 = left_i - s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = s - left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]

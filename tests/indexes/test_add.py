@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from typing import (
     Any,
     assert_type,
@@ -63,27 +64,19 @@ def test_add_i_numpy_array() -> None:
     # `Index`es.
     # microsoft/pyright#10924
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            b + left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(b + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i + left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(i + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            f + left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(f + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            c + left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(c + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
 

@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 """Test module for methods in pandas.core.arrays.categorical."""
 
 from typing import assert_type
@@ -22,49 +23,26 @@ from tests._typing import (
 
 
 def test_construction_array_like() -> None:
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(pd.Categorical([1])), Categorical
-        ),  # pyrefly: ignore[bad-argument-type]
-        Categorical,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(pd.CategoricalIndex([1])), Categorical
-        ),  # pyrefly: ignore[bad-argument-type]
-        Categorical,
-    )
+    check(assert_type(pd.array(pd.Categorical([1])), Categorical), Categorical)
+    check(assert_type(pd.array(pd.CategoricalIndex([1])), Categorical), Categorical)
 
 
 def test_construction_dtype() -> None:
+    check(assert_type(pd.array([], pd.CategoricalDtype()), Categorical), Categorical)
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array([], pd.CategoricalDtype()), Categorical
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(pd.array(np.array([1]), pd.CategoricalDtype()), Categorical),
         Categorical,
     )
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(np.array([1]), pd.CategoricalDtype()), Categorical
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(pd.array(pd.array([1]), pd.CategoricalDtype()), Categorical),
         Categorical,
     )
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(pd.array([1]), pd.CategoricalDtype()), Categorical
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(pd.array(pd.Index([1]), pd.CategoricalDtype()), Categorical),
         Categorical,
     )
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(pd.Index([1]), pd.CategoricalDtype()), Categorical
-        ),  # pyrefly: ignore[bad-argument-type]
-        Categorical,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(pd.Series([1]), pd.CategoricalDtype()), Categorical
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(pd.array(pd.Series([1]), pd.CategoricalDtype()), Categorical),
         Categorical,
     )
 

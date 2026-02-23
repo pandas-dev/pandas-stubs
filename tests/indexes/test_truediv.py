@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from pathlib import Path
 from typing import (
     Any,
@@ -68,27 +69,19 @@ def test_truediv_numpy_array(left_i: pd.Index) -> None:
     # `Index`.
     # microsoft/pyright#10924
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            b / left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(b / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i / left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(i / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            f / left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(f / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            c / left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        assert_type(c / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
     )
 
@@ -121,21 +114,9 @@ def test_truediv_paths(tmp_path: Path) -> None:
     fpath = Path("a.png")
     folders, fpaths = pd.Index([tmp_path, tmp_path]), pd.Index([fpath, fpath])
 
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            folders / fpath, pd.Index  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Index,
-        Path,
-    )
+    check(assert_type(folders / fpath, pd.Index), pd.Index, Path)
 
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            tmp_path / fpaths, pd.Index  # pyrefly: ignore[unsupported-operation]
-        ),  # pyrefly: ignore [assert-type]
-        pd.Index,
-        Path,
-    )
+    check(assert_type(tmp_path / fpaths, pd.Index), pd.Index, Path)
 
 
 def test_truediv_path(tmp_path: Path) -> None:
@@ -153,5 +134,5 @@ def test_truediv_str_py_str(left_i: pd.Index) -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
-        _1 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _0 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]

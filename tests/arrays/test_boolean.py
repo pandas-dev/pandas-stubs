@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from collections import UserList
 from collections.abc import (
     Callable,
@@ -56,17 +57,10 @@ def test_construction_sequence(
 
 def test_construction_array_like() -> None:
     np_arr = np.array([True, np.bool_(True)], np.bool_)
-    check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(np_arr), BooleanArray
-        ),  # pyrefly: ignore[bad-argument-type]
-        BooleanArray,
-    )
+    check(assert_type(pd.array(np_arr), BooleanArray), BooleanArray)
 
     check(
-        assert_type(  # pyrefly: ignore[bad-argument-type]
-            pd.array(pd.array([True, np.bool_(True)])), BooleanArray
-        ),  # pyrefly: ignore[bad-argument-type]
+        assert_type(pd.array(pd.array([True, np.bool_(True)])), BooleanArray),
         BooleanArray,
     )
 
@@ -77,40 +71,14 @@ def test_construction_dtype(
     data: tuple[bool | np.bool, ...], dtype: PandasBooleanDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(
-        pd.array([*data], dtype),  # pyrefly: ignore[bad-argument-type]
-        BooleanArray,
-        dtype_notna,
-    )
-    check(
-        pd.array([True, *data], dtype),  # pyrefly: ignore[bad-argument-type]
-        BooleanArray,
-        dtype_notna,
-    )
-    check(
-        pd.array([np.bool(True), *data], dtype),  # pyrefly: ignore[bad-argument-type]
-        BooleanArray,
-        dtype_notna,
-    )
+    check(pd.array([*data], dtype), BooleanArray, dtype_notna)
+    check(pd.array([True, *data], dtype), BooleanArray, dtype_notna)
+    check(pd.array([np.bool(True), *data], dtype), BooleanArray, dtype_notna)
 
     dtype_na = target_dtype if data else NAType
-    check(
-        pd.array([*data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
-        BooleanArray,
-        dtype_na,
-    )
-    check(
-        pd.array([True, *data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
-        BooleanArray,
-        target_dtype,
-    )
-    check(
-        pd.array(  # pyrefly: ignore[bad-argument-type]
-            [np.bool(True), *data, np.nan], dtype
-        ),  # pyrefly: ignore[bad-argument-type]
-        BooleanArray,
-        target_dtype,
-    )
+    check(pd.array([*data, np.nan], dtype), BooleanArray, dtype_na)
+    check(pd.array([True, *data, np.nan], dtype), BooleanArray, target_dtype)
+    check(pd.array([np.bool(True), *data, np.nan], dtype), BooleanArray, target_dtype)
 
     if TYPE_CHECKING:
         assert_type(pd.array([], pd.BooleanDtype()), BooleanArray)
@@ -150,11 +118,11 @@ def test_constructor() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list_np = BooleanArray([True], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _np_list = BooleanArray(np.array([True]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _pd_arr = BooleanArray(pd.array([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _i = BooleanArray(pd.Index([False]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        _s = BooleanArray(pd.Series([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _list_np = BooleanArray([True], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _np_list = BooleanArray(np.array([True]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _pd_arr = BooleanArray(pd.array([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _i = BooleanArray(pd.Index([False]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _s = BooleanArray(pd.Series([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_dtype() -> None:

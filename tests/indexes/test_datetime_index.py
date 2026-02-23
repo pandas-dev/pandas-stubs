@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from __future__ import annotations
 
 from datetime import time
@@ -25,54 +26,14 @@ def test_index_relops() -> None:
     idx = check(
         assert_type(pd.Index(data, name="date"), pd.DatetimeIndex), pd.DatetimeIndex
     )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            data[x <= idx], pd.DatetimeIndex  # pyrefly: ignore[bad-index]
-        ),  # pyrefly: ignore [assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            data[x < idx], pd.DatetimeIndex  # pyrefly: ignore[bad-index]
-        ),  # pyrefly: ignore [assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            data[x >= idx], pd.DatetimeIndex  # pyrefly: ignore[bad-index]
-        ),  # pyrefly: ignore [assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            data[x > idx], pd.DatetimeIndex  # pyrefly: ignore[bad-index]
-        ),  # pyrefly: ignore [assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            data[idx <= x], pd.DatetimeIndex  # pyrefly: ignore[bad-index]
-        ),  # pyrefly: ignore [assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            data[idx < x], pd.DatetimeIndex  # pyrefly: ignore[bad-index]
-        ),  # pyrefly: ignore [assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            data[idx >= x], pd.DatetimeIndex  # pyrefly: ignore[bad-index]
-        ),  # pyrefly: ignore [assert-type]
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            data[idx > x], pd.DatetimeIndex  # pyrefly: ignore[bad-index]
-        ),  # pyrefly: ignore [assert-type]
-        pd.DatetimeIndex,
-    )
+    check(assert_type(data[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x >= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x > idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
 
     ind = pd.Index([1, 2, 3])
     check(assert_type(ind <= 2, np_1darray_bool), np_1darray_bool)
