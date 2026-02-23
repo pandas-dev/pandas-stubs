@@ -100,8 +100,8 @@ def test_arithmetic() -> None:
     # )
     # https://github.com/microsoft/pyright/issues/10899.
     check(
-        assert_type(  # pyright: ignore[reportUnknownArgumentType]
-            divmod(  # pyright: ignore[reportCallIssue, reportAssertTypeFailure]
+        assert_type(  # pyright: ignore[reportUnknownArgumentType] # pyrefly: ignore[assert-type]
+            divmod(  # pyright: ignore[reportCallIssue, reportAssertTypeFailure] # pyrefly: ignore[no-matching-overload]
                 na, 1  # pyright: ignore[reportArgumentType]
             ),
             tuple[NAType, NAType],
@@ -120,7 +120,12 @@ def test_arithmetic() -> None:
     #     assert_type(divmod(idx_int, na), tuple[pd.Index, pd.Index]),
     #     tuple,
     # )
-    check(assert_type(divmod(1, na), tuple[NAType, NAType]), tuple)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            divmod(1, na), tuple[NAType, NAType]
+        ),  # pyrefly: ignore[bad-argument-type]
+        tuple,
+    )
 
     # __eq__
     check(assert_type(na == s_int, "pd.Series[bool]"), pd.Series)

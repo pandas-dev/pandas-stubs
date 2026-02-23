@@ -41,34 +41,68 @@ def test_mul_py_scalar(left: "pd.Series[bool]") -> None:
     check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _05 = left * d  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _05 = left * d  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(b * left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    if TYPE_CHECKING_INVALID_USAGE:
-        left.mul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.mul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.rmul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(i), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(f), "pd.Series[float]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rmul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rmul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.mul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+
+    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(i), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(f), "pd.Series[float]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rmul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_mul_py_sequence(left: "pd.Series[bool]") -> None:
@@ -82,34 +116,68 @@ def test_mul_py_sequence(left: "pd.Series[bool]") -> None:
     check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(b * left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    if TYPE_CHECKING_INVALID_USAGE:
-        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.rmul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(i), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(f), "pd.Series[float]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+
+    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(i), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(f), "pd.Series[float]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_mul_numpy_array(left: "pd.Series[bool]") -> None:
@@ -145,22 +213,44 @@ def test_mul_numpy_array(left: "pd.Series[bool]") -> None:
         assert_type(d * left, np_ndarray_td)
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    if TYPE_CHECKING_INVALID_USAGE:
-        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.mul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.rmul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(left.mul(i), "pd.Series[int]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(left.mul(f), "pd.Series[float]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(left.mul(c), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rmul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.mul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+
+    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(left.rmul(i), "pd.Series[int]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(left.rmul(f), "pd.Series[float]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(left.rmul(c), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rmul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_mul_pd_index(left: "pd.Series[bool]") -> None:
@@ -177,34 +267,68 @@ def test_mul_pd_index(left: "pd.Series[bool]") -> None:
     check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(b * left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    if TYPE_CHECKING_INVALID_USAGE:
-        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.rmul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(i), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(f), "pd.Series[float]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+
+    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(i), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(f), "pd.Series[float]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_mul_pd_series(left: "pd.Series[bool]") -> None:
@@ -221,31 +345,65 @@ def test_mul_pd_series(left: "pd.Series[bool]") -> None:
     check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(b * left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
-    check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    if TYPE_CHECKING_INVALID_USAGE:
-        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(left.rmul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(i), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(f), "pd.Series[float]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.mul(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+
+    check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(i), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(f), "pd.Series[float]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rmul(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]

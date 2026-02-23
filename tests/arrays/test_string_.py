@@ -29,12 +29,28 @@ def test_construction_dtype(
     data: tuple[str | np.str_, ...], dtype: PandasStrDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), StringArray, dtype_notna)
-    check(pd.array([*data, *data], dtype), StringArray, dtype_notna)
+    check(
+        pd.array([*data], dtype),  # pyrefly: ignore[bad-argument-type]
+        StringArray,
+        dtype_notna,
+    )
+    check(
+        pd.array([*data, *data], dtype),  # pyrefly: ignore[bad-argument-type]
+        StringArray,
+        dtype_notna,
+    )
 
     dtype_na = target_dtype if data else NAType
-    check(pd.array([*data, np.nan], dtype), StringArray, dtype_na)
-    check(pd.array([*data, *data, np.nan], dtype), StringArray, dtype_na)
+    check(
+        pd.array([*data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
+        StringArray,
+        dtype_na,
+    )
+    check(
+        pd.array([*data, *data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
+        StringArray,
+        dtype_na,
+    )
 
     if TYPE_CHECKING:
         assert_type(pd.array([], pd.StringDtype("python")), StringArray)
@@ -85,16 +101,22 @@ def test_constructor(values: np_ndarray_object | StringArray) -> None:
         assert_type(StringArray(pd.array(["1"], "string[python]")), StringArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list = StringArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _tuple = StringArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _list = StringArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _tuple = StringArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         np_str = np.array(["1"], np.str_)
-        _np_str = StringArray(np_str)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _pd_arr = StringArray(pd.array(["1"]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _i = StringArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _s = StringArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _np_str = StringArray(np_str)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _pd_arr = StringArray(pd.array(["1"]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _i = StringArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _s = StringArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_dtype() -> None:
     arr = pd.array(["a"], "string[python]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['python']]"), pd.StringDtype)
-    assert assert_type(arr.dtype.storage, Literal["python"]) == "python"
+    assert (
+        assert_type(  # pyrefly: ignore[assert-type]
+            arr.dtype.storage,  # pyrefly: ignore[no-matching-overload]
+            Literal["python"],
+        )  # pyrefly: ignore [assert-type]
+        == "python"
+    )

@@ -60,7 +60,13 @@ def test_apply() -> None:
         return [f"color: {color}" if val == x.max() else "" for val in x]
 
     check(
-        assert_type(DF.style.apply(highlight_max, color="red", axis=1), Styler), Styler
+        assert_type(  # pyrefly: ignore[assert-type]
+            DF.style.apply(  # pyrefly: ignore[no-matching-overload]
+                highlight_max, color="red", axis=1
+            ),  # pyrefly: ignore[no-matching-overload]
+            Styler,
+        ),  # pyrefly: ignore [assert-type]
+        Styler,
     )
 
 
@@ -261,7 +267,15 @@ def test_styler_map() -> None:
 
     df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
 
-    check(assert_type(df.style.map(color_negative, color="red"), Styler), Styler)
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            df.style.map(  # pyrefly: ignore[no-matching-overload]
+                color_negative, color="red"
+            ),  # pyrefly: ignore[no-matching-overload]
+            Styler,
+        ),  # pyrefly: ignore [assert-type]
+        Styler,
+    )
 
 
 def test_to_typst(tmp_path: Path) -> None:

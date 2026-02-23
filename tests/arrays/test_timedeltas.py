@@ -33,13 +33,30 @@ def test_construction() -> None:
 
     td = timedelta(2025, 11, 10)
     np_dt = np.timedelta64(td)
-    check(assert_type(pd.array([td]), TimedeltaArray), TimedeltaArray)
     check(
-        assert_type(pd.array([td, pd.Timedelta(td), np_dt]), TimedeltaArray),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([td]), TimedeltaArray
+        ),  # pyrefly: ignore[bad-argument-type]
         TimedeltaArray,
     )
-    check(assert_type(pd.array([td, None]), TimedeltaArray), TimedeltaArray)
-    check(assert_type(pd.array([td, pd.NaT, None]), TimedeltaArray), TimedeltaArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([td, pd.Timedelta(td), np_dt]), TimedeltaArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        TimedeltaArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([td, None]), TimedeltaArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        TimedeltaArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([td, pd.NaT, None]), TimedeltaArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        TimedeltaArray,
+    )
 
     # From TimedeltaIndex
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
@@ -47,7 +64,12 @@ def test_construction() -> None:
     check(assert_type(arr, TimedeltaArray), TimedeltaArray)
 
     # From Series
-    check(assert_type(pd.array(pd.Series(idx)), TimedeltaArray), TimedeltaArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.Series(idx)), TimedeltaArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        TimedeltaArray,
+    )
 
     # From numpy array of timedelta64
     values = np.array(

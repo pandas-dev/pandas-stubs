@@ -30,11 +30,35 @@ def test_add_py_scalar() -> None:
     check(assert_type(s + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(assert_type(d + left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
-    check(assert_type(left.add(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.add(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
-    check(assert_type(left.radd(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.radd(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
 
 def test_add_numpy_scalar() -> None:
@@ -48,11 +72,35 @@ def test_add_numpy_scalar() -> None:
     check(assert_type(s + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(assert_type(d + left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
-    check(assert_type(left.add(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.add(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
-    check(assert_type(left.radd(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.radd(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
 
 def test_add_pd_scalar() -> None:
@@ -66,11 +114,35 @@ def test_add_pd_scalar() -> None:
     check(assert_type(s + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(assert_type(d + left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
-    check(assert_type(left.add(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.add(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
-    check(assert_type(left.radd(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.radd(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
 
 def test_add_py_sequence() -> None:
@@ -80,18 +152,42 @@ def test_add_py_sequence() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # Series[Timedelta] + Sequence[datetime] should work, see pandas-dev/pandas#62353
-        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
         # Series[Timedelta] + Sequence[timedelta] should work, see pandas-dev/pandas#62353
-        _a = left + d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _a = left + d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _b = d + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _b = d + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
-    check(assert_type(left.add(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.add(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
-    check(assert_type(left.radd(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.radd(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
 
 def test_add_numpy_array() -> None:
@@ -108,11 +204,35 @@ def test_add_numpy_array() -> None:
     check(assert_type(s + left, np_ndarray_dt), pd.Series, pd.Timestamp)
     check(assert_type(d + left, np_ndarray_td), pd.Series, pd.Timedelta)
 
-    check(assert_type(left.add(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.add(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
-    check(assert_type(left.radd(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.radd(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
 
 def test_add_pd_index() -> None:
@@ -126,11 +246,35 @@ def test_add_pd_index() -> None:
     check(assert_type(s + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(assert_type(d + left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
-    check(assert_type(left.add(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.add(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
-    check(assert_type(left.radd(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.radd(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
 
 def test_add_pd_series() -> None:
@@ -144,8 +288,32 @@ def test_add_pd_series() -> None:
     check(assert_type(s + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(assert_type(d + left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
-    check(assert_type(left.add(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.add(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.add(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )
 
-    check(assert_type(left.radd(s), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(left.radd(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(s), "pd.Series[pd.Timestamp]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.radd(d), "pd.Series[pd.Timedelta]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        pd.Timedelta,
+    )

@@ -203,7 +203,9 @@ def test_types_groupby_agg() -> None:
 
     check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
     check(
-        assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(assert_type(df.groupby("col1").agg(min), pd.DataFrame), pd.DataFrame)
@@ -490,7 +492,9 @@ def test_groupby_apply() -> None:
         return x.sum()
 
     check(
-        assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            df.groupby("col1").apply(sum_to_series), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
 
@@ -498,7 +502,7 @@ def test_groupby_apply() -> None:
         return x.sample()
 
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
         ),
         pd.DataFrame,
@@ -550,7 +554,9 @@ def test_getattr_and_dataframe_groupby() -> None:
     )
     check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
     check(
-        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            df.groupby("col1").col3.agg([min, max]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
 

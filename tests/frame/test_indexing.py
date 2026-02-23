@@ -88,7 +88,7 @@ def test_types_setitem() -> None:
     df[s] = [5, 6]
     df.loc[:, s] = [5, 6]
     df["col1"] = [5, 6]
-    df[df["col1"] > 1] = [5, 6, 7]
+    df[df["col1"] > 1] = [5, 6, 7]  # pyrefly: ignore[unsupported-operation]
     df[a] = [[1, 2], [3, 4]]
     df[i] = [8, 9]
 
@@ -159,7 +159,7 @@ def test_indexslice_getitem() -> None:
     )
     ind = pd.Index([2, 3])
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[assert-type]
             pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
         ),
         tuple,
@@ -554,7 +554,7 @@ def test_npint_loc_indexer() -> None:
     df = pd.DataFrame({"x": [1, 2, 3]}, index=np.array([10, 20, 30], dtype="uint64"))
 
     def get_NDArray(df: pd.DataFrame, key: npt.NDArray[np.uint64]) -> pd.DataFrame:
-        return df.loc[key]
+        return df.loc[key]  # pyrefly: ignore[bad-index]
 
     a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
     check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
@@ -657,4 +657,4 @@ def test_frame_iat() -> None:
     df.iat[0, 0] = 999
     df.iat[0, 0] = float("nan")
     if TYPE_CHECKING_INVALID_USAGE:
-        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType]
+        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation]

@@ -18,14 +18,46 @@ def test_add_py_scalar() -> None:
     """Test pd.Index[complex] + Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
-    check(assert_type(left + b, "pd.Index[complex]"), pd.Index, np.complexfloating)
-    check(assert_type(left + i, "pd.Index[complex]"), pd.Index, np.complexfloating)
-    check(assert_type(left + f, "pd.Index[complex]"), pd.Index, np.complexfloating)
+    check(
+        assert_type(left + b, "pd.Index[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            left + i, "pd.Index[complex]"  # pyrefly: ignore[unsupported-operation]
+        ),  # pyrefly: ignore [assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            left + f, "pd.Index[complex]"  # pyrefly: ignore[unsupported-operation]
+        ),  # pyrefly: ignore [assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
     check(assert_type(left + c, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
-    check(assert_type(b + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
-    check(assert_type(i + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
-    check(assert_type(f + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
+    check(
+        assert_type(b + left, "pd.Index[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            i + left, "pd.Index[complex]"  # pyrefly: ignore[unsupported-operation]
+        ),  # pyrefly: ignore [assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            f + left, "pd.Index[complex]"  # pyrefly: ignore[unsupported-operation]
+        ),  # pyrefly: ignore [assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
     check(assert_type(c + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
 
@@ -33,14 +65,46 @@ def test_add_py_sequence() -> None:
     """Test pd.Index[complex] + Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
-    check(assert_type(left + b, "pd.Index[complex]"), pd.Index, np.complexfloating)
-    check(assert_type(left + i, "pd.Index[complex]"), pd.Index, np.complexfloating)
-    check(assert_type(left + f, "pd.Index[complex]"), pd.Index, np.complexfloating)
+    check(
+        assert_type(left + b, "pd.Index[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            left + i, "pd.Index[complex]"  # pyrefly: ignore[unsupported-operation]
+        ),  # pyrefly: ignore [assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            left + f, "pd.Index[complex]"  # pyrefly: ignore[unsupported-operation]
+        ),  # pyrefly: ignore [assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
     check(assert_type(left + c, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
-    check(assert_type(b + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
-    check(assert_type(i + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
-    check(assert_type(f + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
+    check(
+        assert_type(b + left, "pd.Index[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            i + left, "pd.Index[complex]"  # pyrefly: ignore[unsupported-operation]
+        ),  # pyrefly: ignore [assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            f + left, "pd.Index[complex]"  # pyrefly: ignore[unsupported-operation]
+        ),  # pyrefly: ignore [assert-type]
+        pd.Index,
+        np.complexfloating,
+    )
     check(assert_type(c + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
 

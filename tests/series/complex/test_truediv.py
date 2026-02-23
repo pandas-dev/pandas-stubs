@@ -19,74 +19,138 @@ def test_truediv_py_scalar(left: "pd.Series[complex]") -> None:
     """Test pd.Series[complex] / Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
-    check(assert_type(left / b, "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left / i, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(
+        assert_type(left / b, "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left / i, "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
     check(assert_type(left / f, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
-    check(assert_type(b / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(i / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(
+        assert_type(b / left, "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(i / left, "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
     check(assert_type(f / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     check(
-        assert_type(left.truediv(b), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[assert-type]
+            left.truediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[assert-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(i), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[assert-type]
+            left.truediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[assert-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(f), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(c), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-
-    check(assert_type(left.div(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(f), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-
-    check(
-        assert_type(left.rtruediv(b), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(i), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(f), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(c), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
 
     check(
-        assert_type(left.rdiv(b), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(left.div(b), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(i), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(left.div(i), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(f), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            left.rtruediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            left.rtruediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(left.rdiv(b), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left.rdiv(i), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
 
 
@@ -94,74 +158,138 @@ def test_truediv_py_sequence(left: "pd.Series[complex]") -> None:
     """Test pd.Series[complex] / Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
-    check(assert_type(left / b, "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left / i, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(
+        assert_type(left / b, "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left / i, "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
     check(assert_type(left / f, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
-    check(assert_type(b / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(i / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(
+        assert_type(b / left, "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(i / left, "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
     check(assert_type(f / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     check(
-        assert_type(left.truediv(b), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[assert-type]
+            left.truediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[assert-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(i), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[assert-type]
+            left.truediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[assert-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(f), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(c), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-
-    check(assert_type(left.div(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(f), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-
-    check(
-        assert_type(left.rtruediv(b), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(i), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(f), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(c), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
 
     check(
-        assert_type(left.rdiv(b), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(left.div(b), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(i), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(left.div(i), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(f), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            left.rtruediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            left.rtruediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(left.rdiv(b), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left.rdiv(i), "pd.Series[complex]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
 
 
@@ -196,63 +324,119 @@ def test_truediv_numpy_array(left: "pd.Series[complex]") -> None:
     )
 
     check(
-        assert_type(left.truediv(b), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(i), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(f), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(c), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-
-    check(assert_type(left.div(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(f), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-
-    check(
-        assert_type(left.rtruediv(b), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(i), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(f), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(c), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
 
     check(
-        assert_type(left.rdiv(b), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(i), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(f), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
 
 
@@ -274,63 +458,119 @@ def test_truediv_pd_index(left: "pd.Series[complex]") -> None:
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     check(
-        assert_type(left.truediv(b), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(i), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(f), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(c), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-
-    check(assert_type(left.div(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(f), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-
-    check(
-        assert_type(left.rtruediv(b), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(i), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(f), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(c), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
 
     check(
-        assert_type(left.rdiv(b), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(i), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(f), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
 
 
@@ -352,61 +592,117 @@ def test_truediv_pd_series(left: "pd.Series[complex]") -> None:
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     check(
-        assert_type(left.truediv(b), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(i), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(f), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
     check(
-        assert_type(left.truediv(c), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-
-    check(assert_type(left.div(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(f), "pd.Series[complex]"), pd.Series, np.complexfloating)
-    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
-
-    check(
-        assert_type(left.rtruediv(b), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(i), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(f), "pd.Series[complex]"),
-        pd.Series,
-        np.complexfloating,
-    )
-    check(
-        assert_type(left.rtruediv(c), "pd.Series[complex]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.truediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.complexfloating,
     )
 
     check(
-        assert_type(left.rdiv(b), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(i), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(f), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.div(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rtruediv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(b), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(i), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(f), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            left.rdiv(c), "pd.Series[complex]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.complexfloating,
     )

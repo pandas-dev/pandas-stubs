@@ -114,26 +114,54 @@ def test_types_concat_none() -> None:
     df = pd.DataFrame({"a": [7, -5, 10]})
 
     check(
-        assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
-    )
-    check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
-    )
-    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
-
-    check(
-        assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([None, series]), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.integer,
     )
-    check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([None, df]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([None, series, df], axis=1), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([None, series, df]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({"a": None, "b": series}), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({"a": None, "b": df}), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
 
@@ -148,17 +176,28 @@ def test_types_concat() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
 
-    check(assert_type(pd.concat([s, s2]), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(pd.concat([s, s2], axis=1), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([s, s2]), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([s, s2], axis=1), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([s, s2], keys=["first", "second"], sort=True), "pd.Series[int]"
         ),
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
             "pd.Series[int]",
         ),
@@ -166,7 +205,7 @@ def test_types_concat() -> None:
         np.integer,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([s, s2], keys=["first", "second"], names=None),
             "pd.Series[int]",
         ),
@@ -176,20 +215,36 @@ def test_types_concat() -> None:
 
     # Depends on the axis
     check(
-        assert_type(pd.concat({"a": s, "b": s2}), "pd.Series[int]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({"a": s, "b": s2}), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.concat({1: s, 2: s2}), "pd.Series[int]"), pd.Series, np.integer
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({1: s, 2: s2}), "pd.Series[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.integer,
     )
-    check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat({1: s, None: s2}), "pd.Series[int]"),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.concat({1: s, None: s2}),  # pyrefly: ignore[no-matching-overload]
+            "pd.Series[int]",
+        ),  # pyrefly: ignore [assert-type]
         pd.Series,
         np.integer,
     )
@@ -203,28 +258,46 @@ def test_types_concat() -> None:
 
     check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(pd.concat({1: s, None: s2}, axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.concat(  # pyrefly: ignore[no-matching-overload]
+                {1: s, None: s2}, axis=1
+            ),  # pyrefly: ignore[no-matching-overload]
+            pd.DataFrame,
+        ),  # pyrefly: ignore [assert-type]
+        pd.DataFrame,
+    )
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
 
-    check(assert_type(pd.concat([df, df2]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat([df, df2], axis=1), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], axis=1), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([df, df2], keys=["first", "second"], sort=True), pd.DataFrame
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([df, df2], keys=["first", "second"], names=["source", "row"]),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([df, df2], keys=["first", "second"], names=None),
             pd.DataFrame,
         ),
@@ -232,7 +305,7 @@ def test_types_concat() -> None:
     )
 
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat(
                 {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
             ),
@@ -241,29 +314,55 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat({"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
 
-    check(assert_type(pd.concat({"a": df, "b": df2}), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat({1: df, 2: df2}), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat({1: df, None: df2}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({"a": df, "b": df2}), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat({1: df, 2: df2}), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.concat({1: df, None: df2}),  # pyrefly: ignore[no-matching-overload]
+            pd.DataFrame,
+        ),  # pyrefly: ignore [assert-type]
+        pd.DataFrame,
+    )
 
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1),  # noqa: C417
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     adict = {"a": df, 2: df2}
-    check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat(adict), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
 
     data: pd.DataFrame | pd.Series = pd.Series()
-    check(assert_type(pd.concat([pd.DataFrame(), data]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([pd.DataFrame(), data]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
 
 
 def test_concat_series_mixed_numeric() -> None:
@@ -273,14 +372,22 @@ def test_concat_series_mixed_numeric() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7.0, -5, 10])
 
-    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series, np.floating)
     check(
-        assert_type(pd.concat([s, s2], keys=["first", "second"], sort=True), pd.Series),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([s, s2]), pd.Series
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.Series,
         np.floating,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([s, s2], keys=["first", "second"], sort=True), pd.Series
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
             pd.Series,
         ),
@@ -288,7 +395,7 @@ def test_concat_series_mixed_numeric() -> None:
         np.floating,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([s, s2], keys=["first", "second"], names=None), pd.Series
         ),
         pd.Series,
@@ -301,30 +408,32 @@ def test_concat_args() -> None:
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]}, index=[2, 3])
 
     check(
-        assert_type(pd.concat([df, df2], keys=["df1", "df2"]), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], keys=["df1", "df2"]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([df, df2], keys=["df1", "df2"], names=["one"]), pd.DataFrame
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([df, df2], keys=["df1", "df2"], names=None), pd.DataFrame
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat([df, df2], keys=["df1", "df2"], names=[pd.Timedelta(1, "D")]),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat(
                 [df, df2], keys=[("df1", "ff"), (pd.Timestamp(2000, 1, 1), "gg")]
             ),
@@ -335,7 +444,7 @@ def test_concat_args() -> None:
 
     df_dict = {"df1": df, "df2": df2}
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat(df_dict.values(), keys=df_dict.keys()),
             pd.DataFrame,
         ),
@@ -343,22 +452,62 @@ def test_concat_args() -> None:
     )
 
     check(
-        assert_type(pd.concat([df, df2], ignore_index=True), pd.DataFrame), pd.DataFrame
-    )
-    check(
-        assert_type(pd.concat([df, df2], verify_integrity=True), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], ignore_index=True), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
-    check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], verify_integrity=True), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], sort=True), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _0 = pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
 
-    check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat([df, df2], axis=0), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat([df, df2], axis=1), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat([df, df2], axis="index"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat([df, df2], axis="columns"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], join="inner"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], join="outer"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], axis=0), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], axis=1), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], axis="index"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.concat([df, df2], axis="columns"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
 
     df = pd.DataFrame(np.random.randn(1, 3))
     df2 = pd.DataFrame(np.random.randn(1, 4))
@@ -366,7 +515,7 @@ def test_concat_args() -> None:
     levels = [["foo", "baz"], ["one", "two"]]
     names = ["first", "second"]
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat(
                 [df, df2, df, df2],
                 keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
@@ -378,7 +527,7 @@ def test_concat_args() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat(
                 [df, df2, df, df2],
                 keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
@@ -391,7 +540,7 @@ def test_concat_args() -> None:
     )
 
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.concat(
                 [df, df2, df, df2],
                 keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
@@ -440,12 +589,30 @@ def test_types_json_normalize() -> None:
 def test_isna() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/264
     s = pd.Series([1, np.nan, 3.2])
-    check(assert_type(pd.isna(s), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.notna(s), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.isna(s), "pd.Series[bool]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.bool_,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.notna(s), "pd.Series[bool]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Series,
+        np.bool_,
+    )
 
     df = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
-    check(assert_type(pd.isna(df), "pd.DataFrame"), pd.DataFrame)
-    check(assert_type(pd.notna(df), "pd.DataFrame"), pd.DataFrame)
+    check(
+        assert_type(pd.isna(df), "pd.DataFrame"),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.notna(df), "pd.DataFrame"),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
 
     idx = pd.Index([1, 2, np.nan, float("nan")])
     check(assert_type(pd.isna(idx), np_1darray_bool), np_1darray_bool)
@@ -463,13 +630,29 @@ def test_isna() -> None:
 
     # 2-D numpy array
     arr_2d = idx.to_numpy().reshape(2, 2)
-    check(assert_type(pd.isna(arr_2d), np_2darray[np.bool]), np_2darray[np.bool])
-    check(assert_type(pd.notna(arr_2d), np_2darray[np.bool]), np_2darray[np.bool])
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.isna(arr_2d), np_2darray[np.bool]
+        ),  # pyrefly: ignore[bad-argument-type]
+        np_2darray[np.bool],
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.notna(arr_2d), np_2darray[np.bool]
+        ),  # pyrefly: ignore[bad-argument-type]
+        np_2darray[np.bool],
+    )
 
     # N-D numpy array
     arr_nd = idx.to_numpy().reshape([2, 2])
-    check(assert_type(pd.isna(arr_nd), np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(pd.notna(arr_nd), np_ndarray_bool), np_ndarray_bool)
+    check(
+        assert_type(pd.isna(arr_nd), np_ndarray_bool),  # pyrefly: ignore[assert-type]
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(pd.notna(arr_nd), np_ndarray_bool),  # pyrefly: ignore[assert-type]
+        np_ndarray_bool,
+    )
 
     # List of scalars
     l_sca = [1, 2.5, float("nan")]
@@ -481,38 +664,74 @@ def test_isna() -> None:
     check(assert_type(pd.isna(l_any), np_ndarray_bool), np_ndarray_bool)
     check(assert_type(pd.notna(l_any), np_ndarray_bool), np_ndarray_bool)
 
-    assert check(assert_type(pd.isna(pd.NA), bool), bool)
-    assert not check(assert_type(pd.notna(pd.NA), bool), bool)
+    assert check(
+        assert_type(pd.isna(pd.NA), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert not check(
+        assert_type(pd.notna(pd.NA), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
-    assert check(assert_type(pd.isna(pd.NaT), bool), bool)
-    assert not check(assert_type(pd.notna(pd.NaT), bool), bool)
+    assert check(
+        assert_type(pd.isna(pd.NaT), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert not check(
+        assert_type(pd.notna(pd.NaT), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
-    assert check(assert_type(pd.isna(None), bool), bool)
-    assert not check(assert_type(pd.notna(None), bool), bool)
+    assert check(
+        assert_type(pd.isna(None), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert not check(
+        assert_type(pd.notna(None), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
-    assert not check(assert_type(pd.isna(2.5), bool), bool)
-    assert check(assert_type(pd.notna(2.5), bool), bool)
+    assert not check(
+        assert_type(pd.isna(2.5), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert check(
+        assert_type(pd.notna(2.5), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
     # Checks for datetime, timedelta, np.datetime64 and np.timedelta64
     py_dt = dt.datetime.now()
-    assert check(assert_type(pd.notna(py_dt), bool), bool)
-    assert not check(assert_type(pd.isna(py_dt), bool), bool)
+    assert check(
+        assert_type(pd.notna(py_dt), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert not check(
+        assert_type(pd.isna(py_dt), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
     py_td = dt.datetime.now() - py_dt
-    assert check(assert_type(pd.notna(py_td), bool), bool)
-    assert not check(assert_type(pd.isna(py_td), bool), bool)
+    assert check(
+        assert_type(pd.notna(py_td), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert not check(
+        assert_type(pd.isna(py_td), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
     np_dt = np.datetime64(py_dt)
-    assert check(assert_type(pd.notna(np_dt), bool), bool)
-    assert not check(assert_type(pd.isna(np_dt), bool), bool)
+    assert check(
+        assert_type(pd.notna(np_dt), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert not check(
+        assert_type(pd.isna(np_dt), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
     np_td = np.timedelta64(py_td)
-    assert check(assert_type(pd.notna(np_td), bool), bool)
-    assert not check(assert_type(pd.isna(np_td), bool), bool)
+    assert check(
+        assert_type(pd.notna(np_td), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert not check(
+        assert_type(pd.isna(np_td), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
     np_nat = np.timedelta64("NaT")
-    assert check(assert_type(pd.isna(np_nat), bool), bool)
-    assert not check(assert_type(pd.notna(np_nat), bool), bool)
+    assert check(
+        assert_type(pd.isna(np_nat), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
+    assert not check(
+        assert_type(pd.notna(np_nat), bool), bool  # pyrefly: ignore[bad-argument-type]
+    )
 
     # Check TypeIs type narrowing functionality
     nullable1: str | None | NAType | NaTType = random.choice(
@@ -566,11 +785,13 @@ def test_unique() -> None:
     # Taken from the docs
     ints = [2, 1, 3, 3]
     check(
-        assert_type(pd.unique(pd.Series(ints)), np_1darray | ExtensionArray),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(pd.Series(ints)), np_1darray | ExtensionArray
+        ),  # pyrefly: ignore[bad-argument-type]
         np_1darray_int64,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.unique(pd.Series(ints, dtype="Int64")), np_1darray | ExtensionArray
         ),
         IntegerArray,
@@ -578,13 +799,15 @@ def test_unique() -> None:
     )
 
     check(
-        assert_type(pd.unique(pd.Series([2] + [1] * 5)), np_1darray | ExtensionArray),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(pd.Series([2] + [1] * 5)), np_1darray | ExtensionArray
+        ),  # pyrefly: ignore[bad-argument-type]
         np_1darray_int64,
     )
 
     unzoned_timestamps = [pd.Timestamp("20160101"), pd.Timestamp("20160101")]
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.unique(pd.Series(unzoned_timestamps)), np_1darray | ExtensionArray
         ),
         np_1darray,
@@ -593,31 +816,36 @@ def test_unique() -> None:
 
     zoned_timestamps = [ts.tz_localize("US/Eastern") for ts in unzoned_timestamps]
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.unique(pd.Series(zoned_timestamps)), np_1darray | ExtensionArray
         ),
         pd.arrays.DatetimeArray,
         pd.Timestamp,
     )
 
-    check(assert_type(pd.unique(np.array(list("baabc"))), np_1darray), np_1darray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(np.array(list("baabc"))), np_1darray
+        ),  # pyrefly: ignore[bad-argument-type]
+        np_1darray,
+    )
 
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.unique(pd.Series(pd.Categorical(list("baabc")))),
             np_1darray | ExtensionArray,
         ),
         pd.Categorical,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.unique(pd.Series(pd.Categorical(list("baabc"), categories=list("abc")))),
             np_1darray | ExtensionArray,
         ),
         pd.Categorical,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.unique(
                 pd.Series(
                     pd.Categorical(list("baabc"), categories=list("abc"), ordered=True)
@@ -944,15 +1172,55 @@ def test_index_unqiue() -> None:
     mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
     interval_i = pd.interval_range(1, 10, periods=10)
 
-    check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
-    check(assert_type(pd.unique(dti), pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(pd.unique(dti_zoned), pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(pd.unique(i), pd.Index), pd.Index)
-    check(assert_type(pd.unique(ii_pd), pd.Index), pd.Index)
-    check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(pd.unique(ri), "pd.Index[int]"), pd.Index, int)
-    check(assert_type(pd.unique(tdi), pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(pd.unique(mi), pd.MultiIndex), pd.MultiIndex)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(ci), pd.CategoricalIndex
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(dti), pd.DatetimeIndex
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(dti_zoned), pd.DatetimeIndex
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.unique(i), pd.Index),  # pyrefly: ignore[bad-argument-type]
+        pd.Index,
+    )
+    check(
+        assert_type(pd.unique(ii_pd), pd.Index),  # pyrefly: ignore[bad-argument-type]
+        pd.Index,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(pi), pd.PeriodIndex
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(ri), "pd.Index[int]"
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.Index,
+        int,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.unique(tdi), pd.TimedeltaIndex
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(pd.unique(mi), pd.MultiIndex),  # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex,
+    )
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
@@ -1024,14 +1292,14 @@ def test_cut() -> None:
 
     s1 = pd.Series(data=pd.date_range("1/1/2020", periods=300))
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.cut(s1, bins=[np.datetime64("2020-01-03"), np.datetime64("2020-09-01")]),
             "pd.Series[pd.CategoricalDtype]",
         ),
         pd.Series,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.cut(s1, bins=10),
             "pd.Series[pd.CategoricalDtype]",
         ),
@@ -1380,7 +1648,7 @@ def test_merge_ordered() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
             ls,
             rs,
             left_on="left",
@@ -1388,7 +1656,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="right",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
             ls,
             rf,
             left_on="left",
@@ -1396,7 +1664,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="b",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
             lf,
             rs,
             left_on="a",

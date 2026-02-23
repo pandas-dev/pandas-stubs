@@ -72,8 +72,8 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
     if TYPE_CHECKING_INVALID_USAGE:
-        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
 
 def test_index_astype() -> None:
@@ -96,7 +96,10 @@ def test_index_astype() -> None:
     )
     check(
         assert_type(
-            pd.MultiIndex.from_product([["x", "y"], pd.Series([1, 2])]), pd.MultiIndex
+            pd.MultiIndex.from_product(
+                [["x", "y"], pd.Series([1, 2])]  # pyrefly: ignore[bad-specialization]
+            ),
+            pd.MultiIndex,
         ),
         pd.MultiIndex,
     )
@@ -174,10 +177,14 @@ def test_column_contains() -> None:
     collist = list(df.columns)
     check(assert_type(collist, list[str]), list, str)
 
-    collist2 = list(df.columns[df.columns.str.contains("A|B")])
-    check(assert_type(collist2, list[str]), list, str)
+    collist2 = list(
+        df.columns[df.columns.str.contains("A|B")]  # pyrefly: ignore[bad-index]
+    )
+    check(assert_type(collist2, list[str]), list, str)  # pyrefly: ignore[assert-type]
 
-    length = len(df.columns[df.columns.str.contains("A|B")])
+    length = len(
+        df.columns[df.columns.str.contains("A|B")]  # pyrefly: ignore[bad-index]
+    )
     check(assert_type(length, int), int)
 
 
@@ -275,7 +282,9 @@ def test_types_to_numpy() -> None:
         dtype=np.integer,
     )
     check(
-        assert_type(r_idx.to_numpy(dtype=np.int32), np_1darray[np.int32]),
+        assert_type(  # pyrefly: ignore[assert-type]
+            r_idx.to_numpy(dtype=np.int32), np_1darray[np.int32]
+        ),  # pyrefly: ignore[assert-type]
         np_1darray[np.int32],
     )
 
@@ -488,7 +497,7 @@ def test_interval_index_breaks() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks([1.0, 2.0, 3.0, 4.0]),
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
@@ -496,7 +505,7 @@ def test_interval_index_breaks() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks(
                 [pd.Timestamp(2000, 1, 1), pd.Timestamp(2000, 1, 2)]
             ),
@@ -506,7 +515,7 @@ def test_interval_index_breaks() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks([pd.Timedelta(1, "D"), pd.Timedelta(2, "D")]),
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
@@ -523,7 +532,7 @@ def test_interval_index_breaks() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks(
                 np.array([1.0, 2.0, 3.0, 4.0], dtype=np.float64)
             ),
@@ -542,7 +551,7 @@ def test_interval_index_breaks() -> None:
         dtype=np.datetime64,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks(np_ndarray_dt64),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
@@ -559,7 +568,7 @@ def test_interval_index_breaks() -> None:
         dtype=np.timedelta64,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks(np_ndarray_td64),
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
@@ -575,7 +584,7 @@ def test_interval_index_breaks() -> None:
     )
     pd_series_float = pd.Series([1.0, 2.0, 3.0, 4.0], dtype=float)
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks(pd_series_float),
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
@@ -584,7 +593,7 @@ def test_interval_index_breaks() -> None:
     )
     timestamp_series = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="D"))
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks(timestamp_series),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
@@ -592,7 +601,7 @@ def test_interval_index_breaks() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_breaks(
                 [
                     dt.datetime(2000, 1, 1),
@@ -618,7 +627,7 @@ def test_interval_index_arrays() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_arrays([1.0, 2.0, 3.0, 4.0], [2.0, 3.0, 4.0, 5.0]),
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
@@ -637,7 +646,7 @@ def test_interval_index_arrays() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_arrays(
                 np.array([1.0, 2.0, 3.0, 4.0], dtype=np.float64),
                 np.array([2.0, 3.0, 4.0, 5.0], dtype=np.float64),
@@ -666,7 +675,7 @@ def test_interval_index_arrays() -> None:
         dtype="datetime64[ns]",
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_arrays(left_dt64_arr, right_dt_arr),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
@@ -687,7 +696,7 @@ def test_interval_index_arrays() -> None:
     series_float_left = pd.Series([1.0, 2.0, 3.0, 4.0], dtype=float)
     series_float_right = pd.Series([2.0, 3.0, 4.0, 5.0], dtype=float)
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_arrays(series_float_left, series_float_right),
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
@@ -698,7 +707,7 @@ def test_interval_index_arrays() -> None:
     left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="YS"))
     right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="YS"))
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_arrays(left_s_ts, right_s_ts),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
@@ -706,7 +715,7 @@ def test_interval_index_arrays() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_arrays(
                 [
                     dt.datetime(2000, 1, 1),
@@ -738,7 +747,7 @@ def test_interval_index_tuples() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_tuples([(1.0, 2.0), (2.0, 3.0)]),
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
@@ -746,7 +755,7 @@ def test_interval_index_tuples() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_tuples(
                 [
                     (pd.Timestamp(2000, 1, 1), pd.Timestamp(2001, 1, 1)),
@@ -759,7 +768,7 @@ def test_interval_index_tuples() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_tuples(
                 [
                     (dt.datetime(2000, 1, 1), dt.datetime(2001, 1, 1)),
@@ -772,7 +781,7 @@ def test_interval_index_tuples() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_tuples(
                 [
                     (np.datetime64("2000-01-01"), np.datetime64("2001-01-01")),
@@ -785,7 +794,7 @@ def test_interval_index_tuples() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_tuples(
                 [
                     (pd.Timedelta(1, "D"), pd.Timedelta(2, "D")),
@@ -798,7 +807,7 @@ def test_interval_index_tuples() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_tuples(
                 [
                     (dt.timedelta(days=1), dt.timedelta(days=2)),
@@ -811,7 +820,7 @@ def test_interval_index_tuples() -> None:
         pd.Interval,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.IntervalIndex.from_tuples(
                 [
                     (np.timedelta64(1, "D"), np.timedelta64(2, "D")),
@@ -888,51 +897,56 @@ def test_index_operators() -> None:
     check(assert_type(10 % i1, "pd.Index[int]"), pd.Index)
     check(assert_type(divmod(i1, i2), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
     check(assert_type(divmod(i1, 10), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
-    check(assert_type(divmod(10, i1), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            divmod(10, i1), tuple["pd.Index[int]", "pd.Index[int]"]
+        ),  # pyrefly: ignore[bad-argument-type]
+        tuple,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             & i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             & 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
-        assert_type(  # type: ignore[assert-type]
-            10
+        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+            10  # pyrefly: ignore[unsupported-operation]
             & i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             | i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             | 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
-        assert_type(  # type: ignore[assert-type]
-            10
+        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+            10  # pyrefly: ignore[unsupported-operation]
             | i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             ^ i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             ^ 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
-        assert_type(  # type: ignore[assert-type]
-            10
+        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+            10  # pyrefly: ignore[unsupported-operation]
             ^ i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
@@ -1041,8 +1055,16 @@ def test_append_mix() -> None:
     check(assert_type(first.append([third]), pd.Index), pd.Index)
     check(assert_type(first.append([second, third]), pd.Index), pd.Index)
 
-    check(assert_type(third.append([]), pd.Index), pd.Index)
-    check(assert_type(third.append(cast("list[Index[Any]]", [])), pd.Index), pd.Index)
+    check(
+        assert_type(third.append([]), pd.Index),  # pyrefly: ignore[assert-type]
+        pd.Index,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            third.append(cast("list[Index[Any]]", [])), pd.Index
+        ),  # pyrefly: ignore[assert-type]
+        pd.Index,
+    )
     check(assert_type(third.append([first]), pd.Index), pd.Index)
     check(assert_type(third.append([first, second]), pd.Index), pd.Index)
 
@@ -1285,7 +1307,7 @@ def test_index_categorical() -> None:
 def test_disallow_empty_index() -> None:
     # From GH 826
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_periodindex_shift() -> None:
@@ -1366,7 +1388,7 @@ def test_multiindex_range() -> None:
     check(assert_type(midx, pd.MultiIndex), pd.MultiIndex)
 
     midx_mixed_types = pd.MultiIndex.from_product(
-        [range(3), pd.Series([2, 3, 5])],
+        [range(3), pd.Series([2, 3, 5])],  # pyrefly: ignore[bad-specialization]
     )
     check(assert_type(midx_mixed_types, pd.MultiIndex), pd.MultiIndex)
 
@@ -1563,12 +1585,18 @@ def test_datetimeindex_where() -> None:
     datetime_index = pd.date_range(start="2025-01-01", freq="h", periods=48)
     mask = np.ones(48, dtype=bool)
     val_idx = datetime_index.where(mask, datetime_index - pd.Timedelta(days=1))
-    check(assert_type(val_idx, DatetimeIndex), DatetimeIndex)
+    check(
+        assert_type(val_idx, DatetimeIndex),  # pyrefly: ignore[assert-type]
+        DatetimeIndex,
+    )
 
     val_sr = datetime_index.where(
         mask, (datetime_index - pd.Timedelta(days=1)).to_series()
     )
-    check(assert_type(val_sr, DatetimeIndex), DatetimeIndex)
+    check(
+        assert_type(val_sr, DatetimeIndex),  # pyrefly: ignore[assert-type]
+        DatetimeIndex,
+    )
 
     val_idx_scalar = datetime_index.where(mask, pd.Index([0, 1]))
     check(assert_type(val_idx_scalar, pd.Index), pd.Index)
@@ -1620,7 +1648,7 @@ def test_index_droplevel() -> None:
 def test_index_setitem() -> None:
     idx = pd.Index([1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        idx[0] = 999  # type: ignore[index] # pyright: ignore[reportIndexIssue]
+        idx[0] = 999  # type: ignore[index] # pyright: ignore[reportIndexIssue] # pyrefly: ignore[unsupported-operation]
 
 
 def test_index_putmask() -> None:
@@ -1700,7 +1728,9 @@ def test_index_slice_locs() -> None:
 def test_index_view() -> None:
     ind = pd.Index([1, 2])
     check(assert_type(ind.view("int64"), np_1darray), np_1darray)
-    check(assert_type(ind.view(), "pd.Index[int]"), pd.Index)
+    check(  # pyrefly: ignore[bad-specialization]
+        assert_type(ind.view(), "pd.Index[int]"), pd.Index
+    )  # pyrefly: ignore[bad-specialization]
     # mypy and pyright differ here in what they report:
     # - mypy: ndarray[Any, Any]"
     # - pyright: ndarray[tuple[Any, ...], dtype[Any]]

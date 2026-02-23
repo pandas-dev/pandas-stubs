@@ -54,23 +54,40 @@ def test_construction_array_like() -> None:
     data = [1, b"a"]
     np_arr = np.array(data, np.object_)
 
-    check(assert_type(pd.array(data), NumpyExtensionArray), NumpyExtensionArray)
-
-    check(assert_type(pd.array(np_arr), NumpyExtensionArray), NumpyExtensionArray)
-
     check(
-        assert_type(pd.array(pd.array(data)), NumpyExtensionArray), NumpyExtensionArray
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(data), NumpyExtensionArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        NumpyExtensionArray,
     )
 
     check(
-        assert_type(pd.array(pd.RangeIndex(0, 1)), NumpyExtensionArray),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(np_arr), NumpyExtensionArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        NumpyExtensionArray,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.array(data)), NumpyExtensionArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        NumpyExtensionArray,
+    )
+
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.RangeIndex(0, 1)), NumpyExtensionArray
+        ),  # pyrefly: ignore[bad-argument-type]
         NumpyExtensionArray,
     )
 
 
 def test_construction_dtype_nan() -> None:
     check(
-        assert_type(pd.array([np.nan], float), NumpyExtensionArray),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([np.nan], float), NumpyExtensionArray
+        ),  # pyrefly: ignore[bad-argument-type]
         NumpyExtensionArray,
     )
 
@@ -90,11 +107,22 @@ def test_construction_dtype(
     exc = exception_on_platform(dtype)
     if exc:
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
-            assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray)
+            assert_type(  # pyrefly: ignore[assert-type]
+                pd.array([1], dtype=dtype),  # pyrefly: ignore[no-matching-overload]
+                NumpyExtensionArray,
+            )  # pyrefly: ignore [assert-type]
     elif dtype == "V" or "void" in str(dtype):
-        check(pd.array([b"1"], dtype=dtype), NumpyExtensionArray, target_dtype)
+        check(
+            pd.array([b"1"], dtype=dtype),  # pyrefly: ignore[no-matching-overload]
+            NumpyExtensionArray,
+            target_dtype,
+        )
     else:
-        check(pd.array([1], dtype=dtype), NumpyExtensionArray, target_dtype)
+        check(
+            pd.array([1], dtype=dtype),  # pyrefly: ignore[no-matching-overload]
+            NumpyExtensionArray,
+            target_dtype,
+        )
 
     if TYPE_CHECKING:
         # python boolean
@@ -259,7 +287,7 @@ def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -
         assert_type(NumpyExtensionArray(pd.array([None])), NumpyExtensionArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]

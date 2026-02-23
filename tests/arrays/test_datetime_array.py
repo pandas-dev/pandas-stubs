@@ -143,17 +143,29 @@ def test_construction_dtype(
     target_dtype: type,
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), DatetimeArray, dtype_notna)
     check(
-        pd.array([np.datetime64("1748-12-24"), *data], dtype),
+        pd.array([*data], dtype),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+        dtype_notna,
+    )
+    check(
+        pd.array(  # pyrefly: ignore[bad-argument-type]
+            [np.datetime64("1748-12-24"), *data], dtype
+        ),  # pyrefly: ignore[bad-argument-type]
         DatetimeArray,
         dtype_notna,
     )
 
     dtype_na = target_dtype if data else NaTType
-    check(pd.array([*data, np.nan], dtype), DatetimeArray, dtype_na)
     check(
-        pd.array([np.datetime64("2048-12-24"), *data, np.nan], dtype),
+        pd.array([*data, np.nan], dtype),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+        dtype_na,
+    )
+    check(
+        pd.array(  # pyrefly: ignore[bad-argument-type]
+            [np.datetime64("2048-12-24"), *data, np.nan], dtype
+        ),  # pyrefly: ignore[bad-argument-type]
         DatetimeArray,
         target_dtype,
     )
@@ -183,36 +195,36 @@ def test_construction_dtype(
         assert_type(pd.array([], np.dtype("<M8[ns]")), DatetimeArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.array([], "datetime64[Y]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[M]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[W]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[D]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[h]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[m]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[μs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[ps]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[fs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "datetime64[as]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[Y]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[M]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[W]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[D]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[h]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[m]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[μs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[ps]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[fs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "M8[as]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[Y]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[M]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[W]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[D]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[h]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[m]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[μs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[ps]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[fs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        pd.array([], "<M8[as]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        pd.array([], "datetime64[Y]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[M]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[W]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[D]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[h]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[m]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[μs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[ps]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[fs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "datetime64[as]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[Y]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[M]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[W]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[D]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[h]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[m]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[μs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[ps]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[fs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "M8[as]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[Y]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[M]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[W]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[D]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[h]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[m]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[μs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[ps]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[fs]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.array([], "<M8[as]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_properties() -> None:
@@ -253,22 +265,77 @@ def test_properties() -> None:
 
 def test_constructor() -> None:
     dt = datetime(2025, 11, 10)
-    check(assert_type(pd.array([dt]), DatetimeArray), DatetimeArray)
-    check(assert_type(pd.array([dt, pd.Timestamp(dt)]), DatetimeArray), DatetimeArray)
-    check(assert_type(pd.array([dt, None]), DatetimeArray), DatetimeArray)
-    check(assert_type(pd.array([dt, pd.NaT, None]), DatetimeArray), DatetimeArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([dt]), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([dt, pd.Timestamp(dt)]), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([dt, None]), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([dt, pd.NaT, None]), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
 
     np_dt = np.datetime64(dt)
-    check(assert_type(pd.array([np_dt]), DatetimeArray), DatetimeArray)
-    check(assert_type(pd.array([np_dt, None]), DatetimeArray), DatetimeArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([np_dt]), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([np_dt, None]), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
     dt_nat = cast(list[np.datetime64 | NaTType], [np_dt, pd.NaT])
-    check(assert_type(pd.array(dt_nat), DatetimeArray), DatetimeArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(dt_nat), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
 
     np_arr = np.array([dt], np.datetime64)
-    check(assert_type(pd.array(np_arr), DatetimeArray), DatetimeArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(np_arr), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
 
-    check(assert_type(pd.array(pd.array([dt])), DatetimeArray), DatetimeArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.array([dt])), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
 
-    check(assert_type(pd.array(pd.Index([dt])), DatetimeArray), DatetimeArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.Index([dt])), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )
 
-    check(assert_type(pd.array(pd.Series([dt])), DatetimeArray), DatetimeArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.Series([dt])), DatetimeArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        DatetimeArray,
+    )

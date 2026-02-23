@@ -263,8 +263,8 @@ def test_clipboard() -> None:
     DF.to_clipboard(quoting=csv.QUOTE_ALL)
     DF.to_clipboard(sep=",", index=False)
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
 
 def test_clipboard_iterator() -> None:
@@ -356,19 +356,27 @@ def test_hdfstore(tmp_path: Path) -> None:
     check(assert_type(store.keys(), list[str]), list)
     check(assert_type(store.info(), str), str)
     check(
-        assert_type(store.select("df", start=0, stop=1), DataFrame | Series),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            store.select("df", start=0, stop=1), DataFrame | Series
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
     check(
-        assert_type(store.select("df", where="index>=1"), DataFrame | Series),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            store.select("df", where="index>=1"), DataFrame | Series
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
     check(
-        assert_type(store.select("df", where=Term("index>=1")), DataFrame | Series),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            store.select("df", where=Term("index>=1")), DataFrame | Series
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
     check(
-        assert_type(store.select("df", where=[Term("index>=1")]), DataFrame | Series),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            store.select("df", where=[Term("index>=1")]), DataFrame | Series
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
     check(assert_type(store.get("df"), DataFrame | Series), DataFrame)
@@ -470,14 +478,14 @@ def test_json_series(tmp_path: Path) -> None:
     check(assert_type(read_json(path_str, typ="series"), Series), Series)
     check(assert_type(DF.to_json(), str), str)
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_json(io.StringIO(s.to_json(orient=None)), typ="series", orient=None),
             Series,
         ),
         Series,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_json(
                 io.StringIO(s.to_json(orient="split")), typ="series", orient="split"
             ),
@@ -486,7 +494,7 @@ def test_json_series(tmp_path: Path) -> None:
         Series,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_json(
                 io.StringIO(s.to_json(orient="records")), typ="series", orient="records"
             ),
@@ -495,7 +503,7 @@ def test_json_series(tmp_path: Path) -> None:
         Series,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_json(
                 io.StringIO(s.to_json(orient="index")), typ="series", orient="index"
             ),
@@ -504,7 +512,7 @@ def test_json_series(tmp_path: Path) -> None:
         Series,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_json(
                 io.StringIO(s.to_json(orient="table")), typ="series", orient="table"
             ),
@@ -520,7 +528,7 @@ def test_json_chunk(tmp_path: Path) -> None:
     json_reader = read_json(path_str, chunksize=1, lines=True)
     check(assert_type(json_reader, "JsonReader[DataFrame]"), JsonReader)
     for sub_df in json_reader:
-        check(assert_type(sub_df, DataFrame), DataFrame)
+        check(assert_type(sub_df, DataFrame), DataFrame)  # pyrefly: ignore[assert-type]
     check(assert_type(DF.to_json(), str), str)
 
 
@@ -535,7 +543,7 @@ def test_parquet_to_pandas() -> None:
     """Test passing `to_pandas_kwargs` in read_parquet."""
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+        _0 = read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
 
 def test_parquet_options(tmp_path: Path) -> None:
@@ -572,10 +580,22 @@ def test_read_csv(tmp_path: Path) -> None:
     with path.open() as csv_file:
         sio = io.StringIO(csv_file.read())
         check(assert_type(read_csv(sio), DataFrame), DataFrame)
-    check(assert_type(read_csv(path_str, iterator=False), DataFrame), DataFrame)
-    check(assert_type(read_csv(path_str, chunksize=None), DataFrame), DataFrame)
     check(
-        assert_type(read_csv(path_str, dtype=defaultdict(lambda: "f8")), DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_csv(path_str, iterator=False), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_csv(path_str, chunksize=None), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_csv(path_str, dtype=defaultdict(lambda: "f8")), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
 
@@ -603,15 +623,25 @@ def _true_if_col1(s: str) -> bool:
 
 def test_types_read_csv_num(tmp_path: Path) -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    check(assert_type(df.to_csv(), str), str)
+    check(assert_type(df.to_csv(), str), str)  # pyrefly: ignore[bad-argument-type]
 
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_csv(path_str)
     check(assert_type(pd.read_csv(path_str), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path_str, sep="a"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path_str, header=None), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, sep="a"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, header=None), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(
                 path_str,
                 engine="python",
@@ -623,7 +653,7 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(
                 path_str,
                 skiprows=lambda x: x in [0, 2],
@@ -634,67 +664,111 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
         ),
         pd.DataFrame,
     )
-    check(assert_type(pd.read_csv(path_str, nrows=2), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_csv(path_str, dtype={"a": float, "b": int}), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, nrows=2), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_csv(path_str, usecols=["col1"]), pd.DataFrame), pd.DataFrame
-    )
-    check(assert_type(pd.read_csv(path_str, usecols=[0]), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.read_csv(path_str, usecols=np.array([0])), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, dtype={"a": float, "b": int}), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_csv(path_str, usecols=("col1",)), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=["col1"]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=[0]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=np.array([0])), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=("col1",)), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(path_str, usecols=pd.Series(data=["col1"])), pd.DataFrame
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_csv(path_str, converters=None), pd.DataFrame), pd.DataFrame
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, converters=None), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(path_str, names=("first", "second"), header=0), pd.DataFrame
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_csv(path_str, names=range(2), header=0), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, names=range(2), header=0), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_csv(path_str, names=(1, "two"), header=0), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, names=(1, "two"), header=0), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(path_str, names=(("first", 1), ("last", 2)), header=0),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
-    check(assert_type(pd.read_csv(path_str, usecols=None), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_csv(path_str, usecols=["col1"]), pd.DataFrame), pd.DataFrame
-    )
-    check(assert_type(pd.read_csv(path_str, usecols=(0,)), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.read_csv(path_str, usecols=range(1)), pd.DataFrame), pd.DataFrame
-    )
-    check(
-        assert_type(pd.read_csv(path_str, usecols=_true_if_col1), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=None), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=["col1"]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=(0,)), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=range(1)), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_csv(path_str, usecols=_true_if_col1), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(
                 path_str,
                 names=[1, 2],
@@ -707,7 +781,7 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(
                 path_str,
                 names=(("head", 1), ("tail", 2)),
@@ -721,13 +795,13 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_csv(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_csv(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_csv(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.read_csv(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
         def cols2(x: set[float]) -> bool:
             return sum(x) < 1.0
 
-        pd.read_csv("file.csv", usecols=cols2)  # type: ignore[type-var] # pyright: ignore[reportArgumentType]
+        pd.read_csv("file.csv", usecols=cols2)  # type: ignore[type-var] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
     tfr1 = pd.read_csv(path_str, nrows=2, iterator=True, chunksize=3)
     check(assert_type(tfr1, TextFileReader), TextFileReader)
@@ -753,14 +827,14 @@ def test_types_read_csv_date(tmp_path: Path) -> None:
     df_dates.to_csv(path_str)
 
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(path_str, parse_dates=["col1"], date_format="%Y-%m-%d"),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(
                 path_str, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
             ),
@@ -769,7 +843,7 @@ def test_types_read_csv_date(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_csv(path_str, parse_dates=["col1"], date_format={1: "%Y-%m-%d"}),
             pd.DataFrame,
         ),
@@ -781,42 +855,80 @@ def test_read_table(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_csv(path_str, sep="\t"), None), type(None))
     check(assert_type(read_table(path_str), DataFrame), DataFrame)
-    check(assert_type(read_table(path_str, iterator=False), DataFrame), DataFrame)
-    check(assert_type(read_table(path_str, chunksize=None), DataFrame), DataFrame)
     check(
-        assert_type(read_table(path_str, dtype=defaultdict(lambda: "f8")), DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, iterator=False), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, chunksize=None), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, dtype=defaultdict(lambda: "f8")), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_table(path_str, names=("first", "second"), header=0), DataFrame
         ),
         DataFrame,
     )
     check(
-        assert_type(read_table(path_str, names=range(2), header=0), DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, names=range(2), header=0), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
     check(
-        assert_type(read_table(path_str, names=(1, "two"), header=0), DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, names=(1, "two"), header=0), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_table(path_str, names=(("first", 1), ("last", 2)), header=0), DataFrame
         ),
         DataFrame,
     )
     check(
-        assert_type(read_table(path_str, usecols=None), DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, usecols=None), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         DataFrame,
     )
-    check(assert_type(read_table(path_str, usecols=["a"]), DataFrame), DataFrame)
-    check(assert_type(read_table(path_str, usecols=(0,)), DataFrame), DataFrame)
-    check(assert_type(read_table(path_str, usecols=range(1)), DataFrame), DataFrame)
-    check(assert_type(read_table(path_str, usecols=_true_if_b), DataFrame), DataFrame)
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, usecols=["a"]), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, usecols=(0,)), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, usecols=range(1)), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_table(path_str, usecols=_true_if_b), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_table(
                 path_str,
                 names=[1, 2],
@@ -829,7 +941,7 @@ def test_read_table(tmp_path: Path) -> None:
         DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             read_table(
                 path_str,
                 names=(("head", 1), ("tail", 2)),
@@ -842,8 +954,8 @@ def test_read_table(tmp_path: Path) -> None:
         DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
 
 def test_read_table_iterator(tmp_path: Path) -> None:
@@ -863,7 +975,9 @@ def test_types_read_table(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_csv(path_str)
     check(
-        assert_type(pd.read_table(path_str, sep=",", converters=None), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_table(path_str, sep=",", converters=None), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
 
@@ -910,7 +1024,7 @@ def test_text_file_reader(tmp_path: Path) -> None:
 
 def test_to_csv_series(tmp_path: Path) -> None:
     s = DF.iloc[:, 0]
-    check(assert_type(s.to_csv(), str), str)
+    check(assert_type(s.to_csv(), str), str)  # pyrefly: ignore[bad-argument-type]
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(s.to_csv(path_str), None), type(None))
 
@@ -921,9 +1035,16 @@ def test_read_excel(tmp_path: Path) -> None:
     check(
         assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path_str), None), type(None)
     )
-    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_excel(path_str, sheet_name="Sheet1"), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, sheet_name="Sheet1"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
@@ -934,7 +1055,10 @@ def test_read_excel(tmp_path: Path) -> None:
     )
     # GH 98
     check(
-        assert_type(pd.read_excel(path_str, sheet_name=0), pd.DataFrame), pd.DataFrame
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, sheet_name=0), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
     )
     check(
         assert_type(pd.read_excel(path_str, sheet_name=[0]), dict[int, pd.DataFrame]),
@@ -953,46 +1077,62 @@ def test_read_excel(tmp_path: Path) -> None:
         dict,
     )
     check(
-        assert_type(pd.read_excel(path_str, names=("test",), header=0), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, names=("test",), header=0), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path_str, names=(1,), header=0), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, names=(1,), header=0), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_excel(path_str, names=(("higher", "lower"),), header=0),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path_str, names=range(1), header=0), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, names=range(1), header=0), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path_str, usecols=None), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, usecols=None), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path_str, usecols=["A"]), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, usecols=["A"]), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path_str, usecols=(0,)), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, usecols=(0,)), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path_str, usecols=range(1)), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, usecols=range(1)), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path_str, usecols=_true_if_b), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, usecols=_true_if_b), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_excel(
                 path_str,
                 names=[1, 2],
@@ -1005,7 +1145,7 @@ def test_read_excel(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_excel(
                 path_str,
                 names=(("head", 1), ("tail", 2)),
@@ -1017,13 +1157,20 @@ def test_read_excel(tmp_path: Path) -> None:
         ),
         pd.DataFrame,
     )
-    check(assert_type(pd.read_excel(path_str, usecols="A"), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_excel(path_str, engine="calamine"), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, usecols="A"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, engine="calamine"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_excel(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_excel(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
 
 def test_read_excel_io_types(tmp_path: Path) -> None:
@@ -1032,21 +1179,51 @@ def test_read_excel_io_types(tmp_path: Path) -> None:
     as_str = check(assert_type(str(tmp_path / f"{uuid.uuid4()}test.xlsx"), str), str)
     df.to_excel(as_str)
 
-    check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(as_str), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
 
     as_path = Path(as_str)
-    check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(as_path), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
 
     with as_path.open("rb") as as_file:
-        check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(  # pyrefly: ignore[bad-argument-type]
+                pd.read_excel(as_file), pd.DataFrame
+            ),  # pyrefly: ignore[bad-argument-type]
+            pd.DataFrame,
+        )
 
 
 def test_read_excel_basic(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     check(assert_type(DF.to_excel(path_str), None), type(None))
-    check(assert_type(read_excel(path_str), DataFrame), DataFrame)
-    check(assert_type(read_excel(path_str, sheet_name="Sheet1"), DataFrame), DataFrame)
-    check(assert_type(read_excel(path_str, sheet_name=0), DataFrame), DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_excel(path_str), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_excel(path_str, sheet_name="Sheet1"), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_excel(path_str, sheet_name=0), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
 
 
 def test_read_excel_list(tmp_path: Path) -> None:
@@ -1065,7 +1242,12 @@ def test_read_excel_dtypes(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     check(assert_type(df.to_excel(path_str), None), type(None))
     dtypes = {"a": np.int64, "b": str, "c": np.float64}
-    check(assert_type(read_excel(path_str, dtype=dtypes), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_excel(path_str, dtype=dtypes), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        pd.DataFrame,
+    )
 
 
 def test_excel_reader(tmp_path: Path) -> None:
@@ -1073,13 +1255,23 @@ def test_excel_reader(tmp_path: Path) -> None:
     check(assert_type(DF.to_excel(path_str), None), type(None))
     with pd.ExcelFile(path_str, engine="calamine") as ef:
         check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
-        check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(  # pyrefly: ignore[bad-argument-type]
+                pd.read_excel(ef), pd.DataFrame
+            ),  # pyrefly: ignore[bad-argument-type]
+            pd.DataFrame,
+        )
 
     with pd.ExcelFile(
         path_or_buffer=path_str, engine="openpyxl", engine_kwargs={"data_only": True}
     ) as ef:
         check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
-        check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(  # pyrefly: ignore[bad-argument-type]
+                pd.read_excel(ef), pd.DataFrame
+            ),  # pyrefly: ignore[bad-argument-type]
+            pd.DataFrame,
+        )
 
 
 def test_excel_fspath(tmp_path: Path) -> None:
@@ -1097,12 +1289,30 @@ def test_excel_writer(tmp_path: Path) -> None:
     with pd.ExcelWriter(path_str) as ew:
         check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
         DF.to_excel(ew, sheet_name="A")
-    check(assert_type(read_excel(path_str, sheet_name="A"), DataFrame), DataFrame)
-    check(assert_type(read_excel(path_str), DataFrame), DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_excel(path_str, sheet_name="A"), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_excel(path_str), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
     ef = pd.ExcelFile(path_str)
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
-    check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
-    check(assert_type(read_excel(ef), DataFrame), DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_excel(ef, sheet_name="A"), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
+    check(
+        assert_type(read_excel(ef), DataFrame),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
     check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
     check(
         assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
@@ -1118,7 +1328,12 @@ def test_excel_writer_io() -> None:
 
     ef = pd.ExcelFile(buffer)
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
-    check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_excel(ef, sheet_name="A"), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
+    )
 
 
 def test_excel_writer_engine(tmp_path: Path) -> None:
@@ -1172,7 +1387,7 @@ def test_excel_writer_append_mode(tmp_path: Path) -> None:
 
 
 def test_to_string(tmp_path: Path) -> None:
-    check(assert_type(DF.to_string(), str), str)
+    check(assert_type(DF.to_string(), str), str)  # pyrefly: ignore[bad-argument-type]
     path = tmp_path / str(uuid.uuid4())
     path_str = str(path)
     check(assert_type(DF.to_string(path_str), None), type(None))
@@ -1470,10 +1685,16 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
 
     check(assert_type(DF.to_json(path_str), None), type(None))
     check(
-        assert_type(read_json(path_str, dtype_backend="pyarrow"), DataFrame), DataFrame
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_json(path_str, dtype_backend="pyarrow"), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
     )
     check(
-        assert_type(read_json(path_str, dtype={"MatchID": str}), DataFrame), DataFrame
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            read_json(path_str, dtype={"MatchID": str}), DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
+        DataFrame,
     )
 
     path_str = str(tmp_path / str(uuid.uuid4()))
@@ -1509,7 +1730,9 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
     as_str: str = path_str
     DF.to_excel(path_str)
     check(
-        assert_type(pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
 
@@ -1576,7 +1799,7 @@ def test_added_date_format(tmp_path: Path) -> None:
     df_dates.to_csv(path_str)
 
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_table(
                 path_str, sep=",", parse_dates=["col1"], date_format="%Y-%m-%d"
             ),
@@ -1585,7 +1808,7 @@ def test_added_date_format(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_table(
                 path_str,
                 sep=",",
@@ -1597,7 +1820,7 @@ def test_added_date_format(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_table(
                 path_str, sep=",", parse_dates=["col1"], date_format={0: "%Y-%m-%d"}
             ),
@@ -1631,14 +1854,14 @@ def test_added_date_format(tmp_path: Path) -> None:
         type(None),
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_excel(path_str, parse_dates=["col1"], date_format={0: "%Y-%m-%d"}),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_excel(
                 path_str, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
             ),
@@ -1647,7 +1870,7 @@ def test_added_date_format(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_excel(path_str, parse_dates=["col1"], date_format="%Y-%m-%d"),
             pd.DataFrame,
         ),
@@ -1660,7 +1883,9 @@ def test_read_excel_index_col(tmp_path: Path) -> None:
     pd.DataFrame(data={"foo": [1, 3], "bar": [2, 4]}).to_excel(path_str)
 
     check(
-        assert_type(pd.read_excel(path_str, index_col="bar"), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_excel(path_str, index_col="bar"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
 
@@ -1674,7 +1899,9 @@ def test_read_json_engine() -> None:
        "d": {"0": "a", "1": "b"},
        "e": {"0": 1577.2, "1": 1577.1}}"""
     check(
-        assert_type(pd.read_json(io.StringIO(data), engine="ujson"), pd.DataFrame),
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.read_json(io.StringIO(data), engine="ujson"), pd.DataFrame
+        ),  # pyrefly: ignore[bad-argument-type]
         pd.DataFrame,
     )
 
@@ -1682,7 +1909,7 @@ def test_read_json_engine() -> None:
     {"col 1":"c","col 2":"d"}"""
     dd = io.BytesIO(data_lines)
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
             pd.read_json(dd, lines=True, engine="pyarrow"),
             pd.DataFrame,
         ),
@@ -1690,9 +1917,9 @@ def test_read_json_engine() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_json(dd, lines=False, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
-        pd.read_json(io.StringIO(data), engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_json(io.StringIO(data), lines=True, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
+        pd.read_json(dd, lines=False, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.read_json(io.StringIO(data), engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.read_json(io.StringIO(data), lines=True, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_converters_partial(tmp_path: Path) -> None:

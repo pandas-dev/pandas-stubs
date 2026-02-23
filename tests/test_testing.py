@@ -19,7 +19,7 @@ def test_types_assert_series_equal() -> None:
         s1, s2, check_freq=False, check_categorical=True, check_flags=True
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_series_equal(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        assert_series_equal(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
             s1, s2, check_dtype=True, check_less_precise=True, check_names=True
         )
     assert_series_equal(s1, s2, check_like=True)

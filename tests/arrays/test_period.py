@@ -26,20 +26,53 @@ from tests._typing import (
 
 def test_construction_sequence() -> None:
     prd = pd.Period("2023-01-01")
-    check(assert_type(pd.array([prd]), PeriodArray), PeriodArray)
-    check(assert_type(pd.array([prd, None]), PeriodArray), PeriodArray)
-    check(assert_type(pd.array([prd, pd.NaT, None]), PeriodArray), PeriodArray)
+    check(
+        assert_type(pd.array([prd]), PeriodArray),  # pyrefly: ignore[bad-argument-type]
+        PeriodArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([prd, None]), PeriodArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        PeriodArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([prd, pd.NaT, None]), PeriodArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        PeriodArray,
+    )
 
 
 def test_construction_array_like() -> None:
     prd = pd.Period("2023-01-01")
-    check(assert_type(pd.array(pd.array([prd])), PeriodArray), PeriodArray)
-    check(assert_type(pd.array(pd.Index([prd])), PeriodArray), PeriodArray)
-    check(assert_type(pd.array(pd.Series([prd])), PeriodArray), PeriodArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.array([prd])), PeriodArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        PeriodArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.Index([prd])), PeriodArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        PeriodArray,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array(pd.Series([prd])), PeriodArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        PeriodArray,
+    )
 
 
 def test_construction_dtype() -> None:
-    check(assert_type(pd.array([], PeriodDtype("D")), PeriodArray), PeriodArray)
+    check(
+        assert_type(  # pyrefly: ignore[bad-argument-type]
+            pd.array([], PeriodDtype("D")), PeriodArray
+        ),  # pyrefly: ignore[bad-argument-type]
+        PeriodArray,
+    )
 
 
 def test_constructor() -> None:
