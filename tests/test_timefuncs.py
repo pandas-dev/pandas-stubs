@@ -1114,7 +1114,7 @@ def test_to_timedelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.to_timedelta(1, "Âµs"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
