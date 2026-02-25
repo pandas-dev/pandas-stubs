@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 import functools
 import re
 from typing import assert_type

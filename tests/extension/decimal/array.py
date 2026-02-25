@@ -255,11 +255,11 @@ class DecimalArray(OpsMixin, ExtensionArray):
             if is_scalar(key):
                 raise ValueError("setting an array element with a sequence.")
             value = [
-                decimal.Decimal(v)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+                decimal.Decimal(v)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
                 for v in value
             ]
         else:
-            value = decimal.Decimal(value)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+            value = decimal.Decimal(value)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
         key = check_array_indexer(self, key)
         self._data[key] = value

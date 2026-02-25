@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 # pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
