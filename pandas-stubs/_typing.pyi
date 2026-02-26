@@ -1025,9 +1025,6 @@ S1 = TypeVar("S1", bound=SeriesDType, default=Any)
 # Like S0 and S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
 S2_contra = TypeVar("S2_contra", bound=SeriesDType, contravariant=True)
-S2_NDT_contra = TypeVar(
-    "S2_NDT_contra", bound=SeriesDTypeNoDateTime, contravariant=True
-)
 S2_NSDT = TypeVar("S2_NSDT", bound=SeriesDTypeNoStrDateTime)
 S3 = TypeVar("S3", bound=SeriesDType)
 
