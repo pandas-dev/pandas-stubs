@@ -40,6 +40,8 @@ ReductionKernelType: TypeAlias = Literal[
 
 TransformationKernelType: TypeAlias = Literal[
     "bfill",
+    "abs",
+    "sqrt",
     "cumcount",
     "cummax",
     "cummin",
