@@ -3434,9 +3434,11 @@ def test_where(
         assert_type(df.where(where_cond1), pd.DataFrame)
         assert_type(df.where(where_cond2), pd.DataFrame)
         assert_type(df.where(where_cond3), pd.DataFrame)
+        assert_type(df.where(where_cond3, None), pd.DataFrame)
         assert_type(df.where(where_cond1, inplace=True), pd.DataFrame)
         assert_type(df.where(where_cond2, inplace=True), pd.DataFrame)
         assert_type(df.where(where_cond3, inplace=True), pd.DataFrame)
+        assert_type(df.where(where_cond3, None, inplace=True), pd.DataFrame)
 
 
 def test_mask() -> None:

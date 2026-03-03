@@ -2595,7 +2595,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Self | Callable[..., Scalar | Self] = ...,
+        other: Scalar | Self | Callable[..., Scalar | Self] | None = ...,
         *,
         inplace: bool = False,
         axis: Axis | None = ...,
