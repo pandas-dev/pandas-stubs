@@ -1983,6 +1983,12 @@ def test_where() -> None:
     check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, np.int_)
 
 
+def test_where_with_none() -> None:
+    # https://github.com/vega/altair/issues/3961
+    s = pd.Series([1.5, 2.6])
+    check(assert_type(s.where(s > 1, None), "pd.Series[float]"), pd.Series, float)
+
+
 def test_bitwise_operators() -> None:
     s = pd.Series([1, 2, 3, 4], dtype=int)
     s2 = pd.Series([9, 10, 11, 12], dtype=int)
