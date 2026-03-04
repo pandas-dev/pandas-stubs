@@ -6,10 +6,12 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.errors import Pandas4Warning
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 from tests._typing import (
     np_ndarray_int64,
@@ -42,12 +44,14 @@ def test_add_py_sequence() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + r0, "pd.Index[str]"), pd.Index, str)
-    check(assert_type(left + r1, "pd.Index[str]"), pd.Index, str)
+    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="2.99"):
+        check(assert_type(left + r1, "pd.Index[str]"), pd.Index, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
         _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(r0 + left, "pd.Index[str]"), pd.Index, str)
-    check(assert_type(r1 + left, "pd.Index[str]"), pd.Index, str)
+    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="2.99"):
+        check(assert_type(r1 + left, "pd.Index[str]"), pd.Index, str)
 
 
 def test_add_numpy_array() -> None:
