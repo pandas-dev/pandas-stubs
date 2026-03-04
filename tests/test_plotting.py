@@ -489,6 +489,17 @@ def test_plot_kde(close_figures: None) -> None:
         np.ndarray,
     )
 
+    # test plotting a series with kde and weights
+    s = pd.Series([1, 2, 2.5, 3, 3.5, 4, 5])
+
+    # with numpy array
+    np_wgts = np.array([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
+    s.plot.kde(weights=np_wgts)
+
+    # with series
+    sr_wgts = pd.Series([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
+    s.plot.kde(weights=sr_wgts)
+
 
 def test_plot_pie(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.pie(y="SepalLength"), Axes), Axes)
@@ -506,6 +517,15 @@ def test_plot_pie(close_figures: None) -> None:
         ),
         np.ndarray,
     )
+
+    # test passing no ylabel to the pie chart (new in 3.0)
+    sr = pd.Series([1, 2, 4], index=["a", "b", "c"], name="my_series")
+    sr.plot(kind="pie", xlabel=None)
+    sr.plot(kind="pie", ylabel=None)
+
+    df = sr.to_frame()
+    df.plot(kind="pie", xlabel=None, y="my_series")
+    df.plot(kind="pie", ylabel=None, y="my_series")
 
 
 def test_plot_scatter(close_figures: None) -> None:
@@ -535,6 +555,17 @@ def test_plot_scatter(close_figures: None) -> None:
         ),
         np.ndarray,
     )
+
+    # test passing columns of strings colors parameter c for scatter plot (new in 3.0)
+    colors = ["NY", "MD", "MA", "CA"]
+    df = pd.DataFrame(
+        {
+            "dataX": range(100),
+            "dataY": range(100),
+            "color": (colors[i % len(colors)] for i in range(100)),
+        }
+    )
+    df.plot.scatter("dataX", "dataY", c="color")
 
 
 def test_plot_keywords(close_figures: None) -> None:
@@ -765,44 +796,3 @@ def test_grouped_series_hist(close_figures: None) -> None:
         ),
         Series,
     )
-
-
-def test_plot_pie_no_ylabel(close_figures: None) -> None:
-    """Test passing no ylabel to the pie chart (new in 3.0)."""
-    sr = pd.Series([1, 2, 4], index=["a", "b", "c"], name="my_series")
-    sr.plot(kind="pie", xlabel=None)
-    sr.plot(kind="pie", ylabel=None)
-
-    df = sr.to_frame()
-    df.plot(kind="pie", xlabel=None, y="my_series")
-    df.plot(kind="pie", ylabel=None, y="my_series")
-
-
-def test_plot_kde_weights(close_figures: None) -> None:
-    """Test plotting a series with kde and weights."""
-    s = pd.Series([1, 2, 2.5, 3, 3.5, 4, 5])
-
-    # with numpy array
-    np_wgts = np.array([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
-    s.plot.kde(weights=np_wgts)
-
-    # with series
-    sr_wgts = pd.Series([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
-    s.plot.kde(weights=sr_wgts)
-
-
-def test_plot_df_scatter_color(close_figures: None) -> None:
-    """Test passing columns of strings colors parameter c for scatter plot (new in 3.0)."""
-    colors = ["NY", "MD", "MA", "CA"]
-
-    # When
-    df = pd.DataFrame(
-        {
-            "dataX": range(100),
-            "dataY": range(100),
-            "color": (colors[i % len(colors)] for i in range(100)),
-        }
-    )
-
-    # Then
-    df.plot.scatter("dataX", "dataY", c="color")
