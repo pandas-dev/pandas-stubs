@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 """Test module for methods in pandas.core.arrays.categorical."""
 
 from typing import assert_type
@@ -5,18 +6,45 @@ from typing import assert_type
 import numpy as np
 import pandas as pd
 from pandas import Categorical
+from pandas.api.typing.aliases import (
+    Ordered,
+    Scalar,
+)
 from pandas.core.arrays.categorical import CategoricalDtype
 from pandas.core.indexes.base import Index
 
 from pandas._libs.missing import NAType
-from pandas._typing import Ordered
-from pandas._typing import Scalar  # noqa: F401
 
 from tests import check
 from tests._typing import (
     np_1darray,
     np_1darray_bool,
 )
+
+
+def test_construction_array_like() -> None:
+    check(assert_type(pd.array(pd.Categorical([1])), Categorical), Categorical)
+    check(assert_type(pd.array(pd.CategoricalIndex([1])), Categorical), Categorical)
+
+
+def test_construction_dtype() -> None:
+    check(assert_type(pd.array([], pd.CategoricalDtype()), Categorical), Categorical)
+    check(
+        assert_type(pd.array(np.array([1]), pd.CategoricalDtype()), Categorical),
+        Categorical,
+    )
+    check(
+        assert_type(pd.array(pd.array([1]), pd.CategoricalDtype()), Categorical),
+        Categorical,
+    )
+    check(
+        assert_type(pd.array(pd.Index([1]), pd.CategoricalDtype()), Categorical),
+        Categorical,
+    )
+    check(
+        assert_type(pd.array(pd.Series([1]), pd.CategoricalDtype()), Categorical),
+        Categorical,
+    )
 
 
 def test_constructor() -> None:

@@ -117,7 +117,7 @@ class TimedeltaArray(TimelikeOps):
     @property
     def freq(self) -> DateOffset | None: ...  # pyrefly: ignore[bad-override]
     @freq.setter  # type: ignore[override]
-    def freq(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
+    def freq(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, value: DateOffset
     ) -> None: ...
     def min(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...

@@ -696,6 +696,9 @@ CompressionDict: TypeAlias = dict[str, Any]
 CompressionOptions: TypeAlias = (
     None | Literal["infer", "gzip", "bz2", "zip", "xz", "zstd", "tar"] | CompressionDict
 )
+ParquetCompressionOptions: TypeAlias = (
+    Literal["snappy", "gzip", "brotli", "lz4", "zstd"] | None
+)
 
 # types in DataFrameFormatter
 FormattersType: TypeAlias = (
@@ -890,15 +893,14 @@ SliceType: TypeAlias = Hashable | None
 ## All types below this point are only used in pandas-stubs
 ######
 
-BuiltinNotStrDtypeArg: TypeAlias = (
+BuiltinNotStrObjDtypeArg: TypeAlias = (
     BuiltinBooleanDtypeArg
     | BuiltinIntDtypeArg
     | BuiltinFloatDtypeArg
     | BuiltinComplexDtypeArg
     | BuiltinBytesDtypeArg
-    | BuiltinObjectDtypeArg
 )
-BuiltinDtypeArg: TypeAlias = BuiltinNotStrDtypeArg | BuiltinStrDtypeArg
+BuiltinNotObjDtypeArg: TypeAlias = BuiltinNotStrObjDtypeArg | BuiltinStrDtypeArg
 NumpyNotTimeDtypeArg: TypeAlias = (
     NumpyBooleanDtypeArg
     | NumpyIntDtypeArg
@@ -1200,15 +1202,9 @@ ExcelWriteEngine: TypeAlias = Literal["openpyxl", "odf", "xlsxwriter"]
 # https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
 TimeZones: TypeAlias = str | tzinfo | None | int
 
+ColumnValue: TypeAlias = AnyArrayLike | Scalar | Sequence[Scalar] | range | None
 # Evaluates to a DataFrame column in DataFrame.assign context.
-IntoColumn: TypeAlias = (
-    AnyArrayLike
-    | Scalar
-    | Callable[[DataFrame], AnyArrayLike | Scalar | Sequence[Scalar] | range | None]
-    | Sequence[Scalar]
-    | range
-    | None
-)
+IntoColumn: TypeAlias = ColumnValue | Callable[[DataFrame], ColumnValue]
 
 DatetimeLike: TypeAlias = datetime.datetime | np.datetime64 | Timestamp
 DateAndDatetimeLike: TypeAlias = datetime.date | DatetimeLike

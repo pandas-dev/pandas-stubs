@@ -12,7 +12,7 @@ class _NoDefault(Enum):
     no_default = "NO_DEFAULT"
 
 no_default: Final = _NoDefault.no_default
-NoDefaultDoNotUse: TypeAlias = Literal[_NoDefault.no_default]
+NoDefault: TypeAlias = Literal[_NoDefault.no_default]
 
 def infer_dtype(value: object, skipna: bool = True) -> str: ...
 def is_iterator(obj: object) -> bool: ...

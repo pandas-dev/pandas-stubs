@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 """Test module for methods in pandas.core.arrays.timedeltas."""
 
 from datetime import timedelta
@@ -8,12 +9,12 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing.aliases import TimeUnit
 from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs.timedeltas import Timedelta
-from pandas._typing import TimeUnit
 
 from tests import check
 from tests._typing import (
@@ -30,10 +31,24 @@ from pandas.tseries.offsets import Minute
 
 def test_construction() -> None:
     """Test pd.array method for TimedeltaArray."""
+
+    td = timedelta(2025, 11, 10)
+    np_dt = np.timedelta64(td)
+    check(assert_type(pd.array([td]), TimedeltaArray), TimedeltaArray)
+    check(
+        assert_type(pd.array([td, pd.Timedelta(td), np_dt]), TimedeltaArray),
+        TimedeltaArray,
+    )
+    check(assert_type(pd.array([td, None]), TimedeltaArray), TimedeltaArray)
+    check(assert_type(pd.array([td, pd.NaT, None]), TimedeltaArray), TimedeltaArray)
+
     # From TimedeltaIndex
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
     check(assert_type(arr, TimedeltaArray), TimedeltaArray)
+
+    # From Series
+    check(assert_type(pd.array(pd.Series(idx)), TimedeltaArray), TimedeltaArray)
 
     # From numpy array of timedelta64
     values = np.array(

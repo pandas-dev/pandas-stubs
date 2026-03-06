@@ -15,6 +15,7 @@ from typing import (
     Any,
     Final,
     Literal,
+    TypeVar,
     cast,
     get_args,
     get_origin,
@@ -32,7 +33,7 @@ import pytest
 from pandas.core.dtypes.base import ExtensionDtype
 
 if TYPE_CHECKING:
-    from pandas._typing import T
+    T = TypeVar("T")
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 LINUX = sys.platform == "linux"
@@ -85,14 +86,18 @@ def check(
 
     value: Any
     if isinstance(actual, pd.Series):
-        # pyright ignore is by design microsoft/pyright#11191
-        value = cast(pd.Series, actual).iloc[index_to_check_for_type]
+        # cast is by design microsoft/pyright#11191
+        value = cast(pd.Series, actual).iloc[  # pyrefly: ignore[redundant-cast]
+            index_to_check_for_type
+        ]
     elif isinstance(actual, pd.Index):
-        # pyright ignore is by design microsoft/pyright#11191
-        value = cast(pd.Index, actual)[index_to_check_for_type]
+        # cast is by design microsoft/pyright#11191
+        value = cast(pd.Index, actual)[  # pyrefly: ignore[redundant-cast]
+            index_to_check_for_type
+        ]
     elif isinstance(actual, BaseGroupBy):
         # `BaseGroupBy.obj` is internal and untyped
-        value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType]
+        value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute]
     elif isinstance(actual, Iterable):
         # T_co in Iterable[T_co] does not have a default value and `actual` is Iterable[Unknown] by pyright
         value = next(iter(cast("Iterable[Any]", actual)))

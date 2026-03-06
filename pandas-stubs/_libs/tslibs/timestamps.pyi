@@ -101,15 +101,13 @@ class Timestamp(datetime, SupportsIndex):
     def fold(self) -> int: ...
     if sys.version_info >= (3, 12):
         @classmethod
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
             cls, t: float, tz: _tzinfo | str | None = ...
         ) -> Self: ...
     else:
         @classmethod
         def fromtimestamp(cls, t: float, tz: _tzinfo | str | None = ...) -> Self: ...
 
-    @classmethod
-    def utcfromtimestamp(cls, ts: float) -> Self: ...
     @classmethod
     def today(cls, tz: _tzinfo | str | None = None) -> Self: ...
     @classmethod
@@ -120,8 +118,6 @@ class Timestamp(datetime, SupportsIndex):
     ) -> Self: ...
     @classmethod
     def now(cls, tz: _tzinfo | str | None = None) -> Self: ...
-    @classmethod
-    def utcnow(cls) -> Self: ...
     # error: Signature of "combine" incompatible with supertype "datetime"
     @classmethod
     def combine(cls, date: _date, time: _time) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
@@ -139,7 +135,7 @@ class Timestamp(datetime, SupportsIndex):
     # Override since fold is more precise than datetime.replace(fold:int)
     # Here it is restricted to be 0 or 1 using a Literal
     # Violation of Liskov substitution principle
-    def replace(  # type:ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore # ty: ignore[invalid-method-override]
+    def replace(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore # ty: ignore[invalid-method-override]
         self,
         year: int | None = ...,
         month: int | None = ...,

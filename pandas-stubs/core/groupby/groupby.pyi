@@ -39,7 +39,7 @@ from pandas.core.window import (
     RollingGroupby,
 )
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
@@ -104,51 +104,62 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         numeric_only: bool = False,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
+        skipna: bool = True,
     ) -> NDFrameT: ...
     @final
-    def median(self, numeric_only: bool = False) -> NDFrameT: ...
+    def median(self, numeric_only: bool = False, skipna: bool = True) -> NDFrameT: ...
     @final
     @overload
     def std(
         self: GroupBy[Series],
-        ddof: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = False,
+        skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def std(
         self: GroupBy[DataFrame],
-        ddof: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = False,
+        skipna: bool = True,
     ) -> DataFrame: ...
     @final
     @overload
     def var(
         self: GroupBy[Series],
-        ddof: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = False,
+        skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def var(
         self: GroupBy[DataFrame],
-        ddof: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        numeric_only: bool = ...,
+        ddof: int = 1,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = False,
+        skipna: bool = True,
     ) -> DataFrame: ...
     @final
     @overload
     def sem(
-        self: GroupBy[Series], ddof: int = ..., numeric_only: bool = ...
+        self: GroupBy[Series],
+        ddof: int = 1,
+        numeric_only: bool = False,
+        skipna: bool = True,
     ) -> Series[float]: ...
     @overload
     def sem(
-        self: GroupBy[DataFrame], ddof: int = ..., numeric_only: bool = ...
+        self: GroupBy[DataFrame],
+        ddof: int = 1,
+        numeric_only: bool = False,
+        skipna: bool = True,
     ) -> DataFrame: ...
     def size(self: GroupBy[Series]) -> Series[int]: ...
     @final
@@ -156,16 +167,20 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         numeric_only: bool = False,
         min_count: int = 0,
+        skipna: bool = True,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
-    def prod(self, numeric_only: bool = False, min_count: int = 0) -> NDFrameT: ...
+    def prod(
+        self, numeric_only: bool = False, min_count: int = 0, skipna: bool = True
+    ) -> NDFrameT: ...
     @final
     def min(
         self,
         numeric_only: bool = False,
         min_count: int = -1,
+        skipna: bool = True,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
@@ -174,6 +189,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         numeric_only: bool = False,
         min_count: int = -1,
+        skipna: bool = True,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
@@ -277,28 +293,28 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         ascending: bool = True,
         na_option: str = "keep",
         pct: bool = False,
-        axis: AxisInt | NoDefaultDoNotUse = 0,
+        axis: AxisInt | NoDefault = 0,
     ) -> NDFrameT: ...
     @final
     def cumprod(
-        self, axis: Axis | NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
+        self, axis: Axis | NoDefault = ..., *args: Any, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cumsum(
-        self, axis: Axis | NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
+        self, axis: Axis | NoDefault = ..., *args: Any, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cummin(
         self,
-        axis: AxisInt | NoDefaultDoNotUse = ...,
-        numeric_only: bool = ...,
+        axis: AxisInt | NoDefault = ...,
+        numeric_only: bool = False,
         **kwargs: Any,
     ) -> NDFrameT: ...
     @final
     def cummax(
         self,
-        axis: AxisInt | NoDefaultDoNotUse = ...,
-        numeric_only: bool = ...,
+        axis: AxisInt | NoDefault = ...,
+        numeric_only: bool = False,
         **kwargs: Any,
     ) -> NDFrameT: ...
     @final
@@ -306,22 +322,20 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
-        axis: Axis | NoDefaultDoNotUse = 0,
+        axis: Axis | NoDefault = 0,
         fill_value: Scalar | None = None,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
-    def diff(
-        self, periods: int = 1, axis: AxisInt | NoDefaultDoNotUse = 0
-    ) -> NDFrameT: ...
+    def diff(self, periods: int = 1, axis: AxisInt | NoDefault = 0) -> NDFrameT: ...
     @final
     def pct_change(
         self,
         periods: int = ...,
-        fill_method: Literal["bfill", "ffill"] | None | NoDefaultDoNotUse = ...,
-        limit: int | None | NoDefaultDoNotUse = ...,
+        fill_method: Literal["bfill", "ffill"] | None | NoDefault = ...,
+        limit: int | None | NoDefault = ...,
         freq: Frequency | None = None,
-        axis: Axis | NoDefaultDoNotUse = ...,
+        axis: Axis | NoDefault = ...,
     ) -> NDFrameT: ...
     @final
     def head(self, n: int = ...) -> NDFrameT: ...

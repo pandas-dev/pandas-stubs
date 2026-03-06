@@ -12,6 +12,7 @@ import decimal
 import numbers
 import sys
 from typing import (
+    TYPE_CHECKING,
     Any,
     Self,
     cast,
@@ -27,6 +28,13 @@ from pandas.api.types import (
     is_list_like,
     is_scalar,
 )
+from pandas.api.typing.aliases import (
+    ArrayLike,
+    AstypeArg,
+    Dtype,
+    SequenceNotStr,
+    TakeIndexer,
+)
 from pandas.core.arraylike import (
     OpsMixin,
     dispatch_reduction_ufunc,
@@ -35,17 +43,6 @@ from pandas.core.arraylike import (
 from pandas.core.arrays import ExtensionArray
 from pandas.core.indexers import check_array_indexer
 from pandas.core.series import Series
-
-from pandas._typing import (
-    ArrayLike,
-    AstypeArg,
-    Dtype,
-    ListLike,
-    ScalarIndexer,
-    SequenceIndexer,
-    SequenceNotStr,
-    TakeIndexer,
-)
 
 from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.common import (
@@ -59,6 +56,13 @@ from tests._typing import (
     np_1darray_bool,
     np_ndarray,
 )
+
+if TYPE_CHECKING:
+    from pandas.api.typing.aliases import (
+        ListLike,
+        ScalarIndexer,
+        SequenceIndexer,
+    )
 
 
 @register_extension_dtype
@@ -251,11 +255,11 @@ class DecimalArray(OpsMixin, ExtensionArray):
             if is_scalar(key):
                 raise ValueError("setting an array element with a sequence.")
             value = [
-                decimal.Decimal(v)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+                decimal.Decimal(v)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
                 for v in value
             ]
         else:
-            value = decimal.Decimal(value)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+            value = decimal.Decimal(value)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
         key = check_array_indexer(self, key)
         self._data[key] = value

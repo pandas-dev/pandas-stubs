@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 """Test module for methods in pandas.core.arrays.period."""
 
 from typing import Any  # noqa: F401
@@ -22,6 +23,24 @@ from tests._typing import (
     np_1darray_int64,
     np_1darray_object,
 )
+
+
+def test_construction_sequence() -> None:
+    prd = pd.Period("2023-01-01")
+    check(assert_type(pd.array([prd]), PeriodArray), PeriodArray)
+    check(assert_type(pd.array([prd, None]), PeriodArray), PeriodArray)
+    check(assert_type(pd.array([prd, pd.NaT, None]), PeriodArray), PeriodArray)
+
+
+def test_construction_array_like() -> None:
+    prd = pd.Period("2023-01-01")
+    check(assert_type(pd.array(pd.array([prd])), PeriodArray), PeriodArray)
+    check(assert_type(pd.array(pd.Index([prd])), PeriodArray), PeriodArray)
+    check(assert_type(pd.array(pd.Series([prd])), PeriodArray), PeriodArray)
+
+
+def test_construction_dtype() -> None:
+    check(assert_type(pd.array([], PeriodDtype("D")), PeriodArray), PeriodArray)
 
 
 def test_constructor() -> None:

@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 """Test module for methods in pandas.core.arrays.sparse.array."""
 
 from typing import (
@@ -9,10 +10,10 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays.sparse import SparseArray
 
 from pandas._libs.sparse import SparseIndex
-from pandas._typing import Scalar
 
 from pandas.core.dtypes.dtypes import SparseDtype
 
@@ -24,6 +25,30 @@ from tests._typing import (
     np_1darray,
     np_1darray_int32,
 )
+
+
+def test_construction_array_like() -> None:
+    check(assert_type(pd.array(SparseArray([1])), SparseArray), SparseArray)
+
+
+def test_construction_dtype() -> None:
+    check(assert_type(pd.array([], SparseDtype(int, 0)), SparseArray), SparseArray)
+    check(
+        assert_type(pd.array(np.array([1]), SparseDtype(int, 0)), SparseArray),
+        SparseArray,
+    )
+    check(
+        assert_type(pd.array(pd.array([1]), SparseDtype(int, 0)), SparseArray),
+        SparseArray,
+    )
+    check(
+        assert_type(pd.array(pd.Index([1]), SparseDtype(int, 0)), SparseArray),
+        SparseArray,
+    )
+    check(
+        assert_type(pd.array(pd.Series([1]), SparseDtype(int, 0)), SparseArray),
+        SparseArray,
+    )
 
 
 def test_constructor() -> None:

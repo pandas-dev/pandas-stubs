@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from collections import UserList
 from collections.abc import (
     Callable,

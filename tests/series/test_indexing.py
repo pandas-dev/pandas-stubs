@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 # pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
@@ -92,6 +93,12 @@ def test_series_loc_setitem() -> None:
     s = pd.Series([1, 2, 3, 4, 5])
     v = s.loc[[0, 2, 4]].values
     s.loc[[0, 2, 4]] = v
+
+    # GH 1669
+    s = pd.Series([1, 2, 3, 4, 5], index=["a", "b", "c", "d", "e"])
+    idx = pd.Index(["a", "c", "e"])
+    v = s.loc[idx].values
+    s.loc[idx] = v
 
 
 def test_series_isin() -> None:

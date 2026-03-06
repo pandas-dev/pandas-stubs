@@ -14,6 +14,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing import FrozenList
 from pandas.core.indexes.base import Index
 
 from pandas._typing import (
@@ -87,7 +88,7 @@ class MultiIndex(Index):
         names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @property  # Should be read-only
-    def levels(self) -> list[Index]: ...
+    def levels(self) -> FrozenList[Index]: ...
     @overload
     def set_levels(
         self,
@@ -105,7 +106,7 @@ class MultiIndex(Index):
         verify_integrity: bool = True,
     ) -> MultiIndex: ...
     @property
-    def codes(self) -> list[np_1darray_int8]: ...
+    def codes(self) -> FrozenList[np_1darray_int8]: ...
     @overload
     def set_codes(
         self,
@@ -176,7 +177,7 @@ class MultiIndex(Index):
     def append(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: Index | Sequence[Index]
     ) -> Index: ...
-    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override] # ty: ignore[invalid-method-override]
+    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     def swaplevel(self, i: int = -2, j: int = -1) -> Self: ...
     def reorder_levels(self, order: Sequence[Level]) -> MultiIndex: ...
     def sortlevel(

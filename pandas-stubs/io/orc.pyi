@@ -6,7 +6,7 @@ from fsspec import (  # pyright: ignore[reportMissingTypeStubs]
 from pandas import DataFrame
 from pyarrow.fs import FileSystem
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     DtypeBackend,
     FilePath,
@@ -17,7 +17,7 @@ from pandas._typing import (
 def read_orc(
     path: FilePath | ReadBuffer[bytes],
     columns: list[HashableT] | None = None,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = "numpy_nullable",
+    dtype_backend: DtypeBackend | NoDefault = "numpy_nullable",
     filesystem: FileSystem | AbstractFileSystem | None = None,
     **kwargs: Any,
 ) -> DataFrame: ...

@@ -101,9 +101,9 @@ class Styler(StylerRenderer):
     def set_tooltips(
         self,
         ttips: DataFrame,
-        props: CSSProperties | None = ...,
-        css_class: str | None = ...,
-        as_title_attribute: bool = ...,
+        props: CSSProperties | None = None,
+        css_class: str | None = None,
+        as_title_attribute: bool = False,
     ) -> Styler: ...
     def to_excel(
         self,
@@ -172,6 +172,28 @@ class Styler(StylerRenderer):
         environment: str | None = ...,
         encoding: str | None = ...,
         convert_css: bool = ...,
+    ) -> str: ...
+    @overload
+    def to_typst(
+        self,
+        buf: FilePath | WriteBuffer[str],
+        *,
+        encoding: str | None = None,
+        sparse_index: bool | None = None,
+        sparse_columns: bool | None = None,
+        max_rows: int | None = None,
+        max_columns: int | None = None,
+    ) -> None: ...
+    @overload
+    def to_typst(
+        self,
+        buf: None = None,
+        *,
+        encoding: str | None = None,
+        sparse_index: bool | None = None,
+        sparse_columns: bool | None = None,
+        max_rows: int | None = None,
+        max_columns: int | None = None,
     ) -> str: ...
     @overload
     def to_html(
@@ -407,3 +429,15 @@ class Styler(StylerRenderer):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> T: ...
+    def format_index_names(
+        self,
+        formatter: ExtFormatter | None = None,
+        axis: Axis = 0,
+        level: Level | list[Level] | None = None,
+        na_rep: str | None = None,
+        precision: int | None = None,
+        decimal: str = ".",
+        thousands: str | None = None,
+        escape: str | None = None,
+        hyperlinks: str | None = None,
+    ) -> StylerRenderer: ...

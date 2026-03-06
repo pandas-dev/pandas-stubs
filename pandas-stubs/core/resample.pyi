@@ -177,8 +177,20 @@ class _GroupByMixin(Resampler[NDFrameT]):
 
 class DatetimeIndexResampler(Resampler[NDFrameT]): ...
 
+class _InterpolateMixin:
+    def interpolate(
+        self,
+        method: InterpolateOptions = ...,
+        *,
+        axis: Axis = ...,
+        limit: int | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        **kwargs: Any,
+    ) -> Never: ...
+
 class DatetimeIndexResamplerGroupby(
-    _GroupByMixin[NDFrameT], DatetimeIndexResampler[NDFrameT]
+    _InterpolateMixin, _GroupByMixin[NDFrameT], DatetimeIndexResampler[NDFrameT]
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
@@ -186,7 +198,7 @@ class DatetimeIndexResamplerGroupby(
 class PeriodIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
 class PeriodIndexResamplerGroupby(
-    _GroupByMixin[NDFrameT], PeriodIndexResampler[NDFrameT]
+    _InterpolateMixin, _GroupByMixin[NDFrameT], PeriodIndexResampler[NDFrameT]
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
@@ -194,7 +206,7 @@ class PeriodIndexResamplerGroupby(
 class TimedeltaIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
 class TimedeltaIndexResamplerGroupby(
-    _GroupByMixin[NDFrameT], TimedeltaIndexResampler[NDFrameT]
+    _InterpolateMixin, _GroupByMixin[NDFrameT], TimedeltaIndexResampler[NDFrameT]
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
