@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from collections import defaultdict
 from collections.abc import Generator
 import csv

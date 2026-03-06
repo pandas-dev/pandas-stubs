@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import (
     Any,
     ClassVar,
+    Concatenate,
     Generic,
     Literal,
     Never,
@@ -672,6 +673,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def to_string(
         self,
         buf: FilePath | WriteBuffer[_str],
+        *,
         na_rep: _str = ...,
         float_format: FloatFormatType = ...,
         header: _bool = ...,
@@ -686,6 +688,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def to_string(
         self,
         buf: None = None,
+        *,
         na_rep: _str = ...,
         float_format: FloatFormatType = ...,
         header: _bool = ...,
@@ -702,7 +705,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         path_or_buf: FilePath | WriteBuffer[_str],
         *,
         orient: Literal["records"],
-        date_format: Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["iso"] | None = None,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: TimeUnit = ...,
@@ -719,7 +722,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         path_or_buf: None = None,
         *,
         orient: Literal["records"],
-        date_format: Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["iso"] | None = None,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: TimeUnit = ...,
@@ -736,7 +739,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         path_or_buf: FilePath | WriteBuffer[_str] | WriteBuffer[bytes],
         *,
         orient: JsonSeriesOrient | None = ...,
-        date_format: Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["iso"] | None = None,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: TimeUnit = ...,
@@ -753,7 +756,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         path_or_buf: None = None,
         *,
         orient: JsonSeriesOrient | None = ...,
-        date_format: Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["iso"] | None = None,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: TimeUnit = ...,
@@ -780,6 +783,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: Scalar,
         level: IndexLabel | None = ...,
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -791,6 +795,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: DatetimeIndex,
         level: IndexLabel | None = ...,
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -802,6 +807,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: TimedeltaIndex,
         level: IndexLabel | None = ...,
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -813,6 +819,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: PeriodIndex,
         level: IndexLabel | None = ...,
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -824,6 +831,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: IntervalIndex[IntervalT],
         level: IndexLabel | None = ...,
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -835,6 +843,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: MultiIndex | GroupByObjectNonScalar,
         level: IndexLabel | None = ...,
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -846,6 +855,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: None,
         level: IndexLabel,  # level is required when by=None (passed as positional)
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -869,6 +879,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: Series[SeriesByT],
         level: IndexLabel | None = ...,
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -880,6 +891,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         by: CategoricalIndex | Index | Series,
         level: IndexLabel | None = ...,
+        *,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -1102,20 +1114,41 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def map(
         self,
-        arg: Callable[[S1], S2 | NAType] | Mapping[S1, S2] | Series[S2],
-        na_action: Literal["ignore"] = ...,
+        func: Callable[Concatenate[S1, ...], S2 | NAType],
+        na_action: Literal["ignore"],
+        **kwargs: Any,
     ) -> Series[S2]: ...
     @overload
     def map(
         self,
-        arg: Callable[[S1 | NAType], S2 | NAType] | Mapping[S1, S2] | Series[S2],
+        func: Mapping[S1, S2] | Series[S2],
+        na_action: Literal["ignore"],
+    ) -> Series[S2]: ...
+    @overload
+    def map(
+        self,
+        func: Callable[Concatenate[S1 | NAType, ...], S2 | NAType],
+        na_action: None = None,
+        **kwargs: Any,
+    ) -> Series[S2]: ...
+    @overload
+    def map(
+        self,
+        func: Mapping[S1, S2] | Series[S2],
         na_action: None = None,
     ) -> Series[S2]: ...
     @overload
     def map(
         self,
-        arg: Callable[[Any], Any] | Mapping[Any, Any] | Series,
-        na_action: Literal["ignore"] | None = ...,
+        func: Callable[..., Any],
+        na_action: Literal["ignore"] | None = None,
+        **kwargs: Any,
+    ) -> Series: ...
+    @overload
+    def map(
+        self,
+        func: Mapping[Any, Any] | Series,
+        na_action: Literal["ignore"] | None = None,
     ) -> Series: ...
     @overload
     def aggregate(
@@ -1243,7 +1276,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def reindex_like(
         self,
         other: Series[S1],
-        method: FillnaOptions | Literal["nearest"] | None = None,
         limit: int | None = None,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
     ) -> Self: ...
@@ -1552,7 +1584,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
-        other: S1 | Self | Callable[..., S1 | Self] = ...,
+        other: S1 | Self | Callable[..., S1 | Self] | None = ...,
         *,
         inplace: Literal[True],
         axis: AxisIndex | None = 0,
@@ -1568,7 +1600,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
-        other: Scalar | Self | Callable[..., Scalar | Self] = ...,
+        other: Scalar | Self | Callable[..., Scalar | Self] | None = ...,
         *,
         inplace: Literal[False] = False,
         axis: AxisIndex | None = 0,

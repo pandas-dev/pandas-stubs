@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 

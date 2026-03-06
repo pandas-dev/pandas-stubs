@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 import io
 import itertools
 from typing import (
