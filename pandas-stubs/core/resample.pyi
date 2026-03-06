@@ -55,18 +55,18 @@ _SeriesGroupByFuncArgs: TypeAlias = (
     _SeriesGroupByFuncTypes | Mapping[Hashable, _SeriesGroupByFunc | str]
 )
 
-class BaseResampler(BaseGroupBy[NDFrameT]):
+class Resampler(BaseGroupBy[NDFrameT]):
     def __getattr__(self, attr: str) -> SeriesGroupBy[Any, Any]: ...
     @overload
     def aggregate(
-        self: BaseResampler[DataFrame],
+        self: Resampler[DataFrame],
         func: _FrameGroupByFuncArgs | None = ...,
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
-        self: BaseResampler[Series],
+        self: Resampler[Series],
         func: _SeriesGroupByFuncArgs | None = ...,
         *args: Any,
         **kwargs: Any,
@@ -75,14 +75,14 @@ class BaseResampler(BaseGroupBy[NDFrameT]):
     apply = aggregate
     @overload
     def transform(
-        self: BaseResampler[Series],
+        self: Resampler[Series],
         arg: Callable[[Series], Series[S1]],
         *args: Any,
         **kwargs: Any,
     ) -> Series[S1]: ...
     @overload
     def transform(
-        self: BaseResampler[DataFrame],
+        self: Resampler[DataFrame],
         arg: Callable[[Series], Series[S1]],
         *args: Any,
         **kwargs: Any,
@@ -153,23 +153,21 @@ class BaseResampler(BaseGroupBy[NDFrameT]):
     @final
     def ohlc(self) -> DataFrame: ...
     @overload
-    def nunique(self: BaseResampler[Series]) -> Series[int]: ...
+    def nunique(self: Resampler[Series]) -> Series[int]: ...
     @overload
-    def nunique(self: BaseResampler[DataFrame]) -> DataFrame: ...
+    def nunique(self: Resampler[DataFrame]) -> DataFrame: ...
     @final
     def size(self) -> Series[int]: ...
     @overload
-    def count(self: BaseResampler[Series]) -> Series[int]: ...
+    def count(self: Resampler[Series]) -> Series[int]: ...
     @overload
-    def count(self: BaseResampler[DataFrame]) -> DataFrame: ...
+    def count(self: Resampler[DataFrame]) -> DataFrame: ...
     @final
     def quantile(
         self,
         q: float | list[float] | np_ndarray_float | Series[float] = 0.5,
         **kwargs: Any,
     ) -> NDFrameT: ...
-
-class Resampler(BaseResampler[NDFrameT]): ...
 
 # We lie about inheriting from Resampler because at runtime inherits all Resampler
 # attributes via setattr
