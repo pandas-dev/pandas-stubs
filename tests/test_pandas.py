@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
@@ -18,11 +19,10 @@ from pandas.api.typing import (
     NaTType,
     NAType,
 )
+from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays.integer import IntegerArray
 import pandas.util as pdutil
 import pytest
-
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,

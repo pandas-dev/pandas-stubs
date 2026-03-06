@@ -159,7 +159,7 @@ def ty() -> None:
 
 
 def pyrefly() -> None:
-    cmd = ["pyrefly", "check", "pandas-stubs"]
+    cmd = ["pyrefly", "check", "pandas-stubs", "tests"]
     subprocess.run(cmd, check=True)
 
 

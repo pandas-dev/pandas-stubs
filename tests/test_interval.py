@@ -87,10 +87,10 @@ def test_interval_length() -> None:
 
     check(assert_type(idres, "pd.Interval[pd.Timestamp]"), pd.Interval, pd.Timestamp)
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = 20 in i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _01 = i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _02 = i1 * 3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _03 = i1 * pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _00 = 20 in i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
+        _01 = i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _02 = i1 * 3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _03 = i1 * pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     i2 = pd.Interval(10, 20)
     check(assert_type(i2.length, int), int)
@@ -106,8 +106,8 @@ def test_interval_length() -> None:
     check(assert_type(i2 * 4.2, "pd.Interval[float]"), pd.Interval, float)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = pd.Timestamp("2001-01-02") in i2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _11 = i2 + pd.Timedelta(seconds=20)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _10 = pd.Timestamp("2001-01-02") in i2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
+        _11 = i2 + pd.Timedelta(seconds=20)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     i3 = pd.Interval(13.2, 19.5)
     check(assert_type(i3.length, float), float)
     check(assert_type(i3.left, float), float)
@@ -119,8 +119,8 @@ def test_interval_length() -> None:
     check(assert_type(i3 + 3, "pd.Interval[float]"), pd.Interval, float)
     check(assert_type(i3 * 3, "pd.Interval[float]"), pd.Interval, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        _20 = pd.Timestamp("2001-01-02") in i3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _21 = i3 + pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _20 = pd.Timestamp("2001-01-02") in i3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
+        _21 = i3 + pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
 
 def test_interval_array_contains() -> None:

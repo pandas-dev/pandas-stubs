@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from __future__ import annotations
 
 from datetime import (
@@ -21,14 +22,13 @@ from pandas.api.typing import (
     NaTType,
     NAType,
 )
+from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
 )
 import pyarrow as pa
 import pytest
-
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -79,10 +79,10 @@ def test_period_dtype() -> None:
     check(assert_type(pd.PeriodDtype(freq=Day()), pd.PeriodDtype), pd.PeriodDtype)
     if TYPE_CHECKING_INVALID_USAGE:
         pd.PeriodDtype(
-            freq=CustomBusinessDay()  # type:ignore[arg-type] # pyright: ignore[reportArgumentType]
+            freq=CustomBusinessDay()  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         )
         pd.PeriodDtype(
-            freq=BusinessDay()  # type:ignore[arg-type] # pyright: ignore[reportArgumentType]
+            freq=BusinessDay()  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         )
     check(
         assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),

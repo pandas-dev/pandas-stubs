@@ -5,8 +5,7 @@ import pandas as pd
 from pandas.api.extensions import ExtensionDtype
 from pandas.api.interchange import from_dataframe
 import pandas.api.types as api
-
-from pandas._typing import DtypeObj
+from pandas.api.typing.aliases import DtypeObj
 
 from tests import check
 

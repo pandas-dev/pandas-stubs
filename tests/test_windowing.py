@@ -326,9 +326,9 @@ def test_ewm_aggregate() -> None:
 
     # TODO: pandas-dev/pandas#63855, see if ewm.aggregate(any callable) is implemented
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyright: ignore[reportArgumentType]
-        _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
 
 def test_ewm_basic_math_series() -> None:
@@ -343,9 +343,9 @@ def test_ewm_basic_math_series() -> None:
 def test_ewm_aggregate_series() -> None:
     # TODO: pandas-dev/pandas#63855, only str function names are possible, not callable, add tests
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = S.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _1 = S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _2 = S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        _0 = S.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        _1 = S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        _2 = S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
 
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
 
@@ -403,4 +403,24 @@ def test_indexer_fixed_forward() -> None:
         ),
         tuple,
         np.ndarray,
+    )
+
+
+def test_groupby_kurt() -> None:
+    """Test groupby.transform/agg with `kurt`."""
+    check(
+        assert_type(DF.groupby("col1").transform("kurt"), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.groupby(S).transform("kurt"), Series),
+        Series,
+    )
+    check(
+        assert_type(DF.groupby("col1").agg("kurt"), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.groupby(S).agg("kurt"), Series),
+        Series,
     )

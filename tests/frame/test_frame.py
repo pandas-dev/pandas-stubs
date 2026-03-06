@@ -1,3 +1,4 @@
+# pyrefly: ignore-errors
 from __future__ import annotations
 
 from collections import (
@@ -36,19 +37,19 @@ import uuid
 import numpy as np
 import pandas as pd
 from pandas.api.typing import NAType
+from pandas.api.typing.aliases import Scalar
 from pandas.core.resample import (
     DatetimeIndexResampler,
     Resampler,
 )
+from pandas.core.window.expanding import Expanding
+from pandas.core.window.rolling import Rolling
 import pytest
 import xarray as xr
-
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -71,8 +72,6 @@ if TYPE_CHECKING:
     from pandas.core.frame import PandasNamedTuple
 else:
     PandasNamedTuple: TypeAlias = tuple
-
-from pandas.errors import Pandas4Warning
 
 
 def getCols(k: int) -> str:
@@ -497,15 +496,6 @@ def test_types_set_index() -> None:
     check(assert_type(df.set_index("col1"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The 'verify_integrity' keyword in DataFrame.set_index is deprecated and will be removed in a future version. Directly check the result.index.is_unique instead.",
-        lower="2.99",
-    ):
-        check(
-            assert_type(df.set_index("col1", verify_integrity=True), pd.DataFrame),
-            pd.DataFrame,
-        )
     check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
@@ -513,6 +503,9 @@ def test_types_set_index() -> None:
         assert_type(df.set_index(pd.Index(["w", "x", "y", "z"])), pd.DataFrame),
         pd.DataFrame,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = df.set_index("col1", verify_integrity=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_types_query() -> None:
@@ -716,6 +709,32 @@ def test_types_cumsum() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.cumsum(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.cumsum(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumsum(numeric_only=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumsum(numeric_only=False), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_cummin() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    check(assert_type(df.cummin(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummin(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummin(numeric_only=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummin(numeric_only=False), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_cummax() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    check(assert_type(df.cummax(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummax(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummax(numeric_only=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cummax(numeric_only=False), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_cumprod() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    check(assert_type(df.cumprod(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumprod(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumprod(numeric_only=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.cumprod(numeric_only=False), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_min() -> None:
@@ -1934,6 +1953,10 @@ def test_types_merge() -> None:
     columns = ["col1", "col2"]
     check(assert_type(df.merge(df2, on=columns), pd.DataFrame), pd.DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df.merge(df2, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
     # https://github.com/microsoft/python-type-stubs/issues/60
     df1 = pd.DataFrame([["a", 1], ["b", 2]], columns=["let", "num"]).set_index("let")
     s2 = df1["num"]
@@ -3128,23 +3151,27 @@ def test_frame_reindex() -> None:
         pd.DataFrame,
     )
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df.reindex([2, 1, 0], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
 
 def test_frame_reindex_like() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        upper="3.1.99",
-    ):
-        check(
-            assert_type(
-                df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]),
-                pd.DataFrame,
-            ),
+    check(
+        assert_type(
+            df.reindex_like(other),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _1 = df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_not_hashable() -> None:
@@ -3407,9 +3434,11 @@ def test_where(
         assert_type(df.where(where_cond1), pd.DataFrame)
         assert_type(df.where(where_cond2), pd.DataFrame)
         assert_type(df.where(where_cond3), pd.DataFrame)
+        assert_type(df.where(where_cond3, None), pd.DataFrame)
         assert_type(df.where(where_cond1, inplace=True), pd.DataFrame)
         assert_type(df.where(where_cond2, inplace=True), pd.DataFrame)
         assert_type(df.where(where_cond3, inplace=True), pd.DataFrame)
+        assert_type(df.where(where_cond3, None, inplace=True), pd.DataFrame)
 
 
 def test_mask() -> None:
@@ -3592,6 +3621,10 @@ def test_astype() -> None:
     df = pd.DataFrame({"x": [1.0, 2.0, 3.0], "y": [4.0, 5, 6]})
     check(assert_type(df.astype(int), pd.DataFrame), pd.DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = s.astype(int, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
 
 def test_xs_frame_new() -> None:
     d = {
@@ -3658,6 +3691,10 @@ def test_align() -> None:
     aligned_df0, aligned_df1 = df0.align(df1)
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
     check(assert_type(aligned_df1, pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # copy argument is deprecated from 3.0
+        _0 = df0.align(df1, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
 def test_to_dict_index() -> None:
@@ -3799,7 +3836,8 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
+        _0 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
+        _1 = df.to_json(date_format="epoch")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_interpolate() -> None:
@@ -3903,6 +3941,15 @@ def test_frame_subclass() -> None:
     check(assert_type(df.iloc[1:2], MyClass), MyClass)
     check(assert_type(df.loc[:, ["a", "b"]], MyClass), MyClass)
     check(assert_type(df[["a", "b"]], MyClass), MyClass)
+
+
+def test_frame_iloc_series_bool() -> None:
+    """Check that DataFrame.__getitem__ supports a Series of boolean."""
+    df = pd.DataFrame({"a": pd.Series([0, 1, 2])})
+    check(
+        assert_type(df.iloc[pd.Series([True, False, False])], pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_hashable_args(tmp_path: Path) -> None:
@@ -4206,3 +4253,161 @@ def test_frame_delitem() -> None:
 
     check(assert_type(df.__delitem__("A"), None), type(None))
     del df["B"]
+
+
+def test_frame_copy_deprecated() -> None:
+    """Test that copy argument is deprecated from 3.0 for various DataFrame methods."""
+    df = pd.DataFrame({"a": [1, 2, 3]})
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # truncate
+        _0 = df.truncate(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # tz_convert
+        _1 = df.tz_convert("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # tz_localize
+        _2 = df.tz_localize("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # infer_objects
+        _3 = df.infer_objects(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # set_axis
+        _4 = df.set_axis([1, 2, 3], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # to_period
+        _5 = df.to_period(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        # to_timestamp
+        _6 = df.to_timestamp(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
+
+def test_rolling_first() -> None:
+    """Test DataFrame.rolling.first method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.rolling(3).first(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.rolling(3).first(numeric_only=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.rolling(3).first(numeric_only=False), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_rolling_last() -> None:
+    """Test DataFrame.rolling.last method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.rolling(3).last(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.rolling(3).last(numeric_only=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.rolling(3).last(numeric_only=False), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_rolling_nunique() -> None:
+    """Test DataFrame.rolling.nunique method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.rolling(3).nunique(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.rolling(3).nunique(numeric_only=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.rolling(3).nunique(numeric_only=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_expanding_first() -> None:
+    """Test DataFrame.expanding.first method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.expanding().first(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.expanding().first(numeric_only=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.expanding().first(numeric_only=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_expanding_last() -> None:
+    """Test DataFrame.expanding.last method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.expanding().last(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.expanding().last(numeric_only=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.expanding().last(numeric_only=False), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_expanding_nunique() -> None:
+    """Test DataFrame.expanding.nunique method."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+    check(assert_type(df.expanding().nunique(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.expanding().nunique(numeric_only=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.expanding().nunique(numeric_only=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_frame_corrwith() -> None:
+    """Test DataFrame.corrwith with min_periods argument."""
+    df1 = pd.DataFrame(
+        {
+            "A": [1, np.nan, 7, 8],
+            "B": [False, True, True, False],
+            "C": [10, 4, 9, 3],
+        }
+    )
+    df2 = df1[["B", "C"]]
+    check(
+        assert_type((df1 + 1).corrwith(df2["B"]), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type((df1 + 1).corrwith(df2["B"], min_periods=2), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+
+    check(
+        assert_type((df1 + 1).corrwith(df2), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(
+        assert_type((df1 + 1).corrwith(df2, min_periods=2), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+
+
+def test_frame_pipe() -> None:
+    """Test Rolling.pipe and Expanding.pipe."""
+    df = pd.DataFrame(
+        {
+            "B": np.random.default_rng(2).standard_normal(10),
+            "C": np.random.default_rng(2).standard_normal(10),
+        }
+    )
+
+    def func_r(x: Rolling[pd.DataFrame], k: int) -> pd.DataFrame:
+        return x.max() - k * x.min()
+
+    def func_e(x: Expanding[pd.DataFrame], k: int) -> pd.DataFrame:
+        return x.max() - k * x.min()
+
+    check(
+        assert_type(df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.rolling(2).pipe(func_r, k=2), pd.DataFrame), pd.DataFrame)
+
+    check(
+        assert_type(df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.expanding().pipe(func_e, k=2), pd.DataFrame), pd.DataFrame)

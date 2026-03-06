@@ -1,3 +1,4 @@
+# ruff: noqa: PLC0414
 # This file serves as a stub file for static type checkers
 # (pyright does not like it if I call the file tests/_typing.pyi).
 # It can only import from pandas._typing.
@@ -12,10 +13,10 @@ from pandas._typing import (
     BuiltinBooleanDtypeArg,
     BuiltinBytesDtypeArg,
     BuiltinComplexDtypeArg,
-    BuiltinDtypeArg,
     BuiltinFloatDtypeArg,
     BuiltinIntDtypeArg,
-    BuiltinNotStrDtypeArg,
+    BuiltinNotObjDtypeArg,
+    BuiltinNotStrObjDtypeArg,
     BuiltinObjectDtypeArg,
     BuiltinStrDtypeArg,
     BytesDtypeArg,
@@ -93,10 +94,10 @@ __all__ = [
     "BuiltinBooleanDtypeArg",
     "BuiltinBytesDtypeArg",
     "BuiltinComplexDtypeArg",
-    "BuiltinDtypeArg",
+    "BuiltinNotObjDtypeArg",
     "BuiltinFloatDtypeArg",
     "BuiltinIntDtypeArg",
-    "BuiltinNotStrDtypeArg",
+    "BuiltinNotStrObjDtypeArg",
     "BuiltinObjectDtypeArg",
     "BuiltinStrDtypeArg",
     "BytesDtypeArg",

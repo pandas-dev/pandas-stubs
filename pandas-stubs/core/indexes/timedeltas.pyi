@@ -24,7 +24,7 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
 
 from pandas._libs import Timedelta
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
@@ -61,7 +61,7 @@ class TimedeltaIndex(
         data: (
             Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData | None
         ),
-        freq: Frequency | NoDefaultDoNotUse = ...,
+        freq: Frequency | NoDefault = ...,
         dtype: Literal["<m8[ns]"] | None = None,
         copy: bool | None = None,
         name: str | None = None,
