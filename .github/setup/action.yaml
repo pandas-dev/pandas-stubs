@@ -27,7 +27,7 @@ runs:
       id: poetry_version
 
     - name: Cache poetry.lock
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: poetry.lock
         key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}

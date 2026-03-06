@@ -306,7 +306,7 @@ reportUnnecessaryTypeIgnoreComment = true
 reportMissingModuleSource = true
 
 [tool.codespell]
-ignore-words-list = "indext, mose, sav, ser"
+ignore-words-list = "indext, mose, sav, ser, ttest"
 
 [tool.pytest.ini_options]
 filterwarnings = [
