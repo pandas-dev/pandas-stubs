@@ -11,12 +11,15 @@ from typing import (
 import dateutil.tz
 import numpy as np
 import pandas as pd
-from pandas.api.typing import NaTType
 import pytz
-
 from pandas._libs.tslibs.timedeltas import Components
 from pandas._typing import TimeUnit
+from pandas.api.typing import NaTType
 from pandas.errors import Pandas4Warning
+from pandas.tseries.offsets import (
+    BaseOffset,
+    Day,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -32,11 +35,6 @@ from tests._typing import (
     np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_td,
-)
-
-from pandas.tseries.offsets import (
-    BaseOffset,
-    Day,
 )
 
 
@@ -459,6 +457,7 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(hours=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(weeks=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(milliseconds=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(nanoseconds=1), pd.Timedelta), pd.Timedelta)
     check(
         assert_type(
             pd.Timedelta(
@@ -469,6 +468,7 @@ def test_timedelta_construction() -> None:
                 hours=1,
                 weeks=1,
                 milliseconds=1,
+                nanoseconds=1,
             ),
             pd.Timedelta,
         ),
