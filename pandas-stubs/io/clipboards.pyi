@@ -1,6 +1,7 @@
 from collections.abc import (
     Callable,
     Hashable,
+    Mapping,
     Sequence,
 )
 import csv
@@ -36,7 +37,7 @@ def read_clipboard(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | dict[Hashable, DtypeArg] | None = ...,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -95,7 +96,7 @@ def read_clipboard(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | dict[Hashable, DtypeArg] | None = ...,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -154,7 +155,7 @@ def read_clipboard(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | dict[Hashable, DtypeArg] | None = ...,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
