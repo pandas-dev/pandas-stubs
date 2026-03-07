@@ -9,6 +9,7 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
+    NamedTuple,
     Never,
     assert_type,
     cast,
@@ -1761,3 +1762,42 @@ def test_ravel(
         assert_type(
             pd.PeriodIndex([pd.Period("2022-01", freq="M")]).ravel(), pd.PeriodIndex
         )
+
+
+def test_get_loc_named_tuples() -> None:
+    """Test get_loc for Index with named tuples."""
+
+    class NamedIndex(NamedTuple):
+        a: str
+        b: str
+
+    midx = pd.MultiIndex.from_tuples(
+        [NamedIndex("i1", "i2"), NamedIndex("i3", "i4"), NamedIndex("i5", "i6")]
+    )
+    flat_midx = midx.to_flat_index()
+
+    check(
+        assert_type(
+            midx.get_loc(NamedIndex("i1", "i2")), int | slice | np_1darray_bool
+        ),
+        int,
+    )
+    check(assert_type(midx.get_loc(("i1", "i2")), int | slice | np_1darray_bool), int)
+    check(assert_type(midx.get_loc(("i3", "i4")), int | slice | np_1darray_bool), int)
+    check(assert_type(midx.get_loc(("i5", "i6")), int | slice | np_1darray_bool), int)
+
+    check(
+        assert_type(
+            flat_midx.get_loc(NamedIndex("i1", "i2")), int | slice | np_1darray_bool
+        ),
+        int,
+    )
+    check(
+        assert_type(flat_midx.get_loc(("i1", "i2")), int | slice | np_1darray_bool), int
+    )
+    check(
+        assert_type(flat_midx.get_loc(("i3", "i4")), int | slice | np_1darray_bool), int
+    )
+    check(
+        assert_type(flat_midx.get_loc(("i5", "i6")), int | slice | np_1darray_bool), int
+    )
