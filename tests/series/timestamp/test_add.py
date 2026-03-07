@@ -96,11 +96,11 @@ def test_add_py_sequence() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        # Series[Timestamp] + Sequence[timedelta] should work, see pandas-dev/pandas#62353
-        _a = left + d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+    check(assert_type(left + d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
+    if TYPE_CHECKING_INVALID_USAGE:
         _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _b = d + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+    check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
