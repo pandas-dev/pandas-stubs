@@ -23,7 +23,9 @@ runs:
 
     - name: Determine poetry version
       shell: bash
-      run: echo "{VERSION}=$(poetry --version)"
+      run: |
+        POETRY_VERSION=$(poetry --version | sed -r 's/[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/g')
+        echo "VERSION=$POETRY_VERSION" >> $GITHUB_OUTPUT
       id: poetry_version
 
     - name: Cache poetry.lock
