@@ -53,25 +53,25 @@ def test_add_py_sequence() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
-    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="3"):
         check(assert_type(left + r1, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
         _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
-    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="3"):
         check(assert_type(r1 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
-    with pytest_warns_bounded(Pandas4Warning, "Series.add with a tuple", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "Series.add with a tuple", lower="3"):
         check(assert_type(left.add(r1), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
-    with pytest_warns_bounded(Pandas4Warning, "Series.radd with a tuple", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "Series.radd with a tuple", lower="3"):
         check(assert_type(left.radd(r1), "pd.Series[str]"), pd.Series, str)
 
 
