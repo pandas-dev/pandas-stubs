@@ -460,6 +460,7 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(hours=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(weeks=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(milliseconds=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(nanoseconds=1), pd.Timedelta), pd.Timedelta)
     check(
         assert_type(
             pd.Timedelta(
@@ -470,6 +471,7 @@ def test_timedelta_construction() -> None:
                 hours=1,
                 weeks=1,
                 milliseconds=1,
+                nanoseconds=1,
             ),
             pd.Timedelta,
         ),
