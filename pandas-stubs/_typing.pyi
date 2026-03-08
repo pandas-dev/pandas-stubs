@@ -35,6 +35,7 @@ from pandas.core.arrays import (
 )
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
+from pandas.core.groupby.base import TransformReductionListType
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -594,7 +595,7 @@ IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
 # More specific than what is in pandas
-AggFuncTypeBase: TypeAlias = Callable[P, Any] | str | np.ufunc
+AggFuncTypeBase: TypeAlias = Callable[P, Any] | TransformReductionListType | np.ufunc
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase[P]]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
     HashableT, AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]]
