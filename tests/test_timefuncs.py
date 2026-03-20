@@ -1907,9 +1907,12 @@ def test_half_year_offsets() -> None:
     check(assert_type(ts + BHalfYearBegin(), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts + BHalfYearEnd(), pd.Timestamp), pd.Timestamp)
 
+
 def test_to_offset_timedelta() -> None:
     from datetime import timedelta
+
     from pandas.tseries.frequencies import to_offset
+
     td = timedelta(hours=1)
     result = to_offset(td)
     assert_type(result, BaseOffset)

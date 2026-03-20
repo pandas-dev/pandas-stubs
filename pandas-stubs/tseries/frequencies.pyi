@@ -1,11 +1,14 @@
 from datetime import timedelta
 from typing import overload
+
 from pandas import (
     DatetimeIndex,
     Series,
     TimedeltaIndex,
 )
+
 from pandas._typing import Frequency
+
 from pandas.tseries.offsets import BaseOffset
 
 @overload
