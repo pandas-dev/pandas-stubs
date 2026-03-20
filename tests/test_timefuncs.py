@@ -1909,10 +1909,6 @@ def test_half_year_offsets() -> None:
 
 
 def test_to_offset_timedelta() -> None:
-    from datetime import timedelta
-
-    from pandas.tseries.frequencies import to_offset
-
-    td = timedelta(hours=1)
+    td = dt.timedelta(hours=1)
     result = to_offset(td)
     assert_type(result, BaseOffset)
