@@ -348,7 +348,13 @@ def test_hdfstore(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     store = HDFStore(path_str, model="w")
     check(assert_type(store, HDFStore), HDFStore)
-    check(assert_type(store.put("df", DF, "table"), None), type(None))
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        r"The default value of 'track_times' in HDFStore.put will change from True to False in a future version. Pass track_times=False explicitly to silence this warning and get deterministic HDF5 files.",
+        "3.0.99",
+        "3.1.99",
+    ):
+        check(assert_type(store.put("df", DF, "table"), None), type(None))
     check(assert_type(store.append("df2", DF, "table"), None), type(None))
     check(assert_type(store.keys(), list[str]), list)
     check(assert_type(store.info(), str), str)

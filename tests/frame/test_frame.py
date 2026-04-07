@@ -4132,22 +4132,6 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # test with single dictionary
-    data_single_dict = {"id": 1, "name": "a"}
-    check(
-        assert_type(
-            pd.DataFrame.from_records(data_single_dict, index=["0"]), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-
-    # testing with mapping of sequences
-    data_mapping_dict = {"id": [1, 2], "name": ["a", "b"]}
-    check(
-        assert_type(pd.DataFrame.from_records(data_mapping_dict), pd.DataFrame),
-        pd.DataFrame,
-    )
-
     # Testing with index parameter as string
     check(
         assert_type(
@@ -4168,7 +4152,7 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # Testing  with exclude parameter
+    # Testing with exclude parameter
     check(
         assert_type(
             pd.DataFrame.from_records(
@@ -4241,6 +4225,15 @@ def test_from_records() -> None:
         ),
         pd.DataFrame,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # test with single dictionary
+        data_single_dict = {"id": 1, "name": "a"}
+        _0 = pd.DataFrame.from_records(data_single_dict, index=["0"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+
+        # testing with mapping of sequences
+        data_mapping_dict = {"id": [1, 2], "name": ["a", "b"]}
+        _1 = pd.DataFrame.from_records(data_mapping_dict)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_frame_index_setter() -> None:
