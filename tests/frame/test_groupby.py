@@ -338,7 +338,7 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.nth((0, 1, 2)), pd.DataFrame | pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        gb.pct_change(limit=3)  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue]
+        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
 
 
 def test_groupby_index() -> None:
