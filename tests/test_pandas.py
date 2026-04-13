@@ -404,8 +404,13 @@ def test_concat_args() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # can't pass ignore_index=True and keys
-        assert_type(pd.concat([df, df2], ignore_index=True, keys=["df1", "df2"]), Never)
+
+        def _cannot_pass_ignore_index_eq_true_and_keys() -> (  # pyright: ignore[reportUnusedFunction]
+            None
+        ):
+            assert_type(
+                pd.concat([df, df2], ignore_index=True, keys=["df1", "df2"]), Never
+            )
 
 
 def test_types_json_normalize() -> None:
@@ -441,9 +446,6 @@ def test_types_json_normalize() -> None:
     )
     check(assert_type(pd.json_normalize(data=data2), pd.DataFrame), pd.DataFrame)
 
-
-def test_json_normalize_series() -> None:
-    """Test passing a Series as data for json_normalize."""
     data = [
         {
             "id": 1,
@@ -2136,9 +2138,6 @@ def test_pivot_table() -> None:
         index=idx,
     )
 
-
-def test_pivot_table_kwargs() -> None:
-    """Test passing kwargs for the aggfunc to pivot_table."""
     df = pd.DataFrame(
         {
             "A": ["good", "bad", "good", "bad", "good"],

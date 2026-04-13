@@ -495,18 +495,18 @@ def test_plot_kde(close_figures: None) -> None:
 
     # with numpy array
     np_wgts = np.array([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
-    s.plot.kde(weights=np_wgts)
-
-    # with series
-    sr_wgts = pd.Series([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
-    s.plot.kde(weights=sr_wgts)
-
-
-def test_kde_kwargs_weights(close_figures: None) -> None:
-    sr = Series(np.random.default_rng(2).uniform(size=50))
     check(
         assert_type(
-            sr.plot.kde(bw_method="scott", ind=40, weights=np.linspace(0.0, 2.0, 50)),
+            s.plot.kde(weights=np_wgts),
+            Axes,
+        ),
+        Axes,
+    )
+    # with series
+    sr_wgts = pd.Series([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
+    check(
+        assert_type(
+            s.plot.kde(weights=sr_wgts),
             Axes,
         ),
         Axes,
