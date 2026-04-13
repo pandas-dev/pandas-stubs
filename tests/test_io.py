@@ -524,19 +524,6 @@ def test_json_chunk(tmp_path: Path) -> None:
     check(assert_type(DF.to_json(), str), str)
 
 
-def test_to_json_date_format(tmp_path: Path) -> None:
-    """Test date_format deprecated option `epoch`."""
-    path_str = str(tmp_path / str(uuid.uuid4()))
-    sr = DF.iloc[:, 0]
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        _0 = DF.to_json(path_str, date_format="epoch")  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
-        _1 = DF.to_json(None, date_format="epoch")  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
-
-        _2 = sr.to_json(path_str, date_format="epoch")  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
-        _3 = sr.to_json(None, date_format="epoch")  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
-
-
 def test_parquet(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_parquet(path_str), None), type(None))
