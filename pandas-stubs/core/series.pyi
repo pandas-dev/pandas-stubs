@@ -1841,14 +1841,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_str]: ...
     @overload
     def add(
-        self,
-        other: DataFrame,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Never: ...
-    @overload
-    def add(
         self: Series[Never],
         other: _str,
         level: Level | None = None,
@@ -2646,14 +2638,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def mul(
-        self,
-        other: DataFrame,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Never: ...
-    @overload
-    def mul(
         self: Series[Never],
         other: complex | ListLike,
         level: Level | None = None,
@@ -3152,14 +3136,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __sub__(
         self: Series[Period], other: Series[Period] | Period
     ) -> Series[BaseOffset]: ...
-    @overload
-    def sub(
-        self,
-        other: DataFrame,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Never: ...
     @overload
     def sub(
         self: Series[Never],
@@ -3744,14 +3720,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __truediv__(self: Series[_str], other: Path) -> Series: ...
     @overload
-    def truediv(
-        self,
-        other: DataFrame,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: AxisIndex = 0,
-    ) -> Never: ...
-    @overload
     def truediv(  # type: ignore[overload-overlap]
         self: Series[Never],
         other: ScalarArrayIndexSeriesComplex,
@@ -4150,15 +4118,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         *args: Any,
         **kwargs: Any,
     ) -> Series[S1]: ...
-    @overload
-    def divmod(
-        self,
-        other: DataFrame,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-        axis: AxisIndex = ...,
-    ) -> Never: ...
-    @overload
     def divmod(
         self,
         other: float | ListLike | Series[S1],

@@ -880,21 +880,11 @@ def test_series_frame_ops() -> None:
     s = pd.Series([0, 1, -10])
 
     if TYPE_CHECKING_INVALID_USAGE:
-
-        def _check_sum() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(s.add(df), Never)
-
-        def _check_sub() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(s.sub(df), Never)
-
-        def _check_mul() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(s.mul(df), Never)
-
-        def _check_truediv() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(s.truediv(df), Never)
-
-        def _check_divmod() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(s.divmod(df), Never)
+        _0 = s.add(df)  # type: ignore[type-var] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType]
+        _1 = s.sub(df)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType]
+        _2 = s.mul(df)  # type: ignore[type-var] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType]
+        _3 = s.truediv(df)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType]
+        _4 = s.divmod(df)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_types_groupby() -> None:
