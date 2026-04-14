@@ -332,7 +332,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def pct_change(
         self,
         periods: int = 1,
-        fill_method: Literal["bfill", "ffill"] | None | NoDefault = None,
+        fill_method: None = None,
         freq: Frequency | None = None,
     ) -> NDFrameT: ...
     @final
