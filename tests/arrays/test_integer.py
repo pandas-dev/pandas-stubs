@@ -64,9 +64,9 @@ def test_construction_sequence(
 
 def test_construct_array_type() -> None:
     """Test the constructor_array_type method."""
-    check(
-        assert_type(pd.array([-1]).dtype.construct_array_type(), type[IntegerArray]),
-        type,
+    assert (
+        assert_type(pd.array([-1]).dtype.construct_array_type(), type[IntegerArray])
+        is IntegerArray
     )
 
 

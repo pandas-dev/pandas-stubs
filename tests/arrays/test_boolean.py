@@ -131,9 +131,9 @@ def test_dtype() -> None:
 
 def test_construct_array_type() -> None:
     """Test the constructor_array_type method."""
-    check(
+    assert (
         assert_type(
             pd.array([True, False]).dtype.construct_array_type(), type[BooleanArray]
-        ),
-        type,
+        )
+        is BooleanArray
     )
