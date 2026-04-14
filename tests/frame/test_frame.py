@@ -1527,9 +1527,7 @@ def test_types_pivot_table() -> None:
         pd.DataFrame,
     )
 
-
-def test_pivot_table_kwargs() -> None:
-    """Test passing kwargs for the aggfunc to pivot_table."""
+    # test passing kwargs for the aggfunc to pivot_table
     df = pd.DataFrame(
         {
             "A": ["good", "bad", "good", "bad", "good"],

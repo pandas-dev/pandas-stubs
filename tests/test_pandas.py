@@ -439,6 +439,13 @@ def test_types_json_normalize() -> None:
         ),
         pd.DataFrame,
     )
+
+    # iterable case
+    check(
+        assert_type(pd.json_normalize(data=(dic for dic in data1)), pd.DataFrame),
+        pd.DataFrame,
+    )
+
     data2: dict[str, Any] = {"name": {"given": "Mose", "family": "Regner"}}
     check(
         assert_type(data2, dict[str, Any]),
@@ -446,6 +453,7 @@ def test_types_json_normalize() -> None:
     )
     check(assert_type(pd.json_normalize(data=data2), pd.DataFrame), pd.DataFrame)
 
+    # series case
     data = [
         {
             "id": 1,
