@@ -13,6 +13,7 @@ from pandas._libs.tslibs.offsets import DateOffset
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     AnyArrayLike,
+    AxisInt,
     DtypeArg,
     Frequency,
     NpDtype,
@@ -34,37 +35,27 @@ class TimedeltaArray(TimelikeOps):
         freq: Frequency | None = None,
         copy: bool = ...,
     ) -> None: ...
-    # TODO: pandas-dev/pandas-stubs#1589 add testing to figure out the correct types
-    # def sum(
-    #     self,
-    #     *,
-    #     axis=...,
-    #     dtype=...,
-    #     out=...,
-    #     keepdims: bool = ...,
-    #     initial=...,
-    #     skipna: bool = ...,
-    #     min_count: int = ...,
-    # ): ...
-    # def std(
-    #     self,
-    #     *,
-    #     axis=...,
-    #     dtype=...,
-    #     out=...,
-    #     ddof: int = ...,
-    #     keepdims: bool = ...,
-    #     skipna: bool = ...,
-    # ): ...
-    # def median(
-    #     self,
-    #     *,
-    #     axis=...,
-    #     out=...,
-    #     overwrite_input: bool = ...,
-    #     keepdims: bool = ...,
-    #     skipna: bool = ...,
-    # ): ...
+    def sum(
+        self,
+        *,
+        axis: AxisInt | None = None,
+        dtype: NpDtype | None = None,
+        out: np_1darray_object | None = None,
+        keepdims: bool = False,
+        initial: object | None = None,
+        skipna: bool = True,
+        min_count: int = 0,
+    ) -> Timedelta: ...
+    def std(
+        self,
+        *,
+        axis: AxisInt | None = None,
+        dtype: DtypeArg | None = None,
+        out: np_1darray_object | None = None,
+        ddof: int = 1,
+        keepdims: bool = False,
+        skipna: bool = True,
+    ) -> Timedelta: ...
     def __mul__(self, other: Any) -> Self: ...
     __rmul__ = __mul__
     @overload
@@ -123,7 +114,7 @@ class TimedeltaArray(TimelikeOps):
     def min(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...
     def max(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...
     def mean(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...
-    def median(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...
+    def median(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray_td: ...
