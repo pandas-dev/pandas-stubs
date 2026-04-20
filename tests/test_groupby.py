@@ -1101,3 +1101,17 @@ def test_series_groupby_agg_transformation_kernels() -> None:
     check(assert_type(GB_S.agg("pct_change"), Series), Series)
     check(assert_type(GB_S.agg("rank"), Series), Series)
     check(assert_type(GB_S.agg("shift"), Series), Series)
+
+
+def test_groupby_freq_fill_value() -> None:
+    """Test that we should not pass freq and fill_value arg in GroupBy.shift."""
+    check(assert_type(GB_DF.shift(freq=None, fill_value=None), DataFrame), DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        GB_DF.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+
+
+def test_dataframe_groupby_dtypes() -> None:
+    """Test that the dtypes property has been removed in 3.0."""
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(GB_DF.dtypes, Never)

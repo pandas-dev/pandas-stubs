@@ -17,6 +17,7 @@ from pandas._typing import (
     AstypeArg,
     AxisInt,
     Dtype,
+    FillnaOptions,
     ListLike,
     Renamer,
     Scalar,
@@ -70,6 +71,14 @@ class ExtensionArray:
     ) -> np_1darray: ...
     def fillna(
         self, value: object | ArrayLike, limit: int | None = None, copy: bool = True
+    ) -> Self: ...
+    def pad_or_backfill(
+        self,
+        *,
+        method: FillnaOptions,
+        limit: int | None = None,
+        limit_area: Literal["inside", "outside"] | None = None,
+        copy: bool = True,
     ) -> Self: ...
     def dropna(self) -> Self: ...
     def shift(self, periods: int = 1, fill_value: object | None = None) -> Self: ...

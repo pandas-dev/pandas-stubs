@@ -317,13 +317,29 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         numeric_only: bool = False,
         **kwargs: Any,
     ) -> NDFrameT: ...
-    @final
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = 1,
+        axis: Axis | NoDefault = 0,
+        fill_value: Scalar | None = None,
+        suffix: str | None = ...,
+    ) -> NDFrameT: ...
+    @overload
     def shift(
         self,
         periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
         axis: Axis | NoDefault = 0,
-        fill_value: Scalar | None = None,
+        suffix: str | None = ...,
+    ) -> NDFrameT: ...
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = 1,
+        freq: None = None,
+        axis: Axis | NoDefault = 0,
+        fill_value: None = None,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final

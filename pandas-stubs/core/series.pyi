@@ -1298,12 +1298,27 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         regex: ReplaceValue = ...,
         inplace: _bool = False,
     ) -> Series[S1]: ...
+    @overload
     def shift(
         self,
         periods: int | Sequence[int] = ...,
         freq: BaseOffset | timedelta | _str | None = None,
         axis: Axis = 0,
+    ) -> Series: ...
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = ...,
+        axis: Axis = 0,
         fill_value: Scalar | NAType | None = ...,
+    ) -> Series: ...
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = ...,
+        freq: None = None,
+        axis: Axis = 0,
+        fill_value: None = None,
     ) -> Series: ...
     def info(
         self,
@@ -4059,6 +4074,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def loc(self) -> _LocIndexerSeries[S1]: ...
     def all(
         self,
+        *,
         axis: AxisIndex = 0,
         bool_only: _bool | None = False,
         skipna: _bool = True,
