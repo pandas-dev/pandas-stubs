@@ -601,6 +601,7 @@ def test_types_shift() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         df.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
+
 def test_types_rank() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.rank(axis=0, na_option="bottom"), pd.DataFrame), pd.DataFrame)
