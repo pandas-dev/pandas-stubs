@@ -1108,10 +1108,14 @@ def test_groupby_shift() -> None:
     check(assert_type(GB_DF.shift(freq=None, fill_value=None), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_DF.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            GB_DF.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_dataframe_groupby_dtypes() -> None:
     """Test that the dtypes property has been removed in 3.0."""
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(GB_DF.dtypes, Never)
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(GB_DF.dtypes, Never)
