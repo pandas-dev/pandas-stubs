@@ -274,7 +274,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @property
     def nth(
         self,
-    ) -> GroupByNthSelector[Self]: ...  # pyrefly: ignore[bad-specialization]
+    ) -> GroupByNthSelector[Self]: ...
     @final
     def quantile(
         self,

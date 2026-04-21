@@ -463,7 +463,7 @@ class NDFrame:
         origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
         offset: TimedeltaConvertibleTypes | None = None,
         group_keys: _bool = False,
-    ) -> DatetimeIndexResampler[Self]: ...  # pyrefly: ignore[bad-specialization]
+    ) -> DatetimeIndexResampler[Self]: ...
     @final
     def take(self, indices: TakeIndexer, axis: Axis = 0, **kwargs: Any) -> Self: ...
     def xs(

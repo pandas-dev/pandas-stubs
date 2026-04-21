@@ -350,7 +350,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @property
     def str(
         self,
-    ) -> StringMethods[  # pyrefly: ignore[bad-specialization]
+    ) -> StringMethods[
         Self,
         MultiIndex,
         np_1darray_bool,
