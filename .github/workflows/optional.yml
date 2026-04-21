@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Install project dependencies
       uses: ./.github/setup
@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Install project dependencies
       uses: ./.github/setup
