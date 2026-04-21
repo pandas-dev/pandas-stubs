@@ -1103,8 +1103,8 @@ def test_series_groupby_agg_transformation_kernels() -> None:
     check(assert_type(GB_S.agg("shift"), Series), Series)
 
 
-def test_groupby_freq_fill_value() -> None:
-    """Test that we should not pass freq and fill_value arg in GroupBy.shift."""
+def test_groupby_shift() -> None:
+    """Test shift method on GroupBy."""
     check(assert_type(GB_DF.shift(freq=None, fill_value=None), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:

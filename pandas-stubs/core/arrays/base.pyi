@@ -72,7 +72,7 @@ class ExtensionArray:
     def fillna(
         self, value: object | ArrayLike, limit: int | None = None, copy: bool = True
     ) -> Self: ...
-    def pad_or_backfill(
+    def _pad_or_backfill(
         self,
         *,
         method: FillnaOptions,

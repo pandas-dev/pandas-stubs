@@ -48,6 +48,40 @@ def test_ea_common() -> None:
     check(assert_type(arr.fillna(3, limit=1, copy=False), IntegerArray), IntegerArray)
     check(assert_type(arr.fillna(arr), IntegerArray), IntegerArray)
 
+    arr_with_na = array([1, None, 3, None, 5])
+    check(
+        assert_type(arr_with_na._pad_or_backfill(method="pad"), IntegerArray),
+        IntegerArray,
+    )
+    check(
+        assert_type(arr_with_na._pad_or_backfill(method="backfill"), IntegerArray),
+        IntegerArray,
+    )
+    check(
+        assert_type(arr_with_na._pad_or_backfill(method="pad", limit=1), IntegerArray),
+        IntegerArray,
+    )
+    check(
+        assert_type(
+            arr_with_na._pad_or_backfill(method="pad", limit_area="inside"),
+            IntegerArray,
+        ),
+        IntegerArray,
+    )
+    check(
+        assert_type(
+            arr_with_na._pad_or_backfill(method="pad", limit_area="outside"),
+            IntegerArray,
+        ),
+        IntegerArray,
+    )
+    check(
+        assert_type(
+            arr_with_na._pad_or_backfill(method="pad", copy=False), IntegerArray
+        ),
+        IntegerArray,
+    )
+
     check(assert_type(arr.view(), IntegerArray), IntegerArray)
 
     check(assert_type(arr.searchsorted(1), np.intp), np.intp)
