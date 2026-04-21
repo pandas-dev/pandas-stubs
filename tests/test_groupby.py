@@ -897,6 +897,9 @@ def test_groupby_getitem() -> None:
     check(assert_type(df.groupby("a")["b"].sum(), Series), Series, float)
     check(assert_type(df.groupby("a")[["b", "c"]].sum(), DataFrame), DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.groupby("a")[("b", "c")]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[bad-index]
+
 
 def test_series_value_counts() -> None:
     df = DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
