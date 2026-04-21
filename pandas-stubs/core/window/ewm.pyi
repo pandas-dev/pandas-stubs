@@ -60,7 +60,7 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
-    agg = aggregate
+    agg = aggregate  # type: ignore[assignment]
 
 class ExponentialMovingWindowGroupby(
     BaseWindowGroupby[NDFrameT], ExponentialMovingWindow[NDFrameT]

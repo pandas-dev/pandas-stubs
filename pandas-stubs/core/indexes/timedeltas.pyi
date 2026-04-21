@@ -106,7 +106,7 @@ class TimedeltaIndex(
     @overload
     def __rmul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
-    def __truediv__(self, other: Index[Never]) -> Index: ...
+    def __truediv__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __truediv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt

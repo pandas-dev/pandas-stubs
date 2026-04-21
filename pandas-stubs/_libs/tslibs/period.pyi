@@ -84,7 +84,7 @@ class Period(PeriodMixin):
     @overload
     def __eq__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: Series[Period]) -> Series[bool]: ...
+    def __eq__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...  # type: ignore[overload-overlap]
     @overload
@@ -128,7 +128,7 @@ class Period(PeriodMixin):
     @overload
     def __ne__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: Series[Period]) -> Series[bool]: ...
+    def __ne__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...  # type: ignore[overload-overlap]
     @overload
