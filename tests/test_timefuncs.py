@@ -2013,3 +2013,5 @@ def test_guess_datetime_format() -> None:
     check(
         assert_type(guess_datetime_format("2023|September|13"), str | None), type(None)
     )
+
+
