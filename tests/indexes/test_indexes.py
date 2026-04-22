@@ -1608,8 +1608,6 @@ def test_index_set_names() -> None:
 
 
 def test_index_droplevel() -> None:
-    idx = pd.Index([1, 2])
-    check(assert_type(idx.droplevel([]), "pd.Index[int]"), pd.Index, np.integer)
     mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]], names=["elk", "owl"])
     check(assert_type(mi.droplevel([]), pd.MultiIndex | pd.Index), pd.MultiIndex)
     check(assert_type(mi.droplevel([0]), pd.MultiIndex | pd.Index), pd.Index)
@@ -1617,6 +1615,9 @@ def test_index_droplevel() -> None:
     check(assert_type(mi.droplevel(["elk"]), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(("elk",)), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(0), pd.MultiIndex | pd.Index), pd.Index)
+    if TYPE_CHECKING_INVALID_USAGE:
+        idx = pd.Index([1, 2])
+        idx.droplevel(0)  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
 
 
 def test_index_setitem() -> None:
