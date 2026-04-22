@@ -478,8 +478,6 @@ def test_timedelta_construction() -> None:
         pd.Timedelta,
     )
 
-
-def test_timedelta_units_restricted() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # These should be type errors now as they are not in TimeDeltaUnitChoices
         pd.Timedelta(1, unit="Y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
