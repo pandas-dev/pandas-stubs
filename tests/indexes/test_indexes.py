@@ -1615,9 +1615,15 @@ def test_index_droplevel() -> None:
     check(assert_type(mi.droplevel(["elk"]), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(("elk",)), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(0), pd.MultiIndex | pd.Index), pd.Index)
+    # droplevel([]) on a plain Index is a documented no-op — returns the same Index
+    idx = pd.Index([1, 2])
+    check(assert_type(idx.droplevel([]), "pd.Index[int]"), pd.Index)
     if TYPE_CHECKING_INVALID_USAGE:
-        idx = pd.Index([1, 2])
-        idx.droplevel(0)  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
+        # Any non-empty argument raises ValueError at runtime, so type checkers
+        # should reject these — Sequence[Never] catches them all.
+        idx.droplevel(0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        idx.droplevel([0])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        idx.droplevel("name")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_index_setitem() -> None:
