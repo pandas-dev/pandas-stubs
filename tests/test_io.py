@@ -588,6 +588,9 @@ def test_read_csv(tmp_path: Path) -> None:
 
     pd.read_csv(path_str, usecols=cols)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.read_csv(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+
 
 def test_read_csv_iterator(tmp_path: Path) -> None:
     path = tmp_path / str(uuid.uuid4())

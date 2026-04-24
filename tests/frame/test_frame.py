@@ -596,6 +596,10 @@ def test_types_shift() -> None:
     check(assert_type(df.shift(freq=MonthEnd(3)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.shift(freq=Week(4)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.shift(freq=YearEnd(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq=None, fill_value=None), pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_types_rank() -> None:

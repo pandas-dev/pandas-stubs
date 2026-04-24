@@ -418,6 +418,14 @@ def test_types_shift() -> None:
     check(assert_type(s.shift(freq=MonthEnd(3)), pd.Series), pd.Series, np.integer)
     check(assert_type(s.shift(freq=Week(4)), pd.Series), pd.Series, np.integer)
     check(assert_type(s.shift(freq=YearEnd(2)), pd.Series), pd.Series, np.integer)
+    check(
+        assert_type(s.shift(freq=None, fill_value=None), pd.Series),
+        pd.Series,
+        np.floating,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_series_pct_change() -> None:

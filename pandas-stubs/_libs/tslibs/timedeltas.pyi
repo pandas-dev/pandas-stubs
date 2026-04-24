@@ -88,8 +88,6 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
     "nanosecond",
 ]
 
-UnitChoices: TypeAlias = TimeDeltaUnitChoices | Literal["Y", "y", "M"]
-
 class Timedelta(timedelta):
     min: ClassVar[Timedelta]  # pyright: ignore[reportIncompatibleVariableOverride]
     max: ClassVar[Timedelta]  # pyright: ignore[reportIncompatibleVariableOverride]

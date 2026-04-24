@@ -64,9 +64,7 @@ class Period(PeriodMixin):
     @overload
     def __sub__(self, other: PeriodIndex) -> Index: ...
     @overload
-    def __sub__(
-        self, other: Series[Timedelta]
-    ) -> Series[Period]: ...  # pyrefly: ignore[bad-specialization]
+    def __sub__(self, other: Series[Timedelta]) -> Series[Period]: ...
     @overload
     def __sub__(self, other: TimedeltaIndex) -> PeriodIndex: ...
     @overload
@@ -86,7 +84,7 @@ class Period(PeriodMixin):
     @overload
     def __eq__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-specialization]
+    def __eq__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...  # type: ignore[overload-overlap]
     @overload
@@ -96,9 +94,7 @@ class Period(PeriodMixin):
     @overload
     def __ge__(self, other: PeriodIndex) -> np_1darray_bool: ...
     @overload
-    def __ge__(
-        self, other: Series[Period]  # pyrefly: ignore[bad-specialization]
-    ) -> Series[bool]: ...
+    def __ge__(self, other: Series[Period]) -> Series[bool]: ...
     @overload
     def __ge__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
     @overload
@@ -106,9 +102,7 @@ class Period(PeriodMixin):
     @overload
     def __gt__(self, other: PeriodIndex) -> np_1darray_bool: ...
     @overload
-    def __gt__(
-        self, other: Series[Period]  # pyrefly: ignore[bad-specialization]
-    ) -> Series[bool]: ...
+    def __gt__(self, other: Series[Period]) -> Series[bool]: ...
     @overload
     def __gt__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
     @overload
@@ -116,9 +110,7 @@ class Period(PeriodMixin):
     @overload
     def __le__(self, other: PeriodIndex) -> np_1darray_bool: ...
     @overload
-    def __le__(
-        self, other: Series[Period]  # pyrefly: ignore[bad-specialization]
-    ) -> Series[bool]: ...
+    def __le__(self, other: Series[Period]) -> Series[bool]: ...
     @overload
     def __le__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
     @overload
@@ -126,9 +118,7 @@ class Period(PeriodMixin):
     @overload
     def __lt__(self, other: PeriodIndex) -> np_1darray_bool: ...
     @overload
-    def __lt__(
-        self, other: Series[Period]  # pyrefly: ignore[bad-specialization]
-    ) -> Series[bool]: ...
+    def __lt__(self, other: Series[Period]) -> Series[bool]: ...
     @overload
     def __lt__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
     #  ignore[misc] here because we know all other comparisons
@@ -138,7 +128,7 @@ class Period(PeriodMixin):
     @overload
     def __ne__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-specialization]
+    def __ne__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...  # type: ignore[overload-overlap]
     @overload

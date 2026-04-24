@@ -55,27 +55,21 @@ def test_property_dt() -> None:
     df = DataFrame({"ts": [Timestamp(2025, 12, 6)], "td": [Timedelta(1, "s")]})
     # python/mypy#19952: mypy gives Any
     check(
-        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-            df["ts"].dt, CombinedDatetimelikeProperties
-        ),
+        assert_type(df["ts"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type]
         DatetimeProperties,
     )
     check(
-        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-            df["td"].dt, CombinedDatetimelikeProperties
-        ),
+        assert_type(df["td"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type]
         TimedeltaProperties,
     )
 
     check(
-        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type]
         Series,
         np.integer,
     )
     check(
-        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-            df["td"].dt.total_seconds(), "Series[float]"
-        ),
+        assert_type(df["td"].dt.total_seconds(), "Series[float]"),  # type: ignore[assert-type]
         Series,
         np.floating,
     )

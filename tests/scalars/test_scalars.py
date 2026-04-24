@@ -478,6 +478,14 @@ def test_timedelta_construction() -> None:
         pd.Timedelta,
     )
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # These should be type errors now as they are not in TimeDeltaUnitChoices
+        pd.Timedelta(1, unit="Y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        pd.Timedelta(1, unit="y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        pd.Timedelta(1, unit="M")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+
+        pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType]
+
 
 def test_timedelta_properties_methods() -> None:
     td = pd.Timedelta("1 day")
