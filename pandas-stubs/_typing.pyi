@@ -531,6 +531,14 @@ BytesDtypeArg: TypeAlias = (
     BuiltinBytesDtypeArg | NumpyBytesDtypeArg | PyArrowBytesDtypeArg
 )
 CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
+# Alias for a Series with a categorical dtype. The element-type of a categorical
+# Series is not statically known (it can hold any hashable categories), so we
+# parameterize by `CategoricalDtype` rather than the element type. Users can
+# spell ``Series[CategoricalDtype]`` directly, but the alias is shorter and
+# easier to remember; see GH#1415. Guarded by ``TYPE_CHECKING`` because
+# ``Series`` is not subscriptable at runtime.
+if TYPE_CHECKING:
+    CategoricalSeries: TypeAlias = Series[CategoricalDtype]
 
 # Builtin object type and its string alias
 BuiltinObjectDtypeArg: TypeAlias = type[object] | Literal["object"]
