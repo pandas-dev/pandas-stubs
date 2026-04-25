@@ -1,5 +1,6 @@
 from typing import (
     Any,
+    Literal,
     Self,
     overload,
 )
@@ -35,6 +36,19 @@ class TimedeltaArray(TimelikeOps):
         freq: Frequency | None = None,
         copy: bool = ...,
     ) -> None: ...
+    @overload
+    def sum(
+        self,
+        *,
+        axis: AxisInt | None = None,
+        dtype: NpDtype | None = None,
+        out: np_1darray_object | None = None,
+        keepdims: bool = False,
+        initial: object | None = None,
+        skipna: Literal[True] = True,
+        min_count: int = 0,
+    ) -> Timedelta: ...
+    @overload
     def sum(
         self,
         *,
@@ -45,7 +59,19 @@ class TimedeltaArray(TimelikeOps):
         initial: object | None = None,
         skipna: bool = True,
         min_count: int = 0,
+    ) -> Timedelta | NaTType: ...
+    @overload
+    def std(
+        self,
+        *,
+        axis: AxisInt | None = None,
+        dtype: DtypeArg | None = None,
+        out: np_1darray_object | None = None,
+        ddof: int = 1,
+        keepdims: bool = False,
+        skipna: Literal[True] = True,
     ) -> Timedelta: ...
+    @overload
     def std(
         self,
         *,
@@ -55,7 +81,7 @@ class TimedeltaArray(TimelikeOps):
         ddof: int = 1,
         keepdims: bool = False,
         skipna: bool = True,
-    ) -> Timedelta: ...
+    ) -> Timedelta | NaTType: ...
     def __mul__(self, other: Any) -> Self: ...
     __rmul__ = __mul__
     @overload

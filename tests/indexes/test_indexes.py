@@ -29,6 +29,7 @@ from pandas.core.indexes.frozen import FrozenList
 import pytest
 
 from tests import (
+    PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -1824,7 +1825,7 @@ def test_get_loc_named_tuples() -> None:
             flat_midx_unsorted_dupes.get_loc(NamedIndex("i1", "i2")),
             int | slice | np_1darray_bool,
         ),
-        slice,
+        slice if PD_LTE_31 else np_1darray_bool,
     )
 
 
