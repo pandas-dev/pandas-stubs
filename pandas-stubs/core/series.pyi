@@ -152,6 +152,13 @@ from pandas._typing import (
     AxisColumn,
     AxisIndex,
     BooleanDtypeArg,
+    BuiltinBooleanDtypeArg,
+    BuiltinBytesDtypeArg,
+    BuiltinComplexDtypeArg,
+    BuiltinFloatDtypeArg,
+    BuiltinIntDtypeArg,
+    BuiltinObjectDtypeArg,
+    BuiltinStrDtypeArg,
     BytesDtypeArg,
     CalculationMethod,
     CategoryDtypeArg,
@@ -188,7 +195,15 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     NsmallestNlargestKeep,
+    NumpyBooleanDtypeArg,
+    NumpyBytesDtypeArg,
+    NumpyComplexDtypeArg,
+    NumpyFloat16DtypeArg,
+    NumpyFloatNot16DtypeArg,
+    NumpyIntDtypeArg,
+    NumpyObjectDtypeArg,
     NumpyStrDtypeArg,
+    NumpyUIntDtypeArg,
     ObjectDtypeArg,
     PandasAstypeTimedeltaDtypeArg,
     PandasAstypeTimestampDtypeArg,
@@ -4611,6 +4626,70 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         na_value: Scalar = ...,
         **kwargs: Any,
     ) -> np_1darray_bytes: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: NumpyFloat16DtypeArg | NumpyFloatNot16DtypeArg | BuiltinFloatDtypeArg,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray_float: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: NumpyIntDtypeArg | NumpyUIntDtypeArg | BuiltinIntDtypeArg,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray_anyint: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: NumpyBooleanDtypeArg | BuiltinBooleanDtypeArg,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray_bool: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: NumpyComplexDtypeArg | BuiltinComplexDtypeArg,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray_complex: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: NumpyStrDtypeArg | BuiltinStrDtypeArg,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray_str: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: NumpyBytesDtypeArg | BuiltinBytesDtypeArg,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray_bytes: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: NumpyObjectDtypeArg | BuiltinObjectDtypeArg,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray_object: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray[GenericT]: ...
     @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,

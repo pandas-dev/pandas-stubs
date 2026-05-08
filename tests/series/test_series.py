@@ -66,6 +66,7 @@ from tests._typing import (
     np_1darray_dt,
     np_1darray_float,
     np_1darray_object,
+    np_1darray_str,
     np_1darray_td,
     np_ndarray_num,
 )
@@ -1917,6 +1918,14 @@ def test_types_to_numpy() -> None:
 
     check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
 
+    check(
+        assert_type(
+            pd.Series(np.empty(0, np.dtype("f8"))).to_numpy(dtype=np.dtype("f8")),
+            np_1darray[np.float64],
+        ),
+        np_1darray[np.float64],  # parameterized form checks dtype without iterating
+    )
+
 
 def test_to_numpy() -> None:
     """Test Series.to_numpy for different types."""
@@ -1984,6 +1993,71 @@ def test_to_numpy() -> None:
         assert_type(s_timedelta.to_numpy(), np_1darray_td),
         np_1darray,
         np.timedelta64,
+    )
+
+    # dtype-narrowing overloads: Series with narrow per-type overloads (Timedelta,
+    # Timestamp, Period, BaseOffset, Interval) fall through to the new dtype-specific
+    # overloads when passed a cross-type dtype.
+
+    # np.dtype[T] instance -> np_1darray[T] via generic overload
+    check(
+        assert_type(s_timedelta.to_numpy(dtype=np.dtype("f8")), np_1darray[np.float64]),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray[np.object_]),
+        np_1darray,
+        pd.Period,  # elements are Period objects in object dtype array
+    )
+
+    # dtype literal strings -> specific alias via Numpy*DtypeArg overloads
+    check(
+        assert_type(s_timedelta.to_numpy(dtype="float64"), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype="int"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_period.to_numpy(dtype="bool_"), np_1darray_bool),
+        np_1darray,
+        np.bool_,
+    )
+    check(
+        assert_type(s_timedelta.to_numpy(dtype="complex128"), np_1darray_complex),
+        np_1darray,
+        np.complexfloating,
+    )
+    check(
+        assert_type(s_timedelta.to_numpy(dtype="str_"), np_1darray_str),
+        np_1darray,
+        np.str_,
+    )
+    check(
+        assert_type(s_interval.to_numpy(dtype="O"), np_1darray_object),
+        np_1darray,
+        pd.Interval,  # elements are Interval objects in object dtype array
+    )
+
+    # dtype type objects -> np_1darray[T] via type[GenericT] overload
+    check(
+        assert_type(s_timedelta.to_numpy(dtype=np.float64), np_1darray[np.float64]),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype=np.int64), np_1darray[np.int64]),
+        np_1darray,
+        np.integer,
     )
 
 

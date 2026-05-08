@@ -32,7 +32,9 @@ from tests import (
 )
 from tests._typing import (
     np_1darray,
+    np_1darray_anyint,
     np_1darray_bool,
+    np_1darray_bytes,
     np_1darray_dt,
     np_1darray_int64,
     np_1darray_object,
@@ -1045,24 +1047,32 @@ def test_series_types_to_numpy() -> None:
         dtype=pd.Interval,
     )
 
-    # passed dtype-like with statically unknown generic
+    # passed dtype-like with statically known result via Builtin*DtypeArg overloads
     check(
-        assert_type(td_s.to_numpy(dtype="int", copy=True), np_1darray),
+        assert_type(td_s.to_numpy(dtype="int", copy=True), np_1darray_anyint),
         np_1darray,
         dtype=np.integer,
     )
     check(
-        assert_type(ts_s.to_numpy(dtype="int", copy=True), np_1darray),
+        assert_type(ts_s.to_numpy(dtype="int", copy=True), np_1darray_anyint),
         np_1darray,
         dtype=np.integer,
     )
     check(
-        assert_type(p_s.to_numpy(dtype="int", copy=True), np_1darray),
+        assert_type(p_s.to_numpy(dtype="int", copy=True), np_1darray_anyint),
         np_1darray,
         dtype=np.integer,
     )
-    check(assert_type(o_s.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
-    check(assert_type(i_s.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
+    check(
+        assert_type(o_s.to_numpy(dtype="bytes", copy=True), np_1darray_bytes),
+        np_1darray,
+        np.bytes_,
+    )
+    check(
+        assert_type(i_s.to_numpy(dtype="bytes", copy=True), np_1darray_bytes),
+        np_1darray,
+        np.bytes_,
+    )
 
     # passed dtype-like with statically known generic
     check(
