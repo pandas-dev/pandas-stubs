@@ -72,11 +72,23 @@ we can fix the code:
 decimals = pd.Series({'TSLA': 2, 'AMZN': 1})
 ```
 
-## Version Numbering Convention
+## Versioning
 
-The version number x.y.z.yymmdd corresponds to a test done with pandas version x.y.z, with the stubs released on the date mm/yy/dd.
+The version number of `pandas-stubs` follows the format **`x.y.z.yymmdd`**, where:
+- **`x.y.z`**: The version of pandas this release was **tested against** (e.g., `3.0.0` for pandas 3.0.0).
+- **`yymmdd`**: The release date of the stubs (year, month, day).
+
 It is anticipated that the stubs will be released more frequently than pandas as the stubs are expected to evolve due to more
 public visibility.
+
+### Compatibility with pandas
+- **No strict dependency**: `pandas-stubs` does **not** enforce a dependency on a specific pandas version. This allows you to use newer stubs with older pandas versions for forward compatibility.
+- **Recommended usage**:
+  - Use the **latest `pandas-stubs`** to catch deprecations and API changes early, even if your pandas version is older.
+  - If you **pin pandas**, pin `pandas-stubs` to the **same major/minor version** (e.g., `pandas==2.3.3` → `pandas-stubs==2.3.3.*`) to avoid inconsistencies.
+- **Why?**
+  The stubs help you write code compatible with future pandas versions. Type checkers will flag deprecated or removed APIs based on the pandas version the stubs were tested against.
+
 
 ## Where to get it
 
