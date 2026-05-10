@@ -3135,9 +3135,11 @@ def test_series_str_methods_iter() -> None:
         def _sr_iter() -> None:  # pyright: ignore[reportUnusedFunction]
             assert_type(s_str.str.__iter__(), Never)
 
-        # def _sr_iterator() -> None:
-        #     for _ in s_str.str:
-        #         pass
+        def _sr_iterator() -> None:  # pyright: ignore[reportUnusedFunction]
+            for (
+                _  # pyright: ignore[reportUnknownVariableType]
+            ) in s_str.str:  # pyright: ignore[reportGeneralTypeIssues]
+                pass
 
 
 def test_series_explode() -> None:
