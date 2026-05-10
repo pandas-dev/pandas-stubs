@@ -1923,7 +1923,9 @@ def test_types_to_numpy() -> None:
             pd.Series(np.empty(0, np.dtype("f8"))).to_numpy(dtype=np.dtype("f8")),
             np_1darray[np.float64],
         ),
-        np_1darray[np.float64],  # don't add subclass check after this since it is done here
+        np_1darray[
+            np.float64
+        ],  # don't add subclass check after this since it is done here
     )
 
     s_str = pd.Series(["a", "b", "c"], dtype=str)
