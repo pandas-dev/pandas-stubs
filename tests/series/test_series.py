@@ -1923,7 +1923,7 @@ def test_types_to_numpy() -> None:
             pd.Series(np.empty(0, np.dtype("f8"))).to_numpy(dtype=np.dtype("f8")),
             np_1darray[np.float64],
         ),
-        np_1darray[np.float64],  # parameterized form checks dtype without iterating
+        np_1darray[np.float64],  # don't add subclass check after this since it is done here
     )
 
     s_str = pd.Series(["a", "b", "c"], dtype=str)
@@ -2005,7 +2005,7 @@ def test_types_to_numpy() -> None:
     )
     check(
         assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray[np.object_]),
-        np_1darray,
+        np_1darray_object,
         pd.Period,
     )
 
@@ -2200,6 +2200,36 @@ def test_types_to_numpy() -> None:
     )
     check(
         assert_type(s_td_small.to_numpy(dtype=np.uint32), np_1darray[np.uint32]),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype=np.int8), np_1darray[np.int8]),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype=np.int16), np_1darray[np.int16]),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype=np.int32), np_1darray[np.int32]),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.uint8), np_1darray[np.uint8]),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.uint16), np_1darray[np.uint16]),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.uint64), np_1darray[np.uint64]),
         np_1darray,
         np.integer,
     )
