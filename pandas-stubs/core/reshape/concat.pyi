@@ -6,6 +6,7 @@ from collections.abc import (
 from typing import (
     Literal,
     Never,
+    TypeVar,
     overload,
 )
 
@@ -23,6 +24,8 @@ from pandas._typing import (
     HashableT4,
 )
 
+DataFrameT0 = TypeVar("DataFrameT0", bound=DataFrame)
+
 @overload
 def concat(
     objs: Iterable[None] | Mapping[HashableT1, None],
@@ -31,6 +34,19 @@ def concat(
     join: Literal["inner", "outer"] = "outer",
     ignore_index: bool = False,
     keys: Iterable[HashableT2] | None = None,
+    levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] | None = None,
+    names: list[HashableT4] | None = None,
+    verify_integrity: bool = False,
+    sort: bool = False,
+) -> Never: ...
+@overload
+def concat(
+    objs: Iterable[NDFrame | None] | Mapping[HashableT1, NDFrame | None],
+    *,
+    axis: Axis = 0,
+    join: Literal["inner", "outer"] = "outer",
+    ignore_index: Literal[True],
+    keys: Iterable[HashableT2],
     levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] | None = None,
     names: list[HashableT4] | None = None,
     verify_integrity: bool = False,
@@ -62,6 +78,19 @@ def concat(  # type: ignore[overload-overlap]
     verify_integrity: bool = False,
     sort: bool = False,
 ) -> Series: ...
+@overload
+def concat(
+    objs: Iterable[DataFrameT0 | None],
+    *,
+    axis: Axis = 0,
+    join: Literal["inner", "outer"] = "outer",
+    ignore_index: bool = False,
+    keys: Iterable[HashableT2] | None = None,
+    levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] | None = None,
+    names: list[HashableT4] | None = None,
+    verify_integrity: bool = False,
+    sort: bool = False,
+) -> DataFrameT0: ...
 @overload
 def concat(
     objs: Iterable[NDFrame | None] | Mapping[HashableT1, NDFrame | None],

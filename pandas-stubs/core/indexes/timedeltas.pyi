@@ -79,9 +79,7 @@ class TimedeltaIndex(
         self, other: timedelta | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
-    def __radd__(  # pyrefly: ignore[bad-override]
-        self, other: Period
-    ) -> PeriodIndex: ...
+    def __radd__(self, other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
     @overload
@@ -108,9 +106,7 @@ class TimedeltaIndex(
     @overload
     def __rmul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
-    def __truediv__(  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
-        self, other: Index[Never]
-    ) -> Index: ...
+    def __truediv__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __truediv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
@@ -122,7 +118,7 @@ class TimedeltaIndex(
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
-    def __rtruediv__(  # pyrefly: ignore[bad-override]
+    def __rtruediv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
     @overload
@@ -130,7 +126,7 @@ class TimedeltaIndex(
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
-    def __floordiv__(  # pyrefly: ignore [bad-override]
+    def __floordiv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
     @overload
@@ -140,9 +136,7 @@ class TimedeltaIndex(
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[int]: ...
     @overload
-    def __rfloordiv__(  # pyrefly: ignore[bad-override]
-        self, other: np_ndarray_num | np_ndarray_dt
-    ) -> Never: ...
+    def __rfloordiv__(self, other: np_ndarray_num | np_ndarray_dt) -> Never: ...
     @overload
     def __rfloordiv__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: _DT_FACTOR_SEQ | Self

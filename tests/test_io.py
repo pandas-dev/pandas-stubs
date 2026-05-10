@@ -7,7 +7,6 @@ import io
 import os
 from pathlib import Path
 import sqlite3
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -339,24 +338,23 @@ def test_sas_xport() -> None:
         pass
 
 
-MESSAGE_PYTABLE_314 = (
-    "PyTables does not support Python 3.14+ yet, see PyTables/PyTables#1261"
-)
-
-
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df"), None), type(None))
     check(assert_type(read_hdf(path_str), DataFrame | Series), DataFrame)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdfstore(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     store = HDFStore(path_str, model="w")
     check(assert_type(store, HDFStore), HDFStore)
-    check(assert_type(store.put("df", DF, "table"), None), type(None))
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        r"The default value of 'track_times' in HDFStore.put will change from True to False in a future version. Pass track_times=False explicitly to silence this warning and get deterministic HDF5 files.",
+        "3.0.99",
+        "3.1.99",
+    ):
+        check(assert_type(store.put("df", DF, "table"), None), type(None))
     check(assert_type(store.append("df2", DF, "table"), None), type(None))
     check(assert_type(store.keys(), list[str]), list)
     check(assert_type(store.info(), str), str)
@@ -386,7 +384,6 @@ def test_hdfstore(tmp_path: Path) -> None:
     store.close()
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_read_hdf_iterator(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
@@ -401,7 +398,6 @@ def test_read_hdf_iterator(tmp_path: Path) -> None:
     ti.close()
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_context_manager(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
@@ -410,7 +406,6 @@ def test_hdf_context_manager(tmp_path: Path) -> None:
         check(assert_type(store.get("df"), DataFrame | Series), DataFrame)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_series(tmp_path: Path) -> None:
     s = DF["a"]
     path_str = str(tmp_path / str(uuid.uuid4()))
@@ -592,6 +587,9 @@ def test_read_csv(tmp_path: Path) -> None:
         return x in ["a", "b"]
 
     pd.read_csv(path_str, usecols=cols)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.read_csv(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_read_csv_iterator(tmp_path: Path) -> None:
@@ -1116,12 +1114,9 @@ def test_excel_writer(tmp_path: Path) -> None:
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
     check(assert_type(read_excel(ef), DataFrame), DataFrame)
-    check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
-    check(
-        assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
-        dict,
-    )
     check(assert_type(ef.close(), None), type(None))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _ = ef.parse  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType]
 
 
 def test_excel_writer_io() -> None:

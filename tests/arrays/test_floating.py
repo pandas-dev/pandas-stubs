@@ -112,3 +112,13 @@ def test_dtype() -> None:
 
     check(assert_type(pd.array([1.0], "Float32").dtype, FloatingDtype), pd.Float32Dtype)
     check(assert_type(pd.array([1.0], "Float64").dtype, FloatingDtype), pd.Float64Dtype)
+
+
+def test_construct_array_type() -> None:
+    """Test the constructor_array_type method."""
+    assert (
+        assert_type(
+            pd.array([-1.0453]).dtype.construct_array_type(), type[FloatingArray]
+        )
+        is FloatingArray
+    )

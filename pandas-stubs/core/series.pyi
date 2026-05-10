@@ -1136,6 +1136,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         func: Callable[Concatenate[S1, ...], S2 | NAType],
         na_action: Literal["ignore"],
+        engine: Callable[..., Any] | None = None,
         **kwargs: Any,
     ) -> Series[S2]: ...
     @overload
@@ -1143,12 +1144,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         func: Mapping[S1, S2] | Series[S2],
         na_action: Literal["ignore"],
+        engine: None = None,
     ) -> Series[S2]: ...
     @overload
     def map(
         self,
         func: Callable[Concatenate[S1 | NAType, ...], S2 | NAType],
         na_action: None = None,
+        engine: Callable[..., Any] | None = None,
         **kwargs: Any,
     ) -> Series[S2]: ...
     @overload
@@ -1156,12 +1159,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         func: Mapping[S1, S2] | Series[S2],
         na_action: None = None,
+        engine: None = None,
     ) -> Series[S2]: ...
     @overload
     def map(
         self,
         func: Callable[..., Any],
         na_action: Literal["ignore"] | None = None,
+        engine: Callable[..., Any] | None = None,
         **kwargs: Any,
     ) -> Series: ...
     @overload
@@ -1169,6 +1174,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         func: Mapping[Any, Any] | Series,
         na_action: Literal["ignore"] | None = None,
+        engine: None = None,
     ) -> Series: ...
     @overload
     def aggregate(
@@ -1223,7 +1229,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | NAType
             | None,
         ],
-        convertDType: _bool = ...,
         args: tuple[Any, ...] = ...,
         **kwargs: Any,
     ) -> Series: ...
@@ -1231,7 +1236,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def apply(
         self,
         func: Callable[..., BaseOffset],
-        convertDType: _bool = ...,
         args: tuple[Any, ...] = ...,
         **kwargs: Any,
     ) -> Series[BaseOffset]: ...
@@ -1239,7 +1243,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def apply(
         self,
         func: Callable[..., Series],
-        convertDType: _bool = ...,
         args: tuple[Any, ...] = ...,
         **kwargs: Any,
     ) -> DataFrame: ...
@@ -1315,12 +1318,27 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         regex: ReplaceValue = ...,
         inplace: _bool = False,
     ) -> Series[S1]: ...
+    @overload
     def shift(
         self,
         periods: int | Sequence[int] = ...,
         freq: BaseOffset | timedelta | _str | None = None,
         axis: Axis = 0,
+    ) -> Series: ...
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = ...,
+        axis: Axis = 0,
         fill_value: Scalar | NAType | None = ...,
+    ) -> Series: ...
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = ...,
+        freq: None = None,
+        axis: Axis = 0,
+        fill_value: None = None,
     ) -> Series: ...
     def info(
         self,
@@ -1368,7 +1386,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @property
     def str(
         self,
-    ) -> StringMethods[  # pyrefly: ignore[bad-specialization]
+    ) -> StringMethods[
         Self,
         DataFrame,
         Series[bool],
@@ -1397,10 +1415,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         legend: _bool = False,
         **kwargs: Any,
     ) -> SubplotBase: ...
-    @final
-    def swapaxes(
-        self, axis1: AxisIndex, axis2: AxisIndex, copy: _bool = ...
-    ) -> Series[S1]: ...
     @final
     def droplevel(self, level: Level | list[Level], axis: AxisIndex = 0) -> Self: ...
     def pop(self, item: Hashable) -> S1: ...
@@ -4080,6 +4094,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def loc(self) -> _LocIndexerSeries[S1]: ...
     def all(
         self,
+        *,
         axis: AxisIndex = 0,
         bool_only: _bool | None = False,
         skipna: _bool = True,

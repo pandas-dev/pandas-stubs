@@ -418,6 +418,14 @@ def test_types_shift() -> None:
     check(assert_type(s.shift(freq=MonthEnd(3)), pd.Series), pd.Series, np.integer)
     check(assert_type(s.shift(freq=Week(4)), pd.Series), pd.Series, np.integer)
     check(assert_type(s.shift(freq=YearEnd(2)), pd.Series), pd.Series, np.integer)
+    check(
+        assert_type(s.shift(freq=None, fill_value=None), pd.Series),
+        pd.Series,
+        np.floating,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_series_pct_change() -> None:
@@ -872,6 +880,19 @@ def test_types_scalar_arithmetic() -> None:
     _res_pow1: pd.Series = s**0
     _res_pow2: pd.Series = s**0.213
     _res_pow3: pd.Series = s.pow(0.5)
+
+
+def test_series_frame_ops() -> None:
+    """Test that flex methods like add/sub/div/truediv/... don't allow passing a frame as other."""
+    df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    s = pd.Series([0, 1, -10])
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = s.add(df)  # type: ignore[type-var] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType]
+        _1 = s.sub(df)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType]
+        _2 = s.mul(df)  # type: ignore[type-var] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType]
+        _3 = s.truediv(df)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType]
+        _4 = s.divmod(df)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_types_groupby() -> None:
@@ -2781,6 +2802,50 @@ def test_map_na() -> None:
         pd.Series,
         np.integer,
     )
+
+
+def test_map_engine() -> None:
+    s: pd.Series[int] = pd.Series([1, 2, 3])
+
+    def to_str(x: int) -> str:
+        return str(x)
+
+    # engine=None with na_action="ignore": func takes S1, returns S2
+    check(
+        assert_type(s.map(to_str, na_action="ignore", engine=None), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+
+    # engine=None with na_action=None: func must handle NAType
+    def nullable_to_str(x: int | NAType) -> str | NAType:
+        return str(x) if isinstance(x, int) else x
+
+    check(
+        assert_type(
+            s.map(nullable_to_str, na_action=None, engine=None), "pd.Series[str]"
+        ),
+        pd.Series,
+        str,
+    )
+
+    # Mapping/Series: engine must be None (omitted or explicit)
+    mapping = {1: "a", 2: "b", 3: "c"}
+    check(
+        assert_type(s.map(mapping, engine=None), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+
+    if TYPE_CHECKING:
+        # engine accepts any callable (e.g. a JIT decorator like numba.jit).
+        # Cannot be tested at runtime: pandas validates __pandas_udf__ on the engine.
+        def jit_decorator(f: Callable[..., Any]) -> Callable[..., Any]:
+            return f
+
+        assert_type(
+            s.map(to_str, na_action="ignore", engine=jit_decorator), "pd.Series[str]"
+        )
 
 
 def test_case_when() -> None:

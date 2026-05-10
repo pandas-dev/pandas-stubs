@@ -20,7 +20,10 @@ from pandas.core.groupby.generic import (
     NamedAgg,
 )
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_types_groupby_as_index() -> None:
@@ -333,6 +336,9 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.nth(0), pd.DataFrame | pd.Series), pd.Series)
     check(assert_type(gb.nth[0, 1, 2], pd.DataFrame | pd.Series), pd.Series)
     check(assert_type(gb.nth((0, 1, 2)), pd.DataFrame | pd.Series), pd.Series)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
 
 
 def test_groupby_index() -> None:

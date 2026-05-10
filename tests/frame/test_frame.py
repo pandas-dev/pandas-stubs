@@ -596,6 +596,10 @@ def test_types_shift() -> None:
     check(assert_type(df.shift(freq=MonthEnd(3)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.shift(freq=Week(4)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.shift(freq=YearEnd(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq=None, fill_value=None), pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_types_rank() -> None:
@@ -1521,6 +1525,25 @@ def test_types_pivot_table() -> None:
                 columns="col3",
                 values=["col2", "col4"],
                 aggfunc="quantile",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # test passing kwargs for the aggfunc to pivot_table
+    df = pd.DataFrame(
+        {
+            "A": ["good", "bad", "good", "bad", "good"],
+            "B": ["one", "two", "one", "three", "two"],
+            "X": [2, 5, 4, 20, 10],
+        }
+    )
+
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index="A", columns="B", values="X", aggfunc="std", ddof=2
             ),
             pd.DataFrame,
         ),
@@ -4132,22 +4155,6 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # test with single dictionary
-    data_single_dict = {"id": 1, "name": "a"}
-    check(
-        assert_type(
-            pd.DataFrame.from_records(data_single_dict, index=["0"]), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-
-    # testing with mapping of sequences
-    data_mapping_dict = {"id": [1, 2], "name": ["a", "b"]}
-    check(
-        assert_type(pd.DataFrame.from_records(data_mapping_dict), pd.DataFrame),
-        pd.DataFrame,
-    )
-
     # Testing with index parameter as string
     check(
         assert_type(
@@ -4168,7 +4175,7 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # Testing  with exclude parameter
+    # Testing with exclude parameter
     check(
         assert_type(
             pd.DataFrame.from_records(
@@ -4241,6 +4248,15 @@ def test_from_records() -> None:
         ),
         pd.DataFrame,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # test with single dictionary
+        data_single_dict = {"id": 1, "name": "a"}
+        _0 = pd.DataFrame.from_records(data_single_dict, index=["0"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+
+        # testing with mapping of sequences
+        data_mapping_dict = {"id": [1, 2], "name": ["a", "b"]}
+        _1 = pd.DataFrame.from_records(data_mapping_dict)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_frame_index_setter() -> None:

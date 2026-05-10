@@ -524,8 +524,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             np_2darray
             | Iterable[SequenceNotStr[Any]]
             | Iterable[Mapping[HashableT, Any]]
-            | Mapping[HashableT, Any]
-            | Mapping[HashableT, SequenceNotStr[Any]]
         ),
         index: str | Axes | None = None,
         exclude: ListLike | None = None,
@@ -933,12 +931,27 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: bool = False,
         regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
     ) -> Self: ...
+    @overload
     def shift(
         self,
         periods: int | Sequence[int] = ...,
         freq: BaseOffset | dt.timedelta | _str | None = ...,
         axis: Axis | None = None,
+    ) -> Self: ...
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = ...,
+        axis: Axis | None = None,
         fill_value: Scalar | NAType | None = ...,
+    ) -> Self: ...
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = ...,
+        freq: None = None,
+        axis: Axis | None = None,
+        fill_value: None = None,
     ) -> Self: ...
     @overload
     def set_index(
@@ -1366,6 +1379,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         margins_name: _str = "All",
         observed: _bool = True,
         sort: _bool = True,
+        **kwargs: Any,
     ) -> Self: ...
     def stack(
         self,
@@ -1565,6 +1579,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         func: Callable[..., Any],
         na_action: Literal["ignore"] | None = None,
+        engine: Any = None,
         **kwargs: Any,
     ) -> Self: ...
     def join(
@@ -1856,6 +1871,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def all(
         self,
+        *,
         axis: None,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
@@ -1864,6 +1880,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def all(
         self,
+        *,
         axis: Axis = 0,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
@@ -2102,6 +2119,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def keys(self) -> Index: ...
     def kurt(
         self,
+        *,
         axis: Axis | None = ...,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2109,6 +2127,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Series: ...
     def kurtosis(
         self,
+        *,
         axis: Axis | None = ...,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2146,6 +2165,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def max(
         self,
+        *,
         axis: None,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2154,6 +2174,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def max(
         self,
+        *,
         axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2162,6 +2183,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def mean(
         self,
+        *,
         axis: None,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2170,6 +2192,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def mean(
         self,
+        *,
         axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2178,6 +2201,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def median(
         self,
+        *,
         axis: None,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2186,6 +2210,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def median(
         self,
+        *,
         axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2194,6 +2219,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def min(
         self,
+        *,
         axis: None,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2202,6 +2228,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def min(
         self,
+        *,
         axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2247,6 +2274,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def prod(
         self,
+        *,
         axis: Axis | None = "columns",
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2396,6 +2424,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def sem(
         self,
+        *,
         axis: Axis | None = ...,
         skipna: _bool | None = True,
         ddof: int = 1,
@@ -2406,6 +2435,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def set_axis(self, labels: AxesData, *, axis: Axis = 0) -> Self: ...
     def skew(
         self,
+        *,
         axis: Axis | None = ...,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -2415,6 +2445,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def squeeze(self, axis: Axis | None = None) -> DataFrame | Series | Scalar: ...
     def std(
         self,
+        *,
         axis: Axis | None = 0,
         skipna: _bool = True,
         ddof: int = 1,
@@ -2423,14 +2454,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Series: ...
     def sum(
         self,
+        *,
         axis: Axis | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         min_count: int = 0,
         **kwargs: Any,
     ) -> Series: ...
-    @final
-    def swapaxes(self, axis1: Axis, axis2: Axis, copy: _bool = ...) -> Self: ...
     @final
     def tail(self, n: int = 5) -> Self: ...
     @overload
@@ -2580,6 +2610,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def var(
         self,
+        *,
         axis: Axis | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,

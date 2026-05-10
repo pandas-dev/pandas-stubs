@@ -1,8 +1,8 @@
 import pandas as pd
 
-from pandas.io.sas.sasreader import ReaderBase
+from pandas.io.sas.sasreader import SASReader
 
-class XportReader(ReaderBase):
+class XportReader(SASReader):
     def close(self) -> None: ...
     def __next__(self) -> pd.DataFrame: ...
     def read(self, nrows: int | None = None) -> pd.DataFrame: ...

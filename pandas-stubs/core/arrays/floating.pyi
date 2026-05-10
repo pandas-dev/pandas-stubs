@@ -9,8 +9,7 @@ from pandas._typing import (
 )
 
 class FloatingDtype(NumericDtype):
-    @classmethod
-    def construct_array_type(cls) -> type[FloatingArray]: ...
+    def construct_array_type(self) -> type[FloatingArray]: ...
 
 class FloatingArray(NumericArray):
     @property

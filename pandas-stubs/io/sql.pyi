@@ -42,11 +42,11 @@ _SQLStatement: TypeAlias = (
 def read_sql_table(
     table_name: str,
     con: _SQLConnection,
-    schema: str | None = ...,
-    index_col: str | list[str] | None = ...,
-    coerce_float: bool = ...,
-    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
-    columns: list[str] | None = ...,
+    schema: str | None = None,
+    index_col: str | list[str] | None = None,
+    coerce_float: bool = True,
+    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
+    columns: list[str] | None = None,
     *,
     chunksize: int,
     dtype_backend: DtypeBackend | NoDefault = ...,
@@ -55,11 +55,11 @@ def read_sql_table(
 def read_sql_table(
     table_name: str,
     con: _SQLConnection,
-    schema: str | None = ...,
-    index_col: str | list[str] | None = ...,
-    coerce_float: bool = ...,
-    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
-    columns: list[str] | None = ...,
+    schema: str | None = None,
+    index_col: str | list[str] | None = None,
+    coerce_float: bool = True,
+    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
+    columns: list[str] | None = None,
     chunksize: None = None,
     dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
@@ -67,8 +67,8 @@ def read_sql_table(
 def read_sql_query(
     sql: _SQLStatement,
     con: _SQLConnection,
-    index_col: str | list[str] | None = ...,
-    coerce_float: bool = ...,
+    index_col: str | list[str] | None = None,
+    coerce_float: bool = True,
     params: (
         list[Scalar]
         | tuple[Scalar, ...]
@@ -76,19 +76,19 @@ def read_sql_query(
         | Mapping[str, Scalar]
         | Mapping[str, tuple[Scalar, ...]]
         | None
-    ) = ...,
-    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
+    ) = None,
+    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
     *,
     chunksize: int,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | None = None,
     dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> Generator[DataFrame]: ...
 @overload
 def read_sql_query(
     sql: _SQLStatement,
     con: _SQLConnection,
-    index_col: str | list[str] | None = ...,
-    coerce_float: bool = ...,
+    index_col: str | list[str] | None = None,
+    coerce_float: bool = True,
     params: (
         list[Scalar]
         | tuple[Scalar, ...]
@@ -96,10 +96,10 @@ def read_sql_query(
         | Mapping[str, Scalar]
         | Mapping[str, tuple[Scalar, ...]]
         | None
-    ) = ...,
-    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
+    ) = None,
+    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
     chunksize: None = None,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | None = None,
     dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 @overload
@@ -119,7 +119,7 @@ def read_sql(
     columns: list[str] | None = None,
     *,
     chunksize: int,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | None = None,
     dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> Generator[DataFrame]: ...
 @overload
@@ -191,12 +191,12 @@ class SQLTable:
     def create(self) -> None: ...
     def insert_data(self) -> tuple[list[str], list[np_ndarray]]: ...
     def insert(
-        self, chunksize: int | None = ..., method: str | None = ...
+        self, chunksize: int | None = None, method: str | None = None
     ) -> int | None: ...
     def read(
         self,
-        coerce_float: bool = ...,
-        parse_dates: bool | list[str] | None = ...,
-        columns: list[str] | None = ...,
-        chunksize: int | None = ...,
+        coerce_float: bool = True,
+        parse_dates: bool | list[str] | None = None,
+        columns: list[str] | None = None,
+        chunksize: int | None = None,
     ) -> DataFrame | Generator[DataFrame]: ...

@@ -62,6 +62,14 @@ def test_construction_sequence(
         assert_type(pd.array(UserList([610, np.int64(987)])), IntegerArray)
 
 
+def test_construct_array_type() -> None:
+    """Test the constructor_array_type method."""
+    assert (
+        assert_type(pd.array([-1]).dtype.construct_array_type(), type[IntegerArray])
+        is IntegerArray
+    )
+
+
 def test_construction_array_like() -> None:
     np_arr = np.array([1, np.int8(1)], np.int32)
     check(assert_type(pd.array(np_arr), IntegerArray), IntegerArray)

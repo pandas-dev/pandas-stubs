@@ -23,6 +23,7 @@ from pandas import (
 )
 from pandas.core.base import NoNewAttributesMixin
 
+from pandas._libs.missing import NAType
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     AlignJoin,
@@ -121,7 +122,7 @@ class StringMethods(
         pat: str | re.Pattern[str],
         case: bool = True,
         flags: int = 0,
-        na: Scalar | NaTType | None = ...,
+        na: float | NAType | NaTType | bool | None = ...,
         regex: bool = True,
     ) -> _T_BOOL: ...
     def match(
@@ -201,10 +202,14 @@ class StringMethods(
     def translate(self, table: Mapping[int, int | str | None] | None) -> _T_STR: ...
     def count(self, pat: str, flags: int = 0) -> _T_INT: ...
     def startswith(
-        self, pat: str | tuple[str, ...], na: Scalar | NaTType | None = ...
+        self,
+        pat: str | tuple[str, ...],
+        na: float | NAType | NaTType | bool | None = ...,
     ) -> _T_BOOL: ...
     def endswith(
-        self, pat: str | tuple[str, ...], na: Scalar | NaTType | None = ...
+        self,
+        pat: str | tuple[str, ...],
+        na: float | NAType | NaTType | bool | None = ...,
     ) -> _T_BOOL: ...
     def findall(self, pat: str | re.Pattern[str], flags: int = 0) -> _T_LIST_STR: ...
     @overload  # expand=True

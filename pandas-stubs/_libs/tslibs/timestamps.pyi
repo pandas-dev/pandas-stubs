@@ -60,19 +60,19 @@ class Timestamp(datetime, SupportsIndex):
     def __new__(
         cls,
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
-        year: int | None = ...,
-        month: int | None = ...,
-        day: int | None = ...,
-        hour: int | None = ...,
-        minute: int | None = ...,
-        second: int | None = ...,
-        microsecond: int | None = ...,
-        tzinfo: _tzinfo | None = ...,
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        microsecond: int | None = None,
+        tzinfo: _tzinfo | None = None,
         *,
-        nanosecond: int | None = ...,
-        tz: TimeZones = ...,
-        unit: str | int | None = ...,
-        fold: Literal[0, 1] | None = ...,
+        nanosecond: int | None = None,
+        tz: TimeZones = None,
+        unit: str | int | None = None,
+        fold: Literal[0, 1] | None = None,
     ) -> Self: ...
     # GH 46171
     # While Timestamp can return pd.NaT, having the constructor return
@@ -102,11 +102,11 @@ class Timestamp(datetime, SupportsIndex):
     if sys.version_info >= (3, 12):
         @classmethod
         def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
-            cls, t: float, tz: _tzinfo | str | None = ...
+            cls, t: float, tz: _tzinfo | str | None = None
         ) -> Self: ...
     else:
         @classmethod
-        def fromtimestamp(cls, t: float, tz: _tzinfo | str | None = ...) -> Self: ...
+        def fromtimestamp(cls, t: float, tz: _tzinfo | str | None = None) -> Self: ...
 
     @classmethod
     def today(cls, tz: _tzinfo | str | None = None) -> Self: ...
@@ -114,7 +114,7 @@ class Timestamp(datetime, SupportsIndex):
     def fromordinal(
         cls,
         ordinal: int,
-        tz: _tzinfo | str | None = ...,
+        tz: _tzinfo | str | None = None,
     ) -> Self: ...
     @classmethod
     def now(cls, tz: _tzinfo | str | None = None) -> Self: ...
@@ -137,17 +137,17 @@ class Timestamp(datetime, SupportsIndex):
     # Violation of Liskov substitution principle
     def replace(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore # ty: ignore[invalid-method-override]
         self,
-        year: int | None = ...,
-        month: int | None = ...,
-        day: int | None = ...,
-        hour: int | None = ...,
-        minute: int | None = ...,
-        second: int | None = ...,
-        microsecond: int | None = ...,
-        tzinfo: _tzinfo | None = ...,
-        fold: Literal[0, 1] | None = ...,
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        microsecond: int | None = None,
+        tzinfo: _tzinfo | None = None,
+        fold: Literal[0, 1] | None = None,
     ) -> Timestamp: ...
-    def astimezone(self, tz: _tzinfo | None = ...) -> Self: ...
+    def astimezone(self, tz: _tzinfo | None = None) -> Self: ...
     def ctime(self) -> str: ...
     def isoformat(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self,
@@ -261,9 +261,9 @@ class Timestamp(datetime, SupportsIndex):
     def is_quarter_end(self) -> bool: ...
     @property
     def is_year_end(self) -> bool: ...
-    def to_pydatetime(self, warn: bool = ...) -> datetime: ...
+    def to_pydatetime(self, warn: bool = True) -> datetime: ...
     def to_datetime64(self) -> np.datetime64: ...
-    def to_period(self, freq: PeriodFrequency | None = ...) -> Period: ...
+    def to_period(self, freq: PeriodFrequency | None = None) -> Period: ...
     def to_julian_date(self) -> np.float64: ...
     @property
     def asm8(self) -> np.datetime64: ...

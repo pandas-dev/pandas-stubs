@@ -81,8 +81,7 @@ class DecimalDtype(ExtensionDtype):
     def __repr__(self) -> str:
         return f"DecimalDtype(context={self.context})"
 
-    @classmethod
-    def construct_array_type(cls) -> type_t[DecimalArray]:
+    def construct_array_type(self) -> type_t[DecimalArray]:
         """
         Return the array type associated with this dtype.
 
@@ -144,7 +143,8 @@ class DecimalArray(OpsMixin, ExtensionArray):
     def _from_sequence_of_strings(
         cls,
         strings: SequenceNotStr[str],
-        dtype: DecimalDtype | None = None,
+        *,
+        dtype: DecimalDtype,
         copy: bool = False,
     ) -> Self:
         return cls._from_sequence([decimal.Decimal(x) for x in strings], dtype, copy)

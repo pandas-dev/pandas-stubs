@@ -61,6 +61,7 @@ def pivot_table(
     margins_name: Hashable = "All",
     observed: bool = True,
     sort: bool = True,
+    **kwargs: Any,
 ) -> DataFrame: ...
 
 # Can only use Index or ndarray when index or columns is a Grouper
@@ -78,6 +79,7 @@ def pivot_table(
     margins_name: Hashable = "All",
     observed: bool = True,
     sort: bool = True,
+    **kwargs: Any,
 ) -> DataFrame: ...
 @overload
 def pivot_table(
@@ -93,6 +95,7 @@ def pivot_table(
     margins_name: Hashable = "All",
     observed: bool = True,
     sort: bool = True,
+    **kwargs: Any,
 ) -> DataFrame: ...
 def pivot(
     data: DataFrame,

@@ -39,6 +39,7 @@ from tests._typing import (
     np_1darray_td,
 )
 
+from pandas.tseries.api import guess_datetime_format
 from pandas.tseries.frequencies import to_offset
 from pandas.tseries.holiday import USFederalHolidayCalendar
 from pandas.tseries.offsets import (
@@ -337,10 +338,33 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.second, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.microsecond, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.nanosecond, "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s0.dt.dayofweek, "pd.Series[int]"), pd.Series, np.integer)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(s0.dt.dayofweek, "pd.Series[int]"), pd.Series, np.integer)
+
     check(assert_type(s0.dt.day_of_week, "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s0.dt.weekday, "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s0.dt.dayofyear, "pd.Series[int]"), pd.Series, np.integer)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(s0.dt.weekday, "pd.Series[int]"), pd.Series, np.integer)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(s0.dt.dayofyear, "pd.Series[int]"), pd.Series, np.integer)
+
     check(assert_type(s0.dt.day_of_year, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.quarter, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.is_month_start, "pd.Series[bool]"), pd.Series, np.bool_)
@@ -350,7 +374,15 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.is_year_start, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s0.dt.is_year_end, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s0.dt.is_leap_year, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, np.integer)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, np.integer)
+
     check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.tz, dt.tzinfo | None), type(None))
     check(assert_type(s0.dt.freq, str | None), str)
@@ -634,10 +666,33 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.second, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.microsecond, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.nanosecond, "pd.Index[int]"), pd.Index, np.int32)
-    check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.int32)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.int32)
+
     check(assert_type(i0.day_of_week, "pd.Index[int]"), pd.Index, np.int32)
-    check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.int32)
-    check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.int32)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.int32)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.int32)
+
     check(assert_type(i0.day_of_year, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.quarter, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.is_month_start, np_1darray_bool), np_1darray_bool)
@@ -647,7 +702,15 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_year_start, np_1darray_bool), np_1darray_bool)
     check(assert_type(i0.is_year_end, np_1darray_bool), np_1darray_bool)
     check(assert_type(i0.is_leap_year, np_1darray_bool), np_1darray_bool)
-    check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.int32)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.int32)
+
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.tz, dt.tzinfo | None), type(None))
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
@@ -728,13 +791,43 @@ def test_periodindex_accessors() -> None:
     check(assert_type(i0.hour, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.minute, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.second, "pd.Index[int]"), pd.Index, np.integer)
-    check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.integer)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.integer)
+
     check(assert_type(i0.day_of_week, "pd.Index[int]"), pd.Index, np.integer)
-    check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.integer)
-    check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.integer)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.integer)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.integer)
+
     check(assert_type(i0.day_of_year, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.quarter, "pd.Index[int]"), pd.Index, np.integer)
-    check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.integer)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.integer)
+
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
@@ -1906,3 +1999,17 @@ def test_half_year_offsets() -> None:
     check(assert_type(ts + HalfYearEnd(), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts + BHalfYearBegin(), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts + BHalfYearEnd(), pd.Timestamp), pd.Timestamp)
+
+
+def test_to_offset_timedelta() -> None:
+    td = dt.timedelta(hours=1)
+    result = to_offset(td)
+    assert_type(result, BaseOffset)
+
+
+def test_guess_datetime_format() -> None:
+    """Test that guess_datetime_format is properly exposed from pandas.tseries.api module."""
+    check(assert_type(guess_datetime_format("09/13/2023"), str | None), str)
+    check(
+        assert_type(guess_datetime_format("2023|September|13"), str | None), type(None)
+    )

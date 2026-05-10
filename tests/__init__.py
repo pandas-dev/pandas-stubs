@@ -39,6 +39,7 @@ TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 LINUX = sys.platform == "linux"
 WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
+PD_LTE_31 = Version(pd.__version__) < Version("3.0.99")
 
 
 def check(
@@ -87,14 +88,10 @@ def check(
     value: Any
     if isinstance(actual, pd.Series):
         # cast is by design microsoft/pyright#11191
-        value = cast(pd.Series, actual).iloc[  # pyrefly: ignore[redundant-cast]
-            index_to_check_for_type
-        ]
+        value = cast(pd.Series, actual).iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
         # cast is by design microsoft/pyright#11191
-        value = cast(pd.Index, actual)[  # pyrefly: ignore[redundant-cast]
-            index_to_check_for_type
-        ]
+        value = cast(pd.Index, actual)[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
         # `BaseGroupBy.obj` is internal and untyped
         value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute]

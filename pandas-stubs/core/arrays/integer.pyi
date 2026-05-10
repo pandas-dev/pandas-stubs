@@ -12,8 +12,7 @@ class IntegerDtype(NumericDtype):
     base: None
     @property
     def itemsize(self) -> int: ...
-    @classmethod
-    def construct_array_type(cls) -> type[IntegerArray]: ...
+    def construct_array_type(self) -> type[IntegerArray]: ...
 
 class IntegerArray(NumericArray):
     @property

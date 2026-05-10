@@ -409,3 +409,42 @@ def test_timedelta_array_array() -> None:
 
     result = arr.__array__()
     check(assert_type(result, np_1darray_td), np_1darray, np.timedelta64)
+
+
+def test_timedelta_array_sum() -> None:
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
+    arr = pd.array(idx)
+
+    result = arr.sum()
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.sum(skipna=True)
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.sum(min_count=1)
+    check(assert_type(result, Timedelta), Timedelta)
+
+
+def test_timedelta_array_std() -> None:
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
+    arr = pd.array(idx)
+
+    result = arr.std()
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.std(skipna=True)
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.std(ddof=2)
+    check(assert_type(result, Timedelta), Timedelta)
+
+
+def test_timedelta_array_median() -> None:
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
+    arr = pd.array(idx)
+
+    result = arr.median()
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.median(skipna=True)
+    check(assert_type(result, Timedelta), Timedelta)

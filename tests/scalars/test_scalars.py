@@ -478,6 +478,14 @@ def test_timedelta_construction() -> None:
         pd.Timedelta,
     )
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        # These should be type errors now as they are not in TimeDeltaUnitChoices
+        pd.Timedelta(1, unit="Y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        pd.Timedelta(1, unit="y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        pd.Timedelta(1, unit="M")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+
+        pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType]
+
 
 def test_timedelta_properties_methods() -> None:
     td = pd.Timedelta("1 day")
@@ -996,10 +1004,32 @@ def test_timestamp_properties() -> None:
     check(assert_type(ts.asm8, np.datetime64), np.datetime64)
     check(assert_type(ts.day_of_week, int), int)
     check(assert_type(ts.day_of_year, int), int)
-    check(assert_type(ts.dayofweek, int), int)
-    check(assert_type(ts.dayofyear, int), int)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(ts.dayofweek, int), int)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(ts.dayofyear, int), int)
+
     check(assert_type(ts.days_in_month, int), int)
-    check(assert_type(ts.daysinmonth, int), int)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(ts.daysinmonth, int), int)
+
     check(assert_type(ts.is_leap_year, bool), bool)
     check(assert_type(ts.is_month_end, bool), bool)
     check(assert_type(ts.is_month_start, bool), bool)
@@ -1559,10 +1589,33 @@ def test_period_properties() -> None:
     check(assert_type(p.day, int), int)
     check(assert_type(p.day_of_week, int), int)
     check(assert_type(p.day_of_year, int), int)
-    check(assert_type(p.dayofweek, int), int)
-    check(assert_type(p.dayofyear, int), int)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(p.dayofweek, int), int)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(p.dayofyear, int), int)
+
     check(assert_type(p.days_in_month, int), int)
-    check(assert_type(p.daysinmonth, int), int)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(p.daysinmonth, int), int)
+
     check(assert_type(p.end_time, pd.Timestamp), pd.Timestamp)
     check(assert_type(p.freqstr, str), str)
     check(assert_type(p.hour, int), int)
@@ -1574,7 +1627,15 @@ def test_period_properties() -> None:
     check(assert_type(p.second, int), int)
     check(assert_type(p.start_time, pd.Timestamp), pd.Timestamp)
     check(assert_type(p.week, int), int)
-    check(assert_type(p.weekday, int), int)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(p.weekday, int), int)
+
     check(assert_type(p.weekofyear, int), int)
     check(assert_type(p.year, int), int)
     check(assert_type(p.freq, BaseOffset), Day)

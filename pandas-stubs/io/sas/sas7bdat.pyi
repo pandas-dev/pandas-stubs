@@ -1,8 +1,8 @@
 from pandas import DataFrame
 
-from pandas.io.sas.sasreader import ReaderBase
+from pandas.io.sas.sasreader import SASReader
 
-class SAS7BDATReader(ReaderBase):
+class SAS7BDATReader(SASReader):
     def close(self) -> None: ...
     def __next__(self) -> DataFrame: ...
     def read(self, nrows: int | None = None) -> DataFrame: ...

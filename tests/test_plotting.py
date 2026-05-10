@@ -495,11 +495,10 @@ def test_plot_kde(close_figures: None) -> None:
 
     # with numpy array
     np_wgts = np.array([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
-    s.plot.kde(weights=np_wgts)
-
+    check(assert_type(s.plot.kde(weights=np_wgts), Axes), Axes)
     # with series
     sr_wgts = pd.Series([0.1, 0.0, 0.0, 0.2, 0.3, 0.4, 0.9])
-    s.plot.kde(weights=sr_wgts)
+    check(assert_type(s.plot.kde(weights=sr_wgts), Axes), Axes)
 
 
 def test_plot_pie(close_figures: None) -> None:

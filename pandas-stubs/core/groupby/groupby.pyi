@@ -274,7 +274,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @property
     def nth(
         self,
-    ) -> GroupByNthSelector[Self]: ...  # pyrefly: ignore[bad-specialization]
+    ) -> GroupByNthSelector[Self]: ...
     @final
     def quantile(
         self,
@@ -317,13 +317,29 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         numeric_only: bool = False,
         **kwargs: Any,
     ) -> NDFrameT: ...
-    @final
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = 1,
+        axis: Axis | NoDefault = 0,
+        fill_value: Scalar | None = None,
+        suffix: str | None = ...,
+    ) -> NDFrameT: ...
+    @overload
     def shift(
         self,
         periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
         axis: Axis | NoDefault = 0,
-        fill_value: Scalar | None = None,
+        suffix: str | None = ...,
+    ) -> NDFrameT: ...
+    @overload
+    def shift(
+        self,
+        periods: int | Sequence[int] = 1,
+        freq: None = None,
+        axis: Axis | NoDefault = 0,
+        fill_value: None = None,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
@@ -331,11 +347,9 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def pct_change(
         self,
-        periods: int = ...,
-        fill_method: Literal["bfill", "ffill"] | None | NoDefault = ...,
-        limit: int | None | NoDefault = ...,
+        periods: int = 1,
+        fill_method: None = None,
         freq: Frequency | None = None,
-        axis: Axis | NoDefault = ...,
     ) -> NDFrameT: ...
     @final
     def head(self, n: int = ...) -> NDFrameT: ...

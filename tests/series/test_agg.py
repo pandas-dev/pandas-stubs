@@ -53,16 +53,21 @@ def test_agg_complex() -> None:
     with pytest_warns_bounded(
         np.exceptions.ComplexWarning,
         r"Casting complex values to real discards the imaginary part",
+        upper="3.2.0",
     ):
         check(assert_type(series.median(), float), np.float64)
+
     with pytest_warns_bounded(
         np.exceptions.ComplexWarning,
         r"Casting complex values to real discards the imaginary part",
+        upper="3.0.99",
     ):
         check(assert_type(series.std(), np.float64), np.float64)
+
     with pytest_warns_bounded(
         np.exceptions.ComplexWarning,
         r"Casting complex values to real discards the imaginary part",
+        upper="3.0.99",
     ):
         check(assert_type(series.var(), float), np.float64)
 

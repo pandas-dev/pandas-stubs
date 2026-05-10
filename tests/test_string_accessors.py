@@ -59,6 +59,33 @@ def test_string_accessors_boolean_series() -> None:
     _check(assert_type(s.str.match("pp"), "pd.Series[bool]"))
     _check(assert_type(s.str.match(re.compile(r"pp")), "pd.Series[bool]"))
 
+    # test deprecated allowing non-bool values for na in .str.contains, str.startswith, and .str.endswith
+    sr = pd.Series(["om", np.nan, "foo_nom", "nom", "bar_foo", np.nan, "foo"])
+
+    # only None, pd.NA, np.nan, True, or False are allowed
+    _check(assert_type(sr.str.startswith("kapow", na=None), "pd.Series[bool]"))
+    _check(assert_type(sr.str.startswith("kapow", na=pd.NA), "pd.Series[bool]"))
+    _check(assert_type(sr.str.startswith("kapow", na=np.nan), "pd.Series[bool]"))
+    _check(assert_type(sr.str.startswith("kapow", na=True), "pd.Series[bool]"))
+    _check(assert_type(sr.str.startswith("kapow", na=False), "pd.Series[bool]"))
+
+    _check(assert_type(sr.str.endswith("kapow", na=None), "pd.Series[bool]"))
+    _check(assert_type(sr.str.endswith("kapow", na=pd.NA), "pd.Series[bool]"))
+    _check(assert_type(sr.str.endswith("kapow", na=np.nan), "pd.Series[bool]"))
+    _check(assert_type(sr.str.endswith("kapow", na=True), "pd.Series[bool]"))
+    _check(assert_type(sr.str.endswith("kapow", na=False), "pd.Series[bool]"))
+
+    _check(assert_type(sr.str.contains("kapow", na=None), "pd.Series[bool]"))
+    _check(assert_type(sr.str.contains("kapow", na=pd.NA), "pd.Series[bool]"))
+    _check(assert_type(sr.str.contains("kapow", na=np.nan), "pd.Series[bool]"))
+    _check(assert_type(sr.str.contains("kapow", na=True), "pd.Series[bool]"))
+    _check(assert_type(sr.str.contains("kapow", na=False), "pd.Series[bool]"))
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        sr.str.startswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        sr.str.endswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        sr.str.contains("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+
 
 def test_string_accessors_boolean_index() -> None:
     idx = pd.Index(DATA)
@@ -85,6 +112,30 @@ def test_string_accessors_boolean_index() -> None:
     _check(assert_type(idx.str.isupper(), np_1darray_bool))
     _check(assert_type(idx.str.match("pp"), np_1darray_bool))
     _check(assert_type(idx.str.match(re.compile(r"pp")), np_1darray_bool))
+
+    # only None, pd.NA, np.nan, True, or False are allowed
+    _check(assert_type(idx.str.startswith("kapow", na=None), np_1darray_bool))
+    _check(assert_type(idx.str.startswith("kapow", na=pd.NA), np_1darray_bool))
+    _check(assert_type(idx.str.startswith("kapow", na=np.nan), np_1darray_bool))
+    _check(assert_type(idx.str.startswith("kapow", na=True), np_1darray_bool))
+    _check(assert_type(idx.str.startswith("kapow", na=False), np_1darray_bool))
+
+    _check(assert_type(idx.str.endswith("kapow", na=None), np_1darray_bool))
+    _check(assert_type(idx.str.endswith("kapow", na=pd.NA), np_1darray_bool))
+    _check(assert_type(idx.str.endswith("kapow", na=np.nan), np_1darray_bool))
+    _check(assert_type(idx.str.endswith("kapow", na=True), np_1darray_bool))
+    _check(assert_type(idx.str.endswith("kapow", na=False), np_1darray_bool))
+
+    _check(assert_type(idx.str.contains("kapow", na=None), np_1darray_bool))
+    _check(assert_type(idx.str.contains("kapow", na=pd.NA), np_1darray_bool))
+    _check(assert_type(idx.str.contains("kapow", na=np.nan), np_1darray_bool))
+    _check(assert_type(idx.str.contains("kapow", na=True), np_1darray_bool))
+    _check(assert_type(idx.str.contains("kapow", na=False), np_1darray_bool))
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        idx.str.startswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        idx.str.endswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        idx.str.contains("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 
 
 def test_string_accessors_integer_series() -> None:
