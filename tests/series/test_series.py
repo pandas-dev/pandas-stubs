@@ -3135,6 +3135,7 @@ def test_series_str_methods_iter() -> None:
         def _sr_iter() -> None:  # pyright: ignore[reportUnusedFunction]
             assert_type(s_str.str.__iter__(), Never)
 
+        # TODO: improve the test when python/mypy#21027 is resolve
         def _sr_iterator() -> None:  # pyright: ignore[reportUnusedFunction]
             for (
                 _  # pyright: ignore[reportUnknownVariableType]
