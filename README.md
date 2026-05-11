@@ -88,6 +88,8 @@ public visibility.
   - If you **pin pandas**, pin `pandas-stubs` to the **same major/minor version** (e.g., `pandas==2.3.3` → `pandas-stubs==2.3.3.*`) to avoid inconsistencies.
 - **Why?**
   The stubs help you write code compatible with future pandas versions. Type checkers will flag deprecated or removed APIs based on the pandas version the stubs were tested against.
+  Using a newer version of the stubs compared to the version of pandas will allow you to see which APIs will be deprecated or removed in a future version but will allow you to write
+  code that calls an API that doesn't exist at runtime (and thus break your code).
 
 
 ## Where to get it
