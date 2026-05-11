@@ -1994,110 +1994,18 @@ def test_types_to_numpy() -> None:
         np.timedelta64,
     )
 
-    # np.dtype[T] instance -> np_1darray[T] via generic overload
-    check(
-        assert_type(s_timedelta.to_numpy(dtype=np.dtype("f8")), np_1darray[np.float64]),
-        np_1darray,
-        np.floating,
-    )
-    check(
-        assert_type(s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]),
-        np_1darray,
-        np.integer,
-    )
-    check(
-        assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray[np.object_]),
-        np_1darray_object,
-        pd.Period,
-    )
-
-    # dtype literal strings -> specific alias via Numpy*DtypeArg overloads
-    check(
-        assert_type(s_timedelta.to_numpy(dtype="float64"), np_1darray_float),
-        np_1darray,
-        np.floating,
-    )
-    check(
-        assert_type(s_date.to_numpy(dtype="int"), np_1darray_anyint),
-        np_1darray,
-        np.integer,
-    )
-    check(
-        assert_type(s_period.to_numpy(dtype="bool_"), np_1darray_bool),
-        np_1darray,
-        np.bool_,
-    )
-    check(
-        assert_type(s_timedelta.to_numpy(dtype="complex128"), np_1darray_complex),
-        np_1darray,
-        np.complexfloating,
-    )
-    check(
-        assert_type(s_timedelta.to_numpy(dtype="str_"), np_1darray_str),
-        np_1darray,
-        np.str_,
-    )
-    check(
-        assert_type(s_interval.to_numpy(dtype="O"), np_1darray_object),
-        np_1darray,
-        pd.Interval,
-    )
-
-    # dtype type objects -> np_1darray[T] via type[GenericT] overload
-    check(
-        assert_type(s_timedelta.to_numpy(dtype=np.float64), np_1darray[np.float64]),
-        np_1darray,
-        np.floating,
-    )
-    check(
-        assert_type(s_date.to_numpy(dtype=np.int64), np_1darray[np.int64]),
-        np_1darray,
-        np.integer,
-    )
-
     s_td_small = pd.Series(pd.to_timedelta([0, 1], unit="ns"))
 
-    check(
-        assert_type(s_float.to_numpy(dtype=float), np_1darray_float),
-        np_1darray,
-        np.floating,
-    )
-    check(
-        assert_type(s_int.to_numpy(dtype=int), np_1darray_anyint),
-        np_1darray,
-        np.integer,
-    )
+    # --- Boolean ---
     check(
         assert_type(s_bool.to_numpy(dtype=bool), np_1darray_bool),
         np_1darray,
         np.bool_,
     )
     check(
-        assert_type(s_complex.to_numpy(dtype=complex), np_1darray_complex),
+        assert_type(s_td_small.to_numpy(dtype=np.bool_), np_1darray[np.bool_]),
         np_1darray,
-        np.complexfloating,
-    )
-
-    check(
-        assert_type(s_td_small.to_numpy(dtype=str), np_1darray_str),
-        np_1darray,
-        np.str_,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype=bytes), np_1darray_bytes),
-        np_1darray,
-        np.bytes_,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype=object), np_1darray_object),
-        np_1darray_object,
-    )
-
-    # Builtin Python type literal strings
-    check(
-        assert_type(s_float.to_numpy(dtype="float"), np_1darray_float),
-        np_1darray,
-        np.floating,
+        np.bool_,
     )
     check(
         assert_type(s_bool.to_numpy(dtype="bool"), np_1darray_bool),
@@ -2105,59 +2013,10 @@ def test_types_to_numpy() -> None:
         np.bool_,
     )
     check(
-        assert_type(s_complex.to_numpy(dtype="complex"), np_1darray_complex),
+        assert_type(s_period.to_numpy(dtype="bool_"), np_1darray_bool),
         np_1darray,
-        np.complexfloating,
+        np.bool_,
     )
-    # Cross-type string literals also bypass per-type catch-alls via s_td_small
-    check(
-        assert_type(s_td_small.to_numpy(dtype="str"), np_1darray_str),
-        np_1darray,
-        np.str_,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype="bytes"), np_1darray_bytes),
-        np_1darray,
-        np.bytes_,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype="object"), np_1darray_object),
-        np_1darray_object,
-    )
-
-    check(
-        assert_type(s_float.to_numpy(dtype="float16"), np_1darray_float),
-        np_1darray,
-        np.floating,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype=np.float16), np_1darray[np.float16]),
-        np_1darray,
-        np.floating,
-    )
-
-    check(
-        assert_type(s_int.to_numpy(dtype="uint8"), np_1darray_anyint),
-        np_1darray,
-        np.integer,
-    )
-    check(
-        assert_type(s_int.to_numpy(dtype="uint32"), np_1darray_anyint),
-        np_1darray,
-        np.integer,
-    )
-
-    check(
-        assert_type(s_td_small.to_numpy(dtype="S"), np_1darray_bytes),
-        np_1darray,
-        np.bytes_,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype="bytes_"), np_1darray_bytes),
-        np_1darray,
-        np.bytes_,
-    )
-
     check(
         assert_type(s_bool.to_numpy(dtype="?"), np_1darray_bool),
         np_1darray,
@@ -2169,39 +2028,9 @@ def test_types_to_numpy() -> None:
         np.bool_,
     )
 
+    # --- Signed integers ---
     check(
-        assert_type(s_td_small.to_numpy(dtype="object_"), np_1darray_object),
-        np_1darray_object,
-    )
-
-    check(
-        assert_type(s_td_small.to_numpy(dtype=np.bool_), np_1darray[np.bool_]),
-        np_1darray,
-        np.bool_,
-    )
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.complex128), np_1darray[np.complex128]
-        ),
-        np_1darray,
-        np.complexfloating,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype=np.str_), np_1darray[np.str_]),
-        np_1darray,
-        np.str_,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
-        np_1darray,
-        np.bytes_,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype=np.object_), np_1darray[np.object_]),
-        np_1darray,
-    )
-    check(
-        assert_type(s_td_small.to_numpy(dtype=np.uint32), np_1darray[np.uint32]),
+        assert_type(s_int.to_numpy(dtype=int), np_1darray_anyint),
         np_1darray,
         np.integer,
     )
@@ -2221,6 +2050,63 @@ def test_types_to_numpy() -> None:
         np.integer,
     )
     check(
+        assert_type(s_date.to_numpy(dtype=np.int64), np_1darray[np.int64]),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype="int"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="int8"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="i1"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="int16"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="i2"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="int32"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="i4"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="int64"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="i8"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]),
+        np_1darray,
+        np.integer,
+    )
+
+    # --- Unsigned integers ---
+    check(
         assert_type(s_td_small.to_numpy(dtype=np.uint8), np_1darray[np.uint8]),
         np_1darray,
         np.integer,
@@ -2231,9 +2117,242 @@ def test_types_to_numpy() -> None:
         np.integer,
     )
     check(
+        assert_type(s_td_small.to_numpy(dtype=np.uint32), np_1darray[np.uint32]),
+        np_1darray,
+        np.integer,
+    )
+    check(
         assert_type(s_td_small.to_numpy(dtype=np.uint64), np_1darray[np.uint64]),
         np_1darray,
         np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="uint8"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="u1"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="uint16"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="u2"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="uint32"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="u4"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="uint64"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+    check(
+        assert_type(s_int.to_numpy(dtype="u8"), np_1darray_anyint),
+        np_1darray,
+        np.integer,
+    )
+
+    # --- Floats ---
+    check(
+        assert_type(s_float.to_numpy(dtype=float), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.float16), np_1darray[np.float16]),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.float32), np_1darray[np.float32]),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_timedelta.to_numpy(dtype=np.float64), np_1darray[np.float64]),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_float.to_numpy(dtype="float"), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_float.to_numpy(dtype="float16"), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_float.to_numpy(dtype="f2"), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_float.to_numpy(dtype="float32"), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_float.to_numpy(dtype="f4"), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_timedelta.to_numpy(dtype="float64"), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_float.to_numpy(dtype="f8"), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+    check(
+        assert_type(s_timedelta.to_numpy(dtype=np.dtype("f8")), np_1darray[np.float64]),
+        np_1darray,
+        np.floating,
+    )
+
+    # --- Complex ---
+    check(
+        assert_type(s_complex.to_numpy(dtype=complex), np_1darray_complex),
+        np_1darray,
+        np.complexfloating,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.complex64), np_1darray[np.complex64]),
+        np_1darray,
+        np.complexfloating,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.complex128), np_1darray[np.complex128]
+        ),
+        np_1darray,
+        np.complexfloating,
+    )
+    check(
+        assert_type(s_complex.to_numpy(dtype="complex"), np_1darray_complex),
+        np_1darray,
+        np.complexfloating,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="complex64"), np_1darray_complex),
+        np_1darray,
+        np.complexfloating,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="c8"), np_1darray_complex),
+        np_1darray,
+        np.complexfloating,
+    )
+    check(
+        assert_type(s_timedelta.to_numpy(dtype="complex128"), np_1darray_complex),
+        np_1darray,
+        np.complexfloating,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="c16"), np_1darray_complex),
+        np_1darray,
+        np.complexfloating,
+    )
+
+    # --- String ---
+    check(
+        assert_type(s_td_small.to_numpy(dtype=str), np_1darray_str),
+        np_1darray,
+        np.str_,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.str_), np_1darray[np.str_]),
+        np_1darray,
+        np.str_,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="str"), np_1darray_str),
+        np_1darray,
+        np.str_,
+    )
+    check(
+        assert_type(s_timedelta.to_numpy(dtype="str_"), np_1darray_str),
+        np_1darray,
+        np.str_,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="U"), np_1darray_str),
+        np_1darray,
+        np.str_,
+    )
+
+    # --- Bytes ---
+    check(
+        assert_type(s_td_small.to_numpy(dtype=bytes), np_1darray_bytes),
+        np_1darray,
+        np.bytes_,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
+        np_1darray,
+        np.bytes_,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="bytes"), np_1darray_bytes),
+        np_1darray,
+        np.bytes_,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="bytes_"), np_1darray_bytes),
+        np_1darray,
+        np.bytes_,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="S"), np_1darray_bytes),
+        np_1darray,
+        np.bytes_,
+    )
+
+    # --- Object ---
+    check(
+        assert_type(s_td_small.to_numpy(dtype=object), np_1darray_object),
+        np_1darray_object,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype=np.object_), np_1darray[np.object_]),
+        np_1darray,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="object"), np_1darray_object),
+        np_1darray_object,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="object_"), np_1darray_object),
+        np_1darray_object,
+    )
+    check(
+        assert_type(s_interval.to_numpy(dtype="O"), np_1darray_object),
+        np_1darray,
+        pd.Interval,
+    )
+    check(
+        assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray[np.object_]),
+        np_1darray_object,
+        pd.Period,
     )
 
 
