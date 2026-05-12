@@ -150,6 +150,35 @@ def test_sparse_dtype() -> None:
     check(assert_type(s_dt.fill_value, Scalar | None), int)
 
 
+def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
+    # int subtype: default fill_value is 0
+    s_dt_int = pd.SparseDtype(int)
+    check(assert_type(s_dt_int.subtype, np.dtype), np.dtype)
+    check(assert_type(s_dt_int.fill_value, Scalar | None), int)
+
+    # float subtype: default fill_value is np.nan
+    s_dt_float = pd.SparseDtype(float)
+    check(assert_type(s_dt_float.subtype, np.dtype), np.dtype)
+    check(assert_type(s_dt_float.fill_value, Scalar | None), float)
+
+    # bool subtype: default fill_value is False
+    s_dt_bool = pd.SparseDtype(bool)
+    check(assert_type(s_dt_bool.subtype, np.dtype), np.dtype)
+    check(assert_type(s_dt_bool.fill_value, Scalar | None), bool)
+
+    # datetime64 subtype: default fill_value is NaT
+    s_dt_dt = pd.SparseDtype(np.datetime64)
+    check(assert_type(s_dt_dt.subtype, np.dtype), np.dtype)
+    check(assert_type(s_dt_dt.fill_value, Scalar | None), np.datetime64)
+
+    # passing a fill_value incompatible with the subtype is both a static type error
+    # and a runtime ValueError
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.SparseDtype(
+            int, fill_value="hello"  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
+        )
+
+
 @pytest.mark.parametrize("storage", ["python", "pyarrow", None])
 @pytest.mark.parametrize("na_value", [pd.NA, float("nan")])
 def test_string_dtype(
