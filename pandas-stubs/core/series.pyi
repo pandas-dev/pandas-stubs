@@ -360,7 +360,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool | None = None,
     ) -> Series[list[_str]]: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[overload-overlap]
         cls,
         data: Sequence[_str],
         index: AxesData | None = None,
@@ -507,6 +507,26 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         name: Hashable = None,
         copy: bool | None = None,
     ) -> Self: ...
+    # the resolutions are not supported by pandas at creation, only in astype
+    @overload
+    def __new__(
+        cls,
+        data: (
+            S1
+            | ArrayLike
+            | dict[_str, np_ndarray]
+            | Sequence[S1]
+            | IndexOpsMixin[S1]
+            | dict[HashableT1, S1]
+            | KeysView[S1]
+            | ValuesView[S1]
+        ),
+        index: AxesData | None = None,
+        *,
+        dtype: PandasAstypeTimedeltaDtypeArg | PandasAstypeTimestampDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Never: ...
     @overload
     def __new__(
         cls,

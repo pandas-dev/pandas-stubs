@@ -9,6 +9,7 @@ import re
 from typing import (
     Generic,
     Literal,
+    Never,
     TypeVar,
     overload,
 )
@@ -55,7 +56,7 @@ class StringMethods(
 ):
     def __init__(self, data: T) -> None: ...
     def __getitem__(self, key: _slice | int) -> _T_STR: ...
-    def __iter__(self) -> _T_STR: ...
+    def __iter__(self) -> Never: ...
     @overload
     def cat(
         self,
