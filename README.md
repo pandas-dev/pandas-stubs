@@ -89,11 +89,11 @@ public visibility.
 - **Why?**
   The stubs help you write code compatible with future pandas versions. Type checkers will flag deprecated or removed APIs based on the pandas version the stubs were tested against.
 
-[!NOTE]
-Using a newer version of the stubs in conjunction with an older version of pandas
-- Will cause type checkers to allow you to see which APIs will be deprecated or removed in a future version
-- Will cause type checkers to consider code to be acceptable that uses newer or changed API's in current versions of pandas, such that the code would fail at runtime with an older version of
-  pandas
+> [!NOTE]
+> Using a newer version of the stubs in conjunction with an older version of pandas
+> - Will cause type checkers to allow you to see which APIs will be deprecated or removed in a future version
+> - Will cause type checkers to consider code to be acceptable that uses newer or changed API's in current versions of pandas, such that the code would fail at runtime with an older version of
+>   pandas
 
 
 ## Where to get it
