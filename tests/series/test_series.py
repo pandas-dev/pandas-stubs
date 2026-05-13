@@ -2355,6 +2355,214 @@ def test_types_to_numpy() -> None:
         pd.Period,
     )
 
+    # np.dtypes signed int instances
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.Int8DType()), np_1darray[np.int8]
+        ),
+        np_1darray,
+        np.int8,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.Int16DType()), np_1darray[np.int16]
+        ),
+        np_1darray,
+        np.int16,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.Int32DType()), np_1darray[np.int32]
+        ),
+        np_1darray,
+        np.int32,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.Int64DType()), np_1darray[np.int64]
+        ),
+        np_1darray,
+        np.int64,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.IntDType()), np_1darray[np.intc]
+        ),
+        np_1darray,
+        np.intc,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.LongDType()), np_1darray[np.long]
+        ),
+        np_1darray,
+        np.long,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.LongLongDType()),
+            np_1darray[np.longlong],
+        ),
+        np_1darray,
+        np.longlong,
+    )
+
+    # np.dtypes unsigned int instances
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.UInt8DType()), np_1darray[np.uint8]
+        ),
+        np_1darray,
+        np.uint8,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.UInt16DType()), np_1darray[np.uint16]
+        ),
+        np_1darray,
+        np.uint16,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.UInt32DType()), np_1darray[np.uint32]
+        ),
+        np_1darray,
+        np.uint32,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.UInt64DType()), np_1darray[np.uint64]
+        ),
+        np_1darray,
+        np.uint64,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.UIntDType()), np_1darray[np.uintc]
+        ),
+        np_1darray,
+        np.uintc,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.ULongDType()), np_1darray[np.ulong]
+        ),
+        np_1darray,
+        np.ulong,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.ULongLongDType()),
+            np_1darray[np.ulonglong],
+        ),
+        np_1darray,
+        np.ulonglong,
+    )
+
+    # np.dtypes float instances
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.Float16DType()), np_1darray[np.float16]
+        ),
+        np_1darray,
+        np.float16,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.Float32DType()), np_1darray[np.float32]
+        ),
+        np_1darray,
+        np.float32,
+    )
+    check(
+        assert_type(
+            s_timedelta.to_numpy(dtype=np.dtypes.Float64DType()), np_1darray[np.float64]
+        ),
+        np_1darray,
+        np.float64,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.LongDoubleDType()),
+            np_1darray[np.longdouble],
+        ),
+        np_1darray,
+        np.longdouble,
+    )
+
+    # np.dtypes complex instances
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.Complex64DType()),
+            np_1darray[np.complex64],
+        ),
+        np_1darray,
+        np.complex64,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.Complex128DType()),
+            np_1darray[np.complex128],
+        ),
+        np_1darray,
+        np.complex128,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.CLongDoubleDType()),
+            np_1darray[np.clongdouble],
+        ),
+        np_1darray,
+        np.clongdouble,
+    )
+
+    # np.dtypes.BytesDType(size) — fixed-width bytes
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.BytesDType(4)), np_1darray[np.bytes_]
+        ),
+        np_1darray,
+        np.bytes_,
+    )
+    # np.dtypes.StrDType(size) — fixed-width unicode
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.StrDType(4)), np_1darray[np.str_]
+        ),
+        np_1darray,
+        np.str_,
+    )
+    # DateTime64DType — parametric, use np.dtype(...)
+    check(
+        assert_type(s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt),
+        np_1darray,
+        np.datetime64,
+    )
+    # TimeDelta64DType — parametric, use np.dtype(...)
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+        ),
+        np_1darray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+        ),
+        np_1darray,
+        np.timedelta64,
+    )
+    # VoidDType — parametric, use np.dtype(...)
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtype([("x", np.float64)])),
+            np_1darray[np.void],
+        ),
+        np_1darray,
+        np.void,
+    )
+
 
 def test_where() -> None:
     sr = pd.Series([1, 2, 3], dtype=int)
