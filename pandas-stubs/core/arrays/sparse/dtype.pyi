@@ -53,6 +53,10 @@ class SparseDtype(ExtensionDtype):
         fill_value: Scalar | None = None,
     ) -> None: ...
     @property
-    def subtype(self) -> np.dtype: ...
+    def subtype(
+        self,
+    ) -> (
+        np.dtype
+    ): ...  # TODO: pandas-dev/pandas-stubs#1654 make the class Generic so we can embed the subtype more precisely
     @property
     def fill_value(self) -> Scalar | None: ...
