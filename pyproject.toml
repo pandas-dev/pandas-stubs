@@ -36,7 +36,7 @@ numpy = ">=1.23.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = ">=2.0.0"
-pandas = "3.0.1"
+pandas = "3.0.3"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.409"
