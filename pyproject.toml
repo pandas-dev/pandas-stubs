@@ -77,7 +77,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 packages = [{ include = "pandas-stubs" }]
-exclude = ["pandas-stubs/__init__.py"]
 
 [tool.poe.tasks.test_all]
 help = "Run all tests"
