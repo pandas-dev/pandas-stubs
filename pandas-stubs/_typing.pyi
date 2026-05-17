@@ -1231,6 +1231,7 @@ class Just(Protocol, Generic[T]):
     @override
     def __class__(self, t: type[T], /) -> None: ...
 
+# Read-only (covariant) list for use in parameter annotations (See GH #1745)
 class CovariantList(Protocol[_T_co]):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
     @property  # type: ignore[override]

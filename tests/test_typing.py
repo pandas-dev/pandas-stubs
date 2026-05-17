@@ -11,7 +11,10 @@ import pytest
 
 from pandas.core.dtypes.base import ExtensionDtype
 
-from tests import get_dtype
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    get_dtype,
+)
 from tests.dtypes import DTYPE_ARG_ALIAS_MAPS
 
 if TYPE_CHECKING:
@@ -54,7 +57,8 @@ def test_covariant_list() -> None:
 
     f(good1)
     f(good2)
-    f(bad1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-    f(bad2)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-    f(bad3)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-    f(bad4)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+    if TYPE_CHECKING_INVALID_USAGE:
+        f(bad1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        f(bad2)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        f(bad3)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        f(bad4)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
