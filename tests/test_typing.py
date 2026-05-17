@@ -1,5 +1,6 @@
 from collections.abc import Mapping
 from typing import (
+    TYPE_CHECKING,
     Any,
     Literal,
 )
@@ -8,12 +9,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas._typing import CovariantList
-
 from pandas.core.dtypes.base import ExtensionDtype
 
 from tests import get_dtype
 from tests.dtypes import DTYPE_ARG_ALIAS_MAPS
+
+if TYPE_CHECKING:
+    from pandas._typing import CovariantList
 
 
 def test_get_dtype() -> None:
@@ -41,7 +43,7 @@ def test_dtype_arg_aliases(dtype_arg: Any, alias_map: Mapping[Any, Any]) -> None
 
 
 def test_covariant_list() -> None:
-    def f(_: CovariantList[float]) -> None: ...
+    def f(_: "CovariantList[float]") -> None: ...
 
     good1: list[float] = [1.0, 2.0, 3.0]  # OK, trivial case
     good2: list[int] = [1, 2, 3]  # OK, list[int] < list[float] due to covariance
