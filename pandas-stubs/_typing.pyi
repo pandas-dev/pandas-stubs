@@ -1230,6 +1230,19 @@ class Just(Protocol, Generic[T]):
     @override
     def __class__(self, t: type[T], /) -> None: ...
 
+class CovariantList(Protocol[_T_co]):
+    @property  # type: ignore[override]
+    def __class__(self) -> type[list[Any]]: ...  # pyrefly: ignore[bad-override]
+    @__class__.setter
+    def __class__(
+        self, value: type[list[Any]], /
+    ) -> None: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __iter__(self) -> Iterator[_T_co]: ...
+    # copy() is only TEMPORARILY needed because `__class__` is a property
+    # and ty doesn't support property protocol members. Remove when
+    # https://github.com/astral-sh/ty/issues/1379 is resolved
+    def copy(self) -> list[Any]: ...
+
 class SupportsTrueDiv(Protocol[_T_contra, _T_co]):
     def __truediv__(self, x: _T_contra, /) -> _T_co: ...
 
