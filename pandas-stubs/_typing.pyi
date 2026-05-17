@@ -17,6 +17,7 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Any,
+    ClassVar,
     Generic,
     Literal,
     Protocol,
@@ -1231,12 +1232,13 @@ class Just(Protocol, Generic[T]):
     def __class__(self, t: type[T], /) -> None: ...
 
 class CovariantList(Protocol[_T_co]):
+    __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
     @property  # type: ignore[override]
     def __class__(self) -> type[list[Any]]: ...  # pyrefly: ignore[bad-override]
     @__class__.setter
-    def __class__(
+    def __class__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, value: type[list[Any]], /
-    ) -> None: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    ) -> None: ...
     def __iter__(self) -> Iterator[_T_co]: ...
     # copy() is only TEMPORARILY needed because `__class__` is a property
     # and ty doesn't support property protocol members. Remove when
