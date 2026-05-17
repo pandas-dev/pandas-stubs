@@ -3921,6 +3921,9 @@ def test_get() -> None:
     )
     check(assert_type(df.get(["z"], default=1), pd.DataFrame | int), int)
 
+    key = ["a", "b"]
+    check(assert_type(df.get(key), pd.DataFrame | None), pd.DataFrame)
+
 
 def test_info() -> None:
     df = pd.DataFrame()

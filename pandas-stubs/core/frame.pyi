@@ -99,6 +99,7 @@ from pandas._typing import (
     CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
+    CovariantList,
     DropKeep,
     Dtype,
     FilePath,
@@ -2092,9 +2093,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def get(self, key: Hashable, default: _T) -> Series | _T: ...
     @overload
-    def get(self, key: list[Hashable], default: None = None) -> Self | None: ...
+    def get(
+        self, key: CovariantList[Hashable], default: None = None
+    ) -> Self | None: ...
     @overload
-    def get(self, key: list[Hashable], default: _T) -> Self | _T: ...
+    def get(self, key: CovariantList[Hashable], default: _T) -> Self | _T: ...
     def gt(
         self,
         other: complex | ListLike | DataFrame,
