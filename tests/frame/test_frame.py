@@ -2641,7 +2641,9 @@ def test_types_rename_inplace() -> None:
     df = pd.DataFrame(columns=["a"])
 
     if PD_LTE_31:
-        check(assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None))
+        check(
+            assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None)
+        )
 
     check(assert_type(df.rename(columns={"a": "b"}), pd.DataFrame), pd.DataFrame)
 
