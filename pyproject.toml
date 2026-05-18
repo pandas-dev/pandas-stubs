@@ -1,17 +1,15 @@
-[tool.poetry]
+[project]
 name = "pandas-stubs"
 version = "3.0.0.260204"
 description = "Type annotations for pandas"
-authors = ["The Pandas Development Team <pandas-dev@python.org>"]
+authors = [{name = "The Pandas Development Team", email = "pandas-dev@python.org"}]
 license = "BSD-3-Clause"
 readme = "README.md"
-homepage = "https://pandas.pydata.org"
-repository = "https://github.com/pandas-dev/pandas-stubs"
+requires-python = '>=3.11'
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
   "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
@@ -23,60 +21,62 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
-packages = [{ include = "pandas-stubs" }]
-exclude = ["pandas-stubs/__init__.py"]
+dependencies = ["numpy>=1.23.5"]
 
-[tool.poetry.urls]
+[project.urls]
+Homepage = "https://pandas.pydata.org"
+Repository = "https://github.com/pandas-dev/pandas-stubs"
 "Bug Tracker" = "https://github.com/pandas-dev/pandas-stubs/issues"
-"Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
+Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 
-[tool.poetry.dependencies]
-python = ">=3.11"
-numpy = ">=1.23.5"
-
-[tool.poetry.group.dev.dependencies]
-mypy = ">=2.0.0"
-pandas = "3.0.3"
-pyarrow = ">=10.0.1"
-pytest = ">=8.4.2"
-pyright = ">=1.1.409"
-ty = ">=0.0.34"
-pyrefly = ">=0.64.1"
-poethepoet = ">=0.16.5"
-loguru = ">=0.6.0"
-typing-extensions = ">=4.5.0"
-matplotlib = ">=3.10.1"
-pre-commit = ">=4.3.0"
-black = ">=25.9.0"
-isort = ">=7.0.0"
-openpyxl = ">=3.0.10"
-numexpr = ">=2.13.1"
-lxml = ">=4.9.1"
-pyreadstat = ">=1.2.0"
-xlrd = ">=2.0.1"
-xlsxwriter = ">=3.0.3"
-pyxlsb = ">=1.0.10"
-odfpy = ">=1.4.1"
-xarray = ">=22.6.0"
-tabulate = ">=0.8.10"
-jinja2 = ">=3.1"
-scipy = ">=1.9.1"
-scipy-stubs = ">=1.15.3.0"
-SQLAlchemy = ">=2.0.39"
-types-python-dateutil = ">=2.8.19"
-beautifulsoup4 = ">=4.14.2"
-html5lib = ">=1.1"
-python-calamine = ">=0.2.0"
-pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
-fsspec = "^2025.10.0"
-tables = ">=3.10.2"
-pytz = "^2025.2"
-types-pytz = ">=2022.1.1"
-pyiceberg = "^0.10.0"
+[dependency-groups]
+dev = [
+  "mypy>=2.0.0",
+  "pandas==3.0.3",
+  "pyarrow>=10.0.1",
+  "pytest>=8.4.2",
+  "pyright>=1.1.409",
+  "ty>=0.0.34",
+  "pyrefly>=0.64.1",
+  "poethepoet>=0.16.5",
+  "loguru>=0.6.0",
+  "typing-extensions>=4.5.0",
+  "matplotlib>=3.10.1",
+  "pre-commit>=4.3.0",
+  "black>=25.9.0",
+  "isort>=7.0.0",
+  "openpyxl>=3.0.10",
+  "numexpr>=2.13.1",
+  "lxml>=4.9.1",
+  "pyreadstat>=1.2.0",
+  "xlrd>=2.0.1",
+  "xlsxwriter>=3.0.3",
+  "pyxlsb>=1.0.10",
+  "odfpy>=1.4.1",
+  "xarray>=22.6.0",
+  "tabulate>=0.8.10",
+  "jinja2>=3.1",
+  "scipy>=1.9.1",
+  "scipy-stubs>=1.15.3.0",
+  "SQLAlchemy>=2.0.39",
+  "types-python-dateutil>=2.8.19",
+  "beautifulsoup4>=4.14.2",
+  "html5lib>=1.1",
+  "python-calamine>=0.2.0",
+  "pyarrow-stubs>=20.0.0.20250928;python_version<'4'",
+  "fsspec>=2025.10.0",
+  "tables>=3.10.2",
+  "pytz>=2025.2",
+  "types-pytz>=2022.1.1",
+  "pyiceberg>=0.10.0",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{ include = "pandas-stubs" }]
 
 [tool.poe.tasks.test_all]
 help = "Run all tests"
@@ -141,9 +141,6 @@ args = [
 help = "Check type completeness"
 script = "scripts.test.run:type_completeness"
 
-[tool.black]
-target-version = ["py311"]
-
 [tool.isort]
 known_pre_libs = "pandas._config"
 known_pre_core = [
@@ -174,7 +171,6 @@ skip_glob = "env"
 
 
 [tool.ruff]
-target-version = "py311"
 fix = true
 
 
@@ -339,7 +335,6 @@ unannotated-attribute = true
 
 [tool.ty.environment]
 python-platform = "all"
-python-version = "3.11"
 
 [tool.ty.rules]
 possibly-unresolved-reference = "error"
