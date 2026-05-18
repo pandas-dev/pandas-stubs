@@ -48,6 +48,7 @@ import pytest
 import xarray as xr
 
 from tests import (
+    PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -2638,7 +2639,10 @@ def test_types_rename() -> None:
 def test_types_rename_inplace() -> None:
     """Test DataFrame.rename with inplace argument."""
     df = pd.DataFrame(columns=["a"])
-    check(assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None))
+
+    if PD_LTE_31:
+        check(assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None))
+
     check(assert_type(df.rename(columns={"a": "b"}), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:

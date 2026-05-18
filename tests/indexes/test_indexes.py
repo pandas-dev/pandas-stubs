@@ -209,25 +209,35 @@ def test_difference_none() -> None:
 def test_str_split() -> None:
     # GH 194
     ind = pd.Index(["a-b", "c-d"])
-    check(assert_type(ind.str.split("-"), "pd.Index[list[str]]"), pd.Index, list)
+
+    if PD_LTE_31:
+        check(assert_type(ind.str.split("-"), "pd.Index[list[str]]"), pd.Index, list)
+
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
-    check(
-        assert_type(ind.str.split("-", expand=False), "pd.Index[list[str]]"),
-        pd.Index,
-        list,
-    )
+
+    if PD_LTE_31:
+        check(
+            assert_type(ind.str.split("-", expand=False), "pd.Index[list[str]]"),
+            pd.Index,
+            list,
+        )
 
 
 def test_str_rsplit() -> None:
     # GH 1074
     ind = pd.Index(["a-b", "c-d"])
-    check(assert_type(ind.str.rsplit("-"), "pd.Index[list[str]]"), pd.Index, list)
+
+    if PD_LTE_31:
+        check(assert_type(ind.str.rsplit("-"), "pd.Index[list[str]]"), pd.Index, list)
+
     check(assert_type(ind.str.rsplit("-", expand=True), pd.MultiIndex), pd.MultiIndex)
-    check(
-        assert_type(ind.str.rsplit("-", expand=False), "pd.Index[list[str]]"),
-        pd.Index,
-        list,
-    )
+
+    if PD_LTE_31:
+        check(
+            assert_type(ind.str.rsplit("-", expand=False), "pd.Index[list[str]]"),
+            pd.Index,
+            list,
+        )
 
 
 def test_index_rename() -> None:
@@ -1554,11 +1564,17 @@ def test_index_where() -> None:
     """Test Index.where with multiple types of other GH1419."""
     idx = pd.Index(range(48))
     mask = np.ones(48, dtype=bool)
-    val_idx = idx.where(mask, idx)
-    check(assert_type(val_idx, "pd.Index[int]"), pd.Index, int)
+
+    if PD_LTE_31:
+        val_idx = idx.where(mask, idx)
+        check(assert_type(val_idx, "pd.Index[int]"), pd.Index, int)
 
     val_sr = idx.where(mask, (idx).to_series())
-    check(assert_type(val_sr, "pd.Index[int]"), pd.Index, int)
+
+    if PD_LTE_31:
+        check(assert_type(val_sr, "pd.Index[int]"), pd.Index, int)
+    else:
+        check(assert_type(val_sr, "pd.Index[int]"), pd.Index, np.int64)
 
 
 def test_datetimeindex_where() -> None:
@@ -1583,7 +1599,10 @@ def test_datetimeindex_where() -> None:
     check(assert_type(val_scalar, pd.Index), pd.Index)
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
-    check(assert_type(val_range, pd.Index), pd.RangeIndex)
+    if PD_LTE_31:
+        check(assert_type(val_range, pd.Index), pd.RangeIndex)
+    else:
+        check(assert_type(val_range, pd.Index), pd.Index)
 
 
 def test_index_set_names() -> None:
