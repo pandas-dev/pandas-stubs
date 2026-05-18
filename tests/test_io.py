@@ -1718,14 +1718,7 @@ def test_converters_partial(tmp_path: Path) -> None:
 def test_iceberg(tmp_path: Path) -> None:
     """Test read_iceberg and DataFrame.to_iceberg GH1654."""
 
-    from pydantic.warnings import PydanticDeprecatedSince212
-    from pyparsing.warnings import PyparsingDeprecationWarning
-
-    with (
-        pytest_warns_bounded(PydanticDeprecatedSince212, match="Using"),
-        pytest_warns_bounded(PyparsingDeprecationWarning, match="deprecat"),
-    ):
-        from pyiceberg.catalog.sql import SqlCatalog
+    from pyiceberg.catalog.sql import SqlCatalog
 
     warehouse_path = tmp_path / "warehouse"
     warehouse_path.mkdir()
