@@ -45,9 +45,7 @@ from pandas._typing import (
     SupportsDType,
     np_1darray,
     np_1darray_intp,
-    np_ndarray,
     np_ndarray_anyint,
-    np_ndarray_bool,
     np_ndarray_complex,
     np_ndarray_float,
     np_ndarray_td,
@@ -236,16 +234,6 @@ ScalarArrayIndexSeriesTimedelta: TypeAlias = (
     ScalarArrayIndexTimedelta | Series[Timedelta]
 )
 
-NumListLike: TypeAlias = (  # TODO: pandas-dev/pandas-stubs#1474 deprecated, do not use
-    ExtensionArray
-    | np_ndarray_bool
-    | np_ndarray_anyint
-    | np_ndarray_float
-    | np_ndarray_complex
-    | dict[str, np_ndarray]
-    | Sequence[complex]
-)
-
 @type_check_only
 class ElementOpsMixin(Generic[S2]):
     @overload
@@ -284,6 +272,30 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_radd(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_mul(
         self: ElementOpsMixin[bool], other: bool | np.bool_
@@ -398,6 +410,14 @@ class Supports_ProtoAdd(Protocol[T_contra, S2]):
 @type_check_only
 class Supports_ProtoRAdd(Protocol[T_contra, S2]):
     def _proto_radd(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoSub(Protocol[T_contra, S2]):
+    def _proto_sub(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRSub(Protocol[T_contra, S2]):
+    def _proto_rsub(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
 class Supports_ProtoMul(Protocol[T_contra, S2]):
