@@ -57,6 +57,8 @@ from pandas import (
     Timestamp,
 )
 from pandas._stubs_only import (
+    C1,
+    CategoricalT,
     OrderableT,
     T_co,
     T_contra,
@@ -244,7 +246,6 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
-from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
@@ -336,6 +337,15 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
 
 _DataLike: TypeAlias = ArrayLike | dict[str, np_ndarray] | SequenceNotStr[S1]
 
+@type_check_only
+class _CatDescriptor:
+    @overload
+    def __get__(
+        self, instance: Series[C1[CategoricalT]], owner: Any
+    ) -> CategoricalAccessor[CategoricalT]: ...
+    @overload
+    def __get__(self, instance: Series, owner: Any) -> CategoricalAccessor[Any]: ...
+
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
     __index__: ClassVar[None]
@@ -359,6 +369,36 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         name: Hashable = None,
         copy: bool | None = None,
     ) -> Series[list[_str]]: ...
+    @overload
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        cls,
+        data: Sequence[_str],
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[C1[_str]]: ...
+    @overload
+    def __new__(  # pyright: ignore[reportOverlappingOverload]
+        cls,
+        data: Sequence[int | np.integer],
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[C1[int]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: Sequence[float | np.floating],
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[C1[float]]: ...
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
@@ -403,7 +443,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         dtype: CategoryDtypeArg,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[CategoricalDtype]: ...
+    ) -> Series[C1[Any]]: ...
     @overload
     def __new__(
         cls,
@@ -1510,7 +1550,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         dtype: CategoryDtypeArg,
         errors: IgnoreRaise = ...,
-    ) -> Series[CategoricalDtype]: ...
+    ) -> Series[C1[Any]]: ...
     @overload
     def astype(
         self,
@@ -4084,8 +4124,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __invert__(self) -> Series[bool]: ...
     @property
     def at(self) -> _AtIndexer: ...
-    @property
-    def cat(self) -> CategoricalAccessor: ...
+    cat = _CatDescriptor()
     @property
     def iat(self) -> _iAtIndexer: ...
     @property

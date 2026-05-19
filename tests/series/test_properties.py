@@ -81,9 +81,8 @@ def test_property_dt() -> None:
 
 def test_property_array() -> None:
     """Test that Series.array returns ExtensionArray and its subclasses"""
-    check(
-        assert_type(Series([1], dtype="category").array, Categorical), Categorical, int
-    )
+    sr = Series([1], dtype="category")
+    check(assert_type(sr.array, Categorical), Categorical, int)
     check(
         assert_type(Series(interval_range(0, 1)).array, IntervalArray),
         IntervalArray,

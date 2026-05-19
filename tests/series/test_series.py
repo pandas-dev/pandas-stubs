@@ -85,6 +85,11 @@ from tests.dtypes import (
 )
 from tests.extension.decimal.array import DecimalDtype
 
+if TYPE_CHECKING:
+    from pandas._stubs_only import (  # pyright: ignore[reportMissingModuleSource]
+        C1,  # noqa: F401
+    )
+
 from pandas.io.formats.format import EngFormatter
 from pandas.tseries.offsets import (
     BaseOffset,
@@ -1672,30 +1677,54 @@ def test_cat_accessor() -> None:
         pd.Categorical(["a", "b", "a"], categories=["a", "b"])
     )
     check(assert_type(s.cat.codes, "pd.Series[int]"), pd.Series, np.int8)
-    # GH 139
+
     ser = pd.Series([1, 2, 3], name="A").astype("category")
     check(
-        assert_type(ser.cat.set_categories([1, 2, 3]), pd.Series), pd.Series, np.integer
-    )
-    check(
-        assert_type(ser.cat.reorder_categories([2, 3, 1], ordered=True), pd.Series),
+        assert_type(ser.cat.set_categories([1, 2, 3]), "pd.Series[C1[Any]]"),
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(ser.cat.rename_categories([1, 2, 3]), pd.Series),
+        assert_type(
+            ser.cat.reorder_categories([2, 3, 1], ordered=True), "pd.Series[C1[Any]]"
+        ),
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(ser.cat.remove_unused_categories(), pd.Series),
+        assert_type(ser.cat.rename_categories([1, 2, 3]), "pd.Series[C1[Any]]"),
         pd.Series,
         np.integer,
     )
-    check(assert_type(ser.cat.remove_categories([2]), pd.Series), pd.Series, np.integer)
-    check(assert_type(ser.cat.add_categories([4]), pd.Series), pd.Series, np.integer)
-    check(assert_type(ser.cat.as_ordered(), pd.Series), pd.Series, np.integer)
-    check(assert_type(ser.cat.as_unordered(), pd.Series), pd.Series, np.integer)
+    check(
+        assert_type(ser.cat.remove_unused_categories(), "pd.Series[C1[Any]]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(ser.cat.remove_categories([2]), "pd.Series[C1[Any]]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(ser.cat.add_categories([4]), "pd.Series[C1[Any]]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(ser.cat.as_ordered(), "pd.Series[C1[Any]]"), pd.Series, np.integer
+    )
+    check(
+        assert_type(ser.cat.as_unordered(), "pd.Series[C1[Any]]"), pd.Series, np.integer
+    )
+    check(ser.cat.set_categories([1, 2, 3]), pd.Series, np.integer)
+    check(ser.cat.reorder_categories([2, 3, 1], ordered=True), pd.Series, np.integer)
+    check(ser.cat.rename_categories([1, 2, 3]), pd.Series, np.integer)
+    check(ser.cat.remove_unused_categories(), pd.Series, np.integer)
+    check(ser.cat.remove_categories([2]), pd.Series, np.integer)
+    check(ser.cat.add_categories([4]), pd.Series, np.integer)
+    check(ser.cat.as_ordered(), pd.Series, np.integer)
+    check(ser.cat.as_unordered(), pd.Series, np.integer)
 
 
 def test_cat_ctor_values() -> None:
@@ -1747,9 +1776,14 @@ def test_categorical_codes() -> None:
     cat = pd.Categorical(["a", "b", "a"])
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray[np.int8])
 
-    # GH1383
-    sr = pd.Series([1], dtype="category")
-    check(assert_type(sr, "pd.Series[pd.CategoricalDtype]"), pd.Series, np.integer)
+    sr_int = pd.Series([1], dtype="category")
+    check(assert_type(sr_int, "pd.Series[C1[int]]"), pd.Series, np.integer)
+
+    sr_str = pd.Series(["a", "b"], dtype="category")
+    check(assert_type(sr_str, "pd.Series[C1[str]]"), pd.Series, str)
+
+    sr_float = pd.Series([1.0, 2.0], dtype="category")
+    check(assert_type(sr_float, "pd.Series[C1[float]]"), pd.Series, float)
 
 
 def test_relops() -> None:

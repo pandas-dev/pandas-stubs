@@ -114,7 +114,6 @@ def array(
 ) -> Categorical: ...
 @overload
 def array(
-    # TODO: Categorical Series pandas-dev/pandas-stubs#1415
     data: Categorical | CategoricalIndex,
     dtype: CategoryDtypeArg | None = None,
     copy: bool = True,
