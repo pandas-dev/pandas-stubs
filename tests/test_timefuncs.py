@@ -108,7 +108,7 @@ def test_types_arithmetic() -> None:
     check(assert_type(ts - dt.datetime(2021, 1, 3), pd.Timedelta), pd.Timedelta)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: pandas-dev/pandas-stubs#1511 numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
+        # TODO: pandas-dev/pandas-stubs#64798 numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
         assert_type(
             ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
         )

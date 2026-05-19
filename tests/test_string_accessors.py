@@ -285,6 +285,7 @@ def test_string_accessors_string_index() -> None:
     )
 
     if PD_LTE_31:
+        # TODO: pandas-dev/pandas#64798 may end up working in 3.1.0, issue in discussion
         idx_list = pd.Index(
             [["apple", "banana"], ["cherry", "date"], ["one", "eggplant"]]
         )

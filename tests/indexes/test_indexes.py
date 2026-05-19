@@ -211,6 +211,7 @@ def test_str_split() -> None:
     ind = pd.Index(["a-b", "c-d"])
 
     if PD_LTE_31:
+        # TODO: pandas-dev/pandas#64798 may end up working in 3.1.0, issue in discussion
         check(assert_type(ind.str.split("-"), "pd.Index[list[str]]"), pd.Index, list)
 
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
@@ -1569,7 +1570,7 @@ def test_index_where() -> None:
         val_idx = idx.where(mask, idx)
         check(assert_type(val_idx, "pd.Index[int]"), pd.Index, int)
 
-    val_sr = idx.where(mask, (idx).to_series())
+    val_sr = idx.where(mask, idx.to_series())
 
     if PD_LTE_31:
         check(assert_type(val_sr, "pd.Index[int]"), pd.Index, int)
