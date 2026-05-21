@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    TYPE_CHECKING,
-    assert_type,
-)
+from typing import assert_type
 
 import pandas as pd
 import pytest
@@ -11,9 +8,6 @@ import pytest
 from tests import check
 from tests._typing import CategoryDtypeArg
 from tests.dtypes import ASTYPE_CATEGORICAL_ARGS
-
-if TYPE_CHECKING:
-    from typing import Any  # noqa: F401
 
 
 @pytest.mark.parametrize(
@@ -25,13 +19,13 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
 
     check(
         assert_type(
-            s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype[Any]]"
+            s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype[str]]"
         ),
         pd.Series,
         str,
     )
     check(
-        assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype[Any]]"),
+        assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype[str]]"),
         pd.Series,
         str,
     )

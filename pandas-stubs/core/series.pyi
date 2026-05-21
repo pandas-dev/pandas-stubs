@@ -247,6 +247,7 @@ from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.dtypes import (
     CategoricalDtype,
     CategoricalValueT,
+    CategoricalValueT1,
 )
 
 from pandas.plotting import PlotAccessor
@@ -1549,10 +1550,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timestamp]: ...
     @overload
     def astype(
-        self,
+        self: Series[CategoricalValueT1],
         dtype: CategoryDtypeArg,
         errors: IgnoreRaise = ...,
-    ) -> Series[CategoricalDtype[Any]]: ...
+    ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
     @overload
     def astype(
         self,

@@ -1679,7 +1679,7 @@ def test_cat_accessor() -> None:
     ser = pd.Series([1, 2, 3], name="A").astype("category")
     check(
         assert_type(
-            ser.cat.set_categories([1, 2, 3]), "pd.Series[pd.CategoricalDtype[Any]]"
+            ser.cat.set_categories([1, 2, 3]), "pd.Series[pd.CategoricalDtype[int]]"
         ),
         pd.Series,
         np.integer,
@@ -1687,44 +1687,44 @@ def test_cat_accessor() -> None:
     check(
         assert_type(
             ser.cat.reorder_categories([2, 3, 1], ordered=True),
-            "pd.Series[pd.CategoricalDtype[Any]]",
+            "pd.Series[pd.CategoricalDtype[int]]",
         ),
         pd.Series,
         np.integer,
     )
     check(
         assert_type(
-            ser.cat.rename_categories([1, 2, 3]), "pd.Series[pd.CategoricalDtype[Any]]"
+            ser.cat.rename_categories([1, 2, 3]), "pd.Series[pd.CategoricalDtype[int]]"
         ),
         pd.Series,
         np.integer,
     )
     check(
         assert_type(
-            ser.cat.remove_unused_categories(), "pd.Series[pd.CategoricalDtype[Any]]"
+            ser.cat.remove_unused_categories(), "pd.Series[pd.CategoricalDtype[int]]"
         ),
         pd.Series,
         np.integer,
     )
     check(
         assert_type(
-            ser.cat.remove_categories([2]), "pd.Series[pd.CategoricalDtype[Any]]"
+            ser.cat.remove_categories([2]), "pd.Series[pd.CategoricalDtype[int]]"
         ),
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(ser.cat.add_categories([4]), "pd.Series[pd.CategoricalDtype[Any]]"),
+        assert_type(ser.cat.add_categories([4]), "pd.Series[pd.CategoricalDtype[int]]"),
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(ser.cat.as_ordered(), "pd.Series[pd.CategoricalDtype[Any]]"),
+        assert_type(ser.cat.as_ordered(), "pd.Series[pd.CategoricalDtype[int]]"),
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(ser.cat.as_unordered(), "pd.Series[pd.CategoricalDtype[Any]]"),
+        assert_type(ser.cat.as_unordered(), "pd.Series[pd.CategoricalDtype[int]]"),
         pd.Series,
         np.integer,
     )

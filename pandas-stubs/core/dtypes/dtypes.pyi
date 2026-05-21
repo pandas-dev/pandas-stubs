@@ -37,6 +37,7 @@ _dt_units: TypeAlias = Literal["s", "ms", "us", "ns"]
 CategoricalValueT = TypeVar(
     "CategoricalValueT", str, int, float, object, default=object
 )
+CategoricalValueT1 = TypeVar("CategoricalValueT1", str, int, float)
 
 class BaseMaskedDtype(ExtensionDtype):
     @property
