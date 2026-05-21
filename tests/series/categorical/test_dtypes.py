@@ -15,10 +15,6 @@ from tests.dtypes import ASTYPE_CATEGORICAL_ARGS
 if TYPE_CHECKING:
     from typing import Any  # noqa: F401
 
-    from pandas._stubs_only import (  # pyright: ignore[reportMissingModuleSource]  # isort:skip
-        C1,  # noqa: F401
-    )
-
 
 @pytest.mark.parametrize(
     "cast_arg, target_type", ASTYPE_CATEGORICAL_ARGS.items(), ids=repr
@@ -28,8 +24,14 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
     check(s.astype(cast_arg), pd.Series, target_type)
 
     check(
-        assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[C1[Any]]"),
+        assert_type(
+            s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype[Any]]"
+        ),
         pd.Series,
         str,
     )
-    check(assert_type(s.astype(cast_arg), "pd.Series[C1[Any]]"), pd.Series, str)
+    check(
+        assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype[Any]]"),
+        pd.Series,
+        str,
+    )

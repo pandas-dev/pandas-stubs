@@ -13,10 +13,6 @@ from typing import (
     type_check_only,
 )
 
-from pandas._stubs_only import (
-    C1,
-    CategoricalT,
-)
 from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -465,11 +461,7 @@ class ArrayDescriptor:
     ) -> ExtensionArray: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[C1[CategoricalT]], owner: type[IndexOpsMixin]
-    ) -> Categorical: ...
-    @overload
-    def __get__(
-        self, instance: IndexOpsMixin[CategoricalDtype], owner: type[IndexOpsMixin]
+        self, instance: IndexOpsMixin[CategoricalDtype[Any]], owner: type[IndexOpsMixin]
     ) -> Categorical: ...
     @overload
     def __get__(

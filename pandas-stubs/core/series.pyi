@@ -57,8 +57,6 @@ from pandas import (
     Timestamp,
 )
 from pandas._stubs_only import (
-    C1,
-    CategoricalT,
     OrderableT,
     T_co,
     T_contra,
@@ -246,6 +244,10 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
+from pandas.core.dtypes.dtypes import (
+    CategoricalDtype,
+    CategoricalValueT,
+)
 
 from pandas.plotting import PlotAccessor
 
@@ -341,8 +343,8 @@ _DataLike: TypeAlias = ArrayLike | dict[str, np_ndarray] | SequenceNotStr[S1]
 class _CatDescriptor:
     @overload
     def __get__(
-        self, instance: Series[C1[CategoricalT]], owner: Any
-    ) -> CategoricalAccessor[CategoricalT]: ...
+        self, instance: Series[CategoricalDtype[CategoricalValueT]], owner: Any
+    ) -> CategoricalAccessor[CategoricalValueT]: ...
     @overload
     def __get__(self, instance: Series, owner: Any) -> CategoricalAccessor[Any]: ...
 
@@ -378,7 +380,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         dtype: CategoryDtypeArg,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[C1[_str]]: ...
+    ) -> Series[CategoricalDtype[_str]]: ...
     @overload
     def __new__(  # pyright: ignore[reportOverlappingOverload]
         cls,
@@ -388,7 +390,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         dtype: CategoryDtypeArg,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[C1[int]]: ...
+    ) -> Series[CategoricalDtype[int]]: ...
     @overload
     def __new__(
         cls,
@@ -398,7 +400,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         dtype: CategoryDtypeArg,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[C1[float]]: ...
+    ) -> Series[CategoricalDtype[float]]: ...
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
@@ -443,7 +445,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         dtype: CategoryDtypeArg,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[C1[Any]]: ...
+    ) -> Series[CategoricalDtype[Any]]: ...
     @overload
     def __new__(
         cls,
@@ -1550,7 +1552,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         dtype: CategoryDtypeArg,
         errors: IgnoreRaise = ...,
-    ) -> Series[C1[Any]]: ...
+    ) -> Series[CategoricalDtype[Any]]: ...
     @overload
     def astype(
         self,

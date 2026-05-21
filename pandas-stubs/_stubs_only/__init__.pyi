@@ -40,8 +40,6 @@ from pandas._typing import (
     np_1darray,
 )
 
-from pandas.core.dtypes.dtypes import CategoricalDtype
-
 T_co = TypeVar("T_co", covariant=True)
 T_contra = TypeVar("T_contra", contravariant=True)
 
@@ -85,11 +83,6 @@ Orderables: TypeAlias = OrderableScalars | OrderableTimes
 OrderableScalarT = TypeVar("OrderableScalarT", bound=OrderableScalars)
 OrderableTimesT = TypeVar("OrderableTimesT", bound=OrderableTimes)
 OrderableT = TypeVar("OrderableT", bound=Orderables, default=Any)
-
-CategoricalT = TypeVar("CategoricalT", str, int, float, object)
-
-@type_check_only
-class C1(CategoricalDtype, Generic[CategoricalT]): ...
 
 @type_check_only
 class IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):

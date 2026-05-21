@@ -13,10 +13,6 @@ from typing import (
 
 import numpy as np
 from pandas import Series
-from pandas._stubs_only import (
-    C1,
-    CategoricalT,
-)
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
@@ -41,7 +37,10 @@ from pandas._typing import (
     np_1darray_bool,
 )
 
-from pandas.core.dtypes.dtypes import CategoricalDtype as CategoricalDtype
+from pandas.core.dtypes.dtypes import (
+    CategoricalDtype as CategoricalDtype,
+    CategoricalValueT,
+)
 
 class Categorical(NDArrayBackedExtensionArray):
     __array_priority__: int = ...
@@ -50,7 +49,7 @@ class Categorical(NDArrayBackedExtensionArray):
         values: SequenceNotStr[Hashable] | AnyArrayLike,
         categories: SequenceNotStr[Hashable] | AnyArrayLike | None = None,
         ordered: bool | None = None,
-        dtype: CategoricalDtype | None = None,
+        dtype: CategoricalDtype[Any] | None = None,
         copy: bool = True,
     ) -> None: ...
     @property
@@ -58,7 +57,7 @@ class Categorical(NDArrayBackedExtensionArray):
     @property
     def ordered(self) -> Ordered: ...
     @property
-    def dtype(self) -> CategoricalDtype: ...
+    def dtype(self) -> CategoricalDtype[object]: ...
     def tolist(self) -> list[Scalar]: ...
     @classmethod
     def from_codes(
@@ -66,7 +65,7 @@ class Categorical(NDArrayBackedExtensionArray):
         codes: AnyArrayLike | Sequence[int],
         categories: Index | None = ...,
         ordered: bool | None = ...,
-        dtype: CategoricalDtype | None = ...,
+        dtype: CategoricalDtype[Any] | None = ...,
         validate: bool = True,
     ) -> Categorical: ...
     @property
@@ -142,7 +141,9 @@ class Categorical(NDArrayBackedExtensionArray):
         self, values: AnyArrayLike | SequenceNotStr[Hashable]
     ) -> np_1darray_bool: ...
 
-class CategoricalAccessor(PandasDelegate, NoNewAttributesMixin, Generic[CategoricalT]):
+class CategoricalAccessor(
+    PandasDelegate, NoNewAttributesMixin, Generic[CategoricalValueT]
+):
     @property
     def codes(self) -> Series[int]: ...
     @property
@@ -150,25 +151,32 @@ class CategoricalAccessor(PandasDelegate, NoNewAttributesMixin, Generic[Categori
     @property
     def ordered(self) -> bool | None: ...
     def rename_categories(
-        self, new_categories: ListLike | dict[Any, Any] | Callable[[Any], Any]
-    ) -> Series[C1[Any]]: ...
+        self,
+        new_categories: (
+            Sequence[CategoricalValueT]
+            | dict[Any, CategoricalValueT]
+            | Callable[[CategoricalValueT], CategoricalValueT]
+        ),
+    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
     def reorder_categories(
         self,
         new_categories: ListLike,
         ordered: bool = ...,
-    ) -> Series[C1[CategoricalT]]: ...
+    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
     def add_categories(
         self, new_categories: Scalar | ListLike
-    ) -> Series[C1[CategoricalT]]: ...
+    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
     def remove_categories(
         self, removals: Scalar | ListLike
-    ) -> Series[C1[CategoricalT]]: ...
-    def remove_unused_categories(self) -> Series[C1[CategoricalT]]: ...
+    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+    def remove_unused_categories(
+        self,
+    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
     def set_categories(
         self,
-        new_categories: ListLike,
+        new_categories: Sequence[CategoricalValueT] | ListLike,
         ordered: bool | None = False,
         rename: bool = False,
-    ) -> Series[C1[CategoricalT]]: ...
-    def as_ordered(self) -> Series[C1[CategoricalT]]: ...
-    def as_unordered(self) -> Series[C1[CategoricalT]]: ...
+    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+    def as_ordered(self) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+    def as_unordered(self) -> Series[CategoricalDtype[CategoricalValueT]]: ...
