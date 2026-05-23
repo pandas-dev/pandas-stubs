@@ -17,7 +17,7 @@ from tests.dtypes import ASTYPE_STRING_ARGS
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_STRING_ARGS.items(), ids=repr)
 def test_astype_string(cast_arg: StrDtypeArg, target_type: type) -> None:
     s = pd.Series(["a", "b"])
-    check(s.astype(cast_arg), pd.Series, target_type)
+    check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         # python string

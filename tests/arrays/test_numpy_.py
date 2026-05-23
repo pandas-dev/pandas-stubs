@@ -39,7 +39,7 @@ from tests.utils import powerset
 def test_construction_sequence(
     missing_values: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
-    check(pd.array(typ(missing_values)), NumpyExtensionArray)
+    check(assert_type(pd.array(typ(missing_values)), NumpyExtensionArray), NumpyExtensionArray)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         assert_type(pd.array([None]), NumpyExtensionArray)
@@ -93,9 +93,17 @@ def test_construction_dtype(
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray)
     elif dtype == "V" or "void" in str(dtype):
-        check(pd.array([b"1"], dtype=dtype), NumpyExtensionArray, target_dtype)
+        check(
+            assert_type(pd.array([b"1"], dtype=dtype), NumpyExtensionArray),
+            NumpyExtensionArray,
+            target_dtype,
+        )
     else:
-        check(pd.array([1], dtype=dtype), NumpyExtensionArray, target_dtype)
+        check(
+            assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray),
+            NumpyExtensionArray,
+            target_dtype,
+        )
 
     if TYPE_CHECKING:
         # python boolean
@@ -253,7 +261,10 @@ def test_construction_dtype(
 
 @pytest.mark.parametrize("creator", [np.array, pd.array])
 def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -> None:
-    check(NumpyExtensionArray(creator([None])), NumpyExtensionArray)
+    check(
+        assert_type(NumpyExtensionArray(creator([None])), NumpyExtensionArray),
+        NumpyExtensionArray,
+    )
 
     if TYPE_CHECKING:
         assert_type(NumpyExtensionArray(np.array([1])), NumpyExtensionArray)

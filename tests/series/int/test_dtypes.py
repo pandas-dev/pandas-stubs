@@ -30,9 +30,9 @@ def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
         # TODO: pandas-dev/pandas#54252 longlong is bugged on Linux and Mac
         msg = rf"Expected type '{target_type}' but got '{type(s_astype.iloc[0])}'"
         with pytest.raises(RuntimeError, match=msg):
-            check(s_astype, pd.Series, target_type)
+            check(assert_type(s_astype, pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
     else:
-        check(s_astype, pd.Series, target_type)
+        check(assert_type(s_astype, pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         # python int
@@ -89,7 +89,7 @@ def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_UINT_ARGS.items(), ids=repr)
 def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
-    check(s.astype(cast_arg), pd.Series, target_type)
+    check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         # pandas UInt8

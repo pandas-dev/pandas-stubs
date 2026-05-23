@@ -18,7 +18,7 @@ from tests.dtypes import ASTYPE_CATEGORICAL_ARGS
 )
 def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> None:
     s = pd.Series(["a", "b"])
-    check(s.astype(cast_arg), pd.Series, target_type)
+    check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         # pandas category

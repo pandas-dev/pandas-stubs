@@ -33,7 +33,7 @@ def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
             s.astype(cast_arg)
         pytest.skip("MacOS arm does not support complex256")
 
-    check(s.astype(cast_arg), pd.Series, target_type)
+    check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         assert_type(s.astype(complex), "pd.Series[complex]")

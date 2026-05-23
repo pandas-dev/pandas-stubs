@@ -156,10 +156,16 @@ def test_frame_groupby_resample() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(GB_DF.resample("ME").aggregate(np.sum), DataFrame)
-    check(GB_DF.resample("ME").aggregate([np.mean]), DataFrame)
-    check(GB_DF.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-    check(GB_DF.resample("ME").aggregate({"col1": np.sum}), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(GB_DF.resample("ME").aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(GB_DF.resample("ME").aggregate({"col1": np.sum}), DataFrame),
+        DataFrame,
+    )
     check(
         GB_DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}),
         DataFrame,
@@ -176,10 +182,10 @@ def test_frame_groupby_resample() -> None:
         GB_DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}),
         DataFrame,
     )
-    check(GB_DF.resample("ME").aggregate("sum"), DataFrame)
-    check(GB_DF.resample("ME").aggregate(df2frame), DataFrame)
-    check(GB_DF.resample("ME").aggregate(df2series), DataFrame)
-    check(GB_DF.resample("ME").aggregate(df2scalar), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate("sum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate(df2frame), DataFrame), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate(df2series), DataFrame), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate(df2scalar), DataFrame), DataFrame)
 
     # asfreq
     check(assert_type(GB_DF.resample("ME").asfreq(-1.0), DataFrame), DataFrame)
@@ -390,14 +396,43 @@ def test_series_groupby_resample() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
-    check(GB_S.resample("ME").aggregate(np.sum), Series)
-    check(GB_S.resample("ME").aggregate([np.mean]), DataFrame)
-    check(GB_S.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-    check(GB_S.resample("ME").aggregate({"sum": np.sum}), DataFrame)
-    check(GB_S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
-    check(GB_S.resample("ME").aggregate("sum"), Series)
-    check(GB_S.resample("ME").aggregate(s2series), Series)
-    check(GB_S.resample("ME").aggregate(s2scalar), Series)
+    check(
+        assert_type(GB_S.resample("ME").aggregate(np.sum), "Series | DataFrame"), Series
+    )
+    check(
+        assert_type(GB_S.resample("ME").aggregate([np.mean]), "Series | DataFrame"),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            GB_S.resample("ME").aggregate(["sum", np.mean]), "Series | DataFrame"
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            GB_S.resample("ME").aggregate({"sum": np.sum}), "Series | DataFrame"
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            GB_S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}),
+            "Series | DataFrame",
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(GB_S.resample("ME").aggregate("sum"), "Series | DataFrame"), Series
+    )
+    check(
+        assert_type(GB_S.resample("ME").aggregate(s2series), "Series | DataFrame"),
+        Series,
+    )
+    check(
+        assert_type(GB_S.resample("ME").aggregate(s2scalar), "Series | DataFrame"),
+        Series,
+    )
 
 
 def test_frame_groupby_rolling() -> None:
@@ -466,10 +501,14 @@ def test_frame_groupby_rolling() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(GB_DF.rolling(1).aggregate(np.sum), DataFrame)
-    check(GB_DF.rolling(1).aggregate([np.mean]), DataFrame)
-    check(GB_DF.rolling(1).aggregate(["sum", np.mean]), DataFrame)
-    check(GB_DF.rolling(1).aggregate({"col1": np.sum}), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(GB_DF.rolling(1).aggregate(["sum", np.mean]), DataFrame), DataFrame
+    )
+    check(
+        assert_type(GB_DF.rolling(1).aggregate({"col1": np.sum}), DataFrame), DataFrame
+    )
     check(
         GB_DF.rolling(1).aggregate({"col1": np.sum, "col2": np.mean}),
         DataFrame,
@@ -486,9 +525,9 @@ def test_frame_groupby_rolling() -> None:
         GB_DF.rolling(1).aggregate({"col1": "sum", "col2": [np.mean]}),
         DataFrame,
     )
-    check(GB_DF.rolling(1).aggregate("sum"), DataFrame)
-    check(GB_DF.rolling(1).aggregate(df2series), DataFrame)
-    check(GB_DF.rolling(1).aggregate(df2scalar), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate("sum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate(df2series), DataFrame), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate(df2scalar), DataFrame), DataFrame)
 
     # getattr
     check(
@@ -638,10 +677,16 @@ def test_frame_groupby_expanding() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(GB_DF.expanding(1).aggregate(np.sum), DataFrame)
-    check(GB_DF.expanding(1).aggregate([np.mean]), DataFrame)
-    check(GB_DF.expanding(1).aggregate(["sum", np.mean]), DataFrame)
-    check(GB_DF.expanding(1).aggregate({"col1": np.sum}), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(GB_DF.expanding(1).aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(GB_DF.expanding(1).aggregate({"col1": np.sum}), DataFrame),
+        DataFrame,
+    )
     check(
         GB_DF.expanding(1).aggregate({"col1": np.sum, "col2": np.mean}),
         DataFrame,
@@ -658,9 +703,9 @@ def test_frame_groupby_expanding() -> None:
         GB_DF.expanding(1).aggregate({"col1": "sum", "col2": [np.mean]}),
         DataFrame,
     )
-    check(GB_DF.expanding(1).aggregate("sum"), DataFrame)
-    check(GB_DF.expanding(1).aggregate(df2series), DataFrame)
-    check(GB_DF.expanding(1).aggregate(df2scalar), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate("sum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate(df2series), DataFrame), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate(df2scalar), DataFrame), DataFrame)
 
     # getattr
     check(
@@ -767,7 +812,7 @@ def test_frame_groupby_ewm() -> None:
     check(assert_type(GB_DF.ewm(1).std(), DataFrame), DataFrame)
     check(assert_type(GB_DF.ewm(1).var(), DataFrame), DataFrame)
 
-    check(GB_DF.ewm(1).aggregate("sum"), DataFrame)
+    check(assert_type(GB_DF.ewm(1).aggregate("sum"), DataFrame), DataFrame)
 
     # getattr
     check(

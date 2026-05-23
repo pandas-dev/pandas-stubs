@@ -51,7 +51,7 @@ def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.Series([1.0], dtype=dtype), "pd.Series[float]")
     else:
-        check(pd.Series([1.0], dtype=dtype), pd.Series, target_dtype)
+        check(assert_type(pd.Series([1.0], dtype=dtype), pd.Series), pd.Series, target_dtype)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         # python float
@@ -108,7 +108,7 @@ def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
         with pytest.raises(TypeError, match=rf"data type {cast_arg!r} not understood"):
             assert_type(s.astype(cast_arg), "pd.Series[float]")
     else:
-        check(s.astype(cast_arg), pd.Series, target_type)
+        check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         # python float

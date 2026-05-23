@@ -134,9 +134,9 @@ def test_floordiv_numpy_array(left: "pd.Series[float]") -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rfloordiv__` cannot override. At runtime, they lead to
     # errors or pd.Series.
-    check(b // left, pd.Series, np.floating)
-    check(i // left, pd.Series, np.floating)
-    check(f // left, pd.Series, np.floating)
+    check(assert_type(b // left, pd.Series), pd.Series, np.floating)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+    check(assert_type(i // left, pd.Series), pd.Series, np.floating)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+    check(assert_type(f // left, pd.Series), pd.Series, np.floating)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(c // left, Any)
         assert_type(s // left, Any)

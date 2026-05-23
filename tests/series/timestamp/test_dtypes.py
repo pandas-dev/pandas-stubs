@@ -196,9 +196,9 @@ def test_astype_timestamp(cast_arg: TimestampDtypeArg, target_type: type) -> Non
 
     if cast_arg in ("date32[pyarrow]", "date64[pyarrow]"):
         x = pd.Series(pd.date_range("2000-01-01", "2000-02-01"))
-        check(x.astype(cast_arg), pd.Series, target_type)
+        check(assert_type(x.astype(cast_arg), pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
     else:
-        check(s.astype(cast_arg), pd.Series, target_type)
+        check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
 
     if TYPE_CHECKING:
         # numpy datetime64

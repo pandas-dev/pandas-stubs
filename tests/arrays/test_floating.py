@@ -35,9 +35,9 @@ def test_construction_sequence(
     missing_values: tuple[Any, ...],
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
-    check(pd.array(typ([*data, *missing_values])), FloatingArray)
-    check(pd.array(typ([-3.2, *data, *missing_values])), FloatingArray)
-    check(pd.array(typ([np.float16(-2e-4), *data, *missing_values])), FloatingArray)
+    check(assert_type(pd.array(typ([*data, *missing_values])), FloatingArray), FloatingArray)  # type: ignore[assert-type]
+    check(assert_type(pd.array(typ([-3.2, *data, *missing_values])), FloatingArray), FloatingArray)  # type: ignore[assert-type]
+    check(assert_type(pd.array(typ([np.float16(-2e-4), *data, *missing_values])), FloatingArray), FloatingArray)  # type: ignore[assert-type]
 
     if TYPE_CHECKING:
         assert_type(pd.array([0.1, 1.2]), FloatingArray)
@@ -66,7 +66,7 @@ def test_construction_sequence(
 def test_construction_sequence_nan(
     data: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
-    check(pd.array(typ(data)), FloatingArray)
+    check(assert_type(pd.array(typ(data)), FloatingArray), FloatingArray)  # type: ignore[assert-type]
 
     if TYPE_CHECKING:
         assert_type(pd.array([]), FloatingArray)
@@ -96,7 +96,11 @@ def test_construction_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> N
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.array([1.0], dtype), FloatingArray)
     else:
-        check(pd.array([1.0], dtype), FloatingArray, target_dtype)
+        check(
+            assert_type(pd.array([1.0], dtype), FloatingArray),
+            FloatingArray,
+            target_dtype,
+        )
 
     if TYPE_CHECKING:
         # pandas Float32

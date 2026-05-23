@@ -3455,8 +3455,8 @@ def test_where(
 ) -> None:
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
 
-    check(df.where(cond), pd.DataFrame)
-    check(df.where(cond, inplace=True), pd.DataFrame)
+    check(assert_type(df.where(cond), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.where(cond, inplace=True), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING:
         assert_type(df.where(where_cond1), pd.DataFrame)
