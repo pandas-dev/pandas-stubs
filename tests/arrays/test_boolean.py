@@ -34,9 +34,9 @@ def test_construction_sequence(
     missing_values: tuple[Any, ...],
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
-    check(assert_type(pd.array(typ([*data, *missing_values])), BooleanArray), BooleanArray)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
-    check(assert_type(pd.array(typ([False, *data, *missing_values])), BooleanArray), BooleanArray)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
-    check(assert_type(pd.array(typ([np.bool_(False), *data, *missing_values])), BooleanArray), BooleanArray)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+    check(pd.array(typ([*data, *missing_values])), BooleanArray)
+    check(pd.array(typ([False, *data, *missing_values])), BooleanArray)
+    check(pd.array(typ([np.bool_(False), *data, *missing_values])), BooleanArray)
 
     if TYPE_CHECKING:
         assert_type(pd.array([False, True]), BooleanArray)

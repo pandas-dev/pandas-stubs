@@ -474,7 +474,7 @@ def test_loc_int_set() -> None:
 def test_loc_iterable(col: Hashable, typ: type) -> None:
     # GH 189, GH 1410
     df = pd.DataFrame({1: [1, 2], None: 5}, columns=pd.Index([1, None], dtype=object))
-    check(assert_type(df.loc[:, typ([col])], pd.DataFrame), pd.DataFrame)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+    check(df.loc[:, typ([col])], pd.DataFrame)
 
     if TYPE_CHECKING:
         assert_type(df.loc[:, [None]], pd.DataFrame)

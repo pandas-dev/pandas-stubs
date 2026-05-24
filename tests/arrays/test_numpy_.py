@@ -39,7 +39,7 @@ from tests.utils import powerset
 def test_construction_sequence(
     missing_values: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
-    check(assert_type(pd.array(typ(missing_values)), NumpyExtensionArray), NumpyExtensionArray)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+    check(pd.array(typ(missing_values)), NumpyExtensionArray)
 
     if TYPE_CHECKING:
         assert_type(pd.array([None]), NumpyExtensionArray)

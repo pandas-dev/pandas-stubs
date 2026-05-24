@@ -163,7 +163,7 @@ def test_string_dtype(
     if na_value is pd.NA:
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
-        check(assert_type(s_dt, pd.StringDtype), pd.StringDtype)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+        check(s_dt, pd.StringDtype)
         assert s_dt.storage in ({storage} if storage else {"python", "pyarrow"})
         check(assert_type(s_dt.na_value, NAType | float), type(na_value))
 

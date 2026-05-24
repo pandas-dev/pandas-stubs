@@ -844,10 +844,10 @@ td_l, td_r = dt.timedelta(seconds=1), dt.timedelta(seconds=2)
 def test_interval_properties(
     itv_idx: pd.IntervalIndex[Any], typ_left: type, typ_mid: type, typ_length: type
 ) -> None:
-    check(assert_type(itv_idx.left, pd.Index), pd.Index, typ_left)
-    check(assert_type(itv_idx.right, pd.Index), pd.Index, typ_left)
-    check(assert_type(itv_idx.mid, pd.Index), pd.Index, typ_mid)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
-    check(assert_type(itv_idx.length, pd.Index), pd.Index, typ_length)
+    check(itv_idx.left, pd.Index, typ_left)
+    check(itv_idx.right, pd.Index, typ_left)
+    check(itv_idx.mid, pd.Index, typ_mid)
+    check(itv_idx.length, pd.Index, typ_length)
 
     if TYPE_CHECKING:
         assert_type(pd.interval_range(0, 10).left, "pd.Index[int]")
@@ -1751,13 +1751,7 @@ def test_index_drop() -> None:
 def test_ravel(
     data: Sequence[Any] | pd.RangeIndex, klass: type[Index], element_type: type
 ) -> None:
-    check(
-        assert_type(
-            pd.Index(data).ravel(), pd.Index  # pyright: ignore[reportAssertTypeFailure]
-        ),
-        klass,
-        element_type,
-    )
+    check(pd.Index(data).ravel(), klass, element_type)
 
     if TYPE_CHECKING:
         assert_type(pd.Index([True, False, True]).ravel(), "pd.Index[bool]")

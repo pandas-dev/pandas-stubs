@@ -35,9 +35,9 @@ def test_construction_sequence(
     missing_values: tuple[Any, ...],
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
-    check(assert_type(pd.array(typ([*data, *missing_values])), FloatingArray), FloatingArray)  # type: ignore[assert-type]
-    check(assert_type(pd.array(typ([-3.2, *data, *missing_values])), FloatingArray), FloatingArray)  # type: ignore[assert-type]
-    check(assert_type(pd.array(typ([np.float16(-2e-4), *data, *missing_values])), FloatingArray), FloatingArray)  # type: ignore[assert-type]
+    check(pd.array(typ([*data, *missing_values])), FloatingArray)
+    check(pd.array(typ([-3.2, *data, *missing_values])), FloatingArray)
+    check(pd.array(typ([np.float16(-2e-4), *data, *missing_values])), FloatingArray)
 
     if TYPE_CHECKING:
         assert_type(pd.array([0.1, 1.2]), FloatingArray)
