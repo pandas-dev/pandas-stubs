@@ -93,10 +93,10 @@ def test_sub_py_sequence() -> None:
         _1 = s - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
         _b = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
-    left.sub(s)
-    left.sub(d)
+    check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(assert_type(left.sub(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
-    left.rsub(s)
+    check(assert_type(left.rsub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         left.rsub(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
 

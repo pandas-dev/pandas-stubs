@@ -42,6 +42,8 @@ from tests import (
 )
 
 if TYPE_CHECKING:
+    from typing import Any  # noqa: F401
+
     from pandas.core.groupby.groupby import ResamplerGroupBy  # noqa: F401
 
 DR = date_range("1999-1-1", periods=365, freq="D")
@@ -327,35 +329,35 @@ def test_series_groupby_resample() -> None:
 
     # aggregate
     check(
-        assert_type(GB_S.resample("ME").aggregate(np.sum), DataFrame | Series),
+        assert_type(GB_S.resample("ME").aggregate(np.sum), "Series[Any]"),
         Series,
     )
     check(
-        assert_type(GB_S.resample("ME").agg(np.sum), DataFrame | Series),
+        assert_type(GB_S.resample("ME").agg(np.sum), "Series[Any]"),
         Series,
     )
     check(
-        assert_type(GB_S.resample("ME").apply(np.sum), DataFrame | Series),
+        assert_type(GB_S.resample("ME").apply(np.sum), "Series[Any]"),
         Series,
     )
     check(
         assert_type(
             GB_S.resample("ME").aggregate([np.sum, np.mean]),
-            DataFrame | Series,
+            DataFrame,
         ),
         DataFrame,
     )
     check(
         assert_type(
             GB_S.resample("ME").aggregate(["sum", np.mean]),
-            DataFrame | Series,
+            DataFrame,
         ),
         DataFrame,
     )
     check(
         assert_type(
             GB_S.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
-            DataFrame | Series,
+            DataFrame,
         ),
         DataFrame,
     )
@@ -363,7 +365,7 @@ def test_series_groupby_resample() -> None:
     def f(val: Series) -> float:
         return val.mean()
 
-    check(assert_type(GB_S.resample("ME").aggregate(f), DataFrame | Series), Series)
+    check(assert_type(GB_S.resample("ME").aggregate(f), "Series[Any]"), Series)
 
     # asfreq
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
@@ -396,41 +398,32 @@ def test_series_groupby_resample() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
+    check(assert_type(GB_S.resample("ME").aggregate(np.sum), "Series[Any]"), Series)
     check(
-        assert_type(GB_S.resample("ME").aggregate(np.sum), "Series | DataFrame"), Series
+        assert_type(GB_S.resample("ME").aggregate([np.mean]), DataFrame),
+        DataFrame,
     )
     check(
-        assert_type(GB_S.resample("ME").aggregate([np.mean]), "Series | DataFrame"),
+        assert_type(GB_S.resample("ME").aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(GB_S.resample("ME").aggregate({"sum": np.sum}), DataFrame),
         DataFrame,
     )
     check(
         assert_type(
-            GB_S.resample("ME").aggregate(["sum", np.mean]), "Series | DataFrame"
+            GB_S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame
         ),
         DataFrame,
     )
+    check(assert_type(GB_S.resample("ME").aggregate("sum"), "Series[Any]"), Series)
     check(
-        assert_type(
-            GB_S.resample("ME").aggregate({"sum": np.sum}), "Series | DataFrame"
-        ),
-        DataFrame,
-    )
-    check(
-        assert_type(
-            GB_S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}),
-            "Series | DataFrame",
-        ),
-        DataFrame,
-    )
-    check(
-        assert_type(GB_S.resample("ME").aggregate("sum"), "Series | DataFrame"), Series
-    )
-    check(
-        assert_type(GB_S.resample("ME").aggregate(s2series), "Series | DataFrame"),
+        assert_type(GB_S.resample("ME").aggregate(s2series), "Series[Any]"),
         Series,
     )
     check(
-        assert_type(GB_S.resample("ME").aggregate(s2scalar), "Series | DataFrame"),
+        assert_type(GB_S.resample("ME").aggregate(s2scalar), "Series[Any]"),
         Series,
     )
 
@@ -894,7 +887,7 @@ def test_engine() -> None:
             engine_kwargs="not valid",  # pyright: ignore
             other_kwarg="",
         )
-    GB_DF.aggregate("size", engine="cython", engine_kwargs={})
+    assert_type(GB_DF.aggregate("size", engine="cython", engine_kwargs={}), DataFrame)
 
 
 def test_groupby_getitem() -> None:
