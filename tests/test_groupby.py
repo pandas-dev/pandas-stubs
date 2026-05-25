@@ -42,8 +42,6 @@ from tests import (
 )
 
 if TYPE_CHECKING:
-    from typing import Any  # noqa: F401
-
     from pandas.core.groupby.groupby import ResamplerGroupBy  # noqa: F401
 
 DR = date_range("1999-1-1", periods=365, freq="D")
@@ -329,15 +327,15 @@ def test_series_groupby_resample() -> None:
 
     # aggregate
     check(
-        assert_type(GB_S.resample("ME").aggregate(np.sum), "Series[Any]"),
+        assert_type(GB_S.resample("ME").aggregate(np.sum), Series),
         Series,
     )
     check(
-        assert_type(GB_S.resample("ME").agg(np.sum), "Series[Any]"),
+        assert_type(GB_S.resample("ME").agg(np.sum), Series),
         Series,
     )
     check(
-        assert_type(GB_S.resample("ME").apply(np.sum), "Series[Any]"),
+        assert_type(GB_S.resample("ME").apply(np.sum), Series),
         Series,
     )
     check(
@@ -365,7 +363,7 @@ def test_series_groupby_resample() -> None:
     def f(val: Series) -> float:
         return val.mean()
 
-    check(assert_type(GB_S.resample("ME").aggregate(f), "Series[Any]"), Series)
+    check(assert_type(GB_S.resample("ME").aggregate(f), Series), Series)
 
     # asfreq
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
@@ -398,7 +396,7 @@ def test_series_groupby_resample() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
-    check(assert_type(GB_S.resample("ME").aggregate(np.sum), "Series[Any]"), Series)
+    check(assert_type(GB_S.resample("ME").aggregate(np.sum), Series), Series)
     check(
         assert_type(GB_S.resample("ME").aggregate([np.mean]), DataFrame),
         DataFrame,
@@ -417,13 +415,13 @@ def test_series_groupby_resample() -> None:
         ),
         DataFrame,
     )
-    check(assert_type(GB_S.resample("ME").aggregate("sum"), "Series[Any]"), Series)
+    check(assert_type(GB_S.resample("ME").aggregate("sum"), Series), Series)
     check(
-        assert_type(GB_S.resample("ME").aggregate(s2series), "Series[Any]"),
+        assert_type(GB_S.resample("ME").aggregate(s2series), Series),
         Series,
     )
     check(
-        assert_type(GB_S.resample("ME").aggregate(s2scalar), "Series[Any]"),
+        assert_type(GB_S.resample("ME").aggregate(s2scalar), Series),
         Series,
     )
 
@@ -887,7 +885,11 @@ def test_engine() -> None:
             engine_kwargs="not valid",  # pyright: ignore
             other_kwarg="",
         )
-    assert_type(GB_DF.aggregate("size", engine="cython", engine_kwargs={}), DataFrame)
+
+    check(
+        assert_type(GB_DF.aggregate("size", engine="cython", engine_kwargs={}), Series),
+        Series,
+    )
 
 
 def test_groupby_getitem() -> None:
