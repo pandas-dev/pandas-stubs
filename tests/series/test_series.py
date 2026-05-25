@@ -1561,9 +1561,23 @@ def test_types_ffill() -> None:
     )
 
 
-def test_types_as_type() -> None:
+def test_types_astype() -> None:
     s1 = pd.Series([1, 2, 8, 9])
     check(assert_type(s1.astype("int32"), "pd.Series[int]"), pd.Series, np.int32)
+
+    df = pd.DataFrame({"A": s1})
+    s2 = df["A"]
+    check(
+        assert_type(s2.astype("category"), "pd.Series[pd.CategoricalDtype[Any]]"),
+        pd.Series,
+        np.int64,
+    )
+
+    s3 = pd.Series(pd.Series([1, 2, 3, 1, 3]), dtype="category")
+    check(assert_type(s3, "pd.Series[pd.CategoricalDtype[int]]"), pd.Series, np.int64)
+
+    s4 = pd.Series(pd.Index([1, 2, 3, 1, 3]), dtype="category")
+    check(assert_type(s4, "pd.Series[pd.CategoricalDtype[int]]"), pd.Series, np.int64)
 
 
 def test_types_dot() -> None:

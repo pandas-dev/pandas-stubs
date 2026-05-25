@@ -42,7 +42,7 @@ from pandas.core.dtypes.dtypes import (
     CategoricalValueT,
 )
 
-class Categorical(NDArrayBackedExtensionArray):
+class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     __array_priority__: int = ...
     def __init__(
         self,
@@ -57,7 +57,7 @@ class Categorical(NDArrayBackedExtensionArray):
     @property
     def ordered(self) -> Ordered: ...
     @property
-    def dtype(self) -> CategoricalDtype[object]: ...
+    def dtype(self) -> CategoricalDtype[CategoricalValueT]: ...
     def tolist(self) -> list[Scalar]: ...
     @classmethod
     def from_codes(

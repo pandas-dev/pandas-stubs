@@ -48,7 +48,10 @@ from pandas._typing import (
     np_1darray_object,
 )
 
-from pandas.core.dtypes.dtypes import CategoricalDtype
+from pandas.core.dtypes.dtypes import (
+    CategoricalDtype,
+    CategoricalValueT,
+)
 
 class Properties(PandasDelegate, NoNewAttributesMixin): ...
 
@@ -461,8 +464,10 @@ class ArrayDescriptor:
     ) -> ExtensionArray: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[CategoricalDtype[Any]], owner: type[IndexOpsMixin]
-    ) -> Categorical: ...
+        self,
+        instance: IndexOpsMixin[CategoricalDtype[CategoricalValueT]],
+        owner: type[IndexOpsMixin],
+    ) -> Categorical[CategoricalValueT]: ...
     @overload
     def __get__(
         self, instance: IndexOpsMixin[Interval], owner: type[IndexOpsMixin]

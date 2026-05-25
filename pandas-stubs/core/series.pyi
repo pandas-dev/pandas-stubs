@@ -373,35 +373,19 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool | None = None,
     ) -> Series[list[_str]]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: Sequence[_str],
+        data: (
+            Sequence[CategoricalValueT1]
+            | Index[CategoricalValueT1]
+            | Series[CategoricalValueT1]
+        ),
         index: AxesData | None = None,
         *,
         dtype: CategoryDtypeArg,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[CategoricalDtype[_str]]: ...
-    @overload
-    def __new__(  # pyright: ignore[reportOverlappingOverload]
-        cls,
-        data: Sequence[int | np.integer],
-        index: AxesData | None = None,
-        *,
-        dtype: CategoryDtypeArg,
-        name: Hashable = None,
-        copy: bool | None = None,
-    ) -> Series[CategoricalDtype[int]]: ...
-    @overload
-    def __new__(
-        cls,
-        data: Sequence[float | np.floating],
-        index: AxesData | None = None,
-        *,
-        dtype: CategoryDtypeArg,
-        name: Hashable = None,
-        copy: bool | None = None,
-    ) -> Series[CategoricalDtype[float]]: ...
+    ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
@@ -1551,6 +1535,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def astype(
         self: Series[CategoricalValueT1],
+        dtype: CategoryDtypeArg,
+        errors: IgnoreRaise = ...,
+    ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
+    @overload
+    def astype(
+        self: Series[Any],
         dtype: CategoryDtypeArg,
         errors: IgnoreRaise = ...,
     ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
