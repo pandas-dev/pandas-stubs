@@ -1566,9 +1566,12 @@ def test_index_where() -> None:
     idx = pd.Index(range(48))
     mask = np.ones(48, dtype=bool)
 
-    if PD_LTE_31:
-        val_idx = idx.where(mask, idx)
-        check(assert_type(val_idx, "pd.Index[int]"), pd.Index, int)
+    val_idx = idx.where(mask, idx)
+    check(
+        assert_type(val_idx, "pd.Index[int]"),
+        pd.Index,
+        int if PD_LTE_31 else np.integer,
+    )
 
     val_sr = idx.where(mask, idx.to_series())
 
