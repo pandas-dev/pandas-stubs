@@ -65,10 +65,10 @@ def test_construction_sequence_pandas(
     missing_values: tuple[Any, ...],
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
-    check(assert_type(pd.array(typ([*data, *missing_values])), DatetimeArray), DatetimeArray)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
-    check(assert_type(pd.array(typ([datetime(2077, 1, 1), *data, *missing_values])), DatetimeArray), DatetimeArray)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+    check(pd.array(typ([*data, *missing_values])), DatetimeArray)
+    check(pd.array(typ([datetime(2077, 1, 1), *data, *missing_values])), DatetimeArray)
     check(
-        assert_type(pd.array(typ([pd.Timestamp(1988, 1, 1), *data, *missing_values])), DatetimeArray), DatetimeArray  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+        pd.array(typ([pd.Timestamp(1988, 1, 1), *data, *missing_values])), DatetimeArray
     )
 
     if TYPE_CHECKING:

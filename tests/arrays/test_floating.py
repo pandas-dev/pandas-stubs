@@ -66,7 +66,8 @@ def test_construction_sequence(
 def test_construction_sequence_nan(
     data: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
-    check(assert_type(pd.array(typ(data)), FloatingArray), FloatingArray)  # type: ignore[assert-type]
+    # can't use assert_type as mypy sees the result as Any while pyright matches to FloatingArray
+    check(pd.array(typ(data)), FloatingArray)
 
     if TYPE_CHECKING:
         assert_type(pd.array([]), FloatingArray)
