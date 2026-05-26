@@ -66,7 +66,8 @@ def test_construction_sequence(
 def test_construction_sequence_nan(
     data: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
-    check(pd.array(typ(data)), FloatingArray)
+    # can't use assert_type as mypy sees the result as Any while pyright matches to FloatingArray
+    check(assert_type(pd.array(typ(data)), FloatingArray), FloatingArray)  # type: ignore[assert-type]
 
     if TYPE_CHECKING:
         assert_type(pd.array([]), FloatingArray)
@@ -96,7 +97,11 @@ def test_construction_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> N
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.array([1.0], dtype), FloatingArray)
     else:
-        check(pd.array([1.0], dtype), FloatingArray, target_dtype)
+        check(
+            assert_type(pd.array([1.0], dtype), FloatingArray),
+            FloatingArray,
+            target_dtype,
+        )
 
     if TYPE_CHECKING:
         # pandas Float32

@@ -4206,6 +4206,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def item(self) -> S1: ...
     def kurt(
         self,
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         numeric_only: _bool = False,
@@ -4232,8 +4233,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
-    def max(
+    def max(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-override]
         self,
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = None,
@@ -4243,6 +4245,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def mean(
         self: Series[Never],
+        *,
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,
         level: None = None,
@@ -4252,6 +4255,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def mean(
         self: Series[Timestamp],
+        *,
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,
         level: None = None,
@@ -4261,6 +4265,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def mean(
         self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = None,
@@ -4270,6 +4275,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def median(
         self: Series[Never],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = None,
@@ -4279,6 +4285,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def median(
         self: Series[complex],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = None,
@@ -4288,6 +4295,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def median(
         self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = None,
@@ -4297,14 +4305,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def median(
         self: Series[Timestamp],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = None,
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Timestamp: ...
-    def min(
+    def min(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-override]
         self,
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = None,
@@ -4336,6 +4346,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def prod(
         self,
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -4399,6 +4410,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def sem(
         self,
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
@@ -4407,6 +4419,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Scalar: ...
     def skew(
         self,
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
@@ -4415,6 +4428,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def std(
         self: Series[Never],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
@@ -4424,6 +4438,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def std(
         self: Series[complex],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         level: None = None,
@@ -4434,6 +4449,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def std(
         self: Series[Timestamp],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         level: None = None,
@@ -4444,6 +4460,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def std(
         self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
@@ -4452,6 +4469,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> S2: ...
     def sum(
         self: SupportsGetItem[Scalar, _SupportsAdd[_T]],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
         numeric_only: _bool = ...,
@@ -4623,6 +4641,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def var(
         self: Series[Never],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
@@ -4632,6 +4651,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def var(
         self: Series[Timedelta] | Series[Timestamp],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
@@ -4641,6 +4661,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def var(
         self: Series[complex],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
@@ -4650,6 +4671,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def var(
         self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,

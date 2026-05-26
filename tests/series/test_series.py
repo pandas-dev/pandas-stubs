@@ -168,11 +168,17 @@ def test_types_any() -> None:
     check(assert_type(pd.Series([False, False]).any(bool_only=False), np.bool), np.bool)
     check(assert_type(pd.Series([np.nan]).any(skipna=False), np.bool), np.bool)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.Series([False, True]).any(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+
 
 def test_types_all() -> None:
     check(assert_type(pd.Series([False, False]).all(), np.bool), np.bool)
     check(assert_type(pd.Series([False, False]).all(bool_only=False), np.bool), np.bool)
     check(assert_type(pd.Series([np.nan]).all(skipna=False), np.bool), np.bool)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.Series([False, True]).all(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
 def test_types_csv(tmp_path: Path) -> None:
@@ -476,6 +482,9 @@ def test_types_median() -> None:
     check(assert_type(s.median(skipna=False), float), float)
     check(assert_type(s.median(numeric_only=False), float), float)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.median(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+
 
 def test_types_sum() -> None:
     s = pd.Series([1, 2, 3, np.nan])
@@ -534,13 +543,23 @@ def test_types_min() -> None:
     )
     check(assert_type(s.min(skipna=False), float), np.floating)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.min(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+
 
 def test_types_max() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    s.max()
-    s.max(axis=0)
-    s.groupby(level=0).max()
-    s.max(skipna=False)
+    check(assert_type(s.max(), float), np.floating)
+    check(assert_type(s.max(axis=0), float), np.floating)
+    check(
+        assert_type(s.groupby(level=0).max(), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(assert_type(s.max(skipna=False), float), np.floating)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.max(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
 def test_types_groupby_level() -> None:
@@ -942,6 +961,15 @@ def test_types_groupby_methods() -> None:
         pd.Series,
         np.integer,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.sum(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+        s.prod(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+        s.std(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+        s.var(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+        s.sem(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+        s.skew(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+        s.kurt(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
 def test_groupby_result() -> None:

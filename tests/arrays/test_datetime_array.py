@@ -146,17 +146,27 @@ def test_construction_dtype(
     target_dtype: type,
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), DatetimeArray, dtype_notna)
     check(
-        pd.array([np.datetime64("1748-12-24"), *data], dtype),
+        assert_type(pd.array([*data], dtype), DatetimeArray), DatetimeArray, dtype_notna
+    )
+    check(
+        assert_type(
+            pd.array([np.datetime64("1748-12-24"), *data], dtype), DatetimeArray
+        ),
         DatetimeArray,
         dtype_notna,
     )
 
     dtype_na = target_dtype if data else NaTType
-    check(pd.array([*data, np.nan], dtype), DatetimeArray, dtype_na)
     check(
-        pd.array([np.datetime64("2048-12-24"), *data, np.nan], dtype),
+        assert_type(pd.array([*data, np.nan], dtype), DatetimeArray),
+        DatetimeArray,
+        dtype_na,
+    )
+    check(
+        assert_type(
+            pd.array([np.datetime64("2048-12-24"), *data, np.nan], dtype), DatetimeArray
+        ),
         DatetimeArray,
         target_dtype,
     )
