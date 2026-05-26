@@ -2643,7 +2643,7 @@ def test_types_rename_inplace() -> None:
     df = pd.DataFrame(columns=["a"])
 
     with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyboard in DataFrame", lower="3.0.99"
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
     ):
         check(
             assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None)
