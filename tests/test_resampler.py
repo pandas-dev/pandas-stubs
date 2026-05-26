@@ -5,7 +5,6 @@ from collections.abc import (
     Iterator,
 )
 from typing import (
-    TYPE_CHECKING,
     Never,
     assert_type,
 )
@@ -24,9 +23,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-
-if TYPE_CHECKING:
-    from typing import Any  # noqa: F401
 
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
@@ -303,9 +299,9 @@ def test_fillna_series() -> None:
 
 
 def test_aggregate_series() -> None:
-    check(assert_type(S.resample("ME").aggregate(np.sum), "Series[Any]"), Series)
-    check(assert_type(S.resample("ME").agg(np.sum), "Series[Any]"), Series)
-    check(assert_type(S.resample("ME").apply(np.sum), "Series[Any]"), Series)
+    check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
+    check(assert_type(S.resample("ME").agg(np.sum), Series), Series)
+    check(assert_type(S.resample("ME").apply(np.sum), Series), Series)
     check(
         assert_type(S.resample("ME").aggregate([np.sum, np.mean]), DataFrame),
         DataFrame,
@@ -325,7 +321,7 @@ def test_aggregate_series() -> None:
     def f(val: Series) -> float:
         return val.mean()
 
-    check(assert_type(S.resample("ME").aggregate(f), "Series[Any]"), Series)
+    check(assert_type(S.resample("ME").aggregate(f), Series), Series)
 
 
 def test_asfreq_series() -> None:
@@ -371,7 +367,7 @@ def test_aggregate_series_combinations() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
-    check(assert_type(S.resample("ME").aggregate(np.sum), "Series[Any]"), Series)
+    check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
     check(
         assert_type(S.resample("ME").aggregate([np.mean]), DataFrame),
         DataFrame,
@@ -390,9 +386,9 @@ def test_aggregate_series_combinations() -> None:
         ),
         DataFrame,
     )
-    check(assert_type(S.resample("ME").aggregate("sum"), "Series[Any]"), Series)
-    check(assert_type(S.resample("ME").aggregate(s2series), "Series[Any]"), Series)
-    check(assert_type(S.resample("ME").aggregate(s2scalar), "Series[Any]"), Series)
+    check(assert_type(S.resample("ME").aggregate("sum"), Series), Series)
+    check(assert_type(S.resample("ME").aggregate(s2series), Series), Series)
+    check(assert_type(S.resample("ME").aggregate(s2scalar), Series), Series)
 
 
 def test_aggregate_frame_combinations() -> None:
