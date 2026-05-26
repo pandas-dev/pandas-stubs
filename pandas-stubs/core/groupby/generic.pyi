@@ -266,7 +266,14 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload
-    def aggregate(self, func: Literal["size"]) -> Series: ...  # type: ignore[overload-overlap]
+    def aggregate(  # pyright: ignore[reportOverlappingOverload]
+        self,
+        func: Literal["size"],
+        *args: Any,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        **kwargs: Any,
+    ) -> Series: ...
     @overload
     def aggregate(
         self,

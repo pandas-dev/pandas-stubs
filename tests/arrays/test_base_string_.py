@@ -81,8 +81,16 @@ def test_construction_dtype(
     is_builtin_str = dtype in PYTHON_STRING_ARGS
 
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), BaseStringArray, dtype_notna)
-    check(pd.array([*data, *data], dtype), BaseStringArray, dtype_notna)
+    check(
+        assert_type(pd.array([*data], dtype), BaseStringArray),
+        BaseStringArray,
+        dtype_notna,
+    )
+    check(
+        assert_type(pd.array([*data, *data], dtype), BaseStringArray),
+        BaseStringArray,
+        dtype_notna,
+    )
 
     dtype_na = (
         target_dtype
@@ -90,8 +98,16 @@ def test_construction_dtype(
         # pandas-dev/pandas#63567 Pandas 3.0 gives StringDtype(na_value=nan) if dtype is str or "str"
         else float if is_builtin_str else NAType
     )
-    check(pd.array([*data, np.nan], dtype), BaseStringArray, dtype_na)
-    check(pd.array([*data, *data, np.nan], dtype), BaseStringArray, dtype_na)
+    check(
+        assert_type(pd.array([*data, np.nan], dtype), BaseStringArray),
+        BaseStringArray,
+        dtype_na,
+    )
+    check(
+        assert_type(pd.array([*data, *data, np.nan], dtype), BaseStringArray),
+        BaseStringArray,
+        dtype_na,
+    )
 
     if TYPE_CHECKING:
         assert_type(pd.array([], str), BaseStringArray)

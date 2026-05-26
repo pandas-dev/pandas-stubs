@@ -2003,13 +2003,13 @@ def test_types_plot() -> None:
 
 def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    df.expanding()
+    check(assert_type(df.expanding(), "Expanding[pd.DataFrame]"), Expanding)
     if TYPE_CHECKING_INVALID_USAGE:
         df.expanding(axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
         df.expanding(axis=1, center=True)  # type: ignore[arg-type, call-arg] # pyright: ignore[reportCallIssue]
 
-    df.rolling(2)
+    check(assert_type(df.rolling(2), "Rolling[pd.DataFrame]"), Rolling)
 
     check(
         assert_type(df.rolling(2).agg("max"), pd.DataFrame),
@@ -3455,8 +3455,8 @@ def test_where(
 ) -> None:
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
 
-    check(df.where(cond), pd.DataFrame)
-    check(df.where(cond, inplace=True), pd.DataFrame)
+    check(assert_type(df.where(cond), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.where(cond, inplace=True), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING:
         assert_type(df.where(where_cond1), pd.DataFrame)

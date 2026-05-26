@@ -30,12 +30,24 @@ def test_construction_dtype(
     data: tuple[str | np.str_, ...], dtype: PandasStrDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), StringArray, dtype_notna)
-    check(pd.array([*data, *data], dtype), StringArray, dtype_notna)
+    check(assert_type(pd.array([*data], dtype), StringArray), StringArray, dtype_notna)
+    check(
+        assert_type(pd.array([*data, *data], dtype), StringArray),
+        StringArray,
+        dtype_notna,
+    )
 
     dtype_na = target_dtype if data else NAType
-    check(pd.array([*data, np.nan], dtype), StringArray, dtype_na)
-    check(pd.array([*data, *data, np.nan], dtype), StringArray, dtype_na)
+    check(
+        assert_type(pd.array([*data, np.nan], dtype), StringArray),
+        StringArray,
+        dtype_na,
+    )
+    check(
+        assert_type(pd.array([*data, *data, np.nan], dtype), StringArray),
+        StringArray,
+        dtype_na,
+    )
 
     if TYPE_CHECKING:
         assert_type(pd.array([], pd.StringDtype("python")), StringArray)
@@ -79,7 +91,7 @@ def test_construction_dtype(
     "values", [np.array(["1"], np.object_), pd.array(["1"], "string[python]")]
 )
 def test_constructor(values: np_ndarray_object | StringArray) -> None:
-    check(StringArray(values), StringArray)
+    check(assert_type(StringArray(values), StringArray), StringArray)
 
     if TYPE_CHECKING:
         assert_type(StringArray(np.array(["1"], np.object_)), StringArray)

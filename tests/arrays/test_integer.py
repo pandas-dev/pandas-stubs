@@ -81,9 +81,17 @@ def test_construction_array_like() -> None:
 def test_construction_dtype_signed(
     dtype: PandasIntDtypeArg, target_dtype: type
 ) -> None:
-    check(pd.array([np.nan], dtype), IntegerArray, NAType)
-    check(pd.array([-1, 2, np.nan], dtype), IntegerArray, target_dtype)
-    check(pd.array([1, -np.int64(2), np.nan], dtype), IntegerArray, target_dtype)
+    check(assert_type(pd.array([np.nan], dtype), IntegerArray), IntegerArray, NAType)
+    check(
+        assert_type(pd.array([-1, 2, np.nan], dtype), IntegerArray),
+        IntegerArray,
+        target_dtype,
+    )
+    check(
+        assert_type(pd.array([1, -np.int64(2), np.nan], dtype), IntegerArray),
+        IntegerArray,
+        target_dtype,
+    )
 
     if TYPE_CHECKING:
         # pandas Int8
@@ -104,9 +112,15 @@ def test_construction_dtype_signed(
 def test_construction_dtype_unsigned(
     dtype: PandasUIntDtypeArg, target_dtype: type
 ) -> None:
-    check(pd.array([np.nan], dtype), IntegerArray, NAType)
-    check(pd.array([1, 2], dtype), IntegerArray, target_dtype)
-    check(pd.array([1, np.uint64(2), np.nan], dtype), IntegerArray, target_dtype)
+    check(assert_type(pd.array([np.nan], dtype), IntegerArray), IntegerArray, NAType)
+    check(
+        assert_type(pd.array([1, 2], dtype), IntegerArray), IntegerArray, target_dtype
+    )
+    check(
+        assert_type(pd.array([1, np.uint64(2), np.nan], dtype), IntegerArray),
+        IntegerArray,
+        target_dtype,
+    )
 
     if TYPE_CHECKING:
         # pandas UInt8
