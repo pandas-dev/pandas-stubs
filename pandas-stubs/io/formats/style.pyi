@@ -57,6 +57,11 @@ class _SeriesFunc(Protocol):
         self, series: Series, /, *args: Any, **kwargs: Any
     ) -> list[Any] | Series: ...
 
+class _SeriesStrFunc(Protocol):
+    def __call__(
+        self, series: Series[str], /, *args: Any, **kwargs: Any
+    ) -> list[str] | Series[str]: ...
+
 class _DataFrameFunc(Protocol):
     def __call__(
         self, series: DataFrame, /, *args: Any, **kwargs: Any
@@ -277,14 +282,17 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def apply_index(
         self,
-        func: Callable[[Series], list[str] | np_ndarray_str | Series[str]],
+        func: (
+            _SeriesStrFunc
+            | Callable[[Series], list[str] | np_ndarray_str | Series[str]]
+        ),
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
     def map_index(
         self,
-        func: Callable[[Scalar], str | None],
+        func: _MapCallable | Callable[[Scalar], str | None],
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,

@@ -76,12 +76,28 @@ def test_apply_index() -> None:
 
     check(assert_type(DF.style.apply_index(f1), Styler), Styler)
 
+    # GH 1723
+    def highlight_odd(index: pd.Series, color: str) -> list[str]:
+        return [f"color: {color}" if x % 2 else "" for x in index]
+
+    check(
+        assert_type(
+            DF.style.apply_index(highlight_odd, axis=0, color="purple"), Styler
+        ),
+        Styler,
+    )
+
 
 def test_map_index() -> None:
     def f(s: Scalar) -> str | None:
         return "background-color: yellow;" if s == "B" else None
 
     check(assert_type(DF.style.map_index(f), Styler), Styler)
+
+    def f1(s: Scalar, color: str) -> str | None:
+        return f"background-color: {color};" if s == "b" else None
+
+    check(assert_type(DF.style.map_index(f1, color="pink", axis=0), Styler), Styler)
 
 
 def test_background_gradient() -> None:
