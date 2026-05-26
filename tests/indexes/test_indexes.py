@@ -210,35 +210,30 @@ def test_str_split() -> None:
     # GH 194
     ind = pd.Index(["a-b", "c-d"])
 
-    if PD_LTE_31:
-        # TODO: pandas-dev/pandas#64798 may end up working in 3.1.0, issue in discussion
-        check(assert_type(ind.str.split("-"), "pd.Index[list[str]]"), pd.Index, list)
+    check(assert_type(ind.str.split("-"), "pd.Index[list[str]]"), pd.Index, list)
 
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
 
-    if PD_LTE_31:
-        check(
-            assert_type(ind.str.split("-", expand=False), "pd.Index[list[str]]"),
-            pd.Index,
-            list,
-        )
+    check(
+        assert_type(ind.str.split("-", expand=False), "pd.Index[list[str]]"),
+        pd.Index,
+        list,
+    )
 
 
 def test_str_rsplit() -> None:
     # GH 1074
     ind = pd.Index(["a-b", "c-d"])
 
-    if PD_LTE_31:
-        check(assert_type(ind.str.rsplit("-"), "pd.Index[list[str]]"), pd.Index, list)
+    check(assert_type(ind.str.rsplit("-"), "pd.Index[list[str]]"), pd.Index, list)
 
     check(assert_type(ind.str.rsplit("-", expand=True), pd.MultiIndex), pd.MultiIndex)
 
-    if PD_LTE_31:
-        check(
-            assert_type(ind.str.rsplit("-", expand=False), "pd.Index[list[str]]"),
-            pd.Index,
-            list,
-        )
+    check(
+        assert_type(ind.str.rsplit("-", expand=False), "pd.Index[list[str]]"),
+        pd.Index,
+        list,
+    )
 
 
 def test_index_rename() -> None:
@@ -1575,10 +1570,9 @@ def test_index_where() -> None:
 
     val_sr = idx.where(mask, idx.to_series())
 
-    if PD_LTE_31:
-        check(assert_type(val_sr, "pd.Index[int]"), pd.Index, int)
-    else:
-        check(assert_type(val_sr, "pd.Index[int]"), pd.Index, np.int64)
+    check(
+        assert_type(val_sr, "pd.Index[int]"), pd.Index, int if PD_LTE_31 else np.int64
+    )
 
 
 def test_datetimeindex_where() -> None:
@@ -1603,10 +1597,7 @@ def test_datetimeindex_where() -> None:
     check(assert_type(val_scalar, pd.Index), pd.Index)
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
-    if PD_LTE_31:
-        check(assert_type(val_range, pd.Index), pd.RangeIndex)
-    else:
-        check(assert_type(val_range, pd.Index), pd.Index)
+    check(assert_type(val_range, pd.Index), pd.RangeIndex if PD_LTE_31 else pd.Index)
 
 
 def test_index_set_names() -> None:

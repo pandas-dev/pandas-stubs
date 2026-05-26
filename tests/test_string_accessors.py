@@ -8,7 +8,6 @@ import pandas as pd
 import pytest
 
 from tests import (
-    PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -236,14 +235,13 @@ def test_string_accessors_string_index() -> None:
     _check(assert_type(idx.str.center(10), "pd.Index[str]"))
     _check(assert_type(idx.str.get(2), "pd.Index[str]"))
 
-    if PD_LTE_31:
-        idx_dict = pd.Index(
-            [
-                {"name": "Hello", "value": "World"},
-                {"name": "Goodbye", "value": "Planet"},
-            ]
-        )
-        _check(assert_type(idx_dict.str.get("name"), "pd.Index[str]"))
+    idx_dict = pd.Index(
+        [
+            {"name": "Hello", "value": "World"},
+            {"name": "Goodbye", "value": "Planet"},
+        ]
+    )
+    _check(assert_type(idx_dict.str.get("name"), "pd.Index[str]"))
 
     _check(assert_type(idx.str.ljust(80), "pd.Index[str]"))
     _check(assert_type(idx.str.lower(), "pd.Index[str]"))
@@ -284,12 +282,8 @@ def test_string_accessors_string_index() -> None:
         )
     )
 
-    if PD_LTE_31:
-        # TODO: pandas-dev/pandas#64798 may end up working in 3.1.0, issue in discussion
-        idx_list = pd.Index(
-            [["apple", "banana"], ["cherry", "date"], ["one", "eggplant"]]
-        )
-        _check(assert_type(idx_list.str.join("-"), "pd.Index[str]"))
+    idx_list = pd.Index([["apple", "banana"], ["cherry", "date"], ["one", "eggplant"]])
+    _check(assert_type(idx_list.str.join("-"), "pd.Index[str]"))
 
     # wrap doesn't accept positional arguments other than width
     if TYPE_CHECKING_INVALID_USAGE:
@@ -330,15 +324,14 @@ def test_string_accessors_list_index() -> None:
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=pd.Index, dtype=list)
 
-    if PD_LTE_31:
-        _check(assert_type(idx.str.findall("pp"), "pd.Index[list[str]]"))
-        _check(assert_type(idx.str.findall(re.compile(r"pp")), "pd.Index[list[str]]"))
-        _check(assert_type(idx.str.split("a"), "pd.Index[list[str]]"))
-        _check(assert_type(idx.str.split(re.compile(r"a")), "pd.Index[list[str]]"))
-        # GH 194
-        _check(assert_type(idx.str.split("a", expand=False), "pd.Index[list[str]]"))
-        _check(assert_type(idx.str.rsplit("a"), "pd.Index[list[str]]"))
-        _check(assert_type(idx.str.rsplit("a", expand=False), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.findall("pp"), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.findall(re.compile(r"pp")), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.split("a"), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.split(re.compile(r"a")), "pd.Index[list[str]]"))
+    # GH 194
+    _check(assert_type(idx.str.split("a", expand=False), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.rsplit("a"), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.rsplit("a", expand=False), "pd.Index[list[str]]"))
 
     # rsplit doesn't accept compiled pattern
     # it doesn't raise at runtime but produces a nan
