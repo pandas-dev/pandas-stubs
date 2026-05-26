@@ -47,9 +47,12 @@ from pandas.core.window.rolling import Rolling
 import pytest
 import xarray as xr
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -2638,7 +2641,14 @@ def test_types_rename() -> None:
 def test_types_rename_inplace() -> None:
     """Test DataFrame.rename with inplace argument."""
     df = pd.DataFrame(columns=["a"])
-    check(assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None))
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(
+            assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None)
+        )
+
     check(assert_type(df.rename(columns={"a": "b"}), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:

@@ -16,7 +16,10 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas._libs import NaTType
 from pandas._libs.tslibs.timedeltas import Timedelta
 
-from tests import check
+from tests import (
+    PD_LTE_31,
+    check,
+)
 from tests._typing import (
     np_1darray,
     np_1darray_float,
@@ -331,8 +334,9 @@ def test_timedelta_array_freq() -> None:
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
     arr = pd.array(idx)
 
-    result = arr.freq
-    check(assert_type(result, pd.DateOffset | None), pd.DateOffset)
+    if PD_LTE_31:
+        result = arr.freq
+        check(assert_type(result, pd.DateOffset | None), pd.DateOffset)
 
 
 def test_timedelta_array_freqstr() -> None:
@@ -340,8 +344,9 @@ def test_timedelta_array_freqstr() -> None:
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
     arr = pd.array(idx)
 
-    result = arr.freqstr
-    check(assert_type(result, str | None), str)
+    if PD_LTE_31:
+        result = arr.freqstr
+        check(assert_type(result, str | None), str)
 
 
 def test_timedelta_array_min() -> None:

@@ -234,10 +234,15 @@ def test_string_accessors_string_index() -> None:
     check(assert_type(idx.str.cat(sep="X"), str), str)
     _check(assert_type(idx.str.center(10), "pd.Index[str]"))
     _check(assert_type(idx.str.get(2), "pd.Index[str]"))
+
     idx_dict = pd.Index(
-        [{"name": "Hello", "value": "World"}, {"name": "Goodbye", "value": "Planet"}]
+        [
+            {"name": "Hello", "value": "World"},
+            {"name": "Goodbye", "value": "Planet"},
+        ]
     )
     _check(assert_type(idx_dict.str.get("name"), "pd.Index[str]"))
+
     _check(assert_type(idx.str.ljust(80), "pd.Index[str]"))
     _check(assert_type(idx.str.lower(), "pd.Index[str]"))
     _check(assert_type(idx.str.lstrip("a"), "pd.Index[str]"))
@@ -276,6 +281,7 @@ def test_string_accessors_string_index() -> None:
             idx_bytes.str.decode("utf-8", dtype=pd.StringDtype()), "pd.Index[str]"
         )
     )
+
     idx_list = pd.Index([["apple", "banana"], ["cherry", "date"], ["one", "eggplant"]])
     _check(assert_type(idx_list.str.join("-"), "pd.Index[str]"))
 
@@ -317,6 +323,7 @@ def test_string_accessors_list_series() -> None:
 def test_string_accessors_list_index() -> None:
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=pd.Index, dtype=list)
+
     _check(assert_type(idx.str.findall("pp"), "pd.Index[list[str]]"))
     _check(assert_type(idx.str.findall(re.compile(r"pp")), "pd.Index[list[str]]"))
     _check(assert_type(idx.str.split("a"), "pd.Index[list[str]]"))

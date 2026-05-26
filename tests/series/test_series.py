@@ -50,6 +50,7 @@ import pytest
 import xarray as xr
 
 from pandas._libs.tslibs.offsets import Day
+from pandas.errors import Pandas4Warning
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -1372,8 +1373,20 @@ def test_types_transform() -> None:
 def test_types_describe() -> None:
     s = pd.Series([1, 2, 3, np.datetime64("2000-01-01")])
     s.describe()
-    s.describe(percentiles=[0.5], include="all")
-    s.describe(exclude=np.number)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        match="arguments are deprecated for Series.describe",
+        lower="3.0.99",
+    ):
+        s.describe(percentiles=[0.5], include="all")
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        match="arguments are deprecated for Series.describe",
+        lower="3.0.99",
+    ):
+        s.describe(exclude=np.number)
 
 
 def test_types_resample() -> None:
