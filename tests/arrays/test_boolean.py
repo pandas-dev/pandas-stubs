@@ -71,14 +71,36 @@ def test_construction_dtype(
     data: tuple[bool | np.bool, ...], dtype: PandasBooleanDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), BooleanArray, dtype_notna)
-    check(pd.array([True, *data], dtype), BooleanArray, dtype_notna)
-    check(pd.array([np.bool(True), *data], dtype), BooleanArray, dtype_notna)
+    check(
+        assert_type(pd.array([*data], dtype), BooleanArray), BooleanArray, dtype_notna
+    )
+    check(
+        assert_type(pd.array([True, *data], dtype), BooleanArray),
+        BooleanArray,
+        dtype_notna,
+    )
+    check(
+        assert_type(pd.array([np.bool(True), *data], dtype), BooleanArray),
+        BooleanArray,
+        dtype_notna,
+    )
 
     dtype_na = target_dtype if data else NAType
-    check(pd.array([*data, np.nan], dtype), BooleanArray, dtype_na)
-    check(pd.array([True, *data, np.nan], dtype), BooleanArray, target_dtype)
-    check(pd.array([np.bool(True), *data, np.nan], dtype), BooleanArray, target_dtype)
+    check(
+        assert_type(pd.array([*data, np.nan], dtype), BooleanArray),
+        BooleanArray,
+        dtype_na,
+    )
+    check(
+        assert_type(pd.array([True, *data, np.nan], dtype), BooleanArray),
+        BooleanArray,
+        target_dtype,
+    )
+    check(
+        assert_type(pd.array([np.bool(True), *data, np.nan], dtype), BooleanArray),
+        BooleanArray,
+        target_dtype,
+    )
 
     if TYPE_CHECKING:
         assert_type(pd.array([], pd.BooleanDtype()), BooleanArray)

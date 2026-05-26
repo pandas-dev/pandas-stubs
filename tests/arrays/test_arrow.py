@@ -30,8 +30,14 @@ from tests import check
     ],
 )
 def test_constructor(data: Sequence[Any]) -> None:
-    check(ArrowExtensionArray(pa.array(data)), ArrowExtensionArray)
-    check(ArrowExtensionArray(pa.chunked_array([data])), ArrowExtensionArray)
+    check(
+        assert_type(ArrowExtensionArray(pa.array(data)), ArrowExtensionArray),
+        ArrowExtensionArray,
+    )
+    check(
+        assert_type(ArrowExtensionArray(pa.chunked_array([data])), ArrowExtensionArray),
+        ArrowExtensionArray,
+    )
 
     if TYPE_CHECKING:
         assert_type(ArrowExtensionArray(pa.array([True])), ArrowExtensionArray)

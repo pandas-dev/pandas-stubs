@@ -17,7 +17,7 @@ from tests.dtypes import ASTYPE_OBJECT_ARGS
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_OBJECT_ARGS.items(), ids=repr)
 def test_astype_object(cast_arg: ObjectDtypeArg, target_type: type) -> None:
     s = pd.Series([object(), 2, 3])
-    check(s.astype(cast_arg), pd.Series, target_type)
+    check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)
 
     if TYPE_CHECKING:
         # python object

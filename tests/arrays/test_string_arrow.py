@@ -28,12 +28,28 @@ def test_construction_dtype(
     data: tuple[str | np.str_, ...], dtype: PyArrowStrDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), ArrowStringArray, dtype_notna)
-    check(pd.array([*data, *data], dtype), ArrowStringArray, dtype_notna)
+    check(
+        assert_type(pd.array([*data], dtype), ArrowStringArray),
+        ArrowStringArray,
+        dtype_notna,
+    )
+    check(
+        assert_type(pd.array([*data, *data], dtype), ArrowStringArray),
+        ArrowStringArray,
+        dtype_notna,
+    )
 
     dtype_na = target_dtype if data else NAType
-    check(pd.array([*data, np.nan], dtype), ArrowStringArray, dtype_na)
-    check(pd.array([*data, *data, np.nan], dtype), ArrowStringArray, dtype_na)
+    check(
+        assert_type(pd.array([*data, np.nan], dtype), ArrowStringArray),
+        ArrowStringArray,
+        dtype_na,
+    )
+    check(
+        assert_type(pd.array([*data, *data, np.nan], dtype), ArrowStringArray),
+        ArrowStringArray,
+        dtype_na,
+    )
 
     if TYPE_CHECKING:
         assert_type(pd.array([], pd.StringDtype("pyarrow")), ArrowStringArray)
@@ -84,7 +100,7 @@ def test_construction_dtype(
 def test_constructor(
     values: "pa.StringArray | pa.ChunkedArray[pa.StringScalar]",
 ) -> None:
-    check(ArrowStringArray(values), ArrowStringArray)
+    check(assert_type(ArrowStringArray(values), ArrowStringArray), ArrowStringArray)
 
     if TYPE_CHECKING:
         assert_type(ArrowStringArray(pa.array(["1"])), ArrowStringArray)
