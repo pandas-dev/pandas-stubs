@@ -10,6 +10,9 @@ on:
 env:
   MPLBACKEND: "Agg"
 
+permissions:
+  contents: read
+
 jobs:
   released:
     runs-on: ${{ matrix.os }}
