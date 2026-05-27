@@ -2278,7 +2278,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def prod(
         self,
         *,
-        axis: Axis | None = "columns",
+        axis: Axis | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         min_count: int = 0,
@@ -2428,7 +2428,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def sem(
         self,
         *,
-        axis: Axis | None = ...,
+        axis: Axis | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
