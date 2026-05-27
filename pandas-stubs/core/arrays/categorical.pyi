@@ -128,15 +128,26 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     @property
     def dtype(self) -> CategoricalDtype[CategoricalValueT]: ...
     def tolist(self) -> list[CategoricalValueT]: ...
+    @overload
+    @classmethod
+    def from_codes(  # pyright: ignore[reportOverlappingOverload]
+        cls,
+        codes: Series[int] | Index[int] | np_ndarray_anyint | Sequence[int],
+        categories: Index[CategoricalValueT1],
+        ordered: bool | None = ...,
+        dtype: CategoricalDtype[CategoricalValueT1] | None = ...,
+        validate: bool = True,
+    ) -> Categorical[CategoricalValueT1]: ...
+    @overload
     @classmethod
     def from_codes(
         cls,
         codes: Series[int] | Index[int] | np_ndarray_anyint | Sequence[int],
         categories: Index | None = ...,
         ordered: bool | None = ...,
-        dtype: CategoricalDtype[CategoricalValueT] | None = ...,
+        dtype: CategoricalDtype[int] | None = ...,
         validate: bool = True,
-    ) -> Categorical[CategoricalValueT]: ...
+    ) -> Categorical[int]: ...
     @property
     def codes(self) -> np_1darray[np.signedinteger]: ...
     def set_ordered(self, value: bool) -> Self: ...

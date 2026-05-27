@@ -145,7 +145,7 @@ def test_categorical_from_codes() -> None:
     codes = [0, 1, 2, 0, 1]
     categories = Index(["a", "b", "c"])
     cat = Categorical.from_codes(codes, categories)
-    check(assert_type(cat, Categorical), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical)
 
 
 def test_categorical_from_codes_ndarray() -> None:
@@ -153,7 +153,7 @@ def test_categorical_from_codes_ndarray() -> None:
     codes = np.array([0, 1, 2, 0, 1])
     categories = Index(["a", "b", "c"])
     cat = Categorical.from_codes(codes, categories)
-    check(assert_type(cat, Categorical), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical)
 
 
 def test_categorical_from_codes_series() -> None:
@@ -161,7 +161,7 @@ def test_categorical_from_codes_series() -> None:
     codes = pd.Series([0, 1, 2, 0, 1])
     categories = Index(["a", "b", "c"])
     cat = Categorical.from_codes(codes, categories)
-    check(assert_type(cat, Categorical), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical)
 
 
 def test_categorical_set_ordered() -> None:
