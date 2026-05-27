@@ -30,9 +30,6 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S})
 
 
-_AggRetType = DataFrame | Series
-
-
 def test_iter() -> None:
     assert_type(iter(DF.resample("ME")), Iterator[tuple[Hashable, DataFrame]])
     for v in DF.resample("ME"):
@@ -302,21 +299,21 @@ def test_fillna_series() -> None:
 
 
 def test_aggregate_series() -> None:
-    check(assert_type(S.resample("ME").aggregate(np.sum), _AggRetType), Series)
-    check(assert_type(S.resample("ME").agg(np.sum), _AggRetType), Series)
-    check(assert_type(S.resample("ME").apply(np.sum), _AggRetType), Series)
+    check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
+    check(assert_type(S.resample("ME").agg(np.sum), Series), Series)
+    check(assert_type(S.resample("ME").apply(np.sum), Series), Series)
     check(
-        assert_type(S.resample("ME").aggregate([np.sum, np.mean]), _AggRetType),
+        assert_type(S.resample("ME").aggregate([np.sum, np.mean]), DataFrame),
         DataFrame,
     )
     check(
-        assert_type(S.resample("ME").aggregate(["sum", np.mean]), _AggRetType),
+        assert_type(S.resample("ME").aggregate(["sum", np.mean]), DataFrame),
         DataFrame,
     )
     check(
         assert_type(
             S.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
-            _AggRetType,
+            DataFrame,
         ),
         DataFrame,
     )
@@ -324,7 +321,7 @@ def test_aggregate_series() -> None:
     def f(val: Series) -> float:
         return val.mean()
 
-    check(assert_type(S.resample("ME").aggregate(f), _AggRetType), Series)
+    check(assert_type(S.resample("ME").aggregate(f), Series), Series)
 
 
 def test_asfreq_series() -> None:
@@ -370,14 +367,28 @@ def test_aggregate_series_combinations() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
-    check(S.resample("ME").aggregate(np.sum), Series)
-    check(S.resample("ME").aggregate([np.mean]), DataFrame)
-    check(S.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-    check(S.resample("ME").aggregate({"sum": np.sum}), DataFrame)
-    check(S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
-    check(S.resample("ME").aggregate("sum"), Series)
-    check(S.resample("ME").aggregate(s2series), Series)
-    check(S.resample("ME").aggregate(s2scalar), Series)
+    check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
+    check(
+        assert_type(S.resample("ME").aggregate([np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.resample("ME").aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.resample("ME").aggregate({"sum": np.sum}), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
+    check(assert_type(S.resample("ME").aggregate("sum"), Series), Series)
+    check(assert_type(S.resample("ME").aggregate(s2series), Series), Series)
+    check(assert_type(S.resample("ME").aggregate(s2scalar), Series), Series)
 
 
 def test_aggregate_frame_combinations() -> None:
@@ -390,10 +401,14 @@ def test_aggregate_frame_combinations() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(DF.resample("ME").aggregate(np.sum), DataFrame)
-    check(DF.resample("ME").aggregate([np.mean]), DataFrame)
-    check(DF.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-    check(DF.resample("ME").aggregate({"col1": np.sum}), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(DF.resample("ME").aggregate(["sum", np.mean]), DataFrame), DataFrame
+    )
+    check(
+        assert_type(DF.resample("ME").aggregate({"col1": np.sum}), DataFrame), DataFrame
+    )
     check(
         DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}),
         DataFrame,
@@ -411,10 +426,10 @@ def test_aggregate_frame_combinations() -> None:
         DataFrame,
     )
 
-    check(DF.resample("ME").aggregate("sum"), DataFrame)
-    check(DF.resample("ME").aggregate(df2frame), DataFrame)
-    check(DF.resample("ME").aggregate(df2series), DataFrame)
-    check(DF.resample("ME").aggregate(df2scalar), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate("sum"), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate(df2frame), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate(df2series), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate(df2scalar), DataFrame), DataFrame)
 
 
 def test_getitem() -> None:

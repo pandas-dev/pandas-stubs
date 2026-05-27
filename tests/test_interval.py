@@ -80,7 +80,7 @@ def test_interval_length() -> None:
     check(assert_type(i1.left, pd.Timestamp), pd.Timestamp)
     check(assert_type(i1.right, pd.Timestamp), pd.Timestamp)
     check(assert_type(i1.mid, pd.Timestamp), pd.Timestamp)
-    i1.length.total_seconds()
+    check(assert_type(i1.length.total_seconds(), float), float)
     inres = pd.Timestamp("2001-01-02") in i1
     check(assert_type(inres, bool), bool)
     idres = i1 + pd.Timedelta(seconds=20)
