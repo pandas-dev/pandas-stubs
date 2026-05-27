@@ -9,28 +9,20 @@ from pandas import (
     Series,
 )
 
+from pandas.core.dtypes.dtypes import CategoricalValueT1
+
 _CatT = TypeVar("_CatT", bound=Categorical | CategoricalIndex | Series)
 
 @overload
 def union_categoricals(
-    to_union: list[Categorical[str]] | list[Series[str]] | list[CategoricalIndex[str]],
-    sort_categories: bool = False,
-    ignore_order: bool = False,
-) -> Categorical[str]: ...
-@overload
-def union_categoricals(
-    to_union: list[Categorical[int]] | list[Series[int]] | list[CategoricalIndex[int]],
-    sort_categories: bool = False,
-    ignore_order: bool = False,
-) -> Categorical[int]: ...
-@overload
-def union_categoricals(
     to_union: (
-        list[Categorical[float]] | list[Series[float]] | list[CategoricalIndex[float]]
+        list[Categorical[CategoricalValueT1]]
+        | list[Series[CategoricalValueT1]]
+        | list[CategoricalIndex[CategoricalValueT1]]
     ),
     sort_categories: bool = False,
     ignore_order: bool = False,
-) -> Categorical[float]: ...
+) -> Categorical[CategoricalValueT1]: ...
 @overload
 def union_categoricals(
     to_union: list[_CatT],

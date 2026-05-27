@@ -373,10 +373,45 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool | None = None,
     ) -> Series[list[_str]]: ...
     @overload
+    def __new__(  # pyright: ignore[reportOverlappingOverload]
+        cls,
+        data: Sequence[int | np.integer] | np_ndarray_anyint | Index[int] | Series[int],
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[int]]: ...
+    @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
+        data: Sequence[_str] | np_1darray_str | Index[_str] | Series[_str],
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[_str]]: ...
+    @overload
+    def __new__(
+        cls,
         data: (
-            Sequence[CategoricalValueT1]
+            Sequence[float | np.floating]
+            | np_ndarray_float
+            | Index[float]
+            | Series[float]
+        ),
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[float]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: (
+            SequenceNotStr[CategoricalValueT1]
             | Index[CategoricalValueT1]
             | Series[CategoricalValueT1]
         ),
@@ -1533,7 +1568,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         errors: IgnoreRaise = ...,
     ) -> Series[Timestamp]: ...
     @overload
-    def astype(
+    def astype(  # pyright: ignore[reportOverlappingOverload]
         self: Series[CategoricalValueT1],
         dtype: CategoryDtypeArg,
         errors: IgnoreRaise = ...,
@@ -1543,7 +1578,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Any],
         dtype: CategoryDtypeArg,
         errors: IgnoreRaise = ...,
-    ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
+    ) -> Series[CategoricalDtype]: ...
     @overload
     def astype(
         self,

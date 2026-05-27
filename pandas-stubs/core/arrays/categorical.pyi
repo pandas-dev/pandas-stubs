@@ -44,12 +44,13 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import (
     CategoricalDtype as CategoricalDtype,
     CategoricalValueT,
+    CategoricalValueT1,
 )
 
 class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     __array_priority__: int = ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
         cls,
         values: Sequence[Never],
         categories: SequenceNotStr[Hashable] | AnyArrayLike | None = None,
@@ -71,15 +72,9 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
         copy: bool = True,
     ) -> Categorical[str]: ...
     @overload
-    def __new__(  # pyright: ignore[reportOverlappingOverload]
+    def __new__(
         cls,
-        values: (
-            list[int]
-            | np_ndarray_anyint
-            | SequenceNotStr[int]
-            | Series[int]
-            | Index[int]
-        ),
+        values: Sequence[int] | np_ndarray_anyint | Series[int] | Index[int],
         categories: (
             SequenceNotStr[int] | Series[int] | Index[int] | np_ndarray_anyint | None
         ) = None,
@@ -90,13 +85,7 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     @overload
     def __new__(
         cls,
-        values: (
-            list[float]
-            | np_ndarray_float
-            | SequenceNotStr[float]
-            | Series[float]
-            | Index[float]
-        ),
+        values: Sequence[float] | np_ndarray_float | Series[float] | Index[float],
         categories: (
             SequenceNotStr[float]
             | Series[float]
@@ -111,14 +100,18 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     @overload
     def __new__(
         cls,
-        values: Categorical[CategoricalValueT],
+        values: Categorical[CategoricalValueT1],
         categories: (
-            SequenceNotStr[str] | Series[str] | Index[str] | np_1darray_str | None
+            SequenceNotStr[CategoricalValueT1]
+            | Series[CategoricalValueT1]
+            | Index[CategoricalValueT1]
+            | np_1darray_str
+            | None
         ) = None,
         ordered: bool | None = None,
         dtype: CategoricalDtype | None = None,
         copy: bool = True,
-    ) -> Categorical[CategoricalValueT]: ...
+    ) -> Categorical[CategoricalValueT1]: ...
     @overload
     def __new__(
         cls,
@@ -138,12 +131,12 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     @classmethod
     def from_codes(
         cls,
-        codes: AnyArrayLike | Sequence[int],
+        codes: Series[int] | Index[int] | np_ndarray_anyint | Sequence[int],
         categories: Index | None = ...,
         ordered: bool | None = ...,
-        dtype: CategoricalDtype[Any] | None = ...,
+        dtype: CategoricalDtype[CategoricalValueT] | None = ...,
         validate: bool = True,
-    ) -> Categorical: ...
+    ) -> Categorical[CategoricalValueT]: ...
     @property
     def codes(self) -> np_1darray[np.signedinteger]: ...
     def set_ordered(self, value: bool) -> Self: ...
@@ -240,7 +233,7 @@ class CategoricalAccessor(
     ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
     def reorder_categories(
         self,
-        new_categories: ListLike,
+        new_categories: Sequence[CategoricalValueT] | AnyArrayLike,
         ordered: bool = ...,
     ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
     def add_categories(

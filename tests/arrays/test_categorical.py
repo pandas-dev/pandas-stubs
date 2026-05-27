@@ -56,7 +56,9 @@ def test_constructor() -> None:
 
     values = np.array(["a", "b", "c", "a"])
     cat_np = Categorical(values)
-    check(cat_np, Categorical)
+    # np.array() is typed as ndarray[Any, Any] by numpy stubs, so mypy cannot infer
+    # the element type; the actual type is Categorical[str]
+    check(assert_type(cat_np, "Categorical[str]"), Categorical)  # type: ignore[assert-type]
 
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c", "d"])
     check(assert_type(cat, "Categorical[str]"), Categorical)
