@@ -1963,7 +1963,7 @@ def test_types_to_numpy() -> None:
     check(assert_type(s_bytes.to_numpy(), np_1darray_bytes), np_1darray, np.bytes_)
 
     s_bool = pd.Series([True, False])
-    check(assert_type(s_bool.to_numpy(), np_1darray_bool), np_1darray, np.bool_)
+    check(assert_type(s_bool.to_numpy(), np_1darray_bool), np_1darray_bool, np.bool_)
 
     s_int = pd.Series([2, 3, 4])
     check(assert_type(s_int.to_numpy(), np_1darray_anyint), np_1darray, np.integer)
@@ -2336,7 +2336,7 @@ def test_types_to_numpy() -> None:
     )
     check(
         assert_type(s_td_small.to_numpy(dtype=np.bytes_), np_1darray_bytes),
-        np_1darray_bytes,
+        np_1darray,
         np.bytes_,
     )
     check(
