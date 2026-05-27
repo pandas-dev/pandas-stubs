@@ -2335,8 +2335,8 @@ def test_types_to_numpy() -> None:
         np.bytes_,
     )
     check(
-        assert_type(s_td_small.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
-        np_1darray,
+        assert_type(s_td_small.to_numpy(dtype=np.bytes_), np_1darray_bytes),
+        np_1darray_bytes,
         np.bytes_,
     )
     check(
@@ -2361,8 +2361,8 @@ def test_types_to_numpy() -> None:
         np_1darray_object,
     )
     check(
-        assert_type(s_td_small.to_numpy(dtype=np.object_), np_1darray[np.object_]),
-        np_1darray,
+        assert_type(s_td_small.to_numpy(dtype=np.object_), np_1darray_object),
+        np_1darray_object,
     )
     check(
         assert_type(s_td_small.to_numpy(dtype="object"), np_1darray_object),
@@ -2374,11 +2374,11 @@ def test_types_to_numpy() -> None:
     )
     check(
         assert_type(s_interval.to_numpy(dtype="O"), np_1darray_object),
-        np_1darray,
+        np_1darray_object,
         pd.Interval,
     )
     check(
-        assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray[np.object_]),
+        assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray_object),
         np_1darray_object,
         pd.Period,
     )
