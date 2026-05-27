@@ -1773,17 +1773,20 @@ def test_cat_accessor() -> None:
 
 
 def test_cat_ctor_values() -> None:
-    check(assert_type(pd.Categorical(["a", "b", "a"]), pd.Categorical), pd.Categorical)
+    check(
+        assert_type(pd.Categorical(["a", "b", "a"]), "pd.Categorical[str]"),
+        pd.Categorical,
+    )
     # GH 95
     check(
-        assert_type(pd.Categorical(pd.Series(["a", "b", "a"])), pd.Categorical),
+        assert_type(pd.Categorical(pd.Series(["a", "b", "a"])), "pd.Categorical[str]"),
         pd.Categorical,
     )
     s = ["a", "b", "a"]
-    check(assert_type(pd.Categorical(s), pd.Categorical), pd.Categorical)
+    check(assert_type(pd.Categorical(s), "pd.Categorical[str]"), pd.Categorical)
     # GH 107
     check(
-        assert_type(pd.Categorical(np.array([1, 2, 3, 1, 1])), pd.Categorical),
+        assert_type(pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"),
         pd.Categorical,
     )
 

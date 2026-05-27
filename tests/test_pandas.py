@@ -957,7 +957,7 @@ def test_factorize() -> None:
 
     codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
     check(assert_type(codes, np_1darray_int64), np_1darray_int64)
-    check(assert_type(cat_uniques, pd.Categorical), pd.Categorical)
+    check(assert_type(cat_uniques, "pd.Categorical[str]"), pd.Categorical)
 
     codes, idx_uniques = pd.factorize(pd.Index(["b", "b", "a", "c", "b"]))
     check(assert_type(codes, np_1darray_int64), np_1darray_int64)
