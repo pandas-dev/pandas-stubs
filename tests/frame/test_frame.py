@@ -938,7 +938,6 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(upper=None, axis=0, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     check(
         assert_type(df.clip(upper=15, axis=0, inplace=True), pd.DataFrame),
         pd.DataFrame,
@@ -954,7 +953,6 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(lower=None, axis=None, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     check(
         assert_type(df.clip(lower=5, axis=None, inplace=True), pd.DataFrame),
         pd.DataFrame,
