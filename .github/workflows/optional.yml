@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
 
     - name: Install project dependencies
       uses: ./.github/setup
@@ -29,6 +31,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
 
     - name: Install project dependencies
       uses: ./.github/setup

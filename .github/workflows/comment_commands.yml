@@ -46,6 +46,7 @@ jobs:
           # otherwise it will look for the branch in pandas-stubs repo)
           ref: ${{ steps.get-branch-info.outputs.branch }}
           repository: ${{ steps.get-branch-info.outputs.repository }}
+          persist-credentials: false
 
       - name: Install project dependencies
         uses: ./.github/setup
