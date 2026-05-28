@@ -34,6 +34,7 @@ from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     S2,
+    S3,
     AxisIndex,
     DropKeep,
     DTypeLike,
@@ -390,6 +391,30 @@ class ElementOpsMixin(Generic[S2]):
     def _proto_rfloordiv(
         self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
     ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_mod(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_mod(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_mod(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[Timedelta]: ...
+    @overload
+    def _proto_rmod(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rmod(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rmod(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[Timedelta]: ...
 
 @type_check_only
 class Supports_ProtoAdd(Protocol[T_contra, S2]):
@@ -422,3 +447,21 @@ class Supports_ProtoFloorDiv(Protocol[T_contra, S2]):
 @type_check_only
 class Supports_ProtoRFloorDiv(Protocol[T_contra, S2]):
     def _proto_rfloordiv(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoMod(Protocol[T_contra, S2]):
+    def _proto_mod(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRMod(Protocol[T_contra, S2]):
+    def _proto_rmod(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoDivMod(Protocol[T_contra, S2, S3]):
+    def _proto_floordiv(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+    def _proto_mod(self, other: T_contra, /) -> ElementOpsMixin[S3]: ...
+
+@type_check_only
+class Supports_ProtoRDivMod(Protocol[T_contra, S2, S3]):
+    def _proto_rfloordiv(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+    def _proto_rmod(self, other: T_contra, /) -> ElementOpsMixin[S3]: ...
