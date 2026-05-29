@@ -3812,8 +3812,11 @@ def test_series_copy_deprecated() -> None:
         _8 = s.swaplevel(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
-def test_series_primitive_conversions_prohibited() -> None:
+def test_series_primitive_conversions() -> None:
     s1 = pd.Series([1, 2, 3])
+    check(assert_type(str(s1), str), str)
+    check(assert_type(bytes(s1), bytes), bytes)
+    check(assert_type(bytearray(s1), bytearray), bytearray)
     if TYPE_CHECKING_INVALID_USAGE:
         int(s1)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
         float(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
@@ -3824,6 +3827,9 @@ def test_series_primitive_conversions_prohibited() -> None:
         memoryview(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 
     s2: pd.Series[Any] = pd.Series([1, 2, 3])
+    check(assert_type(str(s2), str), str)
+    check(assert_type(bytes(s2), bytes), bytes)
+    check(assert_type(bytearray(s2), bytearray), bytearray)
     if TYPE_CHECKING_INVALID_USAGE:
         int(s2)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
         float(s2)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
