@@ -76,7 +76,7 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
         cls,
         values: Sequence[int] | np_ndarray_anyint | Series[int] | Index[int],
         categories: (
-            SequenceNotStr[int] | Series[int] | Index[int] | np_ndarray_anyint | None
+            Sequence[int] | Series[int] | Index[int] | np_ndarray_anyint | None
         ) = None,
         ordered: bool | None = None,
         dtype: CategoricalDtype | None = None,
@@ -87,11 +87,7 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
         cls,
         values: Sequence[float] | np_ndarray_float | Series[float] | Index[float],
         categories: (
-            SequenceNotStr[float]
-            | Series[float]
-            | Index[float]
-            | np_ndarray_float
-            | None
+            Sequence[float] | Series[float] | Index[float] | np_ndarray_float | None
         ) = None,
         ordered: bool | None = None,
         dtype: CategoricalDtype | None = None,
@@ -130,7 +126,7 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     def tolist(self) -> list[CategoricalValueT]: ...
     @overload
     @classmethod
-    def from_codes(  # pyright: ignore[reportOverlappingOverload]
+    def from_codes(
         cls,
         codes: Series[int] | Index[int] | np_ndarray_anyint | Sequence[int],
         categories: Index[CategoricalValueT1],
@@ -143,11 +139,22 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     def from_codes(
         cls,
         codes: Series[int] | Index[int] | np_ndarray_anyint | Sequence[int],
-        categories: Index | None = ...,
+        categories: None = None,
         ordered: bool | None = ...,
         dtype: CategoricalDtype[int] | None = ...,
         validate: bool = True,
     ) -> Categorical[int]: ...
+    @overload
+    @classmethod
+    def from_codes(
+        cls,
+        codes: Series[int] | Index[int] | np_ndarray_anyint | Sequence[int],
+        categories: None = ...,
+        ordered: bool | None = ...,
+        *,
+        dtype: CategoricalDtype[CategoricalValueT],
+        validate: bool = True,
+    ) -> Categorical[CategoricalValueT]: ...
     @property
     def codes(self) -> np_1darray[np.signedinteger]: ...
     def set_ordered(self, value: bool) -> Self: ...
@@ -160,11 +167,22 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
         rename: bool = False,
     ) -> Self: ...
     def rename_categories(self, new_categories: Renamer) -> Self: ...
+    @overload
+    def reorder_categories(
+        self: Categorical[CategoricalValueT1],
+        new_categories: (
+            SequenceNotStr[CategoricalValueT1]
+            | Index[CategoricalValueT1]
+            | Series[CategoricalValueT1]
+        ),
+        ordered: bool | None = None,
+    ) -> Categorical[CategoricalValueT1]: ...
+    @overload
     def reorder_categories(
         self,
-        new_categories: SequenceNotStr[Hashable] | AnyArrayLike,
+        new_categories: AnyArrayLike,
         ordered: bool | None = None,
-    ) -> Self: ...
+    ) -> Categorical: ...
     def add_categories(
         self, new_categories: AnyArrayLike | SequenceNotStr[Hashable]
     ) -> Self: ...
@@ -242,11 +260,18 @@ class CategoricalAccessor(
             | Callable[[CategoricalValueT], CategoricalValueT]
         ),
     ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+    @overload
     def reorder_categories(
         self,
-        new_categories: Sequence[CategoricalValueT] | AnyArrayLike,
+        new_categories: Sequence[CategoricalValueT],
         ordered: bool = ...,
     ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+    @overload
+    def reorder_categories(
+        self,
+        new_categories: AnyArrayLike,
+        ordered: bool = ...,
+    ) -> Series[CategoricalDtype]: ...
     def add_categories(
         self, new_categories: Scalar | ListLike
     ) -> Series[CategoricalDtype[CategoricalValueT]]: ...

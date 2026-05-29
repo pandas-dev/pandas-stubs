@@ -383,16 +383,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool | None = None,
     ) -> Series[CategoricalDtype[int]]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
-        cls,
-        data: Sequence[_str] | np_1darray_str | Index[_str] | Series[_str],
-        index: AxesData | None = None,
-        *,
-        dtype: CategoryDtypeArg,
-        name: Hashable = None,
-        copy: bool | None = None,
-    ) -> Series[CategoricalDtype[_str]]: ...
-    @overload
     def __new__(
         cls,
         data: (
@@ -407,6 +397,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         name: Hashable = None,
         copy: bool | None = None,
     ) -> Series[CategoricalDtype[float]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: SequenceNotStr[_str] | np_1darray_str | Index[_str] | Series[_str],
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[_str]]: ...
     @overload
     def __new__(
         cls,

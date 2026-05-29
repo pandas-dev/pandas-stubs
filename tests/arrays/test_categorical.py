@@ -83,7 +83,7 @@ def test_constructor() -> None:
     )
     check(assert_type(cat, "Categorical[str]"), Categorical)
 
-    dtype = CategoricalDtype(categories=["x", "y", "z"], ordered=True)
+    dtype = pd.CategoricalDtype(categories=["x", "y", "z"], ordered=True)
     cat = Categorical(
         values=["x", "y", "z", "x"],
         dtype=dtype,
@@ -146,6 +146,13 @@ def test_categorical_from_codes() -> None:
     categories = Index(["a", "b", "c"])
     cat = Categorical.from_codes(codes, categories)
     check(assert_type(cat, "Categorical[str]"), Categorical)
+
+    cat1 = Categorical.from_codes(codes, Index([0, 1, 2]))
+    check(assert_type(cat1, "Categorical[int]"), Categorical)
+
+    dtype = CategoricalDtype(categories=["x", "y", "z"], ordered=True)
+    cat2 = Categorical.from_codes(codes, dtype=dtype)
+    check(assert_type(cat2, Categorical), Categorical)
 
 
 def test_categorical_from_codes_ndarray() -> None:
@@ -245,6 +252,11 @@ def test_categorical_reorder_categorical() -> None:
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=None)
     result = cat.reorder_categories(pd.Index(["b", "a", "c"]))
     check(assert_type(result, "Categorical[str]"), Categorical)
+
+    # np.array is not subtyped statically so will return Categorical
+    cat1 = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=None)
+    result1 = cat1.reorder_categories(np.array(["b", "a", "c"]))
+    check(assert_type(result1, Categorical), Categorical)
 
 
 def test_categorical_add_categories() -> None:
