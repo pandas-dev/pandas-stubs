@@ -3821,6 +3821,7 @@ def test_series_primitive_conversions_prohibited() -> None:
         math.trunc(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
         math.ceil(s1)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
         math.floor(s1)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        memoryview(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 
     s2: pd.Series[Any] = pd.Series([1, 2, 3])
     if TYPE_CHECKING_INVALID_USAGE:
@@ -3830,3 +3831,4 @@ def test_series_primitive_conversions_prohibited() -> None:
         math.trunc(s2)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
         math.ceil(s2)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
         math.floor(s2)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        memoryview(s2)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
