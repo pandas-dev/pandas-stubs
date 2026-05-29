@@ -13,6 +13,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 import io
+import math
 from pathlib import Path
 import re
 from typing import (
@@ -3869,3 +3870,37 @@ def test_series_copy_deprecated() -> None:
         _7 = s.astype(int, copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
         # swaplevel
         _8 = s.swaplevel(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+
+
+def test_series_primitive_conversions() -> None:
+    s_int = pd.Series([1, 2, 3])
+    check(assert_type(str(s_int), str), str)
+    check(assert_type(bytes(s_int), bytes), bytes)
+    check(assert_type(bytearray(s_int), bytearray), bytearray)
+    if TYPE_CHECKING_INVALID_USAGE:
+        int(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+        float(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        complex(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        math.trunc(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        math.ceil(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        math.floor(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        memoryview(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+
+    s_any: pd.Series[Any] = pd.Series([1, 2, 3])
+    check(assert_type(str(s_any), str), str)
+    check(assert_type(bytes(s_any), bytes), bytes)
+    check(assert_type(bytearray(s_any), bytearray), bytearray)
+    if TYPE_CHECKING_INVALID_USAGE:
+        int(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+        float(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        complex(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        math.trunc(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        math.ceil(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        math.floor(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        memoryview(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+
+    s_float = pd.Series([1.5, 2.5, 3.5])
+    check(assert_type(str(s_float), str), str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        bytes(s_float)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        bytearray(s_float)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
