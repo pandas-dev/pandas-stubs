@@ -259,7 +259,11 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
-from pandas.core.dtypes.dtypes import CategoricalDtype
+from pandas.core.dtypes.dtypes import (
+    CategoricalDtype,
+    CategoricalValueT,
+    CategoricalValueT1,
+)
 
 from pandas.plotting import PlotAccessor
 
@@ -351,6 +355,15 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
 
 _DataLike: TypeAlias = ArrayLike | dict[str, np_ndarray] | SequenceNotStr[S1]
 
+@type_check_only
+class _CatDescriptor:
+    @overload
+    def __get__(
+        self, instance: Series[CategoricalDtype[CategoricalValueT]], owner: Any
+    ) -> CategoricalAccessor[CategoricalValueT]: ...
+    @overload
+    def __get__(self, instance: Series, owner: Any) -> CategoricalAccessor[Any]: ...
+
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
     __index__: ClassVar[None]
@@ -374,6 +387,55 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         name: Hashable = None,
         copy: bool | None = None,
     ) -> Series[list[_str]]: ...
+    @overload
+    def __new__(  # pyright: ignore[reportOverlappingOverload]
+        cls,
+        data: Sequence[int | np.integer] | np_ndarray_anyint | Index[int] | Series[int],
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[int]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: (
+            Sequence[float | np.floating]
+            | np_ndarray_float
+            | Index[float]
+            | Series[float]
+        ),
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[float]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: SequenceNotStr[_str] | np_1darray_str | Index[_str] | Series[_str],
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[_str]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: (
+            SequenceNotStr[CategoricalValueT1]
+            | Index[CategoricalValueT1]
+            | Series[CategoricalValueT1]
+        ),
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
@@ -418,7 +480,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         dtype: CategoryDtypeArg,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[CategoricalDtype]: ...
+    ) -> Series[CategoricalDtype[Any]]: ...
     @overload
     def __new__(
         cls,
@@ -1521,8 +1583,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         errors: IgnoreRaise = ...,
     ) -> Series[Timestamp]: ...
     @overload
+    def astype(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[CategoricalValueT1],
+        dtype: CategoryDtypeArg,
+        errors: IgnoreRaise = ...,
+    ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
+    @overload
     def astype(
-        self,
+        self: Series[Any],
         dtype: CategoryDtypeArg,
         errors: IgnoreRaise = ...,
     ) -> Series[CategoricalDtype]: ...
@@ -4099,8 +4167,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __invert__(self) -> Series[bool]: ...
     @property
     def at(self) -> _AtIndexer: ...
-    @property
-    def cat(self) -> CategoricalAccessor: ...
+    cat = _CatDescriptor()
     @property
     def iat(self) -> _iAtIndexer: ...
     @property

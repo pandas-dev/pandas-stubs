@@ -87,6 +87,9 @@ from tests.dtypes import (
 )
 from tests.extension.decimal.array import DecimalDtype
 
+if TYPE_CHECKING:
+    from typing import Any  # noqa: F401
+
 from pandas.io.formats.format import EngFormatter
 from pandas.tseries.offsets import (
     BaseOffset,
@@ -1600,9 +1603,23 @@ def test_types_ffill() -> None:
     )
 
 
-def test_types_as_type() -> None:
+def test_types_astype() -> None:
     s1 = pd.Series([1, 2, 8, 9])
     check(assert_type(s1.astype("int32"), "pd.Series[int]"), pd.Series, np.int32)
+
+    df = pd.DataFrame({"A": s1})
+    s2 = df["A"]
+    check(
+        assert_type(s2.astype("category"), "pd.Series[pd.CategoricalDtype[Any]]"),
+        pd.Series,
+        np.int64,
+    )
+
+    s3 = pd.Series(pd.Series([1, 2, 3, 1, 3]), dtype="category")
+    check(assert_type(s3, "pd.Series[pd.CategoricalDtype[int]]"), pd.Series, np.int64)
+
+    s4 = pd.Series(pd.Index([1, 2, 3, 1, 3]), dtype="category")
+    check(assert_type(s4, "pd.Series[pd.CategoricalDtype[int]]"), pd.Series, np.int64)
 
 
 def test_types_dot() -> None:
@@ -1714,44 +1731,76 @@ def test_cat_accessor() -> None:
         pd.Categorical(["a", "b", "a"], categories=["a", "b"])
     )
     check(assert_type(s.cat.codes, "pd.Series[int]"), pd.Series, np.int8)
-    # GH 139
+
     ser = pd.Series([1, 2, 3], name="A").astype("category")
     check(
-        assert_type(ser.cat.set_categories([1, 2, 3]), pd.Series), pd.Series, np.integer
-    )
-    check(
-        assert_type(ser.cat.reorder_categories([2, 3, 1], ordered=True), pd.Series),
+        assert_type(
+            ser.cat.set_categories([1, 2, 3]), "pd.Series[pd.CategoricalDtype[int]]"
+        ),
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(ser.cat.rename_categories([1, 2, 3]), pd.Series),
+        assert_type(
+            ser.cat.reorder_categories([2, 3, 1], ordered=True),
+            "pd.Series[pd.CategoricalDtype[int]]",
+        ),
         pd.Series,
         np.integer,
     )
     check(
-        assert_type(ser.cat.remove_unused_categories(), pd.Series),
+        assert_type(
+            ser.cat.rename_categories([1, 2, 3]), "pd.Series[pd.CategoricalDtype[int]]"
+        ),
         pd.Series,
         np.integer,
     )
-    check(assert_type(ser.cat.remove_categories([2]), pd.Series), pd.Series, np.integer)
-    check(assert_type(ser.cat.add_categories([4]), pd.Series), pd.Series, np.integer)
-    check(assert_type(ser.cat.as_ordered(), pd.Series), pd.Series, np.integer)
-    check(assert_type(ser.cat.as_unordered(), pd.Series), pd.Series, np.integer)
+    check(
+        assert_type(
+            ser.cat.remove_unused_categories(), "pd.Series[pd.CategoricalDtype[int]]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(
+            ser.cat.remove_categories([2]), "pd.Series[pd.CategoricalDtype[int]]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(ser.cat.add_categories([4]), "pd.Series[pd.CategoricalDtype[int]]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(ser.cat.as_ordered(), "pd.Series[pd.CategoricalDtype[int]]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(ser.cat.as_unordered(), "pd.Series[pd.CategoricalDtype[int]]"),
+        pd.Series,
+        np.integer,
+    )
 
 
 def test_cat_ctor_values() -> None:
-    check(assert_type(pd.Categorical(["a", "b", "a"]), pd.Categorical), pd.Categorical)
+    check(
+        assert_type(pd.Categorical(["a", "b", "a"]), "pd.Categorical[str]"),
+        pd.Categorical,
+    )
     # GH 95
     check(
-        assert_type(pd.Categorical(pd.Series(["a", "b", "a"])), pd.Categorical),
+        assert_type(pd.Categorical(pd.Series(["a", "b", "a"])), "pd.Categorical[str]"),
         pd.Categorical,
     )
     s = ["a", "b", "a"]
-    check(assert_type(pd.Categorical(s), pd.Categorical), pd.Categorical)
+    check(assert_type(pd.Categorical(s), "pd.Categorical[str]"), pd.Categorical)
     # GH 107
     check(
-        assert_type(pd.Categorical(np.array([1, 2, 3, 1, 1])), pd.Categorical),
+        assert_type(pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"),
         pd.Categorical,
     )
 
@@ -1789,9 +1838,20 @@ def test_categorical_codes() -> None:
     cat = pd.Categorical(["a", "b", "a"])
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray[np.int8])
 
-    # GH1383
-    sr = pd.Series([1], dtype="category")
-    check(assert_type(sr, "pd.Series[pd.CategoricalDtype]"), pd.Series, np.integer)
+    sr_int = pd.Series([1], dtype="category")
+    check(
+        assert_type(sr_int, "pd.Series[pd.CategoricalDtype[int]]"),
+        pd.Series,
+        np.integer,
+    )
+
+    sr_str = pd.Series(["a", "b"], dtype="category")
+    check(assert_type(sr_str, "pd.Series[pd.CategoricalDtype[str]]"), pd.Series, str)
+
+    sr_float = pd.Series([1.0, 2.0], dtype="category")
+    check(
+        assert_type(sr_float, "pd.Series[pd.CategoricalDtype[float]]"), pd.Series, float
+    )
 
 
 def test_relops() -> None:

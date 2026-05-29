@@ -73,6 +73,7 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.dtypes import (
+    CategoricalValueT,
     DatetimeTZDtype,
     IntervalDtype,
     PeriodDtype,
@@ -108,14 +109,19 @@ def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlapping
 ) -> NumpyExtensionArray: ...
 @overload
 def array(
+    data: Categorical[CategoricalValueT],
+    dtype: CategoryDtypeArg | None = None,
+    copy: bool = True,
+) -> Categorical[CategoricalValueT]: ...
+@overload
+def array(
     data: Sequence[Any] | np_ndarray | ExtensionArray | Index | Series,
     dtype: CategoryDtypeArg,
     copy: bool = True,
 ) -> Categorical: ...
 @overload
 def array(
-    # TODO: Categorical Series pandas-dev/pandas-stubs#1415
-    data: Categorical | CategoricalIndex,
+    data: CategoricalIndex,
     dtype: CategoryDtypeArg | None = None,
     copy: bool = True,
 ) -> Categorical: ...
