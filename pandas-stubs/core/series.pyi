@@ -354,6 +354,10 @@ _DataLike: TypeAlias = ArrayLike | dict[str, np_ndarray] | SequenceNotStr[S1]
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
     __index__: ClassVar[None]
+    # Same as above but for int() and float()
+    __float__: ClassVar[None]
+    __int__: ClassVar[None]
+    __buffer__: ClassVar[None]
     __hash__: ClassVar[None]  # pyright: ignore[reportIncompatibleMethodOverride]
 
     @overload
