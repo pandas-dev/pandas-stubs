@@ -21,7 +21,6 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
-import sys
 from typing import (
     Any,
     ClassVar,
@@ -355,12 +354,16 @@ _DataLike: TypeAlias = ArrayLike | dict[str, np_ndarray] | SequenceNotStr[S1]
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
     __index__: ClassVar[None]
-    # Same as above but for int() and float()
+    # Same as above to prevent primitive conversions of Series
+    # such as int(), float(), complex(), math.trunc(), etc.
+    __complex__: ClassVar[None]
     __float__: ClassVar[None]
     __int__: ClassVar[None]
-    if sys.version_info < (3, 14):
-        __trunc__: ClassVar[None]
+    __trunc__: ClassVar[None]
+    __ceil__: ClassVar[None]
+    __floor__: ClassVar[None]
     __buffer__: ClassVar[None]
+
     __hash__: ClassVar[None]  # pyright: ignore[reportIncompatibleMethodOverride]
 
     @overload

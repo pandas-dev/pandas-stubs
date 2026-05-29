@@ -13,6 +13,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 import io
+import math
 from pathlib import Path
 import re
 from typing import (
@@ -3811,13 +3812,21 @@ def test_series_copy_deprecated() -> None:
         _8 = s.swaplevel(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
 
-def test_series_float_protocols() -> None:
+def test_series_primitive_conversions_prohibited() -> None:
     s1 = pd.Series([1, 2, 3])
     if TYPE_CHECKING_INVALID_USAGE:
-        float(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
         int(s1)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+        float(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        complex(s1)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        math.trunc(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        math.ceil(s1)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        math.floor(s1)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
 
     s2: pd.Series[Any] = pd.Series([1, 2, 3])
     if TYPE_CHECKING_INVALID_USAGE:
-        float(s2)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
         int(s2)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+        float(s2)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        complex(s2)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        math.trunc(s2)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        math.ceil(s2)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        math.floor(s2)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue]
