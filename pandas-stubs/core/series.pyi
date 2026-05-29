@@ -21,6 +21,7 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
+import sys
 from typing import (
     Any,
     ClassVar,
@@ -357,6 +358,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Same as above but for int() and float()
     __float__: ClassVar[None]
     __int__: ClassVar[None]
+    if sys.version_info < (3, 14):
+        __trunc__: ClassVar[None]
     __buffer__: ClassVar[None]
     __hash__: ClassVar[None]  # pyright: ignore[reportIncompatibleMethodOverride]
 

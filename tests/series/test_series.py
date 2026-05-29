@@ -3815,9 +3815,9 @@ def test_series_float_protocols() -> None:
     s1 = pd.Series([1, 2, 3])
     if TYPE_CHECKING_INVALID_USAGE:
         float(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        int(s1)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        int(s1)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
 
     s2: pd.Series[Any] = pd.Series([1, 2, 3])
     if TYPE_CHECKING_INVALID_USAGE:
         float(s2)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        int(s2)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        int(s2)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
