@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # if more commands are added, they will need to be added here too as we don't have access to env at this stage
-    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly"]'), github.event.comment.body)
+    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly"]'), github.event.comment.body) && github.event.comment.author_association == 'MEMBER'
 
     steps:
       - name: Get head sha, branch name and store value
