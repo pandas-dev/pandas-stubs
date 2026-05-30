@@ -10,8 +10,7 @@ on:
 env:
   MPLBACKEND: "Agg"
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   released:
@@ -28,11 +27,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        permissions:
+          contents: read
         with:
           persist-credentials: false
 
       - name: Install project dependencies
         uses: ./.github/setup
+        permissions:
+          actions: write
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
@@ -61,6 +64,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        permissions:
+          contents: read
         with:
           persist-credentials: false
 
@@ -72,11 +77,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        permissions:
+          contents: read
         with:
           persist-credentials: false
 
       - name: Install project dependencies
         uses: ./.github/setup
+        permissions:
+          actions: write
         with:
           # This is quite slow (2-3 minutes) so we don't run it for all OSs / Python versions.
           os: ubuntu-latest

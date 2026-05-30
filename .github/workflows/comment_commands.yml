@@ -3,8 +3,7 @@ on:
   issue_comment:
     types: created
 
-permissions:
-  checks: write
+permissions: {}
 
 env:
   # store mapping of commands to use with poetry
@@ -26,6 +25,8 @@ jobs:
         if: always()
         id: get-branch-info
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        permissions:
+          pull-requests: read
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -40,6 +41,8 @@ jobs:
 
       - name: Checkout code on the correct branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        permissions:
+          contents: read
         with:
           # context is not aware which branch to checkout so it would otherwise
           # default to main (we also need repo name to source from the right user
@@ -50,6 +53,8 @@ jobs:
 
       - name: Install project dependencies
         uses: ./.github/setup
+        permissions:
+          actions: write
         with:
           os: ubuntu-latest
           python-version: "3.12"
@@ -63,6 +68,8 @@ jobs:
         # publish the results to a check run no matter the pass or fail
         if: always()
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        permissions:
+          checks: write
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

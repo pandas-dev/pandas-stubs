@@ -6,6 +6,8 @@ on:
       - main
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   nightly:
     runs-on: ubuntu-latest
@@ -13,11 +15,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      permissions:
+        contents: read
       with:
         persist-credentials: false
 
     - name: Install project dependencies
       uses: ./.github/setup
+      permissions:
+        actions: write
       with:
         os: ubuntu-latest
         python-version: '3.11'
@@ -31,11 +37,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      permissions:
+        contents: read
       with:
         persist-credentials: false
 
     - name: Install project dependencies
       uses: ./.github/setup
+      permissions:
+        actions: write
       with:
         os: ubuntu-latest
         python-version: '3.11'
