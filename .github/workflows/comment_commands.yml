@@ -5,12 +5,6 @@ on:
 
 permissions: {}
 
-env:
-  # store mapping of commands to use with poetry
-  RUN_COMMAND: '{"/pandas_nightly": "pytest --nightly", "/mypy_nightly": "mypy --mypy_nightly"}'
-  # store mapping of labels to display in the check runs
-  DISPLAY_COMMAND: '{"/pandas_nightly": "Pandas nightly tests", "/mypy_nightly": "Mypy nightly tests"}'
-
 jobs:
   optional_tests:
     name: "Optional tests run"
@@ -20,6 +14,27 @@ jobs:
     if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly"]'), github.event.comment.body) && github.event.comment.author_association == 'MEMBER'
 
     steps:
+      - name: Resolve comment command
+        id: command
+        shell: bash
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          case "${COMMENT_BODY}" in
+            /pandas_nightly)
+              echo "poe_command=pytest --nightly" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Pandas nightly tests" >> "${GITHUB_OUTPUT}"
+              ;;
+            /mypy_nightly)
+              echo "poe_command=mypy --mypy_nightly" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Mypy nightly tests" >> "${GITHUB_OUTPUT}"
+              ;;
+            *)
+              echo "Unknown command: ${COMMENT_BODY}" >&2
+              exit 1
+              ;;
+          esac
+
       - name: Get head sha, branch name and store value
         # get the sha of the last commit to attach the results of the tests
         if: always()
@@ -27,13 +42,15 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         permissions:
           pull-requests: read
+        env:
+          PULL_NUMBER: ${{ github.event.issue.number }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: ${{ github.event.issue.number }}
+              pull_number: Number(process.env.PULL_NUMBER),
             })
             core.setOutput('sha', pr.data.head.sha)
             core.setOutput('branch', pr.data.head.ref)
@@ -59,10 +76,13 @@ jobs:
           os: ubuntu-latest
           python-version: "3.12"
 
-      - name: Run ${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}
+      - name: Run optional tests
         # run the tests based on the value of the comment
         id: tests-step
-        run: poetry run poe ${{ fromJSON(env.RUN_COMMAND)[github.event.comment.body] }}
+        shell: bash
+        env:
+          POE_COMMAND: ${{ steps.command.outputs.poe_command }}
+        run: poetry run poe "${POE_COMMAND}"
 
       - name: Report results of the tests and publish
         # publish the results to a check run no matter the pass or fail
@@ -70,18 +90,23 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         permissions:
           checks: write
+        env:
+          CHECK_NAME: ${{ steps.command.outputs.check_name }}
+          HEAD_SHA: ${{ steps.get-branch-info.outputs.sha }}
+          CONCLUSION: ${{ steps.tests-step.outcome }}
+          ACTIONS_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.checks.create({
-              name: '${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}',
-              head_sha: '${{ steps.get-branch-info.outputs.sha }}',
+              name: process.env.CHECK_NAME,
+              head_sha: process.env.HEAD_SHA,
               status: 'completed',
-              conclusion: '${{ steps.tests-step.outcome }}',
+              conclusion: process.env.CONCLUSION,
               output: {
-                title: 'Run ${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}',
-                summary: 'Results: ${{ steps.tests-step.outcome }}',
-                text: 'See the actions run at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+                title: `Run ${process.env.CHECK_NAME}`,
+                summary: `Results: ${process.env.CONCLUSION}`,
+                text: `See the actions run at ${process.env.ACTIONS_RUN_URL}`,
               },
               owner: context.repo.owner,
               repo: context.repo.repo
