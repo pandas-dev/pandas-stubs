@@ -10,6 +10,11 @@ jobs:
     name: "Optional tests run"
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      pull-requests: read
+      contents: read
+      actions: write
+      checks: write
     # if more commands are added, they will need to be added here too as we don't have access to env at this stage
     if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly"]'), github.event.comment.body) && github.event.comment.author_association == 'MEMBER'
 
@@ -40,8 +45,6 @@ jobs:
         if: always()
         id: get-branch-info
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
-        permissions:
-          pull-requests: read
         env:
           PULL_NUMBER: ${{ github.event.issue.number }}
         with:
@@ -58,8 +61,6 @@ jobs:
 
       - name: Checkout code on the correct branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-        permissions:
-          contents: read
         with:
           # context is not aware which branch to checkout so it would otherwise
           # default to main (we also need repo name to source from the right user
@@ -70,8 +71,6 @@ jobs:
 
       - name: Install project dependencies
         uses: ./.github/setup
-        permissions:
-          actions: write
         with:
           os: ubuntu-latest
           python-version: "3.12"
@@ -88,8 +87,6 @@ jobs:
         # publish the results to a check run no matter the pass or fail
         if: always()
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
-        permissions:
-          checks: write
         env:
           CHECK_NAME: ${{ steps.command.outputs.check_name }}
           HEAD_SHA: ${{ steps.get-branch-info.outputs.sha }}
