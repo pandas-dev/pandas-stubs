@@ -569,7 +569,7 @@ def test_plot_scatter(close_figures: None) -> None:
 
 
 def test_plot_keywords(close_figures: None) -> None:
-    # TODO: matplotlib/matplotlib#31003 fig_kw in plt.subplots is untyped, hence the pyright ignore released with mpl 3.11.0
+    # TODO: matplotlib/matplotlib#31003 fig_kw in plt.subplots is untyped, hence the pyright ignore; will be resolved with mpl 3.11.0
     _, ax = plt.subplots(1, 1)  # pyright: ignore[reportUnknownMemberType]
     df = IRIS_DF.iloc[:, :3].abs()
     check(
