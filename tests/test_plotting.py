@@ -381,7 +381,7 @@ def test_scatter_matrix(close_figures: None) -> None:
 
 def test_table(close_figures: None) -> None:
     df = pd.DataFrame(np.random.randn(1000, 4), columns=["A", "B", "C", "D"])
-    # TODO: matplotlib/matplotlib#31003 fig_kw in plt.subplots is untyped, hence the pyright ignore released with mpl 3.11.0
+    # TODO: matplotlib/matplotlib#31003 fig_kw in plt.subplots is untyped, hence the pyright ignore; will be resolved with mpl 3.11.0
     _, ax = plt.subplots(1, 1)  # pyright: ignore[reportUnknownMemberType]
     check(assert_type(pd.plotting.table(ax, df), Table), Table)
 
