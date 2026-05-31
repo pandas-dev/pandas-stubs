@@ -10,8 +10,7 @@ on:
 env:
   MPLBACKEND: "Agg"
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   released:
@@ -25,9 +24,14 @@ jobs:
         python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    permissions:
+      contents: read
+      actions: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Install project dependencies
         uses: ./.github/setup
@@ -56,18 +60,27 @@ jobs:
   precommit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
-      - uses: pre-commit/action@v3.0.1
+      - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
 
   type_completeness:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Install project dependencies
         uses: ./.github/setup
