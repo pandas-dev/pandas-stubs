@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 """Test module for methods in pandas.core.arrays.period."""
 
 from typing import Any  # noqa: F401
