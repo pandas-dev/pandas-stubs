@@ -284,7 +284,6 @@ class Timestamp(datetime, SupportsIndex):
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def normalize(self) -> Self: ...
-    # TODO: pandas-dev/pandas-stubs#1432 round/floor/ceil could return NaT?
     def round(
         self,
         freq: str,
