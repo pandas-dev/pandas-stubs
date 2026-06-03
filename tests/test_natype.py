@@ -90,6 +90,7 @@ def test_arithmetic() -> None:
             tuple[pd.Series, pd.Series],
         ),
         tuple,
+        pd.Series,
     )
     check(
         assert_type(
@@ -97,6 +98,7 @@ def test_arithmetic() -> None:
             tuple[pd.Index, pd.Index],
         ),
         tuple,
+        pd.Index,
     )
     check(
         assert_type(  # pyright: ignore[reportUnknownArgumentType]
@@ -112,10 +114,12 @@ def test_arithmetic() -> None:
     check(
         assert_type(divmod(s_int, na), tuple["pd.Series[int]", "pd.Series[int]"]),
         tuple,
+        pd.Series,
     )
     check(
         assert_type(divmod(idx_int, na), tuple["pd.Index[int]", "pd.Index[int]"]),
         tuple,
+        pd.Index,
     )
     check(assert_type(divmod(1, na), tuple[NAType, NAType]), tuple)
 
