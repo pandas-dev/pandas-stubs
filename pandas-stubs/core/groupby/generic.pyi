@@ -321,7 +321,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, key: Iterable[Hashable]
     ) -> DataFrameGroupBy[ByT, _TT]: ...
     def nunique(self, dropna: bool = True) -> DataFrame: ...
@@ -486,4 +486,6 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def size(self: DataFrameGroupBy[Timestamp, Literal[True]]) -> Series[int]: ...
     @overload
-    def size(self: DataFrameGroupBy[Timestamp, Literal[False]]) -> DataFrame: ...
+    def size(  # ty: ignore[invalid-method-override]
+        self: DataFrameGroupBy[Timestamp, Literal[False]],
+    ) -> DataFrame: ...
