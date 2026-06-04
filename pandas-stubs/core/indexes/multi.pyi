@@ -42,8 +42,8 @@ from pandas._typing import (
 class MultiIndex(Index):
     def __new__(
         cls,
-        levels: Sequence[SequenceNotStr[Hashable]] | None = None,
-        codes: Sequence[Sequence[int]] | None = None,
+        levels: Sequence[SequenceNotStr[Hashable]],
+        codes: Sequence[Sequence[int]],
         sortorder: int | None = None,
         names: SequenceNotStr[Hashable] | None = None,
         copy: bool = False,
