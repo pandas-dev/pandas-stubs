@@ -112,12 +112,12 @@ def test_arithmetic() -> None:
 
     # __rdivmod__
     check(
-        assert_type(divmod(s_int, na), tuple["pd.Series[int]", "pd.Series[int]"]),
+        assert_type(divmod(s_int, na), "tuple[pd.Series[int], pd.Series[int]]"),
         tuple,
         pd.Series,
     )
     check(
-        assert_type(divmod(idx_int, na), tuple["pd.Index[int]", "pd.Index[int]"]),
+        assert_type(divmod(idx_int, na), "tuple[pd.Index[int], pd.Index[int]]"),
         tuple,
         pd.Index,
     )
