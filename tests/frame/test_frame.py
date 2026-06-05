@@ -3605,6 +3605,16 @@ def test_in_columns() -> None:
     check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)
 
 
+def test_loc_slice() -> None:
+    """Test DataFrame.loc with slice."""
+    df = pd.DataFrame(
+        {"c1": [1, 2, 3, 4], "c2": [10, 20, 30, 40]}, index=["a", "b", "c", "d"]
+    )
+
+    check(assert_type(df.loc["b":"c", :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[:, "c1":"c2"], pd.DataFrame), pd.DataFrame)
+
+
 def test_insert_newvalues() -> None:
     df = pd.DataFrame({"a": [1, 2]})
     ab = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
