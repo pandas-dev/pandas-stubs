@@ -31,12 +31,12 @@ def test_constructor() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.MultiIndex()  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
+        pd.MultiIndex()  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
 
         data = [(1,), (2,)]
-        pd.MultiIndex(data)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
-        pd.MultiIndex(UserList(data))  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
-        pd.MultiIndex(deque(data))  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
+        pd.MultiIndex(data)  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
+        pd.MultiIndex(UserList(data))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
+        pd.MultiIndex(deque(data))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
 
 
 def test_multiindex_unique() -> None:
