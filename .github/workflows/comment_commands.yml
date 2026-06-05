@@ -81,7 +81,7 @@ jobs:
         shell: bash
         env:
           POE_COMMAND: ${{ steps.command.outputs.poe_command }}
-        run: poetry run poe ${POE_COMMAND}
+        run: poetry run poe $POE_COMMAND
 
       - name: Report results of the tests and publish
         # publish the results to a check run no matter the pass or fail
