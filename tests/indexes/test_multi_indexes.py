@@ -22,6 +22,7 @@ from tests._typing import (
 
 
 def test_constructor() -> None:
+    """Test constructor for the MultiIndex class."""
     check(
         assert_type(
             pd.MultiIndex(levels=[[1, 2, 3], [4, 5, 6]], codes=[[0, 1, 2], [0, 1, 2]]),
