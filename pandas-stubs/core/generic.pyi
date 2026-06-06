@@ -27,6 +27,7 @@ from pandas import Index
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 from sqlalchemy.engine import Connectable
+from sqlalchemy.types import TypeEngine
 
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
@@ -175,7 +176,9 @@ class NDFrame:
         index: _bool = True,
         index_label: IndexLabel = None,
         chunksize: int | None = None,
-        dtype: DtypeArg | None = None,
+        dtype: (
+            DtypeArg | Mapping[Hashable, type[TypeEngine[Any]] | TypeEngine[Any]] | None
+        ) = None,
         method: (
             Literal["multi"]
             | Callable[

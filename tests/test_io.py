@@ -1246,6 +1246,28 @@ def test_read_sql_via_sqlalchemy_engine_with_params(tmp_path: Path) -> None:
     engine.dispose()
 
 
+def test_to_sql_dtype_sqlalchemy_type(tmp_path: Path) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
+    engine = sqlalchemy.create_engine(db_uri)
+
+    check(
+        assert_type(
+            DF.to_sql(
+                "test",
+                con=engine,
+                dtype={
+                    "a": sqlalchemy.types.VARCHAR(16),
+                    "b": sqlalchemy.types.INTEGER,
+                },
+            ),
+            int | None,
+        ),
+        int,
+    )
+    engine.dispose()
+
+
 def test_read_sql_generator(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     con = sqlite3.connect(path_str)
