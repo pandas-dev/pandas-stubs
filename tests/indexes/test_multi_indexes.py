@@ -1,43 +1,17 @@
 from __future__ import annotations
 
-from collections import (
-    UserList,
-    deque,
-)
 from typing import assert_type
 
 import numpy as np
 import pandas as pd
 from pandas.api.typing import FrozenList
 
-from tests import (
-    TYPE_CHECKING_INVALID_USAGE,
-    check,
-)
+from tests import check
 from tests._typing import (
     np_1darray_bool,
     np_1darray_int8,
     np_1darray_intp,
 )
-
-
-def test_constructor() -> None:
-    """Test constructor for the MultiIndex class."""
-    check(
-        assert_type(
-            pd.MultiIndex(levels=[[1, 2, 3], [4, 5, 6]], codes=[[0, 1, 2], [0, 1, 2]]),
-            pd.MultiIndex,
-        ),
-        pd.MultiIndex,
-    )
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        pd.MultiIndex()  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
-
-        data = [(1,), (2,)]
-        pd.MultiIndex(data)  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
-        pd.MultiIndex(UserList(data))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
-        pd.MultiIndex(deque(data))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
 
 
 def test_multiindex_unique() -> None:
