@@ -1265,6 +1265,22 @@ def test_to_sql_dtype_sqlalchemy_type(tmp_path: Path) -> None:
         ),
         int,
     )
+    check(
+        assert_type(
+            DF.to_sql(
+                "test_scalar_instance", con=engine, dtype=sqlalchemy.types.VARCHAR(16)
+            ),
+            int | None,
+        ),
+        int,
+    )
+    check(
+        assert_type(
+            DF.to_sql("test_scalar_class", con=engine, dtype=sqlalchemy.types.INTEGER),
+            int | None,
+        ),
+        int,
+    )
     engine.dispose()
 
 

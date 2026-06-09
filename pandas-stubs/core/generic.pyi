@@ -27,14 +27,14 @@ from pandas import Index
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 from sqlalchemy.engine import Connectable
-from sqlalchemy.types import TypeEngine
+from sqlalchemy.sql.type_api import TypeEngineMixin
 
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
     Axis,
     CompressionOptions,
     CSVQuoting,
-    DtypeArg,
+    Dtype,
     DtypeBackend,
     ExcelWriterMergeCells,
     FilePath,
@@ -177,7 +177,11 @@ class NDFrame:
         index_label: IndexLabel = None,
         chunksize: int | None = None,
         dtype: (
-            DtypeArg | Mapping[Hashable, type[TypeEngine[Any]] | TypeEngine[Any]] | None
+            Dtype
+            | type[TypeEngineMixin]
+            | TypeEngineMixin
+            | Mapping[Hashable, Dtype | type[TypeEngineMixin] | TypeEngineMixin]
+            | None
         ) = None,
         method: (
             Literal["multi"]
