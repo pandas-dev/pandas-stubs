@@ -2628,9 +2628,7 @@ def test_types_to_numpy() -> None:
     )
     # np.dtypes.StrDType(size) — fixed-width unicode
     check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtypes.StrDType(4)), np_1darray_str
-        ),
+        assert_type(s_td_small.to_numpy(dtype=np.dtypes.StrDType(4)), np_1darray_str),
         np_1darray,
         np.str_,
     )
