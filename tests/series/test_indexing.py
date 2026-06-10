@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 # pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
@@ -32,7 +31,7 @@ def test_types_iloc_iat() -> None:
     s2.iat[0] = None
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.iat[0, 0]  # type: ignore[index]  # pyright: ignore[reportArgumentType]
+        s.iat[0, 0]  # type: ignore[index]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-index]
 
 
 def test_types_loc_at() -> None:
