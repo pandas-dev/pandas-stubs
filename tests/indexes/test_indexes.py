@@ -165,6 +165,23 @@ def test_multiindex_constructors() -> None:
         ),
         pd.MultiIndex,
     )
+    check(
+        assert_type(
+            pd.MultiIndex(levels=UserList([[1, 2], [4, 5]]), codes=[[0, 1], [0, 1]]),
+            pd.MultiIndex,
+        ),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(
+            pd.MultiIndex(
+                levels=UserList([UserList([1, 2]), UserList([4, 5])]),
+                codes=[[0, 1], [0, 1]],
+            ),
+            pd.MultiIndex,
+        ),
+        pd.MultiIndex,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         pd.MultiIndex()  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
