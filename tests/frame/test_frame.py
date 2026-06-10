@@ -387,7 +387,12 @@ def test_types_drop() -> None:
     check(assert_type(df.drop(index=[0]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(index=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(labels=0), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.drop([0, 0], inplace=True), None), type(None))
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(assert_type(df.drop([0, 0], inplace=True), None), type(None))
+
     to_drop: list[str] = ["col1"]
     check(assert_type(df.drop(columns=to_drop), pd.DataFrame), pd.DataFrame)
     # GH 302
