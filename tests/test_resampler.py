@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 # pyright: reportMissingTypeArgument=false
 from collections.abc import (
     Hashable,
@@ -80,7 +79,7 @@ def test_filling() -> None:
 def test_fillna() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore
+        DF.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore  # pyrefly: ignore[not-callable]
 
 
 def test_aggregate() -> None:
@@ -178,49 +177,49 @@ def test_pipe() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").pipe(
+        DF.resample("ME").pipe(  # pyrefly: ignore[no-matching-overload]
             j,
             "a",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
             [1.0, 2.0],
             arg2="hi",
             kw=(1,),
         )
-        DF.resample("ME").pipe(
+        DF.resample("ME").pipe(  # pyrefly: ignore[no-matching-overload]
             j,
             1,
             [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportArgumentType,reportCallIssue]
             arg2="hi",
             kw=(1,),
         )
-        DF.resample("ME").pipe(
+        DF.resample("ME").pipe(  # pyrefly: ignore[no-matching-overload]
             j,
             1,
             [1.0],
             arg2=11,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
             kw=(1,),
         )
-        DF.resample("ME").pipe(
+        DF.resample("ME").pipe(  # pyrefly: ignore[no-matching-overload]
             j,
             1,
             [1.0],
             arg2="hi",
             kw=(1, 2),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         )
-        DF.resample("ME").pipe(  # type: ignore[call-arg]
+        DF.resample("ME").pipe(  # type: ignore[call-arg]  # pyrefly: ignore[no-matching-overload]
             j,
             1,
             [1.0],
             arg3="hi",  # pyright: ignore[reportCallIssue]
             kw=(1,),
         )
-        DF.resample("ME").pipe(  # type: ignore[call-overload]
+        DF.resample("ME").pipe(  # type: ignore[call-overload]  # pyrefly: ignore[no-matching-overload]
             j,
             1,
             [1.0],
             11,
             (1,),  # pyright: ignore[reportCallIssue]
         )
-        DF.resample("ME").pipe(  # type: ignore[call-overload]
+        DF.resample("ME").pipe(  # type: ignore[call-overload]  # pyrefly: ignore[no-matching-overload]
             j,
             pos=1,  # pyright: ignore[reportCallIssue]
             arg1=[1.0],
@@ -235,7 +234,9 @@ def test_pipe() -> None:
     check(assert_type(DF.resample("ME").pipe((k, "t"), 1), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").pipe(  # pyright: ignore[reportCallIssue]
+        DF.resample(
+            "ME"
+        ).pipe(  # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
             (k, 1),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             1,
         )
@@ -295,7 +296,7 @@ def test_filling_series() -> None:
 def test_fillna_series() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        S.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore
+        S.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore  # pyrefly: ignore[not-callable]
 
 
 def test_aggregate_series() -> None:

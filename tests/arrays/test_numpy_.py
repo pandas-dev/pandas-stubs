@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from collections import UserList
 from collections.abc import (
     Callable,
@@ -271,7 +270,7 @@ def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -
         assert_type(NumpyExtensionArray(pd.array([None])), NumpyExtensionArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]

@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from collections import UserList
 from collections.abc import (
     Callable,
@@ -140,11 +139,11 @@ def test_constructor() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list_np = BooleanArray([True], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _np_list = BooleanArray(np.array([True]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _pd_arr = BooleanArray(pd.array([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _i = BooleanArray(pd.Index([False]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _s = BooleanArray(pd.Series([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _list_np = BooleanArray([True], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _np_list = BooleanArray(np.array([True]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _pd_arr = BooleanArray(pd.array([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _i = BooleanArray(pd.Index([False]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _s = BooleanArray(pd.Series([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
 
 
 def test_dtype() -> None:
