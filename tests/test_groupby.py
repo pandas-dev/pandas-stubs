@@ -264,9 +264,7 @@ def test_frame_groupby_resample() -> None:
     check(assert_type(GB_DF.resample("ME").transform(j), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(
-            GB_DF.resample("ME").interpolate(), Never
-        )  # pyrefly: ignore[assert-type]
+        assert_type(GB_DF.resample("ME").interpolate(), Never)
 
 
 def test_series_groupby_resample() -> None:
@@ -1162,4 +1160,4 @@ def test_dataframe_groupby_dtypes() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
 
         def _0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(GB_DF.dtypes, Never)  # pyrefly: ignore[assert-type]
+            assert_type(GB_DF.dtypes, Never)
