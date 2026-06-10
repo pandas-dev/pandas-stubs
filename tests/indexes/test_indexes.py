@@ -1681,7 +1681,8 @@ def test_index_droplevel() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         idx.droplevel()  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
         idx.droplevel(0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        idx.droplevel([0])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        # TODO: the following change is caused by python/mypy#21497. Remove unused-ignore after mypy 2.2.0.
+        idx.droplevel([0])  # type: ignore[arg-type,list-item,unused-ignore] # pyright: ignore[reportArgumentType]
         idx.droplevel("name")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
