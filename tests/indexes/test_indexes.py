@@ -194,19 +194,11 @@ def test_multiindex_constructors() -> None:
         pd.MultiIndex(UserList([[1, 2, 3], [4, 5, 6]]))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
         pd.MultiIndex(UserList([UserList([1, 2, 3]), UserList([4, 5, 6])]))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
 
-        pd.MultiIndex("12345", "abcde")  # pyright: ignore[reportArgumentType]
-        pd.MultiIndex(
-            [[1, 2, 3], [4, 5, 6]], "abcdef"
-        )  # pyright: ignore[reportArgumentType]
-        pd.MultiIndex(
-            "abcdef", [[1, 2, 3], [4, 5, 6]]
-        )  # pyright: ignore[reportArgumentType]
-        pd.MultiIndex(
-            ["abcdef"], [[1, 2, 3], [4, 5, 6]]
-        )  # pyright: ignore[reportArgumentType]
-        pd.MultiIndex(
-            [[1], [4]], codes=[["b"], ["a"]]
-        )  # pyright: ignore[reportArgumentType]
+        pd.MultiIndex("12345", "abcde")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        pd.MultiIndex([[1, 2, 3], [4, 5, 6]], "abcdef")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        pd.MultiIndex("abcdef", [[1, 2, 3], [4, 5, 6]])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        pd.MultiIndex(["abcdef"], [[1, 2, 3], [4, 5, 6]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType]
+        pd.MultiIndex([[1], [4]], codes=[["b"], ["a"]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType]
 
 
 def test_index_tolist() -> None:
