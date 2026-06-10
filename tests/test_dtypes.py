@@ -188,7 +188,7 @@ def test_string_dtype(
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
         check(s_dt, pd.StringDtype)
-        # TODO: facebook/pyrefly#3746
+        # TODO: facebook/pyrefly#3742
         assert s_dt.storage in (  # pyrefly: ignore[no-matching-overload]
             {storage} if storage else {"python", "pyarrow"}
         )
@@ -202,7 +202,7 @@ def test_string_dtype(
 
         assert_type(pd.StringDtype().storage, Literal["python", "pyarrow"])
         assert_type(pd.StringDtype(None).storage, Literal["python", "pyarrow"])
-        # TODO: facebook/pyrefly#3746
+        # TODO: facebook/pyrefly#3742
         assert_type(  # pyrefly: ignore[assert-type]
             pd.StringDtype("python").storage,  # pyrefly: ignore[no-matching-overload]
             Literal["python"],
