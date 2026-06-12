@@ -237,7 +237,7 @@ BuiltinBooleanDtypeArg: TypeAlias = type[bool] | Literal["bool"]
 PandasBooleanDtypeArg: TypeAlias = pd.BooleanDtype | Literal["boolean"]
 # Numpy bool type
 # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_
-NumpyBooleanDtypeArg: TypeAlias = type[np.bool_] | Literal["?", "b1", "bool_"]
+NumpyBooleanDtypeArg: TypeAlias = type[np.bool] | Literal["?", "b1", "bool_"]
 # PyArrow boolean type and its string alias
 PyArrowBooleanDtypeArg: TypeAlias = Literal["bool[pyarrow]", "boolean[pyarrow]"]
 BooleanDtypeArg: TypeAlias = (
