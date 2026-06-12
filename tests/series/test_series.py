@@ -2105,12 +2105,14 @@ def test_types_to_numpy() -> None:
         np.bool_,
     )
     check(
-        assert_type(s_td_small.to_numpy(dtype=np.bool), np_1darray_bool),
+        # TODO: python/mypy#21608
+        assert_type(s_td_small.to_numpy(dtype=np.bool), np_1darray_bool),  # type: ignore[assert-type,unused-ignore]
         np_1darray,
         np.bool_,
     )
     check(
-        assert_type(s_td_small.to_numpy(dtype=np.bool_), np_1darray[np.bool]),
+        # TODO: python/mypy#21608
+        assert_type(s_td_small.to_numpy(dtype=np.bool_), np_1darray_bool),  # type: ignore[assert-type,unused-ignore]
         np_1darray,
         np.bool_,
     )
