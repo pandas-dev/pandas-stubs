@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from collections import UserList
 from collections.abc import (
     Callable,
@@ -67,7 +66,7 @@ def test_construction_sequence_nan(
     data: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
     # can't use assert_type as mypy sees the result as Any while pyright matches to FloatingArray
-    check(assert_type(pd.array(typ(data)), FloatingArray), FloatingArray)  # type: ignore[assert-type]
+    check(assert_type(pd.array(typ(data)), FloatingArray), FloatingArray)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
 
     if TYPE_CHECKING:
         assert_type(pd.array([]), FloatingArray)
