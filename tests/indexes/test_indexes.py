@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from __future__ import annotations
 
 from collections import (
@@ -79,8 +78,8 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
     if TYPE_CHECKING_INVALID_USAGE:
-        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_index_astype() -> None:
@@ -194,11 +193,11 @@ def test_multiindex_constructors() -> None:
         pd.MultiIndex(UserList([[1, 2, 3], [4, 5, 6]]))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
         pd.MultiIndex(UserList([UserList([1, 2, 3]), UserList([4, 5, 6])]))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
 
-        pd.MultiIndex("12345", "abcde")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        pd.MultiIndex([[1, 2, 3], [4, 5, 6]], "abcdef")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        pd.MultiIndex("abcdef", [[1, 2, 3], [4, 5, 6]])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        pd.MultiIndex(["abcdef"], [[1, 2, 3], [4, 5, 6]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType]
-        pd.MultiIndex([[1], [4]], codes=[["b"], ["a"]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType]
+        pd.MultiIndex("12345", "abcde")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex([[1, 2, 3], [4, 5, 6]], "abcdef")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex("abcdef", [[1, 2, 3], [4, 5, 6]])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex(["abcdef"], [[1, 2, 3], [4, 5, 6]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex([[1], [4]], codes=[["b"], ["a"]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_index_tolist() -> None:
@@ -947,47 +946,47 @@ def test_index_operators() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             & i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             & 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
-        assert_type(  # type: ignore[assert-type]
-            10
+        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+            10  # pyrefly: ignore[unsupported-operation]
             & i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             | i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             | 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
-        assert_type(  # type: ignore[assert-type]
-            10
+        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+            10  # pyrefly: ignore[unsupported-operation]
             | i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             ^ i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1
+            i1  # pyrefly: ignore[unsupported-operation]
             ^ 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
-        assert_type(  # type: ignore[assert-type]
-            10
+        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+            10  # pyrefly: ignore[unsupported-operation]
             ^ i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
@@ -1096,7 +1095,11 @@ def test_append_mix() -> None:
     check(assert_type(first.append([third]), pd.Index), pd.Index)
     check(assert_type(first.append([second, third]), pd.Index), pd.Index)
 
-    check(assert_type(third.append([]), pd.Index), pd.Index)
+    check(
+        # pyrefly: ERROR assert_type(Index[int | str], Index) failed [assert-type]
+        assert_type(third.append([]), pd.Index),  # pyrefly: ignore[assert-type]
+        pd.Index,
+    )
     check(assert_type(third.append(cast("list[Index[Any]]", [])), pd.Index), pd.Index)
     check(assert_type(third.append([first]), pd.Index), pd.Index)
     check(assert_type(third.append([first, second]), pd.Index), pd.Index)
@@ -1340,7 +1343,7 @@ def test_index_categorical() -> None:
 def test_disallow_empty_index() -> None:
     # From GH 826
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_periodindex_shift() -> None:
@@ -1679,17 +1682,17 @@ def test_index_droplevel() -> None:
     check(assert_type(mi.droplevel(("elk",)), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(0), pd.MultiIndex | pd.Index), pd.Index)
     if TYPE_CHECKING_INVALID_USAGE:
-        idx.droplevel()  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
-        idx.droplevel(0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        idx.droplevel()  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[missing-argument]
+        idx.droplevel(0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         # TODO: the following change is caused by python/mypy#21497. Remove unused-ignore after mypy 2.2.0.
-        idx.droplevel([0])  # type: ignore[arg-type,list-item,unused-ignore] # pyright: ignore[reportArgumentType]
-        idx.droplevel("name")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        idx.droplevel([0])  # type: ignore[arg-type,list-item,unused-ignore] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        idx.droplevel("name")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_index_setitem() -> None:
     idx = pd.Index([1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        idx[0] = 999  # type: ignore[index] # pyright: ignore[reportIndexIssue]
+        idx[0] = 999  # type: ignore[index] # pyright: ignore[reportIndexIssue] # pyrefly: ignore[unsupported-operation]
 
 
 def test_index_putmask() -> None:
