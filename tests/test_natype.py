@@ -84,6 +84,7 @@ def test_arithmetic() -> None:
 
     # __divmod__
     check(assert_type(divmod(na, s_int), tuple[pd.Series, pd.Series]), tuple, pd.Series)
+    # TODO: facebook/pyrefly#3822
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             divmod(na, idx_int), tuple[pd.Index, pd.Index]
@@ -91,6 +92,7 @@ def test_arithmetic() -> None:
         tuple,
         pd.Index,
     )
+    # TODO: microsoft/pyright#10899 facebook/pyrefly#3822
     check(
         assert_type(  # pyright: ignore[reportUnknownArgumentType] # pyrefly: ignore[assert-type]
             divmod(  # pyright: ignore[reportCallIssue, reportAssertTypeFailure] # pyrefly: ignore[no-matching-overload]
