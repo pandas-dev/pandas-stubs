@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 import functools
 import re
 from typing import assert_type
@@ -82,9 +81,9 @@ def test_string_accessors_boolean_series() -> None:
     _check(assert_type(sr.str.contains("kapow", na=False), "pd.Series[bool]"))
 
     if TYPE_CHECKING_INVALID_USAGE:
-        sr.str.startswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        sr.str.endswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        sr.str.contains("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        sr.str.startswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        sr.str.endswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        sr.str.contains("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_string_accessors_boolean_index() -> None:
@@ -133,9 +132,9 @@ def test_string_accessors_boolean_index() -> None:
     _check(assert_type(idx.str.contains("kapow", na=False), np_1darray_bool))
 
     if TYPE_CHECKING_INVALID_USAGE:
-        idx.str.startswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        idx.str.endswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        idx.str.contains("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        idx.str.startswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        idx.str.endswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        idx.str.contains("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_string_accessors_integer_series() -> None:
@@ -150,7 +149,7 @@ def test_string_accessors_integer_series() -> None:
 
     # unlike findall, find doesn't accept a compiled pattern
     with pytest.raises(TypeError):
-        s.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        s.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_string_accessors_integer_index() -> None:
@@ -165,7 +164,7 @@ def test_string_accessors_integer_index() -> None:
 
     # unlike findall, find doesn't accept a compiled pattern
     with pytest.raises(TypeError):
-        idx.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        idx.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_string_accessors_string_series() -> None:
@@ -223,7 +222,7 @@ def test_string_accessors_string_series() -> None:
 
     # wrap doesn't accept positional arguments other than width
     if TYPE_CHECKING_INVALID_USAGE:
-        s.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+        s.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
 
 def test_string_accessors_string_index() -> None:
@@ -287,7 +286,7 @@ def test_string_accessors_string_index() -> None:
 
     # wrap doesn't accept positional arguments other than width
     if TYPE_CHECKING_INVALID_USAGE:
-        idx.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
+        idx.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
 
 def test_string_accessors_bytes_series() -> None:
@@ -316,7 +315,7 @@ def test_string_accessors_list_series() -> None:
     # it doesn't raise at runtime but produces a nan
     if TYPE_CHECKING_INVALID_USAGE:
         _bad_rsplit_result = s.str.rsplit(
-            re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+            re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         )
 
 
@@ -337,7 +336,7 @@ def test_string_accessors_list_index() -> None:
     # it doesn't raise at runtime but produces a nan
     if TYPE_CHECKING_INVALID_USAGE:
         _bad_rsplit_result = idx.str.rsplit(
-            re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+            re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         )
 
 
@@ -566,4 +565,4 @@ def test_series_str_replace() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = sr.str.replace(pat={"A": "a", "B": "b"}, repl="A")  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
+        _0 = sr.str.replace(pat={"A": "a", "B": "b"}, repl="A")  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
