@@ -26,8 +26,8 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("data", powerset([True, np.bool_(True)], 1))
-@pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
+@pytest.mark.parametrize("data", list(powerset([True, np.bool_(True)], 1)))
+@pytest.mark.parametrize("missing_values", list(powerset([np.nan, None, pd.NA])))
 def test_construction_sequence(
     data: tuple[bool | np.bool_, ...],
     missing_values: tuple[Any, ...],
@@ -64,7 +64,7 @@ def test_construction_array_like() -> None:
     )
 
 
-@pytest.mark.parametrize("data", powerset([False, np.bool(False)]))
+@pytest.mark.parametrize("data", list(powerset([False, np.bool(False)])))
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_BOOL_ARGS.items())
 def test_construction_dtype(
     data: tuple[bool | np.bool, ...], dtype: PandasBooleanDtypeArg, target_dtype: type

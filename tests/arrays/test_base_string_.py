@@ -30,8 +30,8 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("data", powerset(["pd", np.str_("pd")], 1))
-@pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
+@pytest.mark.parametrize("data", list(powerset(["pd", np.str_("pd")], 1)))
+@pytest.mark.parametrize("missing_values", list(powerset([np.nan, None, pd.NA])))
 def test_construction_sequence(
     data: tuple[str | np.str_, ...],
     missing_values: tuple[Any, ...],
@@ -68,7 +68,7 @@ def test_construction_array_like() -> None:
     )
 
 
-@pytest.mark.parametrize("data", powerset(["pd", np.str_("pd")]))
+@pytest.mark.parametrize("data", list(powerset(["pd", np.str_("pd")])))
 @pytest.mark.parametrize(
     ("dtype", "target_dtype"), (PYTHON_STRING_ARGS | PANDAS_BASE_STRING_ARGS).items()
 )

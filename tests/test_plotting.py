@@ -381,7 +381,7 @@ def test_scatter_matrix(close_figures: None) -> None:
 def test_table(close_figures: None) -> None:
     df = pd.DataFrame(np.random.randn(1000, 4), columns=["A", "B", "C", "D"])
     # TODO: matplotlib/matplotlib#31003 fig_kw in plt.subplots is untyped, hence the pyright ignore; will be resolved with mpl 3.11.0
-    _, ax = plt.subplots(1, 1)  # pyright: ignore[reportUnknownMemberType]
+    _, ax = plt.subplots(1, 1)
     check(assert_type(pd.plotting.table(ax, df), Table), Table)
 
 
@@ -569,7 +569,7 @@ def test_plot_scatter(close_figures: None) -> None:
 
 def test_plot_keywords(close_figures: None) -> None:
     # TODO: matplotlib/matplotlib#31003 fig_kw in plt.subplots is untyped, hence the pyright ignore; will be resolved with mpl 3.11.0
-    _, ax = plt.subplots(1, 1)  # pyright: ignore[reportUnknownMemberType]
+    _, ax = plt.subplots(1, 1)
     df = IRIS_DF.iloc[:, :3].abs()
     check(
         assert_type(

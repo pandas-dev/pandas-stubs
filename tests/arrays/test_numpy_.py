@@ -34,7 +34,7 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("missing_values", powerset([None, pd.NA], 1))
+@pytest.mark.parametrize("missing_values", list(powerset([None, pd.NA], 1)))
 def test_construction_sequence(
     missing_values: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
