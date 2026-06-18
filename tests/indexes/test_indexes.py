@@ -1077,11 +1077,7 @@ def test_append_mix() -> None:
     check(assert_type(first.append([third]), pd.Index), pd.Index)
     check(assert_type(first.append([second, third]), pd.Index), pd.Index)
 
-    check(
-        # pyrefly: ERROR assert_type(Index[int | str], Index) failed [assert-type]
-        assert_type(third.append([]), pd.Index),  # pyrefly: ignore[assert-type]
-        pd.Index,
-    )
+    check(assert_type(third.append([]), pd.Index), pd.Index)
     check(assert_type(third.append(cast("list[Index[Any]]", [])), pd.Index), pd.Index)
     check(assert_type(third.append([first]), pd.Index), pd.Index)
     check(assert_type(third.append([first, second]), pd.Index), pd.Index)
