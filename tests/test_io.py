@@ -1281,6 +1281,16 @@ def test_to_sql_dtype_sqlalchemy_type(tmp_path: Path) -> None:
         ),
         int,
     )
+    df_int_cols = DataFrame({0: [1, 2, 3]})
+    check(
+        assert_type(
+            df_int_cols.to_sql(
+                "test_non_str_key", con=engine, dtype={0: sqlalchemy.types.INTEGER}
+            ),
+            int | None,
+        ),
+        int,
+    )
     engine.dispose()
 
 
