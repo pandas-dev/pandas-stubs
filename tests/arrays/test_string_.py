@@ -24,7 +24,7 @@ from tests.dtypes import PANDAS_STRING_ARGS
 from tests.utils import powerset
 
 
-@pytest.mark.parametrize("data", powerset(["pd", np.str_("pd")]))
+@pytest.mark.parametrize("data", list(powerset(["pd", np.str_("pd")])))
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_STRING_ARGS.items())
 def test_construction_dtype(
     data: tuple[str | np.str_, ...], dtype: PandasStrDtypeArg, target_dtype: type
