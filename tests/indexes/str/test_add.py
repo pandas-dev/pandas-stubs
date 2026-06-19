@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from typing import (
     Never,
     assert_type,
@@ -28,11 +27,11 @@ def test_add_py_scalar() -> None:
     r0 = "right"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(left + r0, "pd.Index[str]"), pd.Index, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(r0 + left, "pd.Index[str]"), pd.Index, str)
 
 
@@ -43,13 +42,13 @@ def test_add_py_sequence() -> None:
     r1 = tuple(r0)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(left + r0, "pd.Index[str]"), pd.Index, str)
     with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="3.0.99"):
         check(assert_type(left + r1, "pd.Index[str]"), pd.Index, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(r0 + left, "pd.Index[str]"), pd.Index, str)
     with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="3.0.99"):
         check(assert_type(r1 + left, "pd.Index[str]"), pd.Index, str)
@@ -81,9 +80,9 @@ def test_add_pd_index() -> None:
     r0 = pd.Index(["a", "bc", "def"])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(left + r0, "pd.Index[str]"), pd.Index, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(r0 + left, "pd.Index[str]"), pd.Index, str)
