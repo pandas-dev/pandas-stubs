@@ -1474,6 +1474,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def str(
         self,
     ) -> StringMethods[
+        S1,
         Self,
         DataFrame,
         Series[bool],
