@@ -49,16 +49,18 @@ from tests.utils import powerset
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
 @pytest.mark.parametrize(
     "data",
-    powerset(
-        [
-            datetime(2026, 1, 4),
-            pd.Timestamp(2026, 1, 8),
-            np.datetime64("2131-01-05 01:25"),
-        ],
-        1,
+    list(
+        powerset(
+            [
+                datetime(2026, 1, 4),
+                pd.Timestamp(2026, 1, 8),
+                np.datetime64("2131-01-05 01:25"),
+            ],
+            1,
+        )
     ),
 )
-@pytest.mark.parametrize("missing_values", powerset([None, pd.NaT]))
+@pytest.mark.parametrize("missing_values", list(powerset([None, pd.NaT])))
 def test_construction_sequence_pandas(
     data: tuple[datetime | pd.Timestamp, ...],
     missing_values: tuple[Any, ...],
@@ -122,7 +124,9 @@ def test_construction_sequence_pandas(
         assert_type(pd.array(UserList([np.datetime64("1701-01-05")])), DatetimeArray)
 
 
-@pytest.mark.parametrize("data", powerset([datetime(1710, 10, 10), "2020-11-11 10:00"]))
+@pytest.mark.parametrize(
+    "data", list(powerset([datetime(1710, 10, 10), "2020-11-11 10:00"]))
+)
 @pytest.mark.parametrize(
     ("dtype", "target_dtype"),
     (
