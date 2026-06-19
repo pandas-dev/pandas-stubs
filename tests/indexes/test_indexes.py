@@ -945,33 +945,15 @@ def test_index_operators() -> None:
     check(assert_type(divmod(10, i1), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
 
     if TYPE_CHECKING_INVALID_USAGE:
-
-        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(i1 & i2, Never)  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
-
-        def _1() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(i1 & 10, Never)  # type: ignore[operator, assert-type] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
-
-        def _2() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(1 & i1, Never)  # type: ignore[operator, assert-type] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation] # pyrefly: ignore[assert-type]
-
-        def _3() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(i1 | i2, Never)  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
-
-        def _4() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(i1 | 10, Never)  # type: ignore[operator, assert-type] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
-
-        def _5() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(1 | i1, Never)  # type: ignore[operator, assert-type] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation] # pyrefly: ignore[assert-type]
-
-        def _6() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(i1 ^ i2, Never)  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
-
-        def _7() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(i1 ^ 10, Never)  # type: ignore[operator, assert-type] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation]
-
-        def _8() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(1 ^ i1, Never)  # type: ignore[operator, assert-type] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue] # pyrefly: ignore[unsupported-operation] # pyrefly: ignore[assert-type]
+        _i1_a_i2 = i1 & i2  # type: ignore[operator,var-annotated] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_a_10 = i1 & 10  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1_a_i1 = 1 & i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_o_i2 = i1 | i2  # type: ignore[operator,var-annotated] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_o_10 = i1 | 10  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1_o_i1 = 1 | i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_x_i2 = i1 ^ i2  # type: ignore[operator,var-annotated] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_x_10 = i1 ^ 10  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1_x_i1 = 1 ^ i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
 
 def test_getitem() -> None:
