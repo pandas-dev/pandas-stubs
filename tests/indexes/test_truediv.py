@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from pathlib import Path
 from typing import (
     Any,
@@ -68,20 +67,29 @@ def test_truediv_numpy_array(left_i: pd.Index) -> None:
     # checking, where our `__rtruediv__` cannot override. At runtime, they return
     # `Index`.
     # microsoft/pyright#10924
+    # https://github.com/pandas-dev/pandas-stubs/issues/1781
     check(
-        assert_type(b / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            b / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
     )
     check(
-        assert_type(i / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            i / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
     )
     check(
-        assert_type(f / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            f / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
     )
     check(
-        assert_type(c / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            c / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
     )
 
@@ -134,5 +142,5 @@ def test_truediv_str_py_str(left_i: pd.Index) -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
-        _1 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        _0 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _1 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
