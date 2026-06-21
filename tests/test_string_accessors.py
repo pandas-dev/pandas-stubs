@@ -56,6 +56,7 @@ def test_string_accessors_boolean_series() -> None:
     _check(assert_type(s.str.match(re.compile(r"pp")), "pd.Series[bool]"))
 
     sr_a = pd.DataFrame({"a": DATA})["a"]
+
     _check(assert_type(sr_a.str.startswith("a"), "pd.Series[bool]"))
     _check(assert_type(sr_a.str.startswith(("a", "b")), "pd.Series[bool]"))
     _check(assert_type(sr_a.str.contains("a"), "pd.Series[bool]"))
@@ -279,6 +280,7 @@ def test_string_accessors_string_series() -> None:
     _check(assert_type(s_list.str.join("-"), "pd.Series[str]"))
 
     sr_a = pd.DataFrame({"a": DATA})["a"]
+
     _check(assert_type(sr_a.str.capitalize(), "pd.Series[str]"))
     _check(assert_type(sr_a.str.casefold(), "pd.Series[str]"))
     check(assert_type(sr_a.str.cat(sep="X"), str), str)
@@ -399,12 +401,8 @@ def test_string_accessors_string_index() -> None:
     _check(assert_type(idx.str.strip(), "pd.Index[str]"))
     _check(assert_type(idx.str.swapcase(), "pd.Index[str]"))
     _check(assert_type(idx.str.title(), "pd.Index[str]"))
-    _check(
-        assert_type(idx.str.translate({241: "n"}), "pd.Index[str]"),
-    )
-    _check(
-        assert_type(idx.str.translate({241: 240}), "pd.Index[str]"),
-    )
+    _check(assert_type(idx.str.translate({241: "n"}), "pd.Index[str]"))
+    _check(assert_type(idx.str.translate({241: 240}), "pd.Index[str]"))
     trans_table: dict[int, int] = {ord("a"): ord("b")}
     _check(  # tests covariance of table values (table is read-only)
         assert_type(idx.str.translate(trans_table), "pd.Index[str]"),
@@ -453,9 +451,7 @@ def test_string_accessors_string_index() -> None:
     _check(
         assert_type(idx_a.str.translate({241: "n"}), "pd.Index[str]"),
     )
-    _check(
-        assert_type(idx_a.str.translate({241: 240}), "pd.Index[str]"),
-    )
+    _check(assert_type(idx_a.str.translate({241: 240}), "pd.Index[str]"))
     _check(  # tests covariance of table values (table is read-only)
         assert_type(idx_a.str.translate(trans_table), "pd.Index[str]"),
     )
@@ -535,9 +531,7 @@ def test_string_accessors_list_series() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # rsplit doesn't accept compiled pattern
         # it doesn't raise at runtime but produces a nan
-        _bad_rsplit_result = s.str.rsplit(
-            re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        )
+        _bad_rsplit_result = s.str.rsplit(re.compile(r"a"))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
         idx_i = pd.Index([1])
 
@@ -575,9 +569,7 @@ def test_string_accessors_list_index() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # rsplit doesn't accept compiled pattern
         # it doesn't raise at runtime but produces a nan
-        _bad_rsplit_result = idx.str.rsplit(
-            re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        )
+        _bad_rsplit_result = idx.str.rsplit(re.compile(r"a"))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
         idx_i = pd.Index([1])
 
@@ -808,6 +800,7 @@ def test_index_overloads_extract() -> None:
 def test_series_str_replace() -> None:
     """Test replace method for Series.str GH1654."""
     sr = pd.Series(data=["A", "B_junk", "C_gunk"], name="my_messy_col")
+
     check(
         assert_type(sr.str.replace(pat={"A": "a", "B": "b"}), "pd.Series[str]"),
         pd.Series,
@@ -815,6 +808,7 @@ def test_series_str_replace() -> None:
     )
 
     sr_a = pd.DataFrame({"my_messy_col": ["A", "B_junk", "C_gunk"]})["my_messy_col"]
+
     check(
         assert_type(sr_a.str.replace(pat={"A": "a", "B": "b"}), "pd.Series[str]"),
         pd.Series,
