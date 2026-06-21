@@ -351,6 +351,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def str(
         self,
     ) -> StringMethods[
+        S1,
         Self,
         MultiIndex,
         np_1darray_bool,
