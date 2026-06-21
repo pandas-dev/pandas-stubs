@@ -60,11 +60,10 @@ from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.frozen import FrozenList
 from pandas.core.indexes.interval import IntervalIndex
-from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from pandas.core.strings.accessor import StringMethods
+from pandas.core.strings.accessor import StrDescriptor
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs.period import Period
@@ -347,20 +346,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         name: Hashable = None,
         tupleize_cols: bool = True,
     ) -> Self: ...
-    @property
-    def str(
-        self,
-    ) -> StringMethods[
-        S1,
-        Self,
-        MultiIndex,
-        np_1darray_bool,
-        Index[list[_str]],
-        Index[int],
-        Index[bytes],
-        Index[_str],
-        Index,
-    ]: ...
+    str = StrDescriptor()
     @final
     def is_(self, other: Any) -> bool: ...
     def __len__(self) -> int: ...
