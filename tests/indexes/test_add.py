@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from typing import (
     Any,
     assert_type,
@@ -63,20 +62,29 @@ def test_add_i_numpy_array() -> None:
     # checking, where our `__radd__` cannot override. At runtime, they return
     # `Index`es.
     # microsoft/pyright#10924
+    # https://github.com/pandas-dev/pandas-stubs/issues/1781
     check(
-        assert_type(b + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            b + left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
     )
     check(
-        assert_type(i + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            i + left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
     )
     check(
-        assert_type(f + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            f + left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
     )
     check(
-        assert_type(c + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            c + left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
     )
 
