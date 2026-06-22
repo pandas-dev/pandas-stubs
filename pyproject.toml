@@ -69,7 +69,7 @@ dev = [
   "pytz>=2025.2",
   "types-pytz>=2022.1.1",
   "pyiceberg>=0.10.0",
-  "numpy-typing-compat>=20260602.2.4",
+  "numpy-typing-compat>=20260602",
 ]
 
 [build-system]
