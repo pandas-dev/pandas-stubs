@@ -94,22 +94,22 @@ def test_floordiv_numpy_array(left_i: pd.Index) -> None:
     # errors or pd.Index.
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            b // left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure]
+            b // left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
         np.integer,
     )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            i // left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure]
+            i // left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
         np.integer,
     )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            f // left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure]
+            f // left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Index,
         np.floating,
     )
@@ -118,8 +118,8 @@ def test_floordiv_numpy_array(left_i: pd.Index) -> None:
         assert_type(s // left_i, Any)
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            d // left_i, Any
-        ),  # pyright: ignore[reportAssertTypeFailure]
+            d // left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.TimedeltaIndex,
         pd.Timedelta,
     )
