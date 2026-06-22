@@ -21,7 +21,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
-dependencies = ["numpy>=1.23.5"]
+dependencies = ["numpy>=1.23.5,<2.5"]  # TODO: pandas-dev/pandas-stubs#1786 remove <2.5
 
 [project.urls]
 Homepage = "https://pandas.pydata.org"
@@ -70,7 +70,6 @@ dev = [
   "types-pytz>=2022.1.1",
   "pyiceberg>=0.10.0",
   "numpy-typing-compat>=20260602",
-  "numpy<2.5",  # TODO: pandas-dev/pandas-stubs#1786 to be removed
 ]
 
 [build-system]
