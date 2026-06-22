@@ -65,7 +65,7 @@ def test_constructor() -> None:
     # np.array() is typed as ndarray[Any, Any] by numpy stubs, so mypy cannot infer
     # the element type; the actual type is Categorical[str]
     # https://github.com/facebook/pyrefly/issues/3891
-    check(assert_type(cat_np, "Categorical[str]"), Categorical)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # pyrefly: ignore[assert-type]
+    check(assert_type(cat_np, "Categorical[str]"), Categorical)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
 
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c", "d"])
     check(assert_type(cat, "Categorical[str]"), Categorical)
