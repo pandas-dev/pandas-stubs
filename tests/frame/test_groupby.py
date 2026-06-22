@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 # pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
@@ -127,7 +126,8 @@ def test_types_groupby() -> None:
     df.groupby([lambda x: x % 2, lambda x: x % 3])
     df.groupby(np.array([1, 0, 1]))
     df.groupby([np.array([1, 0, 0]), np.array([0, 0, 1])])
-    df.groupby({1: 1, 2: 2, 3: 3})
+    # https://github.com/facebook/pyrefly/issues/3268
+    df.groupby({1: 1, 2: 2, 3: 3})  # pyrefly: ignore[no-matching-overload]
     df.groupby([{1: 1, 2: 1, 3: 2}, {1: 1, 2: 2, 3: 2}])
     df.groupby(df.index)
     df.groupby([pd.Index([1, 0, 0]), pd.Index([0, 0, 1])])
@@ -205,7 +205,10 @@ def test_types_groupby_agg() -> None:
     def wrapped_min(x: pd.Series) -> Scalar:
         return x.min()
 
-    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
+    # https://github.com/facebook/pyrefly/issues/3891
+    check(
+        assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series
+    )  # pyrefly: ignore[assert-type]
     check(
         assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
         pd.DataFrame,
@@ -338,7 +341,7 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.nth((0, 1, 2)), pd.DataFrame | pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
+        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword]
 
 
 def test_groupby_index() -> None:
@@ -555,7 +558,10 @@ def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
+    # https://github.com/facebook/pyrefly/issues/3891
+    check(
+        assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series
+    )  # pyrefly: ignore[assert-type]
     check(
         assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
         pd.DataFrame,
