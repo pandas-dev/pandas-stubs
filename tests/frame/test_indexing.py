@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from __future__ import annotations
 
 from collections import (
@@ -160,7 +159,8 @@ def test_indexslice_getitem() -> None:
     )
     ind = pd.Index([2, 3])
     check(
-        assert_type(
+        # https://github.com/facebook/pyrefly/issues/3896
+        assert_type(  # pyrefly: ignore[assert-type]
             pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
         ),
         tuple,
@@ -658,4 +658,4 @@ def test_frame_iat() -> None:
     df.iat[0, 0] = 999
     df.iat[0, 0] = float("nan")
     if TYPE_CHECKING_INVALID_USAGE:
-        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType]
+        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation]
