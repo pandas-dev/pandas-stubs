@@ -119,7 +119,7 @@ from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPriva
 from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
-from pandas.core.strings.accessor import StringMethods
+from pandas.core.strings.accessor import StrDescriptor
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
@@ -1470,20 +1470,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         how: ToTimestampHow = "start",
     ) -> Series[S1]: ...
     def to_period(self, freq: PeriodFrequency | None = None) -> DataFrame: ...
-    @property
-    def str(
-        self,
-    ) -> StringMethods[
-        S1,
-        Self,
-        DataFrame,
-        Series[bool],
-        Series[list[_str]],
-        Series[int],
-        Series[bytes],
-        Series[_str],
-        Series,
-    ]: ...
+    str = StrDescriptor()
     dt = DtDescriptor()
     @property
     def plot(self) -> PlotAccessor: ...
