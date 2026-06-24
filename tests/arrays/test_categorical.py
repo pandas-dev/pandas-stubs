@@ -110,7 +110,7 @@ def test_constructor() -> None:
     )
 
     cat_mixed = Categorical(["a", 1, "b", 2])
-    # https://github.com/facebook/pyrefly/issues/3891
+    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
         assert_type(cat_mixed, Categorical), Categorical  # pyrefly: ignore[assert-type]
     )
