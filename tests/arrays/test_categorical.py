@@ -23,7 +23,7 @@ from tests._typing import (
 
 
 def test_construction_array_like() -> None:
-    # https://github.com/facebook/pyrefly/issues/3891
+    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             pd.array(pd.Categorical([1])),
@@ -64,14 +64,14 @@ def test_constructor() -> None:
     cat_np = Categorical(values)
     # np.array() is typed as ndarray[Any, Any] by numpy stubs, so mypy cannot infer
     # the element type; the actual type is Categorical[str]
-    # https://github.com/facebook/pyrefly/issues/3891
+    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(assert_type(cat_np, "Categorical[str]"), Categorical)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
 
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c", "d"])
     check(assert_type(cat, "Categorical[str]"), Categorical)
 
     cat = Categorical(["a", "b", "c"], categories=np.array(["a", "b", "c", "d"]))
-    # https://github.com/facebook/pyrefly/issues/3891
+    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
         assert_type(cat, "Categorical[str]"),  # pyrefly: ignore[assert-type]
         Categorical,
@@ -103,14 +103,14 @@ def test_constructor() -> None:
     check(assert_type(cat, "Categorical[str]"), Categorical)
 
     cat_int = Categorical([1, 2, 3, 1, 2])
-    # https://github.com/facebook/pyrefly/issues/3891
+    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
         assert_type(cat_int, "Categorical[int]"),  # pyrefly: ignore[assert-type]
         Categorical,
     )
 
     cat_mixed = Categorical(["a", 1, "b", 2])
-    # https://github.com/facebook/pyrefly/issues/3891
+    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
         assert_type(cat_mixed, Categorical), Categorical  # pyrefly: ignore[assert-type]
     )
