@@ -1979,6 +1979,16 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: bool = False,
         **kwargs: Any,
     ) -> Self: ...
+    @overload
+    def clip(
+        self,
+        lower: DataFrame | None = ...,
+        upper: DataFrame | None = ...,
+        *,
+        axis: Axis | None = ...,
+        inplace: bool = False,
+        **kwargs: Any,
+    ) -> Self: ...
     @final
     def copy(self, deep: _bool = True) -> Self: ...
     def cummax(
