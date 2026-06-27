@@ -1888,7 +1888,7 @@ def test_multiindex_get_loc() -> None:
 
 
 def test_index_from_tuples() -> None:
-    # GH#1498: pd.Index with a sequence of tuples should return MultiIndex
+    """Test creating pd.Index with a sequence of tuples should return MultiIndex."""
     check(
         assert_type(pd.Index([(1, 2), (3, 4)]), pd.MultiIndex),
         pd.MultiIndex,
