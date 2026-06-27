@@ -1119,11 +1119,25 @@ def test_excel_writer(tmp_path: Path) -> None:
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
     check(assert_type(read_excel(ef), DataFrame), DataFrame)
-    check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
-    check(
-        assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
-        dict,
-    )
+
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        match="ExcelFile.parse is deprecated",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
+
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        match="ExcelFile.parse is deprecated",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
+            dict,
+        )
     check(assert_type(ef.close(), None), type(None))
 
 
