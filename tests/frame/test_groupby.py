@@ -10,12 +10,14 @@ from typing import (
     Any,
     assert_type,
 )
+from typing import Literal  # noqa: F401
 
 import numpy as np
 import pandas as pd
 from pandas.api.typing.aliases import Scalar
 from pandas.core.groupby.generic import (
     AggScalar,
+    DataFrameGroupBy,
     NamedAgg,
 )
 
@@ -115,25 +117,113 @@ def test_types_groupby_size() -> None:
 def test_types_groupby() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
     df.index.name = "ind"
-    # TODO: use `check/assert_type` framework https://github.com/pandas-dev/pandas-stubs/issues/1791.
-    df.groupby(by="col1")
-    df.groupby(level="ind")
-    df.groupby(by="col1", sort=False, as_index=True)
-    df.groupby(by=["col1", "col2"])
+    check(
+        assert_type(df.groupby(by="col1"), "DataFrameGroupBy[Scalar, Literal[True]]"),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(level="ind"),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(by="col1", sort=False, as_index=True),
+            "DataFrameGroupBy[Scalar, Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(by=["col1", "col2"]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
     # GH 284
-    df.groupby(df["col1"] > 2)
-    df.groupby([df["col1"] > 2, df["col2"] % 2 == 1])
-    df.groupby(lambda x: x)  # pyright: ignore[reportUnknownArgumentType]
-    df.groupby([lambda x: x % 2, lambda x: x % 3])
-    df.groupby(np.array([1, 0, 1]))
-    df.groupby([np.array([1, 0, 0]), np.array([0, 0, 1])])
+    check(
+        assert_type(
+            df.groupby(df["col1"] > 2), "DataFrameGroupBy[bool, Literal[True]]"
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([df["col1"] > 2, df["col2"] % 2 == 1]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(lambda x: x),  # pyright: ignore[reportUnknownArgumentType]
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([lambda x: x % 2, lambda x: x % 3]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(np.array([1, 0, 1])),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([np.array([1, 0, 0]), np.array([0, 0, 1])]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
     # TODO: https://github.com/facebook/pyrefly/issues/3268
-    df.groupby({1: 1, 2: 2, 3: 3})  # pyrefly: ignore[no-matching-overload]
-    df.groupby([{1: 1, 2: 1, 3: 2}, {1: 1, 2: 2, 3: 2}])
-    df.groupby(df.index)
-    df.groupby([pd.Index([1, 0, 0]), pd.Index([0, 0, 1])])
-    df.groupby(pd.Grouper(level=0))
-    df.groupby([pd.Grouper(level=0), pd.Grouper(key="col1")])
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            df.groupby({1: 1, 2: 2, 3: 3}),  # pyrefly: ignore[no-matching-overload]
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([{1: 1, 2: 1, 3: 2}, {1: 1, 2: 2, 3: 2}]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(df.groupby(df.index), "DataFrameGroupBy[Any, Literal[True]]"),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([pd.Index([1, 0, 0]), pd.Index([0, 0, 1])]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(pd.Grouper(level=0)),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([pd.Grouper(level=0), pd.Grouper(key="col1")]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
 
     check(assert_type(df.groupby(by="col1").agg("sum"), pd.DataFrame), pd.DataFrame)
     check(
@@ -360,18 +450,30 @@ def test_groupby_result() -> None:
     # GH 142
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
     iterator = df.groupby(["a", "b"]).__iter__()
-    assert_type(iterator, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]])
+    check(
+        assert_type(iterator, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]]),
+        Iterator,
+    )
     index, value = next(iterator)
-    assert_type((index, value), tuple[tuple[Hashable, ...], pd.DataFrame])
+    check(
+        assert_type((index, value), tuple[tuple[Hashable, ...], pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index, tuple[Hashable, ...]), tuple, int)
 
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     iterator2 = df.groupby("a").__iter__()
-    assert_type(iterator2, Iterator[tuple[Scalar, pd.DataFrame]])
+    check(
+        assert_type(iterator2, Iterator[tuple[Scalar, pd.DataFrame]]),
+        Iterator,
+    )
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), tuple[Scalar, pd.DataFrame])
+    check(
+        assert_type((index2, value2), tuple[Scalar, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index2, Scalar), int)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
@@ -380,9 +482,15 @@ def test_groupby_result() -> None:
     # grouping by pd.MultiIndex should always resolve to a tuple as well
     multi_index = pd.MultiIndex.from_frame(df[["a", "b"]])
     iterator3 = df.groupby(multi_index).__iter__()
-    assert_type(iterator3, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]])
+    check(
+        assert_type(iterator3, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]]),
+        Iterator,
+    )
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), tuple[tuple[Hashable, ...], pd.DataFrame])
+    check(
+        assert_type((index3, value3), tuple[tuple[Hashable, ...], pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index3, tuple[Hashable, ...]), tuple, int)
     check(assert_type(value3, pd.DataFrame), pd.DataFrame)
@@ -404,27 +512,45 @@ def test_groupby_result_for_scalar_indexes() -> None:
     df = pd.DataFrame({"date": dates, "days": 1})
     period_index = pd.PeriodIndex(df.date, freq="M")
     iterator = df.groupby(period_index).__iter__()
-    assert_type(iterator, Iterator[tuple[pd.Period, pd.DataFrame]])
+    check(
+        assert_type(iterator, Iterator[tuple[pd.Period, pd.DataFrame]]),
+        Iterator,
+    )
     index, value = next(iterator)
-    assert_type((index, value), tuple[pd.Period, pd.DataFrame])
+    check(
+        assert_type((index, value), tuple[pd.Period, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index, pd.Period), pd.Period)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     dt_index = pd.DatetimeIndex(dates)
     iterator2 = df.groupby(dt_index).__iter__()
-    assert_type(iterator2, Iterator[tuple[pd.Timestamp, pd.DataFrame]])
+    check(
+        assert_type(iterator2, Iterator[tuple[pd.Timestamp, pd.DataFrame]]),
+        Iterator,
+    )
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), tuple[pd.Timestamp, pd.DataFrame])
+    check(
+        assert_type((index2, value2), tuple[pd.Timestamp, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index2, pd.Timestamp), pd.Timestamp)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
     tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
     iterator3 = df.groupby(tdelta_index).__iter__()
-    assert_type(iterator3, Iterator[tuple[pd.Timedelta, pd.DataFrame]])
+    check(
+        assert_type(iterator3, Iterator[tuple[pd.Timedelta, pd.DataFrame]]),
+        Iterator,
+    )
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), tuple[pd.Timedelta, pd.DataFrame])
+    check(
+        assert_type((index3, value3), tuple[pd.Timedelta, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index3, pd.Timedelta), pd.Timedelta)
     check(assert_type(value3, pd.DataFrame), pd.DataFrame)
@@ -433,11 +559,22 @@ def test_groupby_result_for_scalar_indexes() -> None:
         pd.Interval(date, date + pd.DateOffset(days=1), closed="left") for date in dates
     ]
     interval_index = pd.IntervalIndex(intervals)
-    assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]")
+    check(
+        assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]"),
+        pd.IntervalIndex,
+    )
     iterator4 = df.groupby(interval_index).__iter__()
-    assert_type(iterator4, Iterator[tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]])
+    check(
+        assert_type(
+            iterator4, Iterator[tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]]
+        ),
+        Iterator,
+    )
     index4, value4 = next(iterator4)
-    assert_type((index4, value4), tuple["pd.Interval[pd.Timestamp]", pd.DataFrame])
+    check(
+        assert_type((index4, value4), tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
     check(assert_type(value4, pd.DataFrame), pd.DataFrame)
@@ -460,9 +597,15 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
     # this will use pd.Index which is ambiguous
     iterator = df.groupby(df.index).__iter__()
-    assert_type(iterator, Iterator[tuple[Any, pd.DataFrame]])
+    check(
+        assert_type(iterator, Iterator[tuple[Any, pd.DataFrame]]),
+        Iterator,
+    )
     index, value = next(iterator)
-    assert_type((index, value), tuple[Any, pd.DataFrame])
+    check(
+        assert_type((index, value), tuple[Any, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index, Any), int)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
@@ -472,9 +615,15 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
     categorical_index = pd.CategoricalIndex(df.a)
     iterator2 = df.groupby(categorical_index).__iter__()
-    assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]])
+    check(
+        assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]]),
+        Iterator,
+    )
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), tuple[Any, pd.DataFrame])
+    check(
+        assert_type((index2, value2), tuple[Any, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index2, Any), int)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
