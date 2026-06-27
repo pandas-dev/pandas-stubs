@@ -318,7 +318,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[tuple[Any, ...]],
+        data: Iterable[tuple[Any, ...]],
         *,
         dtype: Dtype | None = None,
         copy: bool = False,
