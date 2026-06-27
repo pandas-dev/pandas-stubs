@@ -1118,9 +1118,12 @@ def test_excel_writer(tmp_path: Path) -> None:
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
     check(assert_type(read_excel(ef), DataFrame), DataFrame)
+    check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
+    check(
+        assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
+        dict,
+    )
     check(assert_type(ef.close(), None), type(None))
-    if TYPE_CHECKING_INVALID_USAGE:
-        _ = ef.parse  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute]
 
 
 def test_excel_writer_io() -> None:
