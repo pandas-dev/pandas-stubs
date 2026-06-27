@@ -115,6 +115,7 @@ def test_types_groupby_size() -> None:
 def test_types_groupby() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
     df.index.name = "ind"
+    # TODO: use `check/assert_type` framework https://github.com/pandas-dev/pandas-stubs/issues/1791.
     df.groupby(by="col1")
     df.groupby(level="ind")
     df.groupby(by="col1", sort=False, as_index=True)
@@ -126,7 +127,7 @@ def test_types_groupby() -> None:
     df.groupby([lambda x: x % 2, lambda x: x % 3])
     df.groupby(np.array([1, 0, 1]))
     df.groupby([np.array([1, 0, 0]), np.array([0, 0, 1])])
-    # https://github.com/facebook/pyrefly/issues/3268
+    # TODO: https://github.com/facebook/pyrefly/issues/3268
     df.groupby({1: 1, 2: 2, 3: 3})  # pyrefly: ignore[no-matching-overload]
     df.groupby([{1: 1, 2: 1, 3: 2}, {1: 1, 2: 2, 3: 2}])
     df.groupby(df.index)
