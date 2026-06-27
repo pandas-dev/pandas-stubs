@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors
 from __future__ import annotations
 
 import datetime as dt
@@ -111,10 +110,10 @@ def test_types_arithmetic() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # TODO: pandas-dev/pandas-stubs#64798 numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
-        assert_type(
+        assert_type(  # pyrefly: ignore[assert-type]
             ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
         )
-        assert_type(
+        assert_type(  # pyrefly: ignore[assert-type]
             ts_np_time - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
         )
 
@@ -1749,9 +1748,9 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     td = np.timedelta64(1, "D")
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:
@@ -1765,8 +1764,8 @@ def test_timestamp_strptime_fails() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_never(
             pd.Timestamp.strptime(  # pyright: ignore[reportUnknownArgumentType]
-                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
             )
         )
 
@@ -1876,12 +1875,12 @@ def test_date_range_overloads() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.date_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.date_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.date_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.date_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.date_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.date_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.date_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.date_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.date_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.date_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.date_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_timedelta_range_overloads() -> None:
@@ -1933,12 +1932,12 @@ def test_timedelta_range_overloads() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.timedelta_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.timedelta_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.timedelta_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.timedelta_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.timedelta_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        pd.timedelta_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.timedelta_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.timedelta_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.timedelta_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.timedelta_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.timedelta_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_DatetimeIndex_sub_timedelta() -> None:
