@@ -288,6 +288,7 @@ def test_clipboard_iterator() -> None:
 
 
 def test_sas_bdat() -> None:
+    # there is a bug with pandas 3.1.0.dev0+1139.gb431b4f927 that SegFault the code
     path = Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
