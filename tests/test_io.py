@@ -288,6 +288,7 @@ def test_clipboard_iterator() -> None:
 
 
 def test_sas_bdat() -> None:
+    # there is a bug with pandas 3.1.0.dev0+1139.gb431b4f927 that SegFault the code
     path = Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
@@ -1118,9 +1119,26 @@ def test_excel_writer(tmp_path: Path) -> None:
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
     check(assert_type(read_excel(ef), DataFrame), DataFrame)
+
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        match="ExcelFile.parse is deprecated",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
+
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        match="ExcelFile.parse is deprecated",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
+            dict,
+        )
     check(assert_type(ef.close(), None), type(None))
-    if TYPE_CHECKING_INVALID_USAGE:
-        _ = ef.parse  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute]
 
 
 def test_excel_writer_io() -> None:

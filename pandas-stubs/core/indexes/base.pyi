@@ -60,6 +60,7 @@ from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.frozen import FrozenList
 from pandas.core.indexes.interval import IntervalIndex
+from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
@@ -314,6 +315,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         name: Hashable = None,
         tupleize_cols: bool = True,
     ) -> IntervalIndex[Interval]: ...
+    @overload
+    def __new__(
+        cls,
+        data: Iterable[tuple[Any, ...]],
+        *,
+        dtype: Dtype | None = None,
+        copy: bool = False,
+        name: Hashable = None,
+        tupleize_cols: Literal[True] = True,
+    ) -> MultiIndex: ...
     # generic overloads
     @overload
     def __new__(

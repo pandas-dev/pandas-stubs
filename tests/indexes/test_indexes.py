@@ -1627,7 +1627,7 @@ def test_index_set_names() -> None:
         assert_type(mi.set_names({"elk": "beluga", "owl": "pig"}), pd.MultiIndex),
         pd.MultiIndex,
     )
-    mi = cast("pd.MultiIndex", pd.Index([(1,)]))
+    mi = assert_type(pd.Index([(1,)]), pd.MultiIndex)
     check(assert_type(mi.set_names(1), pd.MultiIndex), pd.MultiIndex, tuple)
 
 
@@ -1885,3 +1885,37 @@ def test_multiindex_get_loc() -> None:
     mi_unsorted = pd.MultiIndex.from_arrays([["a", "b", "a"], ["d", "e", "f"]])
     loc_mask = mi_unsorted.get_loc("a")
     check(assert_type(loc_mask, int | slice | np_1darray_bool), np.ndarray, np.bool_)
+
+
+def test_index_from_tuples() -> None:
+    """Test creating pd.Index with a sequence of tuples should return MultiIndex."""
+    check(
+        assert_type(pd.Index([(1, 2), (3, 4)]), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index(UserList([(1, 2), (3, 4)])), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index(deque([(1, 2), (3, 4)])), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index([("a", 1), ("b", 2)]), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index(frozenset(((1,), (2,)))), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index(((1,), (2,))), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+
+    # tupleize_cols=False: should not be MultiIndex
+    check(
+        assert_type(pd.Index([(1, 2), (3, 4)], tupleize_cols=False), pd.Index),
+        pd.Index,
+    )
