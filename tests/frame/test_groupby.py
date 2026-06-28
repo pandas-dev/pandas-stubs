@@ -460,6 +460,10 @@ def test_groupby_result() -> None:
         tuple,
     )
 
+    check(assert_type(index, tuple[Hashable, ...]), tuple, int)
+
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
     iterator2 = df.groupby("a").__iter__()
     check(
         assert_type(iterator2, Iterator[tuple[Scalar, pd.DataFrame]]),
@@ -470,6 +474,9 @@ def test_groupby_result() -> None:
         assert_type((index2, value2), tuple[Scalar, pd.DataFrame]),
         tuple,
     )
+
+    check(assert_type(index2, Scalar), int)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
     # GH 674
     # grouping by pd.MultiIndex should always resolve to a tuple as well
@@ -484,6 +491,9 @@ def test_groupby_result() -> None:
         assert_type((index3, value3), tuple[tuple[Hashable, ...], pd.DataFrame]),
         tuple,
     )
+
+    check(assert_type(index3, tuple[Hashable, ...]), tuple, int)
+    check(assert_type(value3, pd.DataFrame), pd.DataFrame)
 
     # Want to make sure these cases are differentiated
     for (_k1, _k2), _g in df.groupby(["a", "b"]):
@@ -512,6 +522,9 @@ def test_groupby_result_for_scalar_indexes() -> None:
         tuple,
     )
 
+    check(assert_type(index, pd.Period), pd.Period)
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
     dt_index = pd.DatetimeIndex(dates)
     iterator2 = df.groupby(dt_index).__iter__()
     check(
@@ -524,6 +537,9 @@ def test_groupby_result_for_scalar_indexes() -> None:
         tuple,
     )
 
+    check(assert_type(index2, pd.Timestamp), pd.Timestamp)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
+
     tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
     iterator3 = df.groupby(tdelta_index).__iter__()
     check(
@@ -535,6 +551,9 @@ def test_groupby_result_for_scalar_indexes() -> None:
         assert_type((index3, value3), tuple[pd.Timedelta, pd.DataFrame]),
         tuple,
     )
+
+    check(assert_type(index3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(value3, pd.DataFrame), pd.DataFrame)
 
     intervals: list[pd.Interval[pd.Timestamp]] = [
         pd.Interval(date, date + pd.DateOffset(days=1), closed="left") for date in dates
@@ -556,6 +575,9 @@ def test_groupby_result_for_scalar_indexes() -> None:
         assert_type((index4, value4), tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]),
         tuple,
     )
+
+    check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
+    check(assert_type(value4, pd.DataFrame), pd.DataFrame)
 
     for _p, _g in df.groupby(period_index):
         pass
@@ -585,6 +607,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
         tuple,
     )
 
+    check(assert_type(index, Any), int)
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
     # categorical indexes are also ambiguous
 
     # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
@@ -599,6 +624,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
         assert_type((index2, value2), tuple[Any, pd.DataFrame]),
         tuple,
     )
+
+    check(assert_type(index2, Any), int)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
 
 def test_groupby_apply() -> None:
