@@ -24,7 +24,7 @@ _DIST_STEPS = [
     _step.install_dist,
     _step.rename_src,
     _step.ty_dist,
-    # _step.pyrefly_dist,
+    # _step.pyrefly_dist,  TODO: pandas-dev/pandas-stubs#1801
     _step.pyright_dist,
     _step.mypy_dist,
 ]
