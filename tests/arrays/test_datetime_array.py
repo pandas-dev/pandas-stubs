@@ -104,6 +104,12 @@ def test_construction_sequence_pandas(
                 ),
                 DatetimeArray,
             )
+            assert_type(  # type: ignore[assert-type]
+                pd.array(
+                    [np.datetime64("2131-01-05 01:25"), np.datetime64("1748-01-06")]
+                ),
+                DatetimeArray,
+            )
         else:
             assert_type(
                 pd.array(
@@ -111,11 +117,12 @@ def test_construction_sequence_pandas(
                 ),
                 DatetimeArray,
             )
-        # TODO: pandas-dev/pandas-stubs#1786
-        assert_type(  # type: ignore[assert-type]
-            pd.array([np.datetime64("2131-01-05 01:25"), np.datetime64("1748-01-06")]),
-            DatetimeArray,
-        )
+            assert_type(
+                pd.array(
+                    [np.datetime64("2131-01-05 01:25"), np.datetime64("1748-01-06")]
+                ),
+                DatetimeArray,
+            )
         assert_type(
             pd.array([np.datetime64("2130-01-01 01:25"), datetime(1749, 1, 6)]),
             DatetimeArray,
