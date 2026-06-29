@@ -903,6 +903,7 @@ def test_timedelta_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
+    # TODO: https://github.com/facebook/pyrefly/issues/3977
     eq_nd1 = check(
         assert_type(td == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
         np_ndarray_bool,
