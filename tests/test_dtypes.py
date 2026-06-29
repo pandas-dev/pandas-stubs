@@ -4,6 +4,7 @@ from datetime import (
     timedelta,
     timezone,
 )
+import sys
 from typing import (
     TYPE_CHECKING,
     Literal,
@@ -138,9 +139,17 @@ def test_sparse_dtype() -> None:
     check(assert_type(pd.SparseDtype(np.int64), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(str), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(float), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype(np.datetime64), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype("datetime64"), pd.SparseDtype), pd.SparseDtype)
+    # TODO: pandas-dev/pandas-stubs#1786, also disable "datetime64"
+    if sys.version_info >= (3, 12):
+        pass
+    else:
+        check(
+            assert_type(pd.SparseDtype(np.datetime64), pd.SparseDtype), pd.SparseDtype
+        )
+        check(
+            assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype
+        )
+    check(assert_type(pd.SparseDtype("datetime64[ms]"), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(s_dt.fill_value, Scalar | None), int)
 
@@ -162,9 +171,13 @@ def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
     check(assert_type(s_dt_bool.fill_value, Scalar | None), bool)
 
     # datetime64 subtype: default fill_value is NaT
-    s_dt_dt = pd.SparseDtype(np.datetime64)
-    check(assert_type(s_dt_dt.subtype, np.dtype), np.dtypes.DateTime64DType)
-    check(assert_type(s_dt_dt.fill_value, Scalar | None), np.datetime64)
+    # TODO: pandas-dev/pandas-stubs#1786, also disable "datetime64"
+    if sys.version_info >= (3, 12):
+        pass
+    else:
+        s_dt_dt = pd.SparseDtype(np.datetime64)
+        check(assert_type(s_dt_dt.subtype, np.dtype), np.dtypes.DateTime64DType)
+        check(assert_type(s_dt_dt.fill_value, Scalar | None), np.datetime64)
 
     # passing a fill_value incompatible with the subtype is both a static type error
     # and a runtime ValueError

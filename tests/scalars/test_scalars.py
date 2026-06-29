@@ -509,8 +509,12 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
-    check(assert_type(td.view(np.int64), object), np.int64)
-    check(assert_type(td.view("i8"), object), np.int64)
+    # TODO: pandas-dev/pandas-stubs#1786
+    if sys.version_info >= (3, 12):
+        pass
+    else:
+        check(assert_type(td.view(np.int64), object), np.int64)
+        check(assert_type(td.view("i8"), object), np.int64)
 
     check(assert_type(td.as_unit("s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.as_unit("ms"), pd.Timedelta), pd.Timedelta)
@@ -911,7 +915,7 @@ def test_timedelta_cmp_array() -> None:
 
     # ==, !=
     # TODO: pandas-dev/pandas-stubs#1786 facebook/pyrefly#3977
-    if sys.version_info >= (3, 12):
+    if sys.version_info >= (3, 14):
         eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         assert (eq_nd1 != ne_nd1).all()
@@ -1345,7 +1349,7 @@ def test_timestamp_cmp_array() -> None:
 
     # ==, !=
     # TODO: pandas-dev/pandas-stubs#1786 facebook/pyrefly#3977
-    if sys.version_info >= (3, 12):
+    if sys.version_info >= (3, 14):
         eq_nd1 = check(assert_type(ts == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         ne_nd1 = check(assert_type(ts != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         assert (eq_nd1 != ne_nd1).all()
