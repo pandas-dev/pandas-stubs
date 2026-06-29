@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import datetime as dt
+import sys
 from typing import (
     Any,
     Literal,
@@ -558,7 +559,7 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime64 + td, pd.Timestamp), pd.Timestamp)
     # pyright can't know that as_td_timedelta + td calls
     # td.__radd__(as_td_timedelta),  not timedelta.__add__
-    # https://github.com/microsoft/pyright/issues/4088
+    # TODO: https://github.com/microsoft/pyright/issues/4088
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             as_dt_timedelta + td,  # pyright: ignore[reportAssertTypeFailure]
@@ -566,13 +567,16 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    check(
-        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-            as_timedelta64 + td,  # pyright: ignore[reportAssertTypeFailure]
+    if sys.version_info >= (3, 12):
+        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
+    else:
+        check(
+            assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+                as_timedelta64 + td,  # pyright: ignore[reportAssertTypeFailure]
+                pd.Timedelta,
+            ),
             pd.Timedelta,
-        ),
-        pd.Timedelta,
-    )
+        )
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -614,13 +618,16 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    check(
-        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-            as_timedelta64 - td,  # pyright: ignore[reportAssertTypeFailure]
+    if sys.version_info >= (3, 12):
+        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
+    else:
+        check(
+            assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+                as_timedelta64 - td,  # pyright: ignore[reportAssertTypeFailure]
+                pd.Timedelta,
+            ),
             pd.Timedelta,
-        ),
-        pd.Timedelta,
-    )
+        )
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -903,24 +910,39 @@ def test_timedelta_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
-    # TODO: https://github.com/facebook/pyrefly/issues/3977
-    eq_nd1 = check(
-        assert_type(td == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
-        np_ndarray_bool,
-        np.bool,
-    )
-    ne_nd1 = check(
-        assert_type(td != arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
-        np_ndarray_bool,
-        np.bool,
-    )
-    assert (eq_nd1 != ne_nd1).all()
-    eq_2d1 = check(assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
-    ne_2d1 = check(assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
-    assert (eq_2d1 != ne_2d1).all()
-    eq_1d1 = check(assert_type(td == arr_1d, np_1darray_bool), np_1darray_bool)
-    ne_1d1 = check(assert_type(td != arr_1d, np_1darray_bool), np_1darray_bool)
-    assert (eq_1d1 != ne_1d1).all()
+    # TODO: pandas-dev/pandas-stubs#1786 facebook/pyrefly#3977
+    if sys.version_info >= (3, 12):
+        eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        assert (eq_nd1 != ne_nd1).all()
+        eq_2d1 = check(assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
+        ne_2d1 = check(assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
+        assert (eq_2d1 != ne_2d1).all()
+        eq_1d1 = check(assert_type(td == arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+        ne_1d1 = check(assert_type(td != arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+        assert (eq_1d1 != ne_1d1).all()
+    else:
+        eq_nd1 = check(
+            assert_type(td == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
+            np_ndarray_bool,
+            np.bool,
+        )
+        ne_nd1 = check(
+            assert_type(td != arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
+            np_ndarray_bool,
+            np.bool,
+        )
+        assert (eq_nd1 != ne_nd1).all()
+        eq_2d1 = check(
+            assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool]
+        )
+        ne_2d1 = check(
+            assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool]
+        )
+        assert (eq_2d1 != ne_2d1).all()
+        eq_1d1 = check(assert_type(td == arr_1d, np_1darray_bool), np_1darray_bool)
+        ne_1d1 = check(assert_type(td != arr_1d, np_1darray_bool), np_1darray_bool)
+        assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
     eq_rhs_nd1 = check(assert_type(arr_nd == td, Any), np_ndarray_bool)
@@ -1322,24 +1344,39 @@ def test_timestamp_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
-    # TODO: https://github.com/facebook/pyrefly/issues/3977
-    eq_nd1 = check(
-        assert_type(ts == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
-        np_ndarray_bool,
-        np.bool,
-    )
-    ne_nd1 = check(
-        assert_type(ts != arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
-        np_ndarray_bool,
-        np.bool,
-    )
-    assert (eq_nd1 != ne_nd1).all()
-    eq_2d1 = check(assert_type(ts == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
-    ne_2d1 = check(assert_type(ts != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
-    assert (eq_2d1 != ne_2d1).all()
-    eq_1d1 = check(assert_type(ts == arr_1d, np_1darray_bool), np_1darray_bool)
-    ne_1d1 = check(assert_type(ts != arr_1d, np_1darray_bool), np_1darray_bool)
-    assert (eq_1d1 != ne_1d1).all()
+    # TODO: pandas-dev/pandas-stubs#1786 facebook/pyrefly#3977
+    if sys.version_info >= (3, 12):
+        eq_nd1 = check(assert_type(ts == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        ne_nd1 = check(assert_type(ts != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        assert (eq_nd1 != ne_nd1).all()
+        eq_2d1 = check(assert_type(ts == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
+        ne_2d1 = check(assert_type(ts != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
+        assert (eq_2d1 != ne_2d1).all()
+        eq_1d1 = check(assert_type(ts == arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+        ne_1d1 = check(assert_type(ts != arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+        assert (eq_1d1 != ne_1d1).all()
+    else:
+        eq_nd1 = check(
+            assert_type(ts == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
+            np_ndarray_bool,
+            np.bool,
+        )
+        ne_nd1 = check(
+            assert_type(ts != arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
+            np_ndarray_bool,
+            np.bool,
+        )
+        assert (eq_nd1 != ne_nd1).all()
+        eq_2d1 = check(
+            assert_type(ts == arr_2d, np_2darray[np.bool]), np_2darray[np.bool]
+        )
+        ne_2d1 = check(
+            assert_type(ts != arr_2d, np_2darray[np.bool]), np_2darray[np.bool]
+        )
+        assert (eq_2d1 != ne_2d1).all()
+        eq_1d1 = check(assert_type(ts == arr_1d, np_1darray_bool), np_1darray_bool)
+        ne_1d1 = check(assert_type(ts != arr_1d, np_1darray_bool), np_1darray_bool)
+        assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
     eq_rhs_nd1 = check(assert_type(arr_nd == ts, Any), np_ndarray_bool)
