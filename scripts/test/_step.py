@@ -34,6 +34,12 @@ mypy_dist = Step(
 pyright_dist = Step(
     name="Run pyright on 'tests' using the installed stubs", run=run.pyright_dist
 )
+pyrefly_dist = Step(
+    name="Run pyrefly on 'tests' using the installed stubs", run=run.pyrefly_dist
+)
+ty_dist = Step(
+    name="Run ty on 'tests' using the installed stubs", run=run.ty_dist
+)
 stubtest = Step(
     name="Run stubtest to compare the installed stubs against pandas", run=run.stubtest
 )
