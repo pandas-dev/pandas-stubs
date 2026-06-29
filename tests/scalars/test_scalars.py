@@ -931,6 +931,9 @@ def test_timedelta_cmp_array() -> None:
         eq_1d1 = check(assert_type(td == arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
         ne_1d1 = check(assert_type(td != arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
         assert (eq_1d1 != ne_1d1).all()
+    elif sys.version_info >= (3, 12):
+        # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
+        pass
     else:
         eq_nd1 = check(
             assert_type(td == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
@@ -1365,6 +1368,9 @@ def test_timestamp_cmp_array() -> None:
         eq_1d1 = check(assert_type(ts == arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
         ne_1d1 = check(assert_type(ts != arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
         assert (eq_1d1 != ne_1d1).all()
+    elif sys.version_info >= (3, 12):
+        # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
+        pass
     else:
         eq_nd1 = check(
             assert_type(ts == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
