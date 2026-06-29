@@ -103,16 +103,16 @@ help = "Run pre-commit"
 script = "scripts.test.run:style"
 
 [tool.poe.tasks.ty]
-help = "Run ty on pandas-stubs"
-script = "scripts.test.run:ty"
+help = "Run ty on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:ty_src"
 
 [tool.poe.tasks.ty_dist]
 help = "Run ty on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='ty')"
 
 [tool.poe.tasks.pyrefly]
-help = "Run pyrefly on pandas-stubs"
-script = "scripts.test.run:pyrefly"
+help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:pyrefly_src"
 
 [tool.poe.tasks.pyrefly_dist]
 help = "Run pyrefly on 'tests' using the installed stubs"
