@@ -1759,7 +1759,10 @@ def test_period_add_subtract() -> None:
     check(assert_type(as_np_td + p, pd.Period), pd.Period)
     check(assert_type(p.__radd__(as_np_td), pd.Period), pd.Period)
 
-    check(assert_type(as_np_i64 + p, pd.Period), pd.Period)
+    # TODO: pandas-dev/pandas-stubs#1786
+    check(
+        assert_type(as_np_i64 + p, pd.Period), pd.Period  # pyrefly: ignore[assert-type]
+    )
     check(assert_type(p.__radd__(as_np_i64), pd.Period), pd.Period)
 
     check(assert_type(as_int + p, pd.Period), pd.Period)
