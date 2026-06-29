@@ -567,7 +567,7 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    if sys.version_info >= (3, 12):
+    if sys.version_info >= (3, 14):
         check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
     else:
         check(
@@ -618,7 +618,7 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    if sys.version_info >= (3, 12):
+    if sys.version_info >= (3, 14):
         check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
     else:
         check(
