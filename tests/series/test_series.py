@@ -2649,7 +2649,7 @@ def test_types_to_numpy() -> None:
         check(
             assert_type(
                 s_date.to_numpy(dtype=np.dtype("datetime64[ns]")),
-                np_1darray[np.datetime64[int]],
+                "np_1darray[np.datetime64[int]]",
             ),
             np_1darray,
             np.datetime64,
@@ -2658,7 +2658,7 @@ def test_types_to_numpy() -> None:
         check(
             assert_type(
                 s_date.to_numpy(dtype=np.dtype("datetime64[ns]")),
-                np_1darray[np.datetime64[date | int | None]],
+                "np_1darray[np.datetime64[date | int | None]]",
             ),
             np_1darray,
             np.datetime64,
@@ -2677,7 +2677,7 @@ def test_types_to_numpy() -> None:
         check(
             assert_type(
                 s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
-                np_1darray[np.timedelta64[int]],
+                "np_1darray[np.timedelta64[int]]",
             ),
             np_1darray,
             np.timedelta64,
@@ -2685,7 +2685,7 @@ def test_types_to_numpy() -> None:
         check(
             assert_type(
                 s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
-                np_1darray[np.timedelta64[int]],
+                "np_1darray[np.timedelta64[int]]",
             ),
             np_1darray,
             np.timedelta64,
@@ -2694,7 +2694,7 @@ def test_types_to_numpy() -> None:
         check(
             assert_type(
                 s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
-                np_1darray[np.timedelta64[timedelta | int | None]],
+                "np_1darray[np.timedelta64[timedelta | int | None]]",
             ),
             np_1darray,
             np.timedelta64,
@@ -2702,7 +2702,7 @@ def test_types_to_numpy() -> None:
         check(
             assert_type(
                 s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
-                np_1darray[np.timedelta64[timedelta | int | None]],
+                "np_1darray[np.timedelta64[timedelta | int | None]]",
             ),
             np_1darray,
             np.timedelta64,
