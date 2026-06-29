@@ -3,11 +3,11 @@ from scripts.test import run
 
 ty_src = Step(
     name="Run ty on 'tests' (using the local stubs) and on the local stubs",
-    run=run.ty,
+    run=run.ty_src,
 )
 pyrefly_src = Step(
     name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs",
-    run=run.pyrefly,
+    run=run.pyrefly_src,
 )
 pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
