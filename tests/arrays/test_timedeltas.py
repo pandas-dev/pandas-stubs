@@ -35,7 +35,7 @@ def test_construction() -> None:
     """Test pd.array method for TimedeltaArray."""
 
     td = timedelta(2025, 11, 10)
-    np_dt = np.timedelta64(td)
+    np_dt = np.timedelta64(td, "D")
     check(assert_type(pd.array([td]), TimedeltaArray), TimedeltaArray)
     check(
         assert_type(pd.array([td, pd.Timedelta(td), np_dt]), TimedeltaArray),

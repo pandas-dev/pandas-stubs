@@ -3,6 +3,7 @@ from collections.abc import (
     Callable,
     Sequence,
 )
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -46,7 +47,11 @@ def test_construction_sequence(
 
     if TYPE_CHECKING:
         assert_type(pd.array([-2, 3]), IntegerArray)
-        assert_type(pd.array([1 << 32, np.int8(1) << 6]), IntegerArray)
+        # TODO: pandas-dev/pandas-stubs#1786
+        if sys.version_info >= (3, 12):
+            assert_type(pd.array([1 << 32, np.int8(1) << 6]), IntegerArray)  # type: ignore[assert-type]
+        else:
+            assert_type(pd.array([1 << 32, np.int8(1) << 6]), IntegerArray)
 
         assert_type(pd.array([2, np.int8(3)]), IntegerArray)
 

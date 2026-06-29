@@ -554,11 +554,11 @@ def test_isna() -> None:
     assert check(assert_type(pd.notna(np_dt), bool), bool)
     assert not check(assert_type(pd.isna(np_dt), bool), bool)
 
-    np_td = np.timedelta64(py_td)
+    np_td = np.timedelta64(py_td, "us")
     assert check(assert_type(pd.notna(np_td), bool), bool)
     assert not check(assert_type(pd.isna(np_td), bool), bool)
 
-    np_nat = np.timedelta64("NaT")
+    np_nat = np.timedelta64("NaT", "Y")
     assert check(assert_type(pd.isna(np_nat), bool), bool)
     assert not check(assert_type(pd.notna(np_nat), bool), bool)
 
