@@ -1982,30 +1982,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: DataFrame | None = ...,
-        upper: DataFrame | None = ...,
+        lower: DataFrame | None = None,
+        upper: DataFrame | None = None,
         *,
-        axis: Axis | None = ...,
-        inplace: bool = False,
-        **kwargs: Any,
-    ) -> Self: ...
-    @overload
-    def clip(
-        self,
-        lower: DataFrame = ...,
-        upper: DataFrame | None = ...,
-        *,
-        axis: Axis | None = ...,
-        inplace: bool = False,
-        **kwargs: Any,
-    ) -> Self: ...
-    @overload
-    def clip(
-        self,
-        lower: DataFrame | None = ...,
-        upper: DataFrame = ...,
-        *,
-        axis: Axis | None = ...,
+        axis: None = None,
         inplace: bool = False,
         **kwargs: Any,
     ) -> Self: ...
