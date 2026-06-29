@@ -573,6 +573,9 @@ def test_timedelta_add_sub() -> None:
     )
     if sys.version_info >= (3, 14):
         check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
+    elif sys.version_info >= (3, 12):
+        # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
+        pass
     else:
         check(
             assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
@@ -624,6 +627,9 @@ def test_timedelta_add_sub() -> None:
     )
     if sys.version_info >= (3, 14):
         check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
+    elif sys.version_info >= (3, 12):
+        # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
+        pass
     else:
         check(
             assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
