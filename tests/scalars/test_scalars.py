@@ -1322,6 +1322,7 @@ def test_timestamp_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
+    # TODO: https://github.com/facebook/pyrefly/issues/3977
     eq_nd1 = check(
         assert_type(ts == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
         np_ndarray_bool,
@@ -1874,6 +1875,7 @@ def test_period_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
+    # TODO: https://github.com/facebook/pyrefly/issues/3977
     eq_nd1 = check(
         assert_type(p == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
         np_ndarray_bool,
