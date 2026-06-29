@@ -1,14 +1,20 @@
 import dataclasses
 from functools import partial
-from typing import Literal
+from typing import (
+    TYPE_CHECKING,
+    Literal,
+)
 
 from scripts._job import run_job
 from scripts.test import _step
 
+if TYPE_CHECKING:
+    from scripts._job import Step
+
 _SRC_STEPS = [
-    _step.mypy_src,
     _step.ty_src,
     _step.pyrefly_src,
+    _step.mypy_src,
     _step.pyright_src,
     _step.pytest,
     _step.style,
@@ -17,17 +23,19 @@ _DIST_STEPS = [
     _step.build_dist,
     _step.install_dist,
     _step.rename_src,
-    _step.mypy_dist,
+    _step.ty_dist,
+    # _step.pyrefly_dist,  TODO: pandas-dev/pandas-stubs#1801
     _step.pyright_dist,
+    _step.mypy_dist,
 ]
 
 
 def run_tests(
     src: bool = False,
     dist: bool = False,
-    type_checker: Literal["", "mypy", "pyright"] = "",
+    type_checker: Literal["", "mypy", "pyright", "pyrefly", "ty"] = "",
 ) -> None:
-    steps = []
+    steps: list[Step] = []
     if src:
         steps.extend(_SRC_STEPS)
 

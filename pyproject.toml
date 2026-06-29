@@ -84,11 +84,11 @@ help = "Run all tests"
 script = "scripts.test:run_tests(src=True, dist=True)"
 
 [tool.poe.tasks.test]
-help = "Run local tests (includes 'mypy', 'pyright', 'pytest', and 'style')"
+help = "Run local tests (includes 'mypy', 'pyright', 'pyrefly', 'ty', 'pytest', and 'style')"
 script = "scripts.test:run_tests(src=True)"
 
 [tool.poe.tasks.test_dist]
-help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
+help = "Run tests on the installed stubs (includes 'mypy_dist', 'pyright_dist', 'pyrefly_dist' and 'ty_dist')"
 script = "scripts.test:run_tests(dist=True)"
 
 [tool.poe.tasks.pytest]
@@ -102,6 +102,30 @@ args = [
 help = "Run pre-commit"
 script = "scripts.test.run:style"
 
+[tool.poe.tasks.ty]
+help = "Run ty on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:ty_src"
+
+[tool.poe.tasks.ty_dist]
+help = "Run ty on 'tests' using the installed stubs"
+script = "scripts.test:run_tests(dist=True, type_checker='ty')"
+
+[tool.poe.tasks.pyrefly]
+help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:pyrefly_src"
+
+[tool.poe.tasks.pyrefly_dist]
+help = "Run pyrefly on 'tests' using the installed stubs"
+script = "scripts.test:run_tests(dist=True, type_checker='pyrefly')"
+
+[tool.poe.tasks.pyright]
+help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:pyright_src"
+
+[tool.poe.tasks.pyright_dist]
+help = "Run pyright on 'tests' using the installed stubs"
+script = "scripts.test:run_tests(dist=True, type_checker='pyright')"
+
 [tool.poe.tasks.mypy]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
 args = [
@@ -112,22 +136,6 @@ script = "scripts.test:mypy_src(mypy_nightly)"
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='mypy')"
-
-[tool.poe.tasks.ty]
-help = "Run ty on pandas-stubs"
-script = "scripts.test.run:ty"
-
-[tool.poe.tasks.pyrefly]
-help = "Run pyrefly on pandas-stubs"
-script = "scripts.test.run:pyrefly"
-
-[tool.poe.tasks.pyright]
-help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test.run:pyright_src"
-
-[tool.poe.tasks.pyright_dist]
-help = "Run pyright on 'tests' using the installed stubs"
-script = "scripts.test:run_tests(dist=True, type_checker='pyright')"
 
 [tool.poe.tasks.stubtest]
 script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
@@ -342,3 +350,26 @@ possibly-unresolved-reference = "error"
 
 [tool.ty.analysis]
 respect-type-ignore-comments = false
+
+[tool.ty.src]
+exclude = [
+  "tests/__init__.py",
+  "tests/arrays/**/*",
+  "tests/extension/**/*",
+  "tests/frame/**/*",
+  "tests/indexes/**/*",
+  "tests/scalars/**/*",
+  "tests/series/**/*",
+  "tests/test_api_types.py",
+  "tests/test_dtypes.py",
+  "tests/test_extension.py",
+  "tests/test_groupby.py",
+  "tests/test_interval.py",
+  "tests/test_io.py",
+  "tests/test_natype.py",
+  "tests/test_pandas.py",
+  "tests/test_resampler.py",
+  "tests/test_string_accessors.py",
+  "tests/test_testing.py",
+  "tests/test_timefuncs.py",
+]
