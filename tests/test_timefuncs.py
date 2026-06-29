@@ -123,10 +123,10 @@ def test_types_arithmetic() -> None:
                 dt.timedelta,
             )
         else:
-            assert_type(
+            assert_type(  # pyrefly: ignore[assert-type]
                 ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
             )
-            assert_type(
+            assert_type(  # pyrefly: ignore[assert-type]
                 ts_np_time - ts,  # pyright: ignore[reportAssertTypeFailure]
                 dt.timedelta,
             )
