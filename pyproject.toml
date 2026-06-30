@@ -365,7 +365,6 @@ exclude = [
   "tests/test_extension.py",
   "tests/test_groupby.py",
   "tests/test_interval.py",
-  "tests/test_io.py",
   "tests/test_natype.py",
   "tests/test_pandas.py",
   "tests/test_resampler.py",
