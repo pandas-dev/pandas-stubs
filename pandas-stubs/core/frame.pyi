@@ -1965,7 +1965,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike = ...,
         upper: AnyArrayLike | None = ...,
         *,
-        axis: Axis = ...,
+        axis: Axis,
         inplace: bool = False,
         **kwargs: Any,
     ) -> Self: ...
@@ -1975,7 +1975,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike | None = ...,
         upper: AnyArrayLike = ...,
         *,
-        axis: Axis = ...,
+        axis: Axis,
         inplace: bool = False,
         **kwargs: Any,
     ) -> Self: ...
