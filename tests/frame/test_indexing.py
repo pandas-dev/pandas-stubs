@@ -574,9 +574,16 @@ def test_loc_list_str() -> None:
 
 
 def test_loc_returns_series() -> None:
-    df1 = pd.DataFrame({"x": [1, 2, 3, 4]}, index=[10, 20, 30, 40])
-    df2 = df1.loc[10, :]
-    check(assert_type(df2, pd.Series | pd.DataFrame), pd.Series)
+    df = pd.DataFrame(
+        {"x": [1, 2, 3, 4], "y": [10, 20, 30, 40]}, index=[10, 20, 30, 40]
+    )
+    ind = pd.MultiIndex.from_product([[10, 20], [80, 90]])
+    df2 = df.set_index(ind)
+
+    check(assert_type(df.loc[10, :], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[10, ["x", "y"]], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df2.loc[10, ["x", "y"]], pd.Series | pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[[10, 20], "x"], pd.Series), pd.Series)
 
 
 def test_frame_single_slice() -> None:
