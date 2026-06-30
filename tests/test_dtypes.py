@@ -62,8 +62,8 @@ def test_datetimetz_dtype() -> None:
     assert assert_type(pd.DatetimeTZDtype("us", "HST").unit, TimeUnit) == "us"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        _10 = pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 @pytest.mark.parametrize("key", available_timezones())
@@ -77,8 +77,8 @@ def test_period_dtype() -> None:
     check(assert_type(p_dt, pd.PeriodDtype), pd.PeriodDtype)
     check(assert_type(pd.PeriodDtype(freq=Day()), pd.PeriodDtype), pd.PeriodDtype)
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.PeriodDtype(freq=CustomBusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        pd.PeriodDtype(freq=BusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.PeriodDtype(freq=CustomBusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.PeriodDtype(freq=BusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
     check(
         assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
         pd.tseries.offsets.DateOffset,
@@ -169,9 +169,7 @@ def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
     # passing a fill_value incompatible with the subtype is both a static type error
     # and a runtime ValueError
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.SparseDtype(  # pyrefly: ignore[no-matching-overload]
-            int, fill_value="hello"  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
-        )
+        pd.SparseDtype(int, fill_value="hello")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 @pytest.mark.parametrize("storage", ["python", "pyarrow", None])
@@ -213,8 +211,8 @@ def test_string_dtype(
         )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        _1 = pd.StringDtype(na_value="invalid_na")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.StringDtype(na_value="invalid_na")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_boolean_dtype() -> None:
