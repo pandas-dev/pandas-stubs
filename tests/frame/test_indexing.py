@@ -575,8 +575,7 @@ def test_loc_list_str() -> None:
 
 def test_loc_returns_series() -> None:
     df = pd.DataFrame(
-      {"x": [1, 2, 3, 4], "y": [10, 20, 30, 40]},
-      index=[10, 20, 30, 40]
+        {"x": [1, 2, 3, 4], "y": [10, 20, 30, 40]}, index=[10, 20, 30, 40]
     )
     check(assert_type(df.loc[10, :], pd.Series | pd.DataFrame), pd.Series)
     check(assert_type(df.loc[10, ["x", "y"]], pd.Series | pd.DataFrame), pd.Series)
