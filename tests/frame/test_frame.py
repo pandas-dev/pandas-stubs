@@ -779,6 +779,7 @@ def test_types_quantile() -> None:
 def test_dataframe_clip() -> None:
     """Test different clipping combinations for dataframe."""
     df = pd.DataFrame(data={"col1": [20, 12], "col2": [3, 14]})
+    df2 = pd.DataFrame({"col1": [10, 15], "col2": [5, 1]})
     if TYPE_CHECKING_INVALID_USAGE:
         df.clip(lower=pd.Series([4, 5]), upper=None, axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]  # pyrefly: ignore[no-matching-overload]
         df.clip(lower=None, upper=pd.Series([4, 5]), axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]  # pyrefly: ignore[no-matching-overload]
@@ -877,6 +878,10 @@ def test_dataframe_clip() -> None:
         pd.DataFrame,
     )
     check(
+        assert_type(df.clip(lower=df2, upper=df2), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
         assert_type(
             df.clip(lower=pd.Series([1, 2]), upper=None, axis="index"), pd.DataFrame
         ),
@@ -902,6 +907,10 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(lower=None, upper=15, axis=0, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
+    check(
+        assert_type(df.clip(lower=df2, upper=df2, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     # without lower
     check(assert_type(df.clip(upper=None, axis=None), pd.DataFrame), pd.DataFrame)
@@ -917,6 +926,10 @@ def test_dataframe_clip() -> None:
 
     check(assert_type(df.clip(upper=None, axis=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(upper=15, axis=0), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.clip(upper=df2), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(
         assert_type(df.clip(upper=pd.Series([1, 2]), axis=0), pd.DataFrame),
         pd.DataFrame,
@@ -947,6 +960,10 @@ def test_dataframe_clip() -> None:
     )
     check(
         assert_type(df.clip(upper=15, axis=0, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(upper=df2, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -998,6 +1015,10 @@ def test_dataframe_clip() -> None:
         pd.DataFrame,
     )
     check(
+        assert_type(df.clip(lower=df2), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
         assert_type(df.clip(lower=pd.Series([1, 2]), axis="index"), pd.DataFrame),
         pd.DataFrame,
     )
@@ -1007,6 +1028,10 @@ def test_dataframe_clip() -> None:
     )
     check(
         assert_type(df.clip(lower=5, axis=0, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=df2, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
 
