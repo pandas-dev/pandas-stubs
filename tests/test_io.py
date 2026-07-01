@@ -266,8 +266,8 @@ def test_clipboard() -> None:
     DF.to_clipboard(quoting=csv.QUOTE_ALL)
     DF.to_clipboard(sep=",", index=False)
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_clipboard_iterator() -> None:
@@ -535,12 +535,7 @@ def test_parquet_to_pandas() -> None:
     """Test passing `to_pandas_kwargs` in read_parquet."""
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = read_parquet(  # type: ignore[call-overload]
-            Path(),
-            to_pandas_kwargs={  # pyrefly: ignore[bad-argument-type]
-                "categories": ["a", "b"]
-            },  # pyright: ignore[reportArgumentType]
-        )
+        read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_parquet_options(tmp_path: Path) -> None:
@@ -594,7 +589,7 @@ def test_read_csv(tmp_path: Path) -> None:
     pd.read_csv(path_str, usecols=cols)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_csv(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.read_csv(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_read_csv_iterator(tmp_path: Path) -> None:
@@ -733,8 +728,8 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_csv(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        pd.read_csv(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.read_csv(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_csv(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
         def cols2(x: set[float]) -> bool:
             return sum(x) < 1.0
@@ -858,8 +853,8 @@ def test_read_table(tmp_path: Path) -> None:
         DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_read_table_iterator(tmp_path: Path) -> None:
@@ -1039,7 +1034,7 @@ def test_read_excel(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_excel(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.read_excel(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_read_excel_io_types(tmp_path: Path) -> None:
@@ -1768,9 +1763,9 @@ def test_read_json_engine() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_json(dd, lines=False, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.read_json(io.StringIO(data), engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        pd.read_json(io.StringIO(data), lines=True, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.read_json(dd, lines=False, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_json(io.StringIO(data), engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_json(io.StringIO(data), lines=True, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_converters_partial(tmp_path: Path) -> None:
