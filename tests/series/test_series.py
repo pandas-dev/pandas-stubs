@@ -15,6 +15,7 @@ import io
 import math
 from pathlib import Path
 import re
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -2643,26 +2644,66 @@ def test_types_to_numpy() -> None:
         np.str_,
     )
     # DateTime64DType — parametric, use np.dtype(...)
-    check(
-        assert_type(s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt),
-        np_1darray,
-        np.datetime64,
-    )
+    if sys.version_info >= (3, 14):
+        check(
+            assert_type(
+                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")),
+                "np_1darray[np.datetime64[int]]",
+            ),
+            np_1darray,
+            np.datetime64,
+        )
+    elif sys.version_info >= (3, 12):
+        # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
+        pass
+    else:
+        # TODO: pandas-dev/pandas-stubs#1786
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
+            ),
+            np_1darray,
+            np.datetime64,
+        )
     # TimeDelta64DType — parametric, use np.dtype(...)
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-        ),
-        np_1darray,
-        np.timedelta64,
-    )
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-        ),
-        np_1darray,
-        np.timedelta64,
-    )
+    if sys.version_info >= (3, 14):
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
+                "np_1darray[np.timedelta64[int]]",
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
+                "np_1darray[np.timedelta64[int]]",
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+    elif sys.version_info >= (3, 12):
+        # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
+        pass
+    else:
+        # TODO: pandas-dev/pandas-stubs#1786
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
+                np_1darray_td,
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+
     # VoidDType — parametric, use np.dtype(...)
     check(
         assert_type(

@@ -4568,7 +4568,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[Timestamp],
-        dtype: type[np.datetime64] | None = None,
+        dtype: type[np.datetime64[Never]] | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
@@ -4584,7 +4584,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[Timedelta],
-        dtype: type[np.timedelta64] | None = None,
+        dtype: type[np.timedelta64[Never]] | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,

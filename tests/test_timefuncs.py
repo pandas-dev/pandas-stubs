@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import sys
 from typing import (
     assert_never,
     assert_type,
@@ -110,12 +111,20 @@ def test_types_arithmetic() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # TODO: pandas-dev/pandas-stubs#1511 numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
-        assert_type(  # pyrefly: ignore[assert-type]
-            ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
-        )
-        assert_type(  # pyrefly: ignore[assert-type]
-            ts_np_time - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
-        )
+        if sys.version_info >= (3, 14):
+            assert_type(ts_np - ts, dt.timedelta)
+            assert_type(ts_np_time - ts, dt.timedelta)
+        elif sys.version_info >= (3, 12):
+            # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
+            pass
+        else:
+            assert_type(  # pyrefly: ignore[assert-type]
+                ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
+            )
+            assert_type(  # pyrefly: ignore[assert-type]
+                ts_np_time - ts,  # pyright: ignore[reportAssertTypeFailure]
+                dt.timedelta,
+            )
 
 
 def test_types_comparison() -> None:
@@ -1666,8 +1675,8 @@ def test_timedelta_range() -> None:
     check(
         assert_type(
             pd.timedelta_range(
-                np.timedelta64(86400000000000),
-                np.timedelta64(864000000000000),
+                np.timedelta64(86400000000000, "ns"),
+                np.timedelta64(864000000000000, "ns"),
                 periods=10,
             ),
             pd.TimedeltaIndex,

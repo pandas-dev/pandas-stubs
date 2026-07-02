@@ -21,7 +21,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
-dependencies = ["numpy>=1.23.5,<2.5"]  # TODO: pandas-dev/pandas-stubs#1786 remove <2.5
+dependencies = ["numpy>=1.23.5"]
 
 [project.urls]
 Homepage = "https://pandas.pydata.org"
