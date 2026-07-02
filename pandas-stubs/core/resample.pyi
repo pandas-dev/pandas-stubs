@@ -42,7 +42,7 @@ _FrameGroupByFuncTypes: TypeAlias = (
     _FrameGroupByFunc | str | list[_FrameGroupByFunc | str]
 )
 _FrameGroupByFuncArgs: TypeAlias = (
-    _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes]
+    _FrameGroupByFuncTypes | Mapping[Any, _FrameGroupByFuncTypes]
 )
 
 _SeriesGroupByFunc: TypeAlias = (
