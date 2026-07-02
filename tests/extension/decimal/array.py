@@ -254,12 +254,9 @@ class DecimalArray(OpsMixin, ExtensionArray):
             assert isinstance(value, Iterable)
             if is_scalar(key):
                 raise ValueError("setting an array element with a sequence.")
-            value = [
-                decimal.Decimal(v)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-                for v in value
-            ]
+            value = [decimal.Decimal(v) for v in value]  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         else:
-            value = decimal.Decimal(value)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+            value = decimal.Decimal(value)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
         key = check_array_indexer(self, key)
         self._data[key] = value
