@@ -4,6 +4,7 @@ from typing import assert_type
 
 import numpy as np
 import pandas as pd
+from pandas.core.strings.accessor import StringMethods
 import pytest
 
 from tests import (
@@ -14,6 +15,14 @@ from tests._typing import np_1darray_bool
 
 DATA = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
 DATA_BYTES = [b"applep", b"bananap"]
+
+
+def test_accessors_isinstance() -> None:
+    """Test that Series.str and Index.str supertype is `StringMethods`."""
+    s_str = pd.Series(DATA)
+    i_str = pd.Series(DATA)
+    isinstance(s_str, StringMethods)
+    isinstance(i_str, StringMethods)
 
 
 def test_string_accessors_type_preserving_series() -> None:
