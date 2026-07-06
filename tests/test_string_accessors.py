@@ -21,8 +21,8 @@ def test_accessors_isinstance() -> None:
     """Test that Series.str and Index.str supertype is `StringMethods`."""
     s_str = pd.Series(DATA)
     i_str = pd.Series(DATA)
-    isinstance(s_str, StringMethods)
-    isinstance(i_str, StringMethods)
+    assert isinstance(s_str.str, StringMethods)
+    assert isinstance(i_str.str, StringMethods)
 
 
 def test_string_accessors_type_preserving_series() -> None:
