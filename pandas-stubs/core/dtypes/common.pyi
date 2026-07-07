@@ -11,8 +11,10 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.inference import (
+    is_array_like as is_array_like,
     is_bool as is_bool,
     is_complex as is_complex,
+    is_dataclass as is_dataclass,
     is_dict_like as is_dict_like,
     is_file_like as is_file_like,
     is_float as is_float,
@@ -21,10 +23,12 @@ from pandas.core.dtypes.inference import (
     is_iterator as is_iterator,
     is_list_like as is_list_like,
     is_named_tuple as is_named_tuple,
+    is_nested_list_like as is_nested_list_like,
     is_number as is_number,
     is_re as is_re,
     is_re_compilable as is_re_compilable,
     is_scalar as is_scalar,
+    is_sequence as is_sequence,
 )
 
 _ArrayOrDtype: TypeAlias = (
