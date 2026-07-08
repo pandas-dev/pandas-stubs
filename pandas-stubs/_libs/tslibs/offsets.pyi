@@ -222,8 +222,10 @@ class _CustomBusinessMonth(SingleConstructorOffset):
         self,
         n: int = ...,
         normalize: bool = ...,
-        offset: timedelta = ...,
+        weekmask: str = ...,
         holidays: list[Any] | None = ...,
+        calendar: AbstractHolidayCalendar | np.busdaycalendar | None = ...,
+        offset: timedelta = ...,
     ) -> None: ...
 
 class CustomBusinessDay(BusinessDay):
@@ -246,8 +248,27 @@ class CustomBusinessHour(BusinessHour):
         holidays: list[Any] | None = ...,
     ) -> None: ...
 
-class CustomBusinessMonthEnd(_CustomBusinessMonth): ...
-class CustomBusinessMonthBegin(_CustomBusinessMonth): ...
+class CustomBusinessMonthEnd(_CustomBusinessMonth):
+    def __init__(
+        self,
+        n: int = ...,
+        normalize: bool = ...,
+        weekmask: str = ...,
+        holidays: list[Any] | None = ...,
+        calendar: AbstractHolidayCalendar | np.busdaycalendar | None = ...,
+        offset: timedelta = ...,
+    ) -> None: ...
+
+class CustomBusinessMonthBegin(_CustomBusinessMonth):
+    def __init__(
+        self,
+        n: int = ...,
+        normalize: bool = ...,
+        weekmask: str = ...,
+        holidays: list[Any] | None = ...,
+        calendar: AbstractHolidayCalendar | np.busdaycalendar | None = ...,
+        offset: timedelta = ...,
+    ) -> None: ...
 
 class DateOffset(RelativeDeltaOffset):
     def __init__(
