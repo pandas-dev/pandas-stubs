@@ -55,6 +55,7 @@ def test_covariant_list() -> None:
     bad3: list[object] = [1, "a", 3.0]  # Error, list[object] !< list[float]
     bad4: float = 1.0  # Error, float !< list[float]
 
+    # TODO: remove when astral-sh/ty#3951 is resolved
     f(good1)  # ty: ignore[invalid-argument-type]
     f(good2)  # ty: ignore[invalid-argument-type]
     if TYPE_CHECKING_INVALID_USAGE:

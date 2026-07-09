@@ -173,7 +173,7 @@ def test_types_any() -> None:
     check(assert_type(pd.Series([np.nan]).any(skipna=False), np.bool), np.bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.Series([False, True]).any(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        pd.Series([False, True]).any(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
 
 def test_types_all() -> None:
@@ -182,7 +182,7 @@ def test_types_all() -> None:
     check(assert_type(pd.Series([np.nan]).all(skipna=False), np.bool), np.bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.Series([False, True]).all(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        pd.Series([False, True]).all(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
 
 def test_types_csv(tmp_path: Path) -> None:
@@ -487,7 +487,7 @@ def test_types_median() -> None:
     check(assert_type(s.median(numeric_only=False), float), float)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.median(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        s.median(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_types_sum() -> None:
@@ -548,7 +548,7 @@ def test_types_min() -> None:
     check(assert_type(s.min(skipna=False), float), np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.min(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.min(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
 
 def test_types_max() -> None:
@@ -563,7 +563,7 @@ def test_types_max() -> None:
     check(assert_type(s.max(skipna=False), float), np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.max(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.max(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
 
 def test_types_groupby_level() -> None:
@@ -968,13 +968,13 @@ def test_types_groupby_methods() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.sum(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
-        s.prod(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
-        s.std(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        s.var(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        s.sem(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
-        s.skew(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
-        s.kurt(0)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.sum(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.prod(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.std(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        s.var(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        s.sem(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.skew(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.kurt(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
 
 def test_groupby_result() -> None:
