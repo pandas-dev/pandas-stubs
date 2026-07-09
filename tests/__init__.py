@@ -94,7 +94,7 @@ def check(
         value = cast(pd.Index, actual)[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
         # `BaseGroupBy.obj` is internal and untyped
-        value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute]
+        value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
     elif isinstance(actual, Iterable):
         # T_co in Iterable[T_co] does not have a default value and `actual` is Iterable[Unknown] by pyright
         value = next(iter(cast("Iterable[Any]", actual)))

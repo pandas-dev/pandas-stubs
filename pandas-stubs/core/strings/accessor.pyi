@@ -32,10 +32,12 @@ from pandas._typing import (
     np_ndarray_str,
 )
 
-@type_check_only
-class IndexStringMethods(NoNewAttributesMixin, Generic[S2]):
-    def __getitem__(self, key: _slice | int) -> Index[str]: ...
+class StringMethods(NoNewAttributesMixin, Generic[S2]):
     def __iter__(self) -> Never: ...
+
+@type_check_only
+class IndexStringMethods(StringMethods[S2]):
+    def __getitem__(self, key: _slice | int) -> Index[str]: ...
     @overload
     def cat(
         self: IndexStringMethods[str],
@@ -292,9 +294,8 @@ class IndexStringMethods(NoNewAttributesMixin, Generic[S2]):
     def isascii(self: IndexStringMethods[str]) -> np_1darray_bool: ...
 
 @type_check_only
-class SeriesStringMethods(NoNewAttributesMixin, Generic[S2]):
+class SeriesStringMethods(StringMethods[S2]):
     def __getitem__(self, key: _slice | int) -> Series[str]: ...
-    def __iter__(self) -> Never: ...
     @overload
     def cat(
         self: SeriesStringMethods[str],
