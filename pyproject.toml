@@ -31,7 +31,7 @@ Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 
 [dependency-groups]
 dev = [
-  "mypy>=2.0.0",
+  "mypy>=2.2.0",
   "pandas==3.0.3",
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
