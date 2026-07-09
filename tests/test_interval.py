@@ -90,8 +90,7 @@ def test_interval_length() -> None:
         _00 = 20 in i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _01 = i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _02 = i1 * 3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        # TODO: astral-sh/ty#3898 missing a ty ignore
-        _03 = i1 * pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _03 = i1 * pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
     i2 = pd.Interval(10, 20)
     check(assert_type(i2.length, int), int)
