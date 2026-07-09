@@ -102,8 +102,10 @@ def test_aggregate() -> None:
         DataFrame,
     )
     check(
-        assert_type(
-            DF.resample("ME").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
+                {"col1": ["sum", np.mean], "col2": np.mean}
+            ),
             DataFrame,
         ),
         DataFrame,
@@ -364,19 +366,36 @@ def test_aggregate_frame_combinations() -> None:
         assert_type(DF.resample("ME").aggregate({"col1": np.sum}), DataFrame), DataFrame
     )
     check(
-        DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}),
+        assert_type(
+            DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}), DataFrame
+        ),
         DataFrame,
     )
     check(
-        DF.resample("ME").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
+                {"col1": [np.sum], "col2": ["sum", np.mean]}
+            ),
+            DataFrame,
+        ),
         DataFrame,
     )
     check(
-        DF.resample("ME").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
+                {"col1": np.sum, "col2": ["sum", np.mean]}
+            ),
+            DataFrame,
+        ),
         DataFrame,
     )
     check(
-        DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
+                {"col1": "sum", "col2": [np.mean]}
+            ),
+            DataFrame,
+        ),
         DataFrame,
     )
 
