@@ -2,10 +2,10 @@ from datetime import datetime
 from typing import assert_type
 
 from dateutil.relativedelta import MO
+import numpy as np
 import pandas as pd
 
 from tests import check
-import numpy as np
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -47,18 +47,23 @@ def test_holiday_exclude_dates() -> None:
     )
     check(assert_type(queens_jubilee_uk_spring_bank_holiday, Holiday), Holiday)
 
+
 def test_custom_business_month() -> None:
 
     cal = np.busdaycalendar()
 
     check(
-        assert_type(pd.offsets.CustomBusinessMonthBegin(calendar=cal),
-        pd.offsets.CustomBusinessMonthBegin),
+        assert_type(
+            pd.offsets.CustomBusinessMonthBegin(calendar=cal),
+            pd.offsets.CustomBusinessMonthBegin,
+        ),
         pd.offsets.CustomBusinessMonthBegin,
     )
     check(
-        assert_type(pd.offsets.CustomBusinessMonthEnd(calendar=cal),
-        pd.offsets.CustomBusinessMonthEnd),
+        assert_type(
+            pd.offsets.CustomBusinessMonthEnd(calendar=cal),
+            pd.offsets.CustomBusinessMonthEnd,
+        ),
         pd.offsets.CustomBusinessMonthEnd,
     )
     check(
