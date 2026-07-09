@@ -5,6 +5,7 @@ from dateutil.relativedelta import MO
 import pandas as pd
 
 from tests import check
+import numpy as np
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -45,3 +46,32 @@ def test_holiday_exclude_dates() -> None:
         exclude_dates=exclude,
     )
     check(assert_type(queens_jubilee_uk_spring_bank_holiday, Holiday), Holiday)
+
+def test_custom_business_month() -> None:
+
+    cal = np.busdaycalendar()
+
+    check(
+        assert_type(pd.offsets.CustomBusinessMonthBegin(calendar=cal),
+        pd.offsets.CustomBusinessMonthBegin),
+        pd.offsets.CustomBusinessMonthBegin,
+    )
+    check(
+        assert_type(pd.offsets.CustomBusinessMonthEnd(calendar=cal),
+        pd.offsets.CustomBusinessMonthEnd),
+        pd.offsets.CustomBusinessMonthEnd,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthBegin(weekmask="Mon Tue Wed Thu Fri"),
+            pd.offsets.CustomBusinessMonthBegin,
+        ),
+        pd.offsets.CustomBusinessMonthBegin,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthEnd(weekmask="Mon Tue Wed Thu Fri"),
+            pd.offsets.CustomBusinessMonthEnd,
+        ),
+        pd.offsets.CustomBusinessMonthEnd,
+    )
