@@ -46,14 +46,14 @@ class Resampler(BaseGroupBy[NDFrameT]):
         self: Resampler[DataFrame],
         func: (
             _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes] | None
-        ) = ...,
+        ) = None,
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: Resampler[Series],
-        func: _SeriesGroupByFuncTypes | None = ...,
+        func: _SeriesGroupByFuncTypes | None = None,
         *args: Any,
         **kwargs: Any,
     ) -> Series: ...
@@ -61,7 +61,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def aggregate(
         self: Resampler[Series],
         func: (
-            Mapping[Hashable, _SeriesGroupByFunc | str] | list[_SeriesGroupByFunc | str]
+            Mapping[Hashable, _SeriesGroupByFuncTypes] | list[_SeriesGroupByFuncTypes]
         ),
         *args: Any,
         **kwargs: Any,
