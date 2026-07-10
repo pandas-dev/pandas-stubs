@@ -2151,15 +2151,32 @@ def test_types_to_feather(tmp_path: Path) -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     path = tmp_path / f"{uuid.uuid4()}.feather"
     path_str = str(path)
-    df.to_feather(path_str)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
+        upper="3.0.3",
+    ):
+        df.to_feather(path_str)
     # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.to_feather(path_str, compression="zstd", compression_level=3, chunksize=2)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
+        upper="3.0.3",
+    ):
+        df.to_feather(path_str, compression="zstd", compression_level=3, chunksize=2)
 
     # to_feather has been able to accept a buffer since pandas 1.0.0
     # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
     # Docstring and type were updated in 1.2.0.
     # https://github.com/pandas-dev/pandas/pull/35408
-    with path.open("wb") as file:
+    with (
+        pytest_warns_bounded(
+            FutureWarning,
+            r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
+            upper="3.0.3",
+        ),
+        path.open("wb") as file,
+    ):
         df.to_feather(file)
 
 
