@@ -1,4 +1,7 @@
-from datetime import datetime
+from datetime import (
+    datetime,
+    timedelta,
+)
 from typing import assert_type
 
 from dateutil.relativedelta import MO
@@ -76,6 +79,20 @@ def test_custom_business_month() -> None:
     check(
         assert_type(
             pd.offsets.CustomBusinessMonthEnd(weekmask="Mon Tue Wed Thu Fri"),
+            pd.offsets.CustomBusinessMonthEnd,
+        ),
+        pd.offsets.CustomBusinessMonthEnd,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthBegin(offset=timedelta(hours=1)),
+            pd.offsets.CustomBusinessMonthBegin,
+        ),
+        pd.offsets.CustomBusinessMonthBegin,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthEnd(offset=timedelta(hours=1)),
             pd.offsets.CustomBusinessMonthEnd,
         ),
         pd.offsets.CustomBusinessMonthEnd,
