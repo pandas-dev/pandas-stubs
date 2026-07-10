@@ -2154,14 +2154,14 @@ def test_types_to_feather(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.3",
+        upper="3.0.4",
     ):
         df.to_feather(path_str)
     # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     with pytest_warns_bounded(
         FutureWarning,
         r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.3",
+        upper="3.0.4",
     ):
         df.to_feather(path_str, compression="zstd", compression_level=3, chunksize=2)
 
@@ -2173,7 +2173,7 @@ def test_types_to_feather(tmp_path: Path) -> None:
         pytest_warns_bounded(
             FutureWarning,
             r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-            upper="3.0.3",
+            upper="3.0.4",
         ),
         path.open("wb") as file,
     ):

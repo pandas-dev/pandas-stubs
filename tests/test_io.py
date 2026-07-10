@@ -556,7 +556,7 @@ def test_feather(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.3",
+        upper="3.0.4",
     ):
         check(assert_type(DF.to_feather(path_str), None), type(None))
     check(assert_type(read_feather(path_str), DataFrame), DataFrame)
@@ -565,7 +565,7 @@ def test_feather(tmp_path: Path) -> None:
         with pytest_warns_bounded(
             FutureWarning,
             "pyarrow.feather.write_feather is deprecated as of 24.0.0",
-            upper="3.0.3",
+            upper="3.0.4",
         ):
             check(assert_type(DF.to_feather(bio), None), type(None))
         bio.seek(0)
@@ -1585,7 +1585,7 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.3",
+        upper="3.0.4",
     ):
         check(assert_type(DF.to_feather(path_str), None), type(None))
     check(
