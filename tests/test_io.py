@@ -559,8 +559,18 @@ def test_feather(tmp_path: Path) -> None:
         upper="3.0.4",
     ):
         check(assert_type(DF.to_feather(path_str), None), type(None))
-    check(assert_type(read_feather(path_str), DataFrame), DataFrame)
-    check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
+        upper="3.0.4",
+    ):
+        check(assert_type(read_feather(path_str), DataFrame), DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
+        upper="3.0.4",
+    ):
+        check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
     with io.BytesIO() as bio:
         with pytest_warns_bounded(
             FutureWarning,
@@ -569,7 +579,12 @@ def test_feather(tmp_path: Path) -> None:
         ):
             check(assert_type(DF.to_feather(bio), None), type(None))
         bio.seek(0)
-        check(assert_type(read_feather(bio), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            FutureWarning,
+            r"pyarrow.feather.read_table is deprecated as of 24.0.0",
+            upper="3.0.4",
+        ):
+            check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
 def test_read_csv(tmp_path: Path) -> None:
@@ -1588,10 +1603,15 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
         upper="3.0.4",
     ):
         check(assert_type(DF.to_feather(path_str), None), type(None))
-    check(
-        assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
-        DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
+        upper="3.0.4",
+    ):
+        check(
+            assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
+            DataFrame,
+        )
 
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     as_str: str = path_str
