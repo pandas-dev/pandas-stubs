@@ -3,6 +3,7 @@ from functools import partial
 from typing import (
     TYPE_CHECKING,
     Literal,
+    get_args,
 )
 
 from scripts._job import run_job
@@ -29,11 +30,13 @@ _DIST_STEPS = [
     _step.mypy_dist,
 ]
 
+TypeChecker = Literal["mypy", "pyright", "pyrefly", "ty"]
+
 
 def run_tests(
     src: bool = False,
     dist: bool = False,
-    type_checker: Literal["", "mypy", "pyright", "pyrefly", "ty"] = "",
+    type_checker: TypeChecker | None = None,
 ) -> None:
     steps: list[Step] = []
     if src:
@@ -43,9 +46,12 @@ def run_tests(
         steps.extend(_DIST_STEPS)
 
     if type_checker:
-        # either pyright or mypy
-        remove = "mypy" if type_checker == "pyright" else "pyright"
-        steps = [step for step in steps if remove not in step.name]
+        steps = [
+            s
+            for s in steps
+            if type_checker in s.name
+            or not any(t in s.name for t in get_args(TypeChecker))
+        ]
 
     run_job(steps)
 
