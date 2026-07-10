@@ -101,6 +101,7 @@ def test_aggregate() -> None:
         ),
         DataFrame,
     )
+    # TODO: astral-sh/ty#3956
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
@@ -371,6 +372,7 @@ def test_aggregate_frame_combinations() -> None:
         ),
         DataFrame,
     )
+    # TODO: astral-sh/ty#3956 for the following three cases
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
