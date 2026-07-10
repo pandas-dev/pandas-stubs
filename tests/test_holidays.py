@@ -1,7 +1,11 @@
-from datetime import datetime
+from datetime import (
+    datetime,
+    timedelta,
+)
 from typing import assert_type
 
 from dateutil.relativedelta import MO
+import numpy as np
 import pandas as pd
 
 from tests import check
@@ -45,3 +49,51 @@ def test_holiday_exclude_dates() -> None:
         exclude_dates=exclude,
     )
     check(assert_type(queens_jubilee_uk_spring_bank_holiday, Holiday), Holiday)
+
+
+def test_custom_business_month() -> None:
+
+    cal = np.busdaycalendar()
+
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthBegin(calendar=cal),
+            pd.offsets.CustomBusinessMonthBegin,
+        ),
+        pd.offsets.CustomBusinessMonthBegin,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthEnd(calendar=cal),
+            pd.offsets.CustomBusinessMonthEnd,
+        ),
+        pd.offsets.CustomBusinessMonthEnd,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthBegin(weekmask="Mon Tue Wed Thu Fri"),
+            pd.offsets.CustomBusinessMonthBegin,
+        ),
+        pd.offsets.CustomBusinessMonthBegin,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthEnd(weekmask="Mon Tue Wed Thu Fri"),
+            pd.offsets.CustomBusinessMonthEnd,
+        ),
+        pd.offsets.CustomBusinessMonthEnd,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthBegin(offset=timedelta(hours=1)),
+            pd.offsets.CustomBusinessMonthBegin,
+        ),
+        pd.offsets.CustomBusinessMonthBegin,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessMonthEnd(offset=timedelta(hours=1)),
+            pd.offsets.CustomBusinessMonthEnd,
+        ),
+        pd.offsets.CustomBusinessMonthEnd,
+    )
