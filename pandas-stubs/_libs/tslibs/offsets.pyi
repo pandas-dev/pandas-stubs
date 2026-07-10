@@ -222,8 +222,10 @@ class _CustomBusinessMonth(SingleConstructorOffset):
         self,
         n: int = ...,
         normalize: bool = ...,
-        offset: timedelta = ...,
+        weekmask: str = ...,
         holidays: list[Any] | None = ...,
+        calendar: AbstractHolidayCalendar | np.busdaycalendar | None = ...,
+        offset: timedelta = ...,
     ) -> None: ...
 
 class CustomBusinessDay(BusinessDay):

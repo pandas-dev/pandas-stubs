@@ -171,6 +171,9 @@ def test_is_hashable() -> None:
     )
     check(assert_type(api.is_hashable(ind), bool), bool)
 
+    check(assert_type(api.is_hashable(obj, allow_slice=True), bool), bool)
+    check(assert_type(api.is_hashable(obj, allow_slice=False), bool), bool)
+
 
 def test_is_integer() -> None:
     check(assert_type(api.is_integer(obj), bool), bool)
