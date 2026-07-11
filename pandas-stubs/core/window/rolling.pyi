@@ -48,7 +48,7 @@ class BaseWindow(Generic[NDFrameT]):
     def __getattr__(self, attr: str) -> Self: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
     @overload
-    def aggregate(  # pyright: ignore[reportOverlappingOverload]
+    def aggregate(
         self: BaseWindow[Series],
         func: AggFuncTypeBase[...],
         *args: Any,

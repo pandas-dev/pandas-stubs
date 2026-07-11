@@ -1301,6 +1301,9 @@ def test_types_aggregate() -> None:
     check(assert_type(s.aggregate(min), int), int)
     check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series, np.integer)
     check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series, np.integer)
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.aggregate("randoom_fuc")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
+        s.aggregate({"a": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType]
 
 
 def test_types_transform() -> None:
@@ -1317,6 +1320,9 @@ def test_types_transform() -> None:
     )
     check(assert_type(s.transform({"index": "abs"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.transform({"index": abs}), pd.DataFrame), pd.DataFrame)
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.transform("randoom_fuc")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
+        s.transform({"index": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType]
 
 
 def test_types_describe() -> None:

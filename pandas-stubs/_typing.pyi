@@ -593,8 +593,56 @@ ValueKeyFunc: TypeAlias = Callable[[Series], Series | AnyArrayLike] | None
 IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
-# More specific than what is in pandas
-AggFuncTypeBase: TypeAlias = Callable[P, Any] | str | np.ufunc
+# More specific than what is in pandas.
+# Inlined (rather than reusing pandas.core.groupby.base's kernel Literals)
+# because: (1) that module's TypeAliases only exist in the pandas-stubs .pyi
+# override, not in pandas itself, and this file is copied verbatim to
+# tests/_typing.py and executed at runtime by the test suite; and (2) unlike
+# GroupBy.transform (which strictly validates against transformation_kernels),
+# DataFrame/Series aggregate/transform dispatch via getattr and also accept
+# "abs"/"sqrt", which are not GroupBy transformation kernels.
+AggFuncTypeBase: TypeAlias = (
+    Callable[P, Any]
+    | Literal[
+        "all",
+        "any",
+        "corrwith",
+        "count",
+        "first",
+        "idxmax",
+        "idxmin",
+        "last",
+        "max",
+        "mean",
+        "median",
+        "min",
+        "nunique",
+        "prod",
+        "quantile",
+        "sem",
+        "size",
+        "skew",
+        "std",
+        "sum",
+        "var",
+        "abs",
+        "sqrt",
+        "bfill",
+        "cumcount",
+        "cummax",
+        "cummin",
+        "cumprod",
+        "cumsum",
+        "diff",
+        "ffill",
+        "fillna",
+        "ngroup",
+        "pct_change",
+        "rank",
+        "shift",
+    ]
+    | np.ufunc
+)
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase[P]]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
     HashableT, AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]]
