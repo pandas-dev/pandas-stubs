@@ -23,31 +23,16 @@ runs:
 
     - name: Determine poetry version
       shell: bash
-      run: echo "{VERSION}=$(poetry --version)"
+      run: |
+        POETRY_VERSION=$(poetry --version | sed -r 's/[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/g')
+        echo "VERSION=$POETRY_VERSION" >> $GITHUB_OUTPUT
       id: poetry_version
 
     - name: Cache poetry.lock
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: poetry.lock
         key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
-
-    - name: Install HDF5 (Linux)
-      if: runner.os == 'Linux'
-      shell: bash
-      run: sudo apt-get update && sudo apt-get install -y libhdf5-dev
-
-    - name: Install HDF5 (macOS)
-      if: runner.os == 'macOS'
-      shell: bash
-      run: |
-        brew install hdf5
-        echo "HDF5_DIR=$(brew --prefix hdf5)" >> "$GITHUB_ENV"
-
-    - name: Install HDF5 (Windows)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: choco install hdf5-hdf5lib -y --no-progress
 
     - name: Install project dependencies
       shell: bash
