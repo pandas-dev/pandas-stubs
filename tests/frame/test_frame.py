@@ -3791,9 +3791,15 @@ def test_align() -> None:
     aligned_df0, aligned_s0 = df0.align(s0, axis="index")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
     check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
-    aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
-    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "'int' is not supported as a fill value for str dtype. In",
+        lower="3.0.99",
+    ):
+        aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
+        check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+        check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
 
     s1 = pd.Series(data={"A": "A", "D": "D"})
     aligned_df0, aligned_s1 = df0.align(s1, axis="columns")

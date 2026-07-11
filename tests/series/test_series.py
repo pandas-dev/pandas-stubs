@@ -1467,14 +1467,19 @@ def test_types_values() -> None:
         pd.Categorical,
         str,
     )
-    check(
-        assert_type(
-            pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
-            np_1darray | ExtensionArray | pd.Categorical,
-        ),
-        np_1darray,
-        np.datetime64,
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        match="Series.values returning an ndarray that drops timezone",
+        lower="3.0.99",
+    ):
+        check(
+            assert_type(
+                pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
+                np_1darray | ExtensionArray | pd.Categorical,
+            ),
+            np_1darray,
+            np.datetime64,
+        )
 
 
 def test_types_rename() -> None:

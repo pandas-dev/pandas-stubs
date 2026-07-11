@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import subprocess
 import sys
 
@@ -108,11 +109,13 @@ def nightly_pandas() -> None:
 
 
 def _get_version_from_pyproject(program: str) -> str:
+    """Find version of a package from the pyproject.toml file."""
     text = Path("pyproject.toml").read_text()
-    version_line = next(
-        line for line in text.splitlines() if line.startswith(f"{program} = ")
-    )
-    return version_line.split('"')[1]
+    # handle <, >, ==, <=, >= cases
+    match = re.search(rf'"{re.escape(program)}[=<>~!]+([^"]+)"', text)
+    if match is None:
+        raise AssertionError(f"Could not find {program} in pyproject.toml")
+    return match.group(1)
 
 
 def released_pandas() -> None:
