@@ -4,6 +4,7 @@ from datetime import (
     datetime,
 )
 from typing import (
+    Any,
     Literal,
     overload,
 )
@@ -30,6 +31,16 @@ def before_nearest_workday(dt: datetime) -> datetime: ...
 def after_nearest_workday(dt: datetime) -> datetime: ...
 
 class Holiday:
+    exclude_dates: DatetimeIndex | None = None
+    name: str
+    observance: Callable[..., Any] | None
+    offset: BaseOffset | list[BaseOffset] | None
+    day: int | None
+    month: int | None
+    year: int | None
+    days_of_week: tuple[int | relativedelta, ...] | None = None
+    end_date: Timestamp | None
+    start_date: Timestamp | None
     def __init__(
         self,
         name: str,
@@ -69,6 +80,7 @@ def register(cls: type[AbstractHolidayCalendar]) -> None: ...
 def get_calendar(name: str) -> AbstractHolidayCalendar: ...
 
 class AbstractHolidayCalendar:
+    name: str
     rules: list[Holiday]
     start_date: Timestamp
     end_date: Timestamp
