@@ -2240,8 +2240,9 @@ def test_types_aggregate() -> None:
     check(assert_type(df.aggregate("mean", axis=1), pd.Series), pd.Series)
     check(assert_type(df.aggregate({"A": "mean"}), pd.Series), pd.Series)
     check(assert_type(df.aggregate({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
+
     if TYPE_CHECKING_INVALID_USAGE:
-        df.aggregate("randoom_fuc")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.aggregate("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
         df.aggregate({"A": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType]
 
 
@@ -2260,7 +2261,7 @@ def test_types_transform() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        df.transform("randoom_fuc")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        df.transform("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         df.transform({"A": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
 
 

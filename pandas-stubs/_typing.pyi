@@ -614,6 +614,7 @@ AggFuncTypeBase: TypeAlias = (
         "idxmax",
         "idxmin",
         "last",
+        "kurt",
         "max",
         "mean",
         "median",
