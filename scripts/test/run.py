@@ -114,7 +114,7 @@ def _get_version_from_pyproject(program: str) -> str:
     # handle <, >, ==, <=, >= cases
     match = re.search(rf'"{re.escape(program)}[=<>~!]+([^"]+)"', text)
     if match is None:
-        raise AssertionError(f"Could not find {program} in pyproject.toml")
+        raise KeyError(f"Could not find {program} in pyproject.toml")
     return match.group(1)
 
 
