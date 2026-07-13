@@ -34,32 +34,32 @@ def test_floordiv_py_scalar(left_i: pd.Series) -> None:
     check(assert_type(left_i // i, pd.Series), pd.Series, np.integer)
     check(assert_type(left_i // f, pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(b // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(i // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(f // left_i, pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(d // left_i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left_i.floordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.floordiv(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.floordiv(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
 
     check(assert_type(left_i.rfloordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.rfloordiv(c)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.rfloordiv(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rfloordiv(c)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.rfloordiv(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
     check(
         assert_type(left_i.rfloordiv(d), "pd.Series[pd.Timedelta]"),
         pd.Series,
@@ -77,32 +77,32 @@ def test_floordiv_py_sequence(left_i: pd.Series) -> None:
     check(assert_type(left_i // i, pd.Series), pd.Series, np.integer)
     check(assert_type(left_i // f, pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(b // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(i // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(f // left_i, pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(d // left_i, pd.Series), pd.Series, timedelta)
 
     check(assert_type(left_i.floordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.floordiv(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.floordiv(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
 
     check(assert_type(left_i.rfloordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
     check(
         assert_type(left_i.rfloordiv(d), "pd.Series[pd.Timedelta]"),
         pd.Series,
@@ -144,7 +144,9 @@ def test_floordiv_numpy_array(left_i: pd.Series) -> None:
         assert_type(c // left_i, Any)
         assert_type(s // left_i, Any)
     check(
-        assert_type(d // left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            d // left_i, Any  # pyright: ignore[reportAssertTypeFailure]
+        ),
         pd.Series,
         pd.Timedelta,
     )
@@ -154,14 +156,14 @@ def test_floordiv_numpy_array(left_i: pd.Series) -> None:
     check(assert_type(left_i.floordiv(f), pd.Series), pd.Series, np.floating)
 
     def _23() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(
-            left_i.floordiv(c),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        assert_type(  # pyrefly: ignore[assert-type]
+            left_i.floordiv(c),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue] # pyrefly: ignore[no-matching-overload]
             Never,
         )
 
     def _24() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(
-            left_i.floordiv(s),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        assert_type(  # pyrefly: ignore[assert-type]
+            left_i.floordiv(s),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue] # pyrefly: ignore[no-matching-overload]
             Never,
         )
 
@@ -172,8 +174,8 @@ def test_floordiv_numpy_array(left_i: pd.Series) -> None:
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
     check(
         assert_type(left_i.rfloordiv(d), "pd.Series[pd.Timedelta]"),
         pd.Series,
@@ -194,8 +196,8 @@ def test_floordiv_pd_index(left_i: pd.Series) -> None:
     check(assert_type(left_i // i, pd.Series), pd.Series, np.integer)
     check(assert_type(left_i // f, pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
 
     def _05() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(left_i // d, Never)
@@ -204,16 +206,16 @@ def test_floordiv_pd_index(left_i: pd.Series) -> None:
     check(assert_type(i // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(f // left_i, pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(d // left_i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left_i.floordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
 
     def _25() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(left_i.floordiv(d), Never)
@@ -222,8 +224,8 @@ def test_floordiv_pd_index(left_i: pd.Series) -> None:
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
     check(
         assert_type(left_i.rfloordiv(d), "pd.Series[pd.Timedelta]"),
         pd.Series,
@@ -244,32 +246,32 @@ def test_floordiv_pd_series(left_i: pd.Series) -> None:
     check(assert_type(left_i // i, pd.Series), pd.Series, np.integer)
     check(assert_type(left_i // f, pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
         # left_i // d  # This invalid one cannot be detected by static type checking
 
     check(assert_type(b // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(i // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(f // left_i, pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
     check(assert_type(d // left_i, pd.Series), pd.Series, pd.Timedelta)
 
     check(assert_type(left_i.floordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
         # left_i.floordiv(d)  # This invalid one cannot be detected by static type checking
 
     check(assert_type(left_i.rfloordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(f), pd.Series), pd.Series, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
 
     check(
         assert_type(left_i.rfloordiv(d), "pd.Series[pd.Timedelta]"),

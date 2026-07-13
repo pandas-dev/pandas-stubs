@@ -11,7 +11,57 @@ from typing import (
 )
 
 def get_option(pat: str) -> Any: ...
-def set_option(pat: str, val: object) -> None: ...
+@overload
+def set_option(*args: dict[str, Any]) -> None: ...
+@overload
+def set_option(pat0: str, val0: object) -> None: ...
+@overload
+def set_option(pat0: str, val0: object, pat1: str, val1: object) -> None: ...
+@overload
+def set_option(
+    pat0: str, val0: object, pat1: str, val1: object, pat2: str, val2: object
+) -> None: ...
+@overload
+def set_option(
+    pat0: str,
+    val0: object,
+    pat1: str,
+    val1: object,
+    pat2: str,
+    val2: object,
+    pat3: str,
+    val3: object,
+) -> None: ...
+@overload
+def set_option(
+    pat0: str,
+    val0: object,
+    pat1: str,
+    val1: object,
+    pat2: str,
+    val2: object,
+    pat3: str,
+    val3: object,
+    pat4: str,
+    val4: object,
+) -> None: ...
+@overload
+def set_option(
+    pat0: str,
+    val0: object,
+    pat1: str,
+    val1: object,
+    pat2: str,
+    val2: object,
+    pat3: str,
+    val3: object,
+    pat4: str,
+    val4: object,
+    pat5: str,
+    val5: object,
+) -> None: ...
+@overload
+def set_option(*args: Any) -> None: ...
 def reset_option(pat: str) -> None: ...
 @overload
 def describe_option(pat: str, _print_desc: Literal[False]) -> str: ...
@@ -76,7 +126,6 @@ class Display(DictWrapper):
 class Future(DictWrapper):
     distiguish_nan_and_na: bool
     infer_string: bool
-    no_silent_downcasting: bool
     python_scalars: bool
 
 @type_check_only

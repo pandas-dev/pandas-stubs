@@ -83,25 +83,19 @@ def test_arithmetic() -> None:
     check(assert_type(1 % na, NAType), NAType)
 
     # __divmod__
-    # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
-    # check(
-    #     assert_type(
-    #         divmod(na, s_int),
-    #         tuple[pd.Series, pd.Series],
-    #     ),
-    #     tuple,
-    # )
-    # check(
-    #     assert_type(
-    #         divmod(na, idx_int),
-    #         tuple[pd.Index, pd.Index],
-    #     ),
-    #     tuple,
-    # )
-    # https://github.com/microsoft/pyright/issues/10899.
+    check(assert_type(divmod(na, s_int), tuple[pd.Series, pd.Series]), tuple, pd.Series)
+    # TODO: facebook/pyrefly#3822
     check(
-        assert_type(  # pyright: ignore[reportUnknownArgumentType]
-            divmod(  # pyright: ignore[reportCallIssue, reportAssertTypeFailure]
+        assert_type(  # pyrefly: ignore[assert-type]
+            divmod(na, idx_int), tuple[pd.Index, pd.Index]
+        ),
+        tuple,
+        pd.Index,
+    )
+    # TODO: microsoft/pyright#10899 facebook/pyrefly#3822
+    check(
+        assert_type(  # pyright: ignore[reportUnknownArgumentType] # pyrefly: ignore[assert-type]
+            divmod(  # pyright: ignore[reportCallIssue, reportAssertTypeFailure] # pyrefly: ignore[no-matching-overload]
                 na, 1  # pyright: ignore[reportArgumentType]
             ),
             tuple[NAType, NAType],
@@ -110,16 +104,16 @@ def test_arithmetic() -> None:
     )
 
     # __rdivmod__
-    # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
-    # check(
-    #     assert_type(divmod(s_int, na), tuple[pd.Series, pd.Series]),
-    #     tuple,
-    # )
-    # https://github.com/pandas-dev/pandas-stubs/issues/1347
-    # check(
-    #     assert_type(divmod(idx_int, na), tuple[pd.Index, pd.Index]),
-    #     tuple,
-    # )
+    check(
+        assert_type(divmod(s_int, na), "tuple[pd.Series[int], pd.Series[int]]"),
+        tuple,
+        pd.Series,
+    )
+    check(
+        assert_type(divmod(idx_int, na), "tuple[pd.Index[int], pd.Index[int]]"),
+        tuple,
+        pd.Index,
+    )
     check(assert_type(divmod(1, na), tuple[NAType, NAType]), tuple)
 
     # __eq__

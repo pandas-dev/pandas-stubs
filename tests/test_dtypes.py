@@ -21,14 +21,13 @@ from pandas.api.typing import (
     NaTType,
     NAType,
 )
+from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
 )
 import pyarrow as pa
 import pytest
-
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -63,8 +62,8 @@ def test_datetimetz_dtype() -> None:
     assert assert_type(pd.DatetimeTZDtype("us", "HST").unit, TimeUnit) == "us"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        _10 = pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 @pytest.mark.parametrize("key", available_timezones())
@@ -78,12 +77,8 @@ def test_period_dtype() -> None:
     check(assert_type(p_dt, pd.PeriodDtype), pd.PeriodDtype)
     check(assert_type(pd.PeriodDtype(freq=Day()), pd.PeriodDtype), pd.PeriodDtype)
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.PeriodDtype(
-            freq=CustomBusinessDay()  # type:ignore[arg-type] # pyright: ignore[reportArgumentType]
-        )
-        pd.PeriodDtype(
-            freq=BusinessDay()  # type:ignore[arg-type] # pyright: ignore[reportArgumentType]
-        )
+        pd.PeriodDtype(freq=CustomBusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.PeriodDtype(freq=BusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
     check(
         assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
         pd.tseries.offsets.DateOffset,
@@ -150,6 +145,33 @@ def test_sparse_dtype() -> None:
     check(assert_type(s_dt.fill_value, Scalar | None), int)
 
 
+def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
+    # int subtype: default fill_value is 0
+    s_dt_int = pd.SparseDtype(int)
+    check(assert_type(s_dt_int.subtype, np.dtype), np.dtypes.Int64DType)
+    check(assert_type(s_dt_int.fill_value, Scalar | None), int)
+
+    # float subtype: default fill_value is np.nan
+    s_dt_float = pd.SparseDtype(float)
+    check(assert_type(s_dt_float.subtype, np.dtype), np.dtypes.Float64DType)
+    check(assert_type(s_dt_float.fill_value, Scalar | None), float)
+
+    # bool subtype: default fill_value is False
+    s_dt_bool = pd.SparseDtype(bool)
+    check(assert_type(s_dt_bool.subtype, np.dtype), np.dtypes.BoolDType)
+    check(assert_type(s_dt_bool.fill_value, Scalar | None), bool)
+
+    # datetime64 subtype: default fill_value is NaT
+    s_dt_dt = pd.SparseDtype(np.datetime64)
+    check(assert_type(s_dt_dt.subtype, np.dtype), np.dtypes.DateTime64DType)
+    check(assert_type(s_dt_dt.fill_value, Scalar | None), np.datetime64)
+
+    # passing a fill_value incompatible with the subtype is both a static type error
+    # and a runtime ValueError
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.SparseDtype(int, fill_value="hello")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+
 @pytest.mark.parametrize("storage", ["python", "pyarrow", None])
 @pytest.mark.parametrize("na_value", [pd.NA, float("nan")])
 def test_string_dtype(
@@ -164,7 +186,10 @@ def test_string_dtype(
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
         check(s_dt, pd.StringDtype)
-        assert s_dt.storage in ({storage} if storage else {"python", "pyarrow"})
+        # TODO: facebook/pyrefly#3742
+        assert s_dt.storage in (  # pyrefly: ignore[no-matching-overload]
+            {storage} if storage else {"python", "pyarrow"}
+        )
         check(assert_type(s_dt.na_value, NAType | float), type(na_value))
 
     if TYPE_CHECKING:
@@ -175,12 +200,19 @@ def test_string_dtype(
 
         assert_type(pd.StringDtype().storage, Literal["python", "pyarrow"])
         assert_type(pd.StringDtype(None).storage, Literal["python", "pyarrow"])
-        assert_type(pd.StringDtype("python").storage, Literal["python"])
-        assert_type(pd.StringDtype("pyarrow").storage, Literal["pyarrow"])
+        # TODO: facebook/pyrefly#3742
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.StringDtype("python").storage,  # pyrefly: ignore[no-matching-overload]
+            Literal["python"],
+        )
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.StringDtype("pyarrow").storage,  # pyrefly: ignore[no-matching-overload]
+            Literal["pyarrow"],
+        )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        _1 = pd.StringDtype(na_value="invalid_na")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.StringDtype(na_value="invalid_na")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_boolean_dtype() -> None:

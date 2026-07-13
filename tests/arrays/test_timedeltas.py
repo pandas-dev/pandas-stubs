@@ -8,14 +8,17 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing.aliases import TimeUnit
 from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs.timedeltas import Timedelta
-from pandas._typing import TimeUnit
 
-from tests import check
+from tests import (
+    PD_LTE_31,
+    check,
+)
 from tests._typing import (
     np_1darray,
     np_1darray_float,
@@ -30,10 +33,24 @@ from pandas.tseries.offsets import Minute
 
 def test_construction() -> None:
     """Test pd.array method for TimedeltaArray."""
+
+    td = timedelta(2025, 11, 10)
+    np_dt = np.timedelta64(td)
+    check(assert_type(pd.array([td]), TimedeltaArray), TimedeltaArray)
+    check(
+        assert_type(pd.array([td, pd.Timedelta(td), np_dt]), TimedeltaArray),
+        TimedeltaArray,
+    )
+    check(assert_type(pd.array([td, None]), TimedeltaArray), TimedeltaArray)
+    check(assert_type(pd.array([td, pd.NaT, None]), TimedeltaArray), TimedeltaArray)
+
     # From TimedeltaIndex
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
     arr = pd.array(idx)
     check(assert_type(arr, TimedeltaArray), TimedeltaArray)
+
+    # From Series
+    check(assert_type(pd.array(pd.Series(idx)), TimedeltaArray), TimedeltaArray)
 
     # From numpy array of timedelta64
     values = np.array(
@@ -316,8 +333,9 @@ def test_timedelta_array_freq() -> None:
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
     arr = pd.array(idx)
 
-    result = arr.freq
-    check(assert_type(result, pd.DateOffset | None), pd.DateOffset)
+    if PD_LTE_31:
+        result = arr.freq
+        check(assert_type(result, pd.DateOffset | None), pd.DateOffset)
 
 
 def test_timedelta_array_freqstr() -> None:
@@ -325,8 +343,9 @@ def test_timedelta_array_freqstr() -> None:
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
     arr = pd.array(idx)
 
-    result = arr.freqstr
-    check(assert_type(result, str | None), str)
+    if PD_LTE_31:
+        result = arr.freqstr
+        check(assert_type(result, str | None), str)
 
 
 def test_timedelta_array_min() -> None:
@@ -394,3 +413,42 @@ def test_timedelta_array_array() -> None:
 
     result = arr.__array__()
     check(assert_type(result, np_1darray_td), np_1darray, np.timedelta64)
+
+
+def test_timedelta_array_sum() -> None:
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
+    arr = pd.array(idx)
+
+    result = arr.sum()
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.sum(skipna=True)
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.sum(min_count=1)
+    check(assert_type(result, Timedelta), Timedelta)
+
+
+def test_timedelta_array_std() -> None:
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
+    arr = pd.array(idx)
+
+    result = arr.std()
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.std(skipna=True)
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.std(ddof=2)
+    check(assert_type(result, Timedelta), Timedelta)
+
+
+def test_timedelta_array_median() -> None:
+    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"])
+    arr = pd.array(idx)
+
+    result = arr.median()
+    check(assert_type(result, Timedelta), Timedelta)
+
+    result = arr.median(skipna=True)
+    check(assert_type(result, Timedelta), Timedelta)

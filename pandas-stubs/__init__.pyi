@@ -65,6 +65,7 @@ from pandas.core.api import (
     unique as unique,
 )
 from pandas.core.arrays.sparse import SparseDtype as SparseDtype
+from pandas.core.col import col as col
 from pandas.core.computation.api import eval as eval
 from pandas.core.reshape.api import (
     concat as concat,
@@ -105,6 +106,7 @@ from pandas.io.api import (
     read_fwf as read_fwf,
     read_hdf as read_hdf,
     read_html as read_html,
+    read_iceberg as read_iceberg,
     read_json as read_json,
     read_orc as read_orc,
     read_parquet as read_parquet,

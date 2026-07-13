@@ -13,7 +13,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
@@ -32,45 +31,41 @@ from pandas._typing import (
     np_ndarray_float,
 )
 
-_FrameGroupByFunc: TypeAlias = (
-    Callable[[DataFrame], Scalar]
-    | Callable[[DataFrame], Series]
-    | Callable[[DataFrame], DataFrame]
-    | np.ufunc
-)
+_FrameGroupByFunc: TypeAlias = Callable[[DataFrame], Scalar | Series | DataFrame]
 _FrameGroupByFuncTypes: TypeAlias = (
     _FrameGroupByFunc | str | list[_FrameGroupByFunc | str]
 )
-_FrameGroupByFuncArgs: TypeAlias = (
-    _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes]
-)
 
-_SeriesGroupByFunc: TypeAlias = (
-    Callable[[Series], Scalar] | Callable[[Series], Series] | np.ufunc
-)
-_SeriesGroupByFuncTypes: TypeAlias = (
-    _SeriesGroupByFunc | str | list[_SeriesGroupByFunc | str]
-)
-_SeriesGroupByFuncArgs: TypeAlias = (
-    _SeriesGroupByFuncTypes | Mapping[Hashable, _SeriesGroupByFunc | str]
-)
+_SeriesGroupByFunc: TypeAlias = Callable[[Series], Scalar | Series]
+_SeriesGroupByFuncTypes: TypeAlias = _SeriesGroupByFunc | str
 
 class Resampler(BaseGroupBy[NDFrameT]):
     def __getattr__(self, attr: str) -> SeriesGroupBy[Any, Any]: ...
     @overload
     def aggregate(
         self: Resampler[DataFrame],
-        func: _FrameGroupByFuncArgs | None = ...,
+        func: (
+            _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes] | None
+        ) = None,
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: Resampler[Series],
-        func: _SeriesGroupByFuncArgs | None = ...,
+        func: _SeriesGroupByFuncTypes | None = None,
         *args: Any,
         **kwargs: Any,
-    ) -> Series | DataFrame: ...
+    ) -> Series: ...
+    @overload
+    def aggregate(
+        self: Resampler[Series],
+        func: (
+            Mapping[Hashable, _SeriesGroupByFuncTypes] | list[_SeriesGroupByFuncTypes]
+        ),
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
     agg = aggregate
     apply = aggregate
     @overload
@@ -173,12 +168,24 @@ class Resampler(BaseGroupBy[NDFrameT]):
 # attributes via setattr
 class _GroupByMixin(Resampler[NDFrameT]):
     key: str | list[str] | None
-    def __getitem__(self, key: str | list[str] | None) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(self, key: str | list[str] | None) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class DatetimeIndexResampler(Resampler[NDFrameT]): ...
 
+class _InterpolateMixin:
+    def interpolate(
+        self,
+        method: InterpolateOptions = ...,
+        *,
+        axis: Axis = ...,
+        limit: int | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        **kwargs: Any,
+    ) -> Never: ...
+
 class DatetimeIndexResamplerGroupby(
-    _GroupByMixin[NDFrameT], DatetimeIndexResampler[NDFrameT]
+    _InterpolateMixin, _GroupByMixin[NDFrameT], DatetimeIndexResampler[NDFrameT]
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
@@ -186,7 +193,7 @@ class DatetimeIndexResamplerGroupby(
 class PeriodIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
 class PeriodIndexResamplerGroupby(
-    _GroupByMixin[NDFrameT], PeriodIndexResampler[NDFrameT]
+    _InterpolateMixin, _GroupByMixin[NDFrameT], PeriodIndexResampler[NDFrameT]
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
@@ -194,7 +201,7 @@ class PeriodIndexResamplerGroupby(
 class TimedeltaIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
 class TimedeltaIndexResamplerGroupby(
-    _GroupByMixin[NDFrameT], TimedeltaIndexResampler[NDFrameT]
+    _InterpolateMixin, _GroupByMixin[NDFrameT], TimedeltaIndexResampler[NDFrameT]
 ):
     @final
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]

@@ -88,8 +88,6 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
     "nanosecond",
 ]
 
-UnitChoices: TypeAlias = TimeDeltaUnitChoices | Literal["Y", "y", "M"]
-
 class Timedelta(timedelta):
     min: ClassVar[Timedelta]  # pyright: ignore[reportIncompatibleVariableOverride]
     max: ClassVar[Timedelta]  # pyright: ignore[reportIncompatibleVariableOverride]
@@ -100,13 +98,14 @@ class Timedelta(timedelta):
     def __new__(
         cls,
         value: str | float | Timedelta | Tick | timedelta | np.timedelta64 = ...,
-        unit: TimeDeltaUnitChoices = ...,
+        unit: TimeDeltaUnitChoices | None = None,
         *,
         days: float | np.integer | np.floating = ...,
         seconds: float | np.integer | np.floating = ...,
         microseconds: float | np.integer | np.floating = ...,
         milliseconds: float | np.integer | np.floating = ...,
         minutes: float | np.integer | np.floating = ...,
+        nanoseconds: float | np.integer | np.floating = ...,
         hours: float | np.integer | np.floating = ...,
         weeks: float | np.integer | np.floating = ...,
     ) -> Self: ...
@@ -126,7 +125,6 @@ class Timedelta(timedelta):
     def to_timedelta64(self) -> np.timedelta64: ...
     @property
     def asm8(self) -> np.timedelta64: ...
-    # TODO: pandas-dev/pandas-stubs#1432 round/floor/ceil could return NaT?
     def round(self, freq: Frequency) -> Self: ...
     def floor(self, freq: Frequency) -> Self: ...
     def ceil(self, freq: Frequency) -> Self: ...
@@ -193,13 +191,13 @@ class Timedelta(timedelta):
     @overload  # type: ignore[override]
     def __mul__(self, other: Just[float] | Just[int]) -> Self: ...
     @overload
-    def __mul__(
+    def __mul__(  # ty: ignore[invalid-method-override]
         self, other: np_ndarray[ShapeT, np.bool_ | np.integer | np.floating]
     ) -> np_ndarray_td[ShapeT]: ...
     @overload
     def __rmul__(self, other: Just[float] | Just[int]) -> Self: ...
     @overload
-    def __rmul__(
+    def __rmul__(  # ty: ignore[invalid-method-override]
         self, other: np_ndarray[ShapeT, np.bool_ | np.integer | np.floating]
     ) -> np_ndarray_td[ShapeT]: ...
     # Override due to more types supported than timedelta
@@ -339,7 +337,7 @@ class Timedelta(timedelta):
     def to_numpy(self) -> np.timedelta64: ...
     @property
     def components(self) -> Components: ...
-    def view(self, dtype: npt.DTypeLike = ...) -> object: ...
+    def view(self, dtype: npt.DTypeLike) -> object: ...
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit, round_ok: bool = True) -> Self: ...

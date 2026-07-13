@@ -20,19 +20,21 @@ from tests import (
     exception_on_platform,
 )
 from tests._typing import (
-    BuiltinNotStrDtypeArg,
+    BuiltinNotStrObjDtypeArg,
+    BuiltinObjectDtypeArg,
     NumpyNotTimeDtypeArg,
     np_ndarray,
 )
 from tests.dtypes import (
     NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS,
-    PYTHON_NOT_STR_DTYPE_ARGS,
+    PYTHON_NOT_STR_OBJ_DTYPE_ARGS,
+    PYTHON_OBJECT_ARGS,
 )
 from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("missing_values", powerset([None, pd.NA], 1))
+@pytest.mark.parametrize("missing_values", list(powerset([None, pd.NA], 1)))
 def test_construction_sequence(
     missing_values: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
@@ -75,19 +77,32 @@ def test_construction_dtype_nan() -> None:
 
 @pytest.mark.parametrize(
     ("dtype", "target_dtype"),
-    (PYTHON_NOT_STR_DTYPE_ARGS | NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS).items(),
+    (
+        PYTHON_NOT_STR_OBJ_DTYPE_ARGS
+        | PYTHON_OBJECT_ARGS
+        | NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS
+    ).items(),
 )
 def test_construction_dtype(
-    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg, target_dtype: type
+    dtype: BuiltinNotStrObjDtypeArg | BuiltinObjectDtypeArg | NumpyNotTimeDtypeArg,
+    target_dtype: type,
 ) -> None:
     exc = exception_on_platform(dtype)
     if exc:
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray)
     elif dtype == "V" or "void" in str(dtype):
-        check(pd.array([b"1"], dtype=dtype), NumpyExtensionArray, target_dtype)
+        check(
+            assert_type(pd.array([b"1"], dtype=dtype), NumpyExtensionArray),
+            NumpyExtensionArray,
+            target_dtype,
+        )
     else:
-        check(pd.array([1], dtype=dtype), NumpyExtensionArray, target_dtype)
+        check(
+            assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray),
+            NumpyExtensionArray,
+            target_dtype,
+        )
 
     if TYPE_CHECKING:
         # python boolean
@@ -245,14 +260,17 @@ def test_construction_dtype(
 
 @pytest.mark.parametrize("creator", [np.array, pd.array])
 def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -> None:
-    check(NumpyExtensionArray(creator([None])), NumpyExtensionArray)
+    check(
+        assert_type(NumpyExtensionArray(creator([None])), NumpyExtensionArray),
+        NumpyExtensionArray,
+    )
 
     if TYPE_CHECKING:
         assert_type(NumpyExtensionArray(np.array([1])), NumpyExtensionArray)
         assert_type(NumpyExtensionArray(pd.array([None])), NumpyExtensionArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]

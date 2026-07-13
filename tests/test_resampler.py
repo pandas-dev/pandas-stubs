@@ -29,9 +29,6 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S})
 
 
-_AggRetType = DataFrame | Series
-
-
 def test_iter() -> None:
     assert_type(iter(DF.resample("ME")), Iterator[tuple[Hashable, DataFrame]])
     for v in DF.resample("ME"):
@@ -82,7 +79,7 @@ def test_filling() -> None:
 def test_fillna() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore
+        DF.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
 
 
 def test_aggregate() -> None:
@@ -104,9 +101,12 @@ def test_aggregate() -> None:
         ),
         DataFrame,
     )
+    # TODO: astral-sh/ty#3956
     check(
-        assert_type(
-            DF.resample("ME").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
+                {"col1": ["sum", np.mean], "col2": np.mean}
+            ),
             DataFrame,
         ),
         DataFrame,
@@ -180,55 +180,13 @@ def test_pipe() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").pipe(
-            j,
-            "a",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-            [1.0, 2.0],
-            arg2="hi",
-            kw=(1,),
-        )
-        DF.resample("ME").pipe(
-            j,
-            1,
-            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportArgumentType,reportCallIssue]
-            arg2="hi",
-            kw=(1,),
-        )
-        DF.resample("ME").pipe(
-            j,
-            1,
-            [1.0],
-            arg2=11,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-            kw=(1,),
-        )
-        DF.resample("ME").pipe(
-            j,
-            1,
-            [1.0],
-            arg2="hi",
-            kw=(1, 2),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        )
-        DF.resample("ME").pipe(  # type: ignore[call-arg]
-            j,
-            1,
-            [1.0],
-            arg3="hi",  # pyright: ignore[reportCallIssue]
-            kw=(1,),
-        )
-        DF.resample("ME").pipe(  # type: ignore[call-overload]
-            j,
-            1,
-            [1.0],
-            11,
-            (1,),  # pyright: ignore[reportCallIssue]
-        )
-        DF.resample("ME").pipe(  # type: ignore[call-overload]
-            j,
-            pos=1,  # pyright: ignore[reportCallIssue]
-            arg1=[1.0],
-            arg2=11,
-            kw=(1,),
-        )
+        DF.resample("ME").pipe(j, "a", [1.0, 2.0], arg2="hi", kw=(1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.resample("ME").pipe(j, 1, [1.0, "b"], arg2="hi", kw=(1,))  # type: ignore[list-item] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.resample("ME").pipe(j, 1, [1.0], arg2=11, kw=(1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.resample("ME").pipe(j, 1, [1.0], arg2="hi", kw=(1, 2))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.resample("ME").pipe(j, 1, [1.0], arg3="hi", kw=(1,))  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.resample("ME").pipe(j, 1, [1.0], 11, (1,))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.resample("ME").pipe(j, pos=1, arg1=[1.0], arg2=11, kw=(1,))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     def k(x: int, t: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
         assert isinstance(x, int)
@@ -237,10 +195,7 @@ def test_pipe() -> None:
     check(assert_type(DF.resample("ME").pipe((k, "t"), 1), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").pipe(  # pyright: ignore[reportCallIssue]
-            (k, 1),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-            1,
-        )
+        DF.resample("ME").pipe((k, 1), 1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_transform() -> None:
@@ -297,25 +252,25 @@ def test_filling_series() -> None:
 def test_fillna_series() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        S.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore
+        S.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
 
 
 def test_aggregate_series() -> None:
-    check(assert_type(S.resample("ME").aggregate(np.sum), _AggRetType), Series)
-    check(assert_type(S.resample("ME").agg(np.sum), _AggRetType), Series)
-    check(assert_type(S.resample("ME").apply(np.sum), _AggRetType), Series)
+    check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
+    check(assert_type(S.resample("ME").agg(np.sum), Series), Series)
+    check(assert_type(S.resample("ME").apply(np.sum), Series), Series)
     check(
-        assert_type(S.resample("ME").aggregate([np.sum, np.mean]), _AggRetType),
+        assert_type(S.resample("ME").aggregate([np.sum, np.mean]), DataFrame),
         DataFrame,
     )
     check(
-        assert_type(S.resample("ME").aggregate(["sum", np.mean]), _AggRetType),
+        assert_type(S.resample("ME").aggregate(["sum", np.mean]), DataFrame),
         DataFrame,
     )
     check(
         assert_type(
             S.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
-            _AggRetType,
+            DataFrame,
         ),
         DataFrame,
     )
@@ -323,7 +278,7 @@ def test_aggregate_series() -> None:
     def f(val: Series) -> float:
         return val.mean()
 
-    check(assert_type(S.resample("ME").aggregate(f), _AggRetType), Series)
+    check(assert_type(S.resample("ME").aggregate(f), Series), Series)
 
 
 def test_asfreq_series() -> None:
@@ -369,14 +324,28 @@ def test_aggregate_series_combinations() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
-    check(S.resample("ME").aggregate(np.sum), Series)
-    check(S.resample("ME").aggregate([np.mean]), DataFrame)
-    check(S.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-    check(S.resample("ME").aggregate({"sum": np.sum}), DataFrame)
-    check(S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
-    check(S.resample("ME").aggregate("sum"), Series)
-    check(S.resample("ME").aggregate(s2series), Series)
-    check(S.resample("ME").aggregate(s2scalar), Series)
+    check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
+    check(
+        assert_type(S.resample("ME").aggregate([np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.resample("ME").aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.resample("ME").aggregate({"sum": np.sum}), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
+    check(assert_type(S.resample("ME").aggregate("sum"), Series), Series)
+    check(assert_type(S.resample("ME").aggregate(s2series), Series), Series)
+    check(assert_type(S.resample("ME").aggregate(s2scalar), Series), Series)
 
 
 def test_aggregate_frame_combinations() -> None:
@@ -389,31 +358,53 @@ def test_aggregate_frame_combinations() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(DF.resample("ME").aggregate(np.sum), DataFrame)
-    check(DF.resample("ME").aggregate([np.mean]), DataFrame)
-    check(DF.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-    check(DF.resample("ME").aggregate({"col1": np.sum}), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate([np.mean]), DataFrame), DataFrame)
     check(
-        DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}),
+        assert_type(DF.resample("ME").aggregate(["sum", np.mean]), DataFrame), DataFrame
+    )
+    check(
+        assert_type(DF.resample("ME").aggregate({"col1": np.sum}), DataFrame), DataFrame
+    )
+    check(
+        assert_type(
+            DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
+    # TODO: astral-sh/ty#3956 for the following three cases
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
+                {"col1": [np.sum], "col2": ["sum", np.mean]}
+            ),
+            DataFrame,
+        ),
         DataFrame,
     )
     check(
-        DF.resample("ME").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
+                {"col1": np.sum, "col2": ["sum", np.mean]}
+            ),
+            DataFrame,
+        ),
         DataFrame,
     )
     check(
-        DF.resample("ME").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
-        DataFrame,
-    )
-    check(
-        DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
+                {"col1": "sum", "col2": [np.mean]}
+            ),
+            DataFrame,
+        ),
         DataFrame,
     )
 
-    check(DF.resample("ME").aggregate("sum"), DataFrame)
-    check(DF.resample("ME").aggregate(df2frame), DataFrame)
-    check(DF.resample("ME").aggregate(df2series), DataFrame)
-    check(DF.resample("ME").aggregate(df2scalar), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate("sum"), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate(df2frame), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate(df2series), DataFrame), DataFrame)
+    check(assert_type(DF.resample("ME").aggregate(df2scalar), DataFrame), DataFrame)
 
 
 def test_getitem() -> None:

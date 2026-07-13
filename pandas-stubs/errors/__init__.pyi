@@ -8,6 +8,9 @@ from pandas._libs.tslibs import (
     OutOfBoundsDatetime as OutOfBoundsDatetime,
     OutOfBoundsTimedelta as OutOfBoundsTimedelta,
 )
+from pandas._libs.tslibs.period import (
+    IncompatibleFrequency as IncompatibleFrequency,
+)
 
 class IntCastingNaNError(ValueError): ...
 class NullFrequencyError(ValueError): ...

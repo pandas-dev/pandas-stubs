@@ -6,13 +6,20 @@ on:
       - main
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   nightly:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: write
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      with:
+        persist-credentials: false
 
     - name: Install project dependencies
       uses: ./.github/setup
@@ -26,9 +33,14 @@ jobs:
   mypy_nightly:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: write
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      with:
+        persist-credentials: false
 
     - name: Install project dependencies
       uses: ./.github/setup

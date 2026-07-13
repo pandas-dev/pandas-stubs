@@ -31,7 +31,7 @@ def test_types_iloc_iat() -> None:
     s2.iat[0] = None
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.iat[0, 0]  # type: ignore[index]  # pyright: ignore[reportArgumentType]
+        s.iat[0, 0]  # type: ignore[index]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-index]
 
 
 def test_types_loc_at() -> None:
@@ -92,6 +92,12 @@ def test_series_loc_setitem() -> None:
     s = pd.Series([1, 2, 3, 4, 5])
     v = s.loc[[0, 2, 4]].values
     s.loc[[0, 2, 4]] = v
+
+    # GH 1669
+    s = pd.Series([1, 2, 3, 4, 5], index=["a", "b", "c", "d", "e"])
+    idx = pd.Index(["a", "c", "e"])
+    v = s.loc[idx].values
+    s.loc[idx] = v
 
 
 def test_series_isin() -> None:

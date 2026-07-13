@@ -55,15 +55,11 @@ def test_property_dt() -> None:
     df = DataFrame({"ts": [Timestamp(2025, 12, 6)], "td": [Timedelta(1, "s")]})
     # python/mypy#19952: mypy gives Any
     check(
-        assert_type(  # type: ignore[assert-type]
-            df["ts"].dt, CombinedDatetimelikeProperties
-        ),
+        assert_type(df["ts"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type]
         DatetimeProperties,
     )
     check(
-        assert_type(  # type: ignore[assert-type]
-            df["td"].dt, CombinedDatetimelikeProperties
-        ),
+        assert_type(df["td"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type]
         TimedeltaProperties,
     )
 
@@ -73,23 +69,20 @@ def test_property_dt() -> None:
         np.integer,
     )
     check(
-        assert_type(  # type: ignore[assert-type]
-            df["td"].dt.total_seconds(), "Series[float]"
-        ),
+        assert_type(df["td"].dt.total_seconds(), "Series[float]"),  # type: ignore[assert-type]
         Series,
         np.floating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType]
-        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType]
+        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
 
 
 def test_property_array() -> None:
     """Test that Series.array returns ExtensionArray and its subclasses"""
-    check(
-        assert_type(Series([1], dtype="category").array, Categorical), Categorical, int
-    )
+    sr = Series([1], dtype="category")
+    check(assert_type(sr.array, "Categorical[int]"), Categorical, int)
     check(
         assert_type(Series(interval_range(0, 1)).array, IntervalArray),
         IntervalArray,

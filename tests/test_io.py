@@ -6,7 +6,6 @@ import io
 import os
 from pathlib import Path
 import sqlite3
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -57,8 +56,10 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
+    pytest_warns_bounded,
 )
 
+from pandas.io.iceberg import read_iceberg
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
     TableIterator,
@@ -203,6 +204,10 @@ def test_clipboard() -> None:
         assert_type(read_clipboard(dtype=defaultdict(lambda: "f8")), DataFrame),
         DataFrame,
     )
+    check(
+        assert_type(read_clipboard(dtype={"first": "f8"}), DataFrame),
+        DataFrame,
+    )
     check(assert_type(read_clipboard(names=None), DataFrame), DataFrame)
     check(
         assert_type(read_clipboard(names=("first", "second"), header=0), DataFrame),
@@ -261,8 +266,8 @@ def test_clipboard() -> None:
     DF.to_clipboard(quoting=csv.QUOTE_ALL)
     DF.to_clipboard(sep=",", index=False)
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_clipboard_iterator() -> None:
@@ -283,6 +288,7 @@ def test_clipboard_iterator() -> None:
 
 
 def test_sas_bdat() -> None:
+    # there is a bug with pandas 3.1.0.dev0+1139.gb431b4f927 that SegFault the code
     path = Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
@@ -332,24 +338,23 @@ def test_sas_xport() -> None:
         pass
 
 
-MESSAGE_PYTABLE_314 = (
-    "PyTables does not support Python 3.14+ yet, see PyTables/PyTables#1261"
-)
-
-
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df"), None), type(None))
     check(assert_type(read_hdf(path_str), DataFrame | Series), DataFrame)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdfstore(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     store = HDFStore(path_str, model="w")
     check(assert_type(store, HDFStore), HDFStore)
-    check(assert_type(store.put("df", DF, "table"), None), type(None))
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        r"The default value of 'track_times' in HDFStore.put will change from True to False in a future version. Pass track_times=False explicitly to silence this warning and get deterministic HDF5 files.",
+        "3.0.99",
+        "3.1.99",
+    ):
+        check(assert_type(store.put("df", DF, "table"), None), type(None))
     check(assert_type(store.append("df2", DF, "table"), None), type(None))
     check(assert_type(store.keys(), list[str]), list)
     check(assert_type(store.info(), str), str)
@@ -379,7 +384,6 @@ def test_hdfstore(tmp_path: Path) -> None:
     store.close()
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_read_hdf_iterator(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
@@ -394,7 +398,6 @@ def test_read_hdf_iterator(tmp_path: Path) -> None:
     ti.close()
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_context_manager(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
@@ -403,7 +406,6 @@ def test_hdf_context_manager(tmp_path: Path) -> None:
         check(assert_type(store.get("df"), DataFrame | Series), DataFrame)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 14), reason=MESSAGE_PYTABLE_314)
 def test_hdf_series(tmp_path: Path) -> None:
     s = DF["a"]
     path_str = str(tmp_path / str(uuid.uuid4()))
@@ -420,6 +422,18 @@ def test_spss() -> None:
     check(
         assert_type(read_spss(str(path_str), usecols=["VAR00002"]), DataFrame),
         DataFrame,
+    )
+
+
+def test_spss_kwargs() -> None:
+    """Test passing kwargs to read_spss."""
+    path_str = Path(CWD, "data", "labelled-num.sav")
+
+    check(
+        assert_type(
+            pd.read_spss(path_str, convert_categoricals=True, row_limit=1), pd.DataFrame
+        ),
+        pd.DataFrame,
     )
 
 
@@ -517,6 +531,13 @@ def test_parquet(tmp_path: Path) -> None:
     check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
 
 
+def test_parquet_to_pandas() -> None:
+    """Test passing `to_pandas_kwargs` in read_parquet."""
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+
 def test_parquet_options(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.parquet")
     check(
@@ -532,13 +553,38 @@ def test_parquet_options(tmp_path: Path) -> None:
 
 def test_feather(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_feather(path_str), None), type(None))
-    check(assert_type(read_feather(path_str), DataFrame), DataFrame)
-    check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
+        upper="3.0.4",
+    ):
+        check(assert_type(DF.to_feather(path_str), None), type(None))
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
+        upper="3.0.4",
+    ):
+        check(assert_type(read_feather(path_str), DataFrame), DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
+        upper="3.0.4",
+    ):
+        check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
     with io.BytesIO() as bio:
-        check(assert_type(DF.to_feather(bio), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            "pyarrow.feather.write_feather is deprecated as of 24.0.0",
+            upper="3.0.4",
+        ):
+            check(assert_type(DF.to_feather(bio), None), type(None))
         bio.seek(0)
-        check(assert_type(read_feather(bio), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            FutureWarning,
+            r"pyarrow.feather.read_table is deprecated as of 24.0.0",
+            upper="3.0.4",
+        ):
+            check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
 def test_read_csv(tmp_path: Path) -> None:
@@ -557,11 +603,18 @@ def test_read_csv(tmp_path: Path) -> None:
         assert_type(read_csv(path_str, dtype=defaultdict(lambda: "f8")), DataFrame),
         DataFrame,
     )
+    check(
+        assert_type(read_csv(path_str, dtype={"first": "f8"}), DataFrame),
+        DataFrame,
+    )
 
     def cols(x: str) -> bool:
         return x in ["a", "b"]
 
     pd.read_csv(path_str, usecols=cols)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.read_csv(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_read_csv_iterator(tmp_path: Path) -> None:
@@ -700,8 +753,8 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_csv(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_csv(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_csv(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_csv(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
         def cols2(x: set[float]) -> bool:
             return sum(x) < 1.0
@@ -767,6 +820,10 @@ def test_read_table(tmp_path: Path) -> None:
         DataFrame,
     )
     check(
+        assert_type(read_table(path_str, dtype={"first": "f8"}), DataFrame),
+        DataFrame,
+    )
+    check(
         assert_type(
             read_table(path_str, names=("first", "second"), header=0), DataFrame
         ),
@@ -821,8 +878,8 @@ def test_read_table(tmp_path: Path) -> None:
         DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_read_table_iterator(tmp_path: Path) -> None:
@@ -1002,7 +1059,7 @@ def test_read_excel(tmp_path: Path) -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_excel(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_excel(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_read_excel_io_types(tmp_path: Path) -> None:
@@ -1082,11 +1139,25 @@ def test_excel_writer(tmp_path: Path) -> None:
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
     check(assert_type(read_excel(ef), DataFrame), DataFrame)
-    check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
-    check(
-        assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
-        dict,
-    )
+
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        match="ExcelFile.parse is deprecated",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
+
+    with pytest_warns_bounded(
+        errors.Pandas4Warning,
+        match="ExcelFile.parse is deprecated",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
+            dict,
+        )
     check(assert_type(ef.close(), None), type(None))
 
 
@@ -1213,6 +1284,54 @@ def test_read_sql_via_sqlalchemy_engine_with_params(tmp_path: Path) -> None:
             DataFrame,
         ),
         DataFrame,
+    )
+    engine.dispose()
+
+
+def test_to_sql_dtype_sqlalchemy_type(tmp_path: Path) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
+    engine = sqlalchemy.create_engine(db_uri)
+
+    check(
+        assert_type(
+            DF.to_sql(
+                "test",
+                con=engine,
+                dtype={
+                    "a": sqlalchemy.types.VARCHAR(16),
+                    "b": sqlalchemy.types.INTEGER,
+                },
+            ),
+            int | None,
+        ),
+        int,
+    )
+    check(
+        assert_type(
+            DF.to_sql(
+                "test_scalar_instance", con=engine, dtype=sqlalchemy.types.VARCHAR(16)
+            ),
+            int | None,
+        ),
+        int,
+    )
+    check(
+        assert_type(
+            DF.to_sql("test_scalar_class", con=engine, dtype=sqlalchemy.types.INTEGER),
+            int | None,
+        ),
+        int,
+    )
+    df_int_cols = DataFrame({0: [1, 2, 3]})
+    check(
+        assert_type(
+            df_int_cols.to_sql(
+                "test_non_str_key", con=engine, dtype={0: sqlalchemy.types.INTEGER}
+            ),
+            int | None,
+        ),
+        int,
     )
     engine.dispose()
 
@@ -1478,11 +1597,21 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
             assert_type(read_orc(path_str, dtype_backend="numpy_nullable"), DataFrame),
             DataFrame,
         )
-    check(assert_type(DF.to_feather(path_str), None), type(None))
-    check(
-        assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
-        DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
+        upper="3.0.4",
+    ):
+        check(assert_type(DF.to_feather(path_str), None), type(None))
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
+        upper="3.0.4",
+    ):
+        check(
+            assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
+            DataFrame,
+        )
 
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     as_str: str = path_str
@@ -1669,9 +1798,9 @@ def test_read_json_engine() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_json(dd, lines=False, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
-        pd.read_json(io.StringIO(data), engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_json(io.StringIO(data), lines=True, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
+        pd.read_json(dd, lines=False, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_json(io.StringIO(data), engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_json(io.StringIO(data), lines=True, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_converters_partial(tmp_path: Path) -> None:
@@ -1683,3 +1812,123 @@ def test_converters_partial(tmp_path: Path) -> None:
 
     result = pd.read_excel(path_str, converters={"field_1": partial_func})
     check(assert_type(result, pd.DataFrame), pd.DataFrame)
+
+
+@pytest.mark.filterwarnings("ignore::ResourceWarning")
+def test_iceberg(tmp_path: Path) -> None:
+    """Test read_iceberg and DataFrame.to_iceberg GH1654."""
+
+    from pyiceberg.catalog.sql import SqlCatalog
+
+    warehouse_path = tmp_path / "warehouse"
+    warehouse_path.mkdir()
+    warehouse = warehouse_path.as_posix()
+    catalog_properties = {
+        "uri": f"sqlite:///{warehouse}/catalog.db",
+        "warehouse": f"file://{warehouse}",
+    }
+    with SqlCatalog("test_catalog", **catalog_properties) as catalog:
+        catalog.create_namespace("default")
+
+        table_identifier = "default.test_table"
+
+        with pytest_warns_bounded(UserWarning, match="Delete operation"):
+            check(
+                assert_type(
+                    DF.to_iceberg(
+                        table_identifier,
+                        catalog_name="test_catalog",
+                        catalog_properties=catalog_properties,
+                    ),
+                    None,
+                ),
+                type(None),
+            )
+        check(
+            assert_type(
+                read_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+
+        # Test append
+        check(
+            assert_type(
+                DF.to_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                    append=True,
+                ),
+                None,
+            ),
+            type(None),
+        )
+
+        # Test read_iceberg with columns
+        check(
+            assert_type(
+                read_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                    columns=["a"],
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+
+        # Test read_iceberg with limit
+        check(
+            assert_type(
+                read_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                    limit=2,
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+
+        # Test read_iceberg with row_filter
+        check(
+            assert_type(
+                read_iceberg(
+                    table_identifier,
+                    catalog_name="test_catalog",
+                    catalog_properties=catalog_properties,
+                    row_filter="a > 1",
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+
+        # Test to_iceberg with snapshot_properties and location
+        with pytest_warns_bounded(UserWarning, match="Delete operation"):
+            check(
+                assert_type(
+                    DF.to_iceberg(
+                        "default.test_table2",
+                        catalog_name="test_catalog",
+                        catalog_properties=catalog_properties,
+                        location=f"file://{warehouse}/custom",
+                        snapshot_properties={"test_key": "test_val"},
+                    ),
+                    None,
+                ),
+                type(None),
+            )
+
+    # Force GC to flush unclosed sqlite3 connections from pyiceberg internals
+    import gc
+
+    gc.collect()

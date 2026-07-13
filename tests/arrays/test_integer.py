@@ -35,8 +35,8 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("data", powerset([1, np.int8(1)], 1))
-@pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
+@pytest.mark.parametrize("data", list(powerset([1, np.int8(1)], 1)))
+@pytest.mark.parametrize("missing_values", list(powerset([np.nan, None, pd.NA])))
 def test_construction_sequence(
     data: tuple[int | np.integer, ...],
     missing_values: tuple[Any, ...],
@@ -61,6 +61,14 @@ def test_construction_sequence(
         assert_type(pd.array(UserList([610, np.int64(987)])), IntegerArray)
 
 
+def test_construct_array_type() -> None:
+    """Test the constructor_array_type method."""
+    assert (
+        assert_type(pd.array([-1]).dtype.construct_array_type(), type[IntegerArray])
+        is IntegerArray
+    )
+
+
 def test_construction_array_like() -> None:
     np_arr = np.array([1, np.int8(1)], np.int32)
     check(assert_type(pd.array(np_arr), IntegerArray), IntegerArray)
@@ -72,9 +80,17 @@ def test_construction_array_like() -> None:
 def test_construction_dtype_signed(
     dtype: PandasIntDtypeArg, target_dtype: type
 ) -> None:
-    check(pd.array([np.nan], dtype), IntegerArray, NAType)
-    check(pd.array([-1, 2, np.nan], dtype), IntegerArray, target_dtype)
-    check(pd.array([1, -np.int64(2), np.nan], dtype), IntegerArray, target_dtype)
+    check(assert_type(pd.array([np.nan], dtype), IntegerArray), IntegerArray, NAType)
+    check(
+        assert_type(pd.array([-1, 2, np.nan], dtype), IntegerArray),
+        IntegerArray,
+        target_dtype,
+    )
+    check(
+        assert_type(pd.array([1, -np.int64(2), np.nan], dtype), IntegerArray),
+        IntegerArray,
+        target_dtype,
+    )
 
     if TYPE_CHECKING:
         # pandas Int8
@@ -95,9 +111,15 @@ def test_construction_dtype_signed(
 def test_construction_dtype_unsigned(
     dtype: PandasUIntDtypeArg, target_dtype: type
 ) -> None:
-    check(pd.array([np.nan], dtype), IntegerArray, NAType)
-    check(pd.array([1, 2], dtype), IntegerArray, target_dtype)
-    check(pd.array([1, np.uint64(2), np.nan], dtype), IntegerArray, target_dtype)
+    check(assert_type(pd.array([np.nan], dtype), IntegerArray), IntegerArray, NAType)
+    check(
+        assert_type(pd.array([1, 2], dtype), IntegerArray), IntegerArray, target_dtype
+    )
+    check(
+        assert_type(pd.array([1, np.uint64(2), np.nan], dtype), IntegerArray),
+        IntegerArray,
+        target_dtype,
+    )
 
     if TYPE_CHECKING:
         # pandas UInt8
@@ -121,11 +143,11 @@ def test_constructor() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list_np = IntegerArray([1], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _np_list = IntegerArray(np.array([1]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _pd_arr = IntegerArray(pd.array([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _i = IntegerArray(pd.Index([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _s = IntegerArray(pd.Series([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _list_np = IntegerArray([1], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _np_list = IntegerArray(np.array([1]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _pd_arr = IntegerArray(pd.array([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _i = IntegerArray(pd.Index([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _s = IntegerArray(pd.Series([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
 
 
 def test_dtype_signed() -> None:

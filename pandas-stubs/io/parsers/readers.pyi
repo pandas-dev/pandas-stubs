@@ -1,4 +1,3 @@
-from collections import defaultdict
 from collections.abc import (
     Callable,
     Hashable,
@@ -17,7 +16,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
@@ -42,7 +41,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict[Any, Any] | None = None,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -61,7 +60,6 @@ def read_csv(
     na_filter: bool = True,
     skip_blank_lines: bool = True,
     parse_dates: bool | list[int] | list[str] | None = None,
-    keep_date_col: bool = True,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
     cache_dates: bool = True,
@@ -86,7 +84,7 @@ def read_csv(
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_csv(
@@ -98,7 +96,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict[Any, Any] | None = None,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -117,7 +115,6 @@ def read_csv(
     na_filter: bool = True,
     skip_blank_lines: bool = True,
     parse_dates: bool | list[int] | list[str] | None = None,
-    keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
     cache_dates: bool = True,
@@ -142,7 +139,7 @@ def read_csv(
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_csv(
@@ -154,7 +151,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType[HashableT] = ...,
-    dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -172,8 +169,7 @@ def read_csv(
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     skip_blank_lines: bool = ...,
-    parse_dates: bool | list[int] | list[str] | None = ...,
-    keep_date_col: bool = False,
+    parse_dates: bool | list[int] | list[str] | None = None,
     date_format: dict[Hashable, str] | str | None = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
@@ -198,7 +194,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 @overload
 def read_table(
@@ -210,7 +206,7 @@ def read_table(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict[Any, Any] | None = None,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -235,7 +231,7 @@ def read_table(
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
         | None
-    ) = False,
+    ) = None,
     keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
@@ -261,7 +257,7 @@ def read_table(
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_table(
@@ -273,7 +269,7 @@ def read_table(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict[Any, Any] | None = None,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -298,7 +294,7 @@ def read_table(
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
         | None
-    ) = False,
+    ) = None,
     keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
@@ -324,7 +320,7 @@ def read_table(
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_table(
@@ -336,7 +332,7 @@ def read_table(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict[Any, Any] | None = None,
+    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -361,7 +357,7 @@ def read_table(
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
         | None
-    ) = False,
+    ) = None,
     keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
@@ -387,7 +383,7 @@ def read_table(
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 @overload
 def read_fwf(
@@ -396,7 +392,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     iterator: Literal[True],
     chunksize: int | None = ...,
@@ -409,7 +405,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     iterator: bool = ...,
     chunksize: int,
@@ -422,7 +418,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     iterator: Literal[False] = False,
     chunksize: None = None,

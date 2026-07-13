@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    TYPE_CHECKING,
-    assert_type,
-)
+from typing import assert_type
 
 import pandas as pd
 import pytest
@@ -20,7 +17,15 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
     s = pd.Series(["a", "b"])
     check(s.astype(cast_arg), pd.Series, target_type)
 
-    if TYPE_CHECKING:
-        # pandas category
-        assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype]")
-        assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype]")
+    check(
+        assert_type(
+            s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype[str]]"
+        ),
+        pd.Series,
+        str,
+    )
+    check(
+        assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype[str]]"),
+        pd.Series,
+        str,
+    )

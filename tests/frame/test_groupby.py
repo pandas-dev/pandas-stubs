@@ -6,25 +6,22 @@ from collections.abc import (
     Hashable,
     Iterator,
 )
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Literal,
-    assert_type,
-)
+from typing import Any, assert_type
+from typing import Literal  # noqa: F401
 
 import numpy as np
 import pandas as pd
-
-from pandas._typing import Scalar
+from pandas.api.typing.aliases import Scalar
+from pandas.core.groupby.generic import (
+    AggScalar,
+    DataFrameGroupBy,
+    NamedAgg,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-
-if TYPE_CHECKING:
-    from pandas._typing import S1
 
 
 def test_types_groupby_as_index() -> None:
@@ -117,23 +114,113 @@ def test_types_groupby_size() -> None:
 def test_types_groupby() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
     df.index.name = "ind"
-    df.groupby(by="col1")
-    df.groupby(level="ind")
-    df.groupby(by="col1", sort=False, as_index=True)
-    df.groupby(by=["col1", "col2"])
+    check(
+        assert_type(df.groupby(by="col1"), "DataFrameGroupBy[Scalar, Literal[True]]"),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(level="ind"),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(by="col1", sort=False, as_index=True),
+            "DataFrameGroupBy[Scalar, Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(by=["col1", "col2"]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
     # GH 284
-    df.groupby(df["col1"] > 2)
-    df.groupby([df["col1"] > 2, df["col2"] % 2 == 1])
-    df.groupby(lambda x: x)  # pyright: ignore[reportUnknownArgumentType]
-    df.groupby([lambda x: x % 2, lambda x: x % 3])
-    df.groupby(np.array([1, 0, 1]))
-    df.groupby([np.array([1, 0, 0]), np.array([0, 0, 1])])
-    df.groupby({1: 1, 2: 2, 3: 3})
-    df.groupby([{1: 1, 2: 1, 3: 2}, {1: 1, 2: 2, 3: 2}])
-    df.groupby(df.index)
-    df.groupby([pd.Index([1, 0, 0]), pd.Index([0, 0, 1])])
-    df.groupby(pd.Grouper(level=0))
-    df.groupby([pd.Grouper(level=0), pd.Grouper(key="col1")])
+    check(
+        assert_type(
+            df.groupby(df["col1"] > 2), "DataFrameGroupBy[bool, Literal[True]]"
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([df["col1"] > 2, df["col2"] % 2 == 1]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(lambda x: x),  # pyright: ignore[reportUnknownArgumentType]
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([lambda x: x % 2, lambda x: x % 3]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(np.array([1, 0, 1])),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([np.array([1, 0, 0]), np.array([0, 0, 1])]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    # TODO: https://github.com/facebook/pyrefly/issues/3268
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            df.groupby({1: 1, 2: 2, 3: 3}),  # pyrefly: ignore[no-matching-overload]
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([{1: 1, 2: 1, 3: 2}, {1: 1, 2: 2, 3: 2}]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(df.groupby(df.index), "DataFrameGroupBy[Any, Literal[True]]"),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([pd.Index([1, 0, 0]), pd.Index([0, 0, 1])]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby(pd.Grouper(level=0)),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
+    check(
+        assert_type(
+            df.groupby([pd.Grouper(level=0), pd.Grouper(key="col1")]),
+            "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
+        ),
+        DataFrameGroupBy,
+    )
 
     check(assert_type(df.groupby(by="col1").agg("sum"), pd.DataFrame), pd.DataFrame)
     check(
@@ -207,10 +294,16 @@ def test_types_groupby_agg() -> None:
     }
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
-    def wrapped_min(x: pd.Series[S1]) -> S1:
+    def wrapped_min(x: pd.Series) -> Scalar:
         return x.min()
 
-    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
+    # TODO: https://github.com/facebook/pyrefly/issues/3891
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            df.groupby("col1")["col3"].agg(min), pd.Series
+        ),
+        pd.Series,
+    )
     check(
         assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
         pd.DataFrame,
@@ -345,6 +438,9 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.nth[0, 1, 2], pd.DataFrame | pd.Series), pd.Series)
     check(assert_type(gb.nth((0, 1, 2)), pd.DataFrame | pd.Series), pd.Series)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword]
+
 
 def test_groupby_index() -> None:
     # GH 42
@@ -358,18 +454,30 @@ def test_groupby_result() -> None:
     # GH 142
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
     iterator = df.groupby(["a", "b"]).__iter__()
-    assert_type(iterator, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]])
+    check(
+        assert_type(iterator, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]]),
+        Iterator,
+    )
     index, value = next(iterator)
-    assert_type((index, value), tuple[tuple[Hashable, ...], pd.DataFrame])
+    check(
+        assert_type((index, value), tuple[tuple[Hashable, ...], pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index, tuple[Hashable, ...]), tuple, int)
 
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     iterator2 = df.groupby("a").__iter__()
-    assert_type(iterator2, Iterator[tuple[Scalar, pd.DataFrame]])
+    check(
+        assert_type(iterator2, Iterator[tuple[Scalar, pd.DataFrame]]),
+        Iterator,
+    )
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), tuple[Scalar, pd.DataFrame])
+    check(
+        assert_type((index2, value2), tuple[Scalar, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index2, Scalar), int)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
@@ -378,9 +486,15 @@ def test_groupby_result() -> None:
     # grouping by pd.MultiIndex should always resolve to a tuple as well
     multi_index = pd.MultiIndex.from_frame(df[["a", "b"]])
     iterator3 = df.groupby(multi_index).__iter__()
-    assert_type(iterator3, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]])
+    check(
+        assert_type(iterator3, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]]),
+        Iterator,
+    )
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), tuple[tuple[Hashable, ...], pd.DataFrame])
+    check(
+        assert_type((index3, value3), tuple[tuple[Hashable, ...], pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index3, tuple[Hashable, ...]), tuple, int)
     check(assert_type(value3, pd.DataFrame), pd.DataFrame)
@@ -402,27 +516,45 @@ def test_groupby_result_for_scalar_indexes() -> None:
     df = pd.DataFrame({"date": dates, "days": 1})
     period_index = pd.PeriodIndex(df.date, freq="M")
     iterator = df.groupby(period_index).__iter__()
-    assert_type(iterator, Iterator[tuple[pd.Period, pd.DataFrame]])
+    check(
+        assert_type(iterator, Iterator[tuple[pd.Period, pd.DataFrame]]),
+        Iterator,
+    )
     index, value = next(iterator)
-    assert_type((index, value), tuple[pd.Period, pd.DataFrame])
+    check(
+        assert_type((index, value), tuple[pd.Period, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index, pd.Period), pd.Period)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     dt_index = pd.DatetimeIndex(dates)
     iterator2 = df.groupby(dt_index).__iter__()
-    assert_type(iterator2, Iterator[tuple[pd.Timestamp, pd.DataFrame]])
+    check(
+        assert_type(iterator2, Iterator[tuple[pd.Timestamp, pd.DataFrame]]),
+        Iterator,
+    )
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), tuple[pd.Timestamp, pd.DataFrame])
+    check(
+        assert_type((index2, value2), tuple[pd.Timestamp, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index2, pd.Timestamp), pd.Timestamp)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
     tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
     iterator3 = df.groupby(tdelta_index).__iter__()
-    assert_type(iterator3, Iterator[tuple[pd.Timedelta, pd.DataFrame]])
+    check(
+        assert_type(iterator3, Iterator[tuple[pd.Timedelta, pd.DataFrame]]),
+        Iterator,
+    )
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), tuple[pd.Timedelta, pd.DataFrame])
+    check(
+        assert_type((index3, value3), tuple[pd.Timedelta, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index3, pd.Timedelta), pd.Timedelta)
     check(assert_type(value3, pd.DataFrame), pd.DataFrame)
@@ -431,11 +563,22 @@ def test_groupby_result_for_scalar_indexes() -> None:
         pd.Interval(date, date + pd.DateOffset(days=1), closed="left") for date in dates
     ]
     interval_index = pd.IntervalIndex(intervals)
-    assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]")
+    check(
+        assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]"),
+        pd.IntervalIndex,
+    )
     iterator4 = df.groupby(interval_index).__iter__()
-    assert_type(iterator4, Iterator[tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]])
+    check(
+        assert_type(
+            iterator4, Iterator[tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]]
+        ),
+        Iterator,
+    )
     index4, value4 = next(iterator4)
-    assert_type((index4, value4), tuple["pd.Interval[pd.Timestamp]", pd.DataFrame])
+    check(
+        assert_type((index4, value4), tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
     check(assert_type(value4, pd.DataFrame), pd.DataFrame)
@@ -458,9 +601,15 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
     # this will use pd.Index which is ambiguous
     iterator = df.groupby(df.index).__iter__()
-    assert_type(iterator, Iterator[tuple[Any, pd.DataFrame]])
+    check(
+        assert_type(iterator, Iterator[tuple[Any, pd.DataFrame]]),
+        Iterator,
+    )
     index, value = next(iterator)
-    assert_type((index, value), tuple[Any, pd.DataFrame])
+    check(
+        assert_type((index, value), tuple[Any, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index, Any), int)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
@@ -470,9 +619,15 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
     categorical_index = pd.CategoricalIndex(df.a)
     iterator2 = df.groupby(categorical_index).__iter__()
-    assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]])
+    check(
+        assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]]),
+        Iterator,
+    )
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), tuple[Any, pd.DataFrame])
+    check(
+        assert_type((index2, value2), tuple[Any, pd.DataFrame]),
+        tuple,
+    )
 
     check(assert_type(index2, Any), int)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
@@ -560,8 +715,114 @@ def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
+    # TODO: https://github.com/facebook/pyrefly/issues/3891
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            df.groupby("col1").col3.agg(min), pd.Series
+        ),
+        pd.Series,
+    )
     check(
         assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
         pd.DataFrame,
     )
+
+
+def test_named_arg_args() -> None:
+    """Test support for args and kwargs in NamedAgg."""
+
+    def n_between(ser: pd.Series, low: Scalar, high: Scalar, **kwargs: Any) -> Scalar:
+        return ser.between(low, high, **kwargs).sum()
+
+    df = pd.DataFrame({"A": [0, 0, 1, 1], "B": [-1, 0, 1, 2]})
+    named_agg = pd.NamedAgg("B", n_between, 0, 1)
+    check(assert_type(named_agg, NamedAgg), NamedAgg)
+    check(
+        assert_type(
+            df.groupby("A").agg(count_between=named_agg),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("A").agg(
+                count_between_kw=pd.NamedAgg("B", n_between, 0, 1, inclusive="both")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("A").agg(
+                count_between_mix=pd.NamedAgg("B", n_between, 0, 1, inclusive="neither")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("A").agg(
+                n_between01=pd.NamedAgg("B", n_between, 0, 1),
+                n_between13=pd.NamedAgg("B", n_between, 1, 3),
+                n_between02=pd.NamedAgg("B", n_between, 0, 2),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(assert_type(named_agg.column, str), str)
+    check(assert_type(named_agg.aggfunc, AggScalar), type(n_between))
+
+
+def test_groupby_skipna_dataframe() -> None:
+    """Test skipna parameter for DataFrameGroupBy aggregation methods."""
+    df = pd.DataFrame(
+        data={"col1": [1, 1, 2], "col2": [3.0, 4.0, 5.0], "col3": [0.0, 1.0, 0.0]}
+    )
+    gb = df.groupby("col1")
+    check(assert_type(gb.sum(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.sum(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.mean(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.mean(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.median(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.median(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.prod(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.prod(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.min(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.min(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.max(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.max(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.std(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.std(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.var(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.var(skipna=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.sem(skipna=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(gb.sem(skipna=False), pd.DataFrame), pd.DataFrame)
+
+
+def test_groupby_skipna_series() -> None:
+    """Test skipna parameter for SeriesGroupBy aggregation methods."""
+    df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10.0, 20.0, 30.0, 40.0, 50.0]})
+    gb = df.groupby("x")["y"]
+    check(assert_type(gb.sum(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.sum(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.mean(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.mean(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.median(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.median(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.prod(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.prod(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.min(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.min(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.max(skipna=True), pd.Series), pd.Series)
+    check(assert_type(gb.max(skipna=False), pd.Series), pd.Series)
+    check(assert_type(gb.std(skipna=True), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.std(skipna=False), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.var(skipna=True), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.var(skipna=False), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.sem(skipna=True), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(gb.sem(skipna=False), "pd.Series[float]"), pd.Series, float)

@@ -57,6 +57,11 @@ class _SeriesFunc(Protocol):
         self, series: Series, /, *args: Any, **kwargs: Any
     ) -> list[Any] | Series: ...
 
+class _SeriesStrFunc(Protocol):
+    def __call__(
+        self, series: Series[str], /, *args: Any, **kwargs: Any
+    ) -> list[str] | Series[str]: ...
+
 class _DataFrameFunc(Protocol):
     def __call__(
         self, series: DataFrame, /, *args: Any, **kwargs: Any
@@ -101,9 +106,9 @@ class Styler(StylerRenderer):
     def set_tooltips(
         self,
         ttips: DataFrame,
-        props: CSSProperties | None = ...,
-        css_class: str | None = ...,
-        as_title_attribute: bool = ...,
+        props: CSSProperties | None = None,
+        css_class: str | None = None,
+        as_title_attribute: bool = False,
     ) -> Styler: ...
     def to_excel(
         self,
@@ -172,6 +177,28 @@ class Styler(StylerRenderer):
         environment: str | None = ...,
         encoding: str | None = ...,
         convert_css: bool = ...,
+    ) -> str: ...
+    @overload
+    def to_typst(
+        self,
+        buf: FilePath | WriteBuffer[str],
+        *,
+        encoding: str | None = None,
+        sparse_index: bool | None = None,
+        sparse_columns: bool | None = None,
+        max_rows: int | None = None,
+        max_columns: int | None = None,
+    ) -> None: ...
+    @overload
+    def to_typst(
+        self,
+        buf: None = None,
+        *,
+        encoding: str | None = None,
+        sparse_index: bool | None = None,
+        sparse_columns: bool | None = None,
+        max_rows: int | None = None,
+        max_columns: int | None = None,
     ) -> str: ...
     @overload
     def to_html(
@@ -255,14 +282,17 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def apply_index(
         self,
-        func: Callable[[Series], list[str] | np_ndarray_str | Series[str]],
+        func: (
+            _SeriesStrFunc
+            | Callable[[Series], list[str] | np_ndarray_str | Series[str]]
+        ),
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
     def map_index(
         self,
-        func: Callable[[Scalar], str | None],
+        func: _MapCallable | Callable[[Scalar], str | None],
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
@@ -407,3 +437,15 @@ class Styler(StylerRenderer):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> T: ...
+    def format_index_names(
+        self,
+        formatter: ExtFormatter | None = None,
+        axis: Axis = 0,
+        level: Level | list[Level] | None = None,
+        na_rep: str | None = None,
+        precision: int | None = None,
+        decimal: str = ".",
+        thousands: str | None = None,
+        escape: str | None = None,
+        hyperlinks: str | None = None,
+    ) -> StylerRenderer: ...

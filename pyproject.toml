@@ -1,17 +1,15 @@
-[tool.poetry]
+[project]
 name = "pandas-stubs"
-version = "3.0.0.260204"
+version = "3.0.3.260530"
 description = "Type annotations for pandas"
-authors = ["The Pandas Development Team <pandas-dev@python.org>"]
+authors = [{name = "The Pandas Development Team", email = "pandas-dev@python.org"}]
 license = "BSD-3-Clause"
 readme = "README.md"
-homepage = "https://pandas.pydata.org"
-repository = "https://github.com/pandas-dev/pandas-stubs"
+requires-python = '>=3.11'
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
   "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
@@ -23,70 +21,74 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
-packages = [{ include = "pandas-stubs" }]
-exclude = ["pandas-stubs/__init__.py"]
+dependencies = ["numpy>=1.23.5,<2.5"]  # TODO: pandas-dev/pandas-stubs#1786 remove <2.5
 
-[tool.poetry.urls]
+[project.urls]
+Homepage = "https://pandas.pydata.org"
+Repository = "https://github.com/pandas-dev/pandas-stubs"
 "Bug Tracker" = "https://github.com/pandas-dev/pandas-stubs/issues"
-"Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
+Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 
-[tool.poetry.dependencies]
-python = ">=3.11"
-numpy = ">=1.23.5"
-
-[tool.poetry.group.dev.dependencies]
-mypy = ">=1.19.1"
-pandas = "3.0.0"
-pyarrow = ">=10.0.1"
-pytest = ">=8.4.2"
-pyright = ">=1.1.408"
-ty = ">=0.0.12"
-pyrefly = ">=0.48.0"
-poethepoet = ">=0.16.5"
-loguru = ">=0.6.0"
-typing-extensions = ">=4.5.0"
-matplotlib = ">=3.10.1"
-pre-commit = ">=4.3.0"
-black = ">=25.9.0"
-isort = ">=7.0.0"
-openpyxl = ">=3.0.10"
-numexpr = ">=2.13.1"
-lxml = ">=4.9.1"
-pyreadstat = ">=1.2.0"
-xlrd = ">=2.0.1"
-xlsxwriter = ">=3.0.3"
-pyxlsb = ">=1.0.10"
-odfpy = ">=1.4.1"
-xarray = ">=22.6.0"
-tabulate = ">=0.8.10"
-jinja2 = ">=3.1"
-scipy = ">=1.9.1"
-scipy-stubs = ">=1.15.3.0"
-SQLAlchemy = ">=2.0.39"
-types-python-dateutil = ">=2.8.19"
-beautifulsoup4 = ">=4.14.2"
-html5lib = ">=1.1"
-python-calamine = ">=0.2.0"
-pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
-fsspec = "^2025.10.0"
-tables = { version = ">=3.10.2", python = ">=3.11" }
-pytz = "^2025.2"
-types-pytz = ">=2022.1.1"
+[dependency-groups]
+dev = [
+  "mypy>=2.2.0",
+  "pandas==3.0.3",
+  "pyarrow>=10.0.1",
+  "pytest>=8.4.2",
+  "pyright>=1.1.410",
+  "ty>=0.0.58",
+  "pyrefly>=1.1.0",
+  "poethepoet>=0.16.5",
+  "loguru>=0.6.0",
+  "typing-extensions>=4.5.0",
+  "matplotlib>=3.11.0",
+  "pre-commit>=4.3.0",
+  "black>=25.9.0",
+  "isort>=7.0.0",
+  "openpyxl>=3.0.10",
+  "numexpr>=2.13.1",
+  "lxml>=4.9.1",
+  "pyreadstat>=1.2.0",
+  "xlrd>=2.0.1",
+  "xlsxwriter>=3.0.3",
+  "pyxlsb>=1.0.10",
+  "odfpy>=1.4.1",
+  "xarray>=22.6.0",
+  "tabulate>=0.8.10",
+  "jinja2>=3.1",
+  "scipy>=1.9.1",
+  "scipy-stubs>=1.15.3.0",
+  "SQLAlchemy>=2.0.39",
+  "types-python-dateutil>=2.8.19",
+  "beautifulsoup4>=4.14.2",
+  "html5lib>=1.1",
+  "python-calamine>=0.2.0",
+  "pyarrow-stubs>=20.0.0.20250928;python_version<'4'",
+  "fsspec>=2025.10.0",
+  "tables>=3.10.2",
+  "pytz>=2025.2",
+  "types-pytz>=2022.1.1",
+  "pyiceberg>=0.10.0",
+  "numpy-typing-compat>=20260602",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{ include = "pandas-stubs" }]
 
 [tool.poe.tasks.test_all]
 help = "Run all tests"
 script = "scripts.test:run_tests(src=True, dist=True)"
 
 [tool.poe.tasks.test]
-help = "Run local tests (includes 'mypy', 'pyright', 'pytest', and 'style')"
+help = "Run local tests (includes 'mypy', 'pyright', 'pyrefly', 'ty', 'pytest', and 'style')"
 script = "scripts.test:run_tests(src=True)"
 
 [tool.poe.tasks.test_dist]
-help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
+help = "Run tests on the installed stubs (includes 'mypy_dist', 'pyright_dist', 'pyrefly_dist' and 'ty_dist')"
 script = "scripts.test:run_tests(dist=True)"
 
 [tool.poe.tasks.pytest]
@@ -100,6 +102,30 @@ args = [
 help = "Run pre-commit"
 script = "scripts.test.run:style"
 
+[tool.poe.tasks.ty]
+help = "Run ty on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:ty_src"
+
+[tool.poe.tasks.ty_dist]
+help = "Run ty on 'tests' using the installed stubs"
+script = "scripts.test:run_tests(dist=True, type_checker='ty')"
+
+[tool.poe.tasks.pyrefly]
+help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:pyrefly_src"
+
+[tool.poe.tasks.pyrefly_dist]
+help = "Run pyrefly on 'tests' using the installed stubs"
+script = "scripts.test:run_tests(dist=True, type_checker='pyrefly')"
+
+[tool.poe.tasks.pyright]
+help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:pyright_src"
+
+[tool.poe.tasks.pyright_dist]
+help = "Run pyright on 'tests' using the installed stubs"
+script = "scripts.test:run_tests(dist=True, type_checker='pyright')"
+
 [tool.poe.tasks.mypy]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
 args = [
@@ -110,22 +136,6 @@ script = "scripts.test:mypy_src(mypy_nightly)"
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='mypy')"
-
-[tool.poe.tasks.ty]
-help = "Run ty on pandas-stubs"
-script = "scripts.test.run:ty"
-
-[tool.poe.tasks.pyrefly]
-help = "Run pyrefly on pandas-stubs"
-script = "scripts.test.run:pyrefly"
-
-[tool.poe.tasks.pyright]
-help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test.run:pyright_src"
-
-[tool.poe.tasks.pyright_dist]
-help = "Run pyright on 'tests' using the installed stubs"
-script = "scripts.test:run_tests(dist=True, type_checker='pyright')"
 
 [tool.poe.tasks.stubtest]
 script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
@@ -139,9 +149,6 @@ args = [
 [tool.poe.tasks.type_completeness]
 help = "Check type completeness"
 script = "scripts.test.run:type_completeness"
-
-[tool.black]
-target-version = ["py311"]
 
 [tool.isort]
 known_pre_libs = "pandas._config"
@@ -173,7 +180,6 @@ skip_glob = "env"
 
 
 [tool.ruff]
-target-version = "py311"
 fix = true
 
 
@@ -223,6 +229,7 @@ ignore = [
   "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
   "PD",      # Pandas is here
   "PLC0415", # https://docs.astral.sh/ruff/rules/import-outside-top-level/
+  "PLW0108", # https://docs.astral.sh/ruff/rules/unnecessary-lambda/
   "S101",    # https://docs.astral.sh/ruff/rules/assert/
   "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
@@ -304,7 +311,7 @@ reportUnnecessaryTypeIgnoreComment = true
 reportMissingModuleSource = true
 
 [tool.codespell]
-ignore-words-list = "indext, mose, sav, ser"
+ignore-words-list = "indext, mose, sav, ser, ttest"
 
 [tool.pytest.ini_options]
 filterwarnings = [
@@ -337,10 +344,25 @@ unannotated-attribute = true
 
 [tool.ty.environment]
 python-platform = "all"
-python-version = "3.11"
 
 [tool.ty.rules]
 possibly-unresolved-reference = "error"
 
 [tool.ty.analysis]
 respect-type-ignore-comments = false
+
+[tool.ty.src]
+exclude = [
+  "tests/arrays/**/*",
+  "tests/frame/**/*",
+  "tests/indexes/**/*",
+  "tests/scalars/**/*",
+  "tests/series/**/*",
+  "tests/test_api_types.py",
+  "tests/test_extension.py",
+  "tests/test_groupby.py",
+  "tests/test_natype.py",
+  "tests/test_pandas.py",
+  "tests/test_string_accessors.py",
+  "tests/test_timefuncs.py",
+]

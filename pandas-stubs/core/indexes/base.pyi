@@ -58,12 +58,13 @@ from pandas.core.base import (
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.frozen import FrozenList
 from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from pandas.core.strings.accessor import StringMethods
+from pandas.core.strings.accessor import StrDescriptor
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs.period import Period
@@ -314,6 +315,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         name: Hashable = None,
         tupleize_cols: bool = True,
     ) -> IntervalIndex[Interval]: ...
+    @overload
+    def __new__(
+        cls,
+        data: Iterable[tuple[Any, ...]],
+        *,
+        dtype: Dtype | None = None,
+        copy: bool = False,
+        name: Hashable = None,
+        tupleize_cols: Literal[True] = True,
+    ) -> MultiIndex: ...
     # generic overloads
     @overload
     def __new__(
@@ -346,19 +357,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         name: Hashable = None,
         tupleize_cols: bool = True,
     ) -> Self: ...
-    @property
-    def str(
-        self,
-    ) -> StringMethods[  # pyrefly: ignore[bad-specialization]
-        Self,
-        MultiIndex,
-        np_1darray_bool,
-        Index[list[_str]],
-        Index[int],
-        Index[bytes],
-        Index[_str],
-        Index,
-    ]: ...
+    str = StrDescriptor()
     @final
     def is_(self, other: Any) -> bool: ...
     def __len__(self) -> int: ...
@@ -413,7 +412,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @name.setter
     def name(self, value: Hashable) -> None: ...
     @property
-    def names(self) -> list[Hashable | None]: ...
+    def names(self) -> FrozenList[Hashable | None]: ...
     @names.setter
     def names(self, names: SequenceNotStr[Hashable | None]) -> None: ...
     def set_names(
@@ -430,7 +429,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @property
     def nlevels(self) -> int: ...
     def get_level_values(self, level: int | _str) -> Index: ...
-    def droplevel(self, level: Level | Sequence[Level] = 0) -> Self: ...
     @property
     def is_monotonic_increasing(self) -> bool: ...
     @property
@@ -451,6 +449,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def dropna(self, how: AnyAll = "any") -> Self: ...
     def unique(self, level: Hashable | None = None) -> Self: ...
     def drop_duplicates(self, *, keep: DropKeep = "first") -> Self: ...
+    def droplevel(self, level: Sequence[Never]) -> Self: ...
     def duplicated(self, keep: DropKeep = "first") -> np_1darray_bool: ...
     def __and__(self, other: Never) -> Never: ...
     def __rand__(self, other: Never) -> Never: ...
@@ -571,8 +570,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         na_position: NaPosition = "last",
         key: Callable[[Index], Index] | None = None,
     ) -> tuple[Self, np_1darray_intp]: ...
-    @final
-    def sort(self, *args: Any, **kwargs: Any) -> None: ...
     def argsort(self, *args: Any, **kwargs: Any) -> np_1darray_intp: ...
     def get_indexer_non_unique(
         self, target: Index

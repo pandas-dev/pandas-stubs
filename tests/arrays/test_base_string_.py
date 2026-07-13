@@ -12,14 +12,16 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from pandas.core.arrays.string_ import BaseStringArray
 import pytest
 
 from pandas._libs.missing import NAType
 
 from tests import check
-from tests._typing import PandasBaseStrDtypeArg
+from tests._typing import (
+    BuiltinStrDtypeArg,
+    PandasBaseStrDtypeArg,
+)
 from tests.dtypes import (
     PANDAS_BASE_STRING_ARGS,
     PYTHON_STRING_ARGS,
@@ -28,8 +30,8 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("data", powerset(["pd", np.str_("pd")], 1))
-@pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
+@pytest.mark.parametrize("data", list(powerset(["pd", np.str_("pd")], 1)))
+@pytest.mark.parametrize("missing_values", list(powerset([np.nan, None, pd.NA])))
 def test_construction_sequence(
     data: tuple[str | np.str_, ...],
     missing_values: tuple[Any, ...],
@@ -66,21 +68,28 @@ def test_construction_array_like() -> None:
     )
 
 
-@pytest.mark.parametrize("data", powerset(["pd", np.str_("pd")]))
+@pytest.mark.parametrize("data", list(powerset(["pd", np.str_("pd")])))
 @pytest.mark.parametrize(
     ("dtype", "target_dtype"), (PYTHON_STRING_ARGS | PANDAS_BASE_STRING_ARGS).items()
 )
 def test_construction_dtype(
     data: tuple[str | np.str_, ...],
-    # TODO: pandas-dev/pandas#54466 add BuiltinStrDtypeArg after Pandas 3.0
-    dtype: PandasBaseStrDtypeArg,
+    dtype: BuiltinStrDtypeArg | PandasBaseStrDtypeArg,
     target_dtype: type,
 ) -> None:
     is_builtin_str = dtype in PYTHON_STRING_ARGS
 
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), BaseStringArray, dtype_notna)
-    check(pd.array([*data, *data], dtype), BaseStringArray, dtype_notna)
+    check(
+        assert_type(pd.array([*data], dtype), BaseStringArray),
+        BaseStringArray,
+        dtype_notna,
+    )
+    check(
+        assert_type(pd.array([*data, *data], dtype), BaseStringArray),
+        BaseStringArray,
+        dtype_notna,
+    )
 
     dtype_na = (
         target_dtype
@@ -88,16 +97,20 @@ def test_construction_dtype(
         # pandas-dev/pandas#63567 Pandas 3.0 gives StringDtype(na_value=nan) if dtype is str or "str"
         else float if is_builtin_str else NAType
     )
-    check(pd.array([*data, np.nan], dtype), BaseStringArray, dtype_na)
-    check(pd.array([*data, *data, np.nan], dtype), BaseStringArray, dtype_na)
+    check(
+        assert_type(pd.array([*data, np.nan], dtype), BaseStringArray),
+        BaseStringArray,
+        dtype_na,
+    )
+    check(
+        assert_type(pd.array([*data, *data, np.nan], dtype), BaseStringArray),
+        BaseStringArray,
+        dtype_na,
+    )
 
     if TYPE_CHECKING:
-        # TODO: pandas-dev/pandas#54466 should give BaseStringArray after 3.0
-        # TODO: pandas-dev/pandas-stubs#1641 should give BaseStringArray after 3.0 with the stubs
-        # The following one still gives NumpyExtensionArray because issubclass(str, object),
-        # and pd.array([], object) gives NumpyExtensionArray
-        assert_type(pd.array([], str), NumpyExtensionArray)
-        pd.array([], "str")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        assert_type(pd.array([], str), BaseStringArray)
+        assert_type(pd.array([], "str"), BaseStringArray)
 
         assert_type(pd.array([], pd.StringDtype()), BaseStringArray)
         assert_type(pd.array([], "string"), BaseStringArray)
@@ -130,9 +143,16 @@ def test_construction_dtype(
 
 
 def test_dtype() -> None:
-    arr = pd.array(["a"], "string")
-    check(assert_type(arr.dtype, pd.StringDtype), pd.StringDtype)
-    assert assert_type(arr.dtype.storage, Literal["python", "pyarrow"]) in {
+    arr_string = pd.array(["a"], "string")
+    check(assert_type(arr_string.dtype, pd.StringDtype), pd.StringDtype)
+    assert assert_type(arr_string.dtype.storage, Literal["python", "pyarrow"]) in {
         "python",
         "pyarrow",
     }
+
+    arr_str = pd.array([pd.NA], str)
+    check(assert_type(arr_str, BaseStringArray), BaseStringArray, float)
+    assert pd.isna(assert_type(arr_str.dtype.na_value, NAType | float))
+
+    arr_str = pd.array([pd.NA], pd.StringDtype(na_value=pd.NA))
+    check(assert_type(arr_str, BaseStringArray), BaseStringArray, NAType)

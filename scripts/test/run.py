@@ -70,6 +70,16 @@ def pyright_dist() -> None:
     subprocess.run(cmd, check=True)
 
 
+def pyrefly_dist() -> None:
+    cmd = ["pyrefly", "check", "tests"]
+    subprocess.run(cmd, check=True)
+
+
+def ty_dist() -> None:
+    cmd = ["ty", "check", "tests"]
+    subprocess.run(cmd, check=True)
+
+
 def uninstall_dist() -> None:
     cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd, check=True)
@@ -147,19 +157,13 @@ def released_mypy() -> None:
     )
 
 
-def ty() -> None:
-    cmd = [
-        "ty",
-        "check",
-        "pandas-stubs",
-        "--python",
-        sys.executable,
-    ]
+def ty_src() -> None:
+    cmd = ["ty", "check", "pandas-stubs", "tests", "--python", sys.executable]
     subprocess.run(cmd, check=True)
 
 
-def pyrefly() -> None:
-    cmd = ["pyrefly", "check", "pandas-stubs"]
+def pyrefly_src() -> None:
+    cmd = ["pyrefly", "check", "pandas-stubs", "tests"]
     subprocess.run(cmd, check=True)
 
 

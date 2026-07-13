@@ -40,7 +40,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps
     def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, other: datetime.timedelta
     ) -> Self: ...
-    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: datetime.timedelta
     ) -> Self: ...
     @overload  # type: ignore[override]

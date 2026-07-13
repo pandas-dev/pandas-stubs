@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import (
+    Callable,
+    Iterator,
+)
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Literal,
+    Never,
     assert_type,
     cast,
 )
@@ -31,9 +35,12 @@ from pandas.core.window import (
     RollingGroupby,
 )
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 if TYPE_CHECKING:
@@ -104,7 +111,7 @@ def test_frame_groupby_resample() -> None:
 
     # fillna (deprecated)
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_DF.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore
+        GB_DF.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore  # pyrefly: ignore[not-callable]
 
     # aggregate / apply
     check(
@@ -151,10 +158,16 @@ def test_frame_groupby_resample() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(GB_DF.resample("ME").aggregate(np.sum), DataFrame)
-    check(GB_DF.resample("ME").aggregate([np.mean]), DataFrame)
-    check(GB_DF.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-    check(GB_DF.resample("ME").aggregate({"col1": np.sum}), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(GB_DF.resample("ME").aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(GB_DF.resample("ME").aggregate({"col1": np.sum}), DataFrame),
+        DataFrame,
+    )
     check(
         GB_DF.resample("ME").aggregate({"col1": np.sum, "col2": np.mean}),
         DataFrame,
@@ -171,10 +184,10 @@ def test_frame_groupby_resample() -> None:
         GB_DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}),
         DataFrame,
     )
-    check(GB_DF.resample("ME").aggregate("sum"), DataFrame)
-    check(GB_DF.resample("ME").aggregate(df2frame), DataFrame)
-    check(GB_DF.resample("ME").aggregate(df2series), DataFrame)
-    check(GB_DF.resample("ME").aggregate(df2scalar), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate("sum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate(df2frame), DataFrame), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate(df2series), DataFrame), DataFrame)
+    check(assert_type(GB_DF.resample("ME").aggregate(df2scalar), DataFrame), DataFrame)
 
     # asfreq
     check(assert_type(GB_DF.resample("ME").asfreq(-1.0), DataFrame), DataFrame)
@@ -215,21 +228,15 @@ def test_frame_groupby_resample() -> None:
         DataFrame,
     )
 
-    # TODO: pandas-dev/pandas-stubs#1641, pandas 3.0 support
-    # check(
-    #     assert_type(
-    #         GB_DF.apply(lambda x: x.resample("ME").interpolate(method="linear")),
-    #         DataFrame,
-    #     ),
-    #     DataFrame,
-    # )
-    # check(
-    #     assert_type(
-    #         GB_DF.apply(lambda x: x.resample("ME").interpolate()),
-    #         DataFrame,
-    #     ),
-    #     DataFrame,
-    # )
+    # mypy cannot infer the return type of raw lambdas against Protocol-based overloads;
+    # use typed Callable variables to work around this limitation.
+    _interp_linear: Callable[[DataFrame], DataFrame] = lambda x: x.resample(
+        "ME"
+    ).interpolate(method="linear")
+    check(assert_type(GB_DF.apply(_interp_linear), DataFrame), DataFrame)
+
+    _interp: Callable[[DataFrame], DataFrame] = lambda x: x.resample("ME").interpolate()
+    check(assert_type(GB_DF.apply(_interp), DataFrame), DataFrame)
 
     # pipe
     def g(val: Resampler[DataFrame]) -> DataFrame:
@@ -255,6 +262,9 @@ def test_frame_groupby_resample() -> None:
         return -1 * val
 
     check(assert_type(GB_DF.resample("ME").transform(j), DataFrame), DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(GB_DF.resample("ME").interpolate(), Never)
 
 
 def test_series_groupby_resample() -> None:
@@ -309,39 +319,39 @@ def test_series_groupby_resample() -> None:
 
     # fillna (deprecated)
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_S.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore
+        GB_S.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore  # pyrefly: ignore[not-callable]
 
     # aggregate
     check(
-        assert_type(GB_S.resample("ME").aggregate(np.sum), DataFrame | Series),
+        assert_type(GB_S.resample("ME").aggregate(np.sum), Series),
         Series,
     )
     check(
-        assert_type(GB_S.resample("ME").agg(np.sum), DataFrame | Series),
+        assert_type(GB_S.resample("ME").agg(np.sum), Series),
         Series,
     )
     check(
-        assert_type(GB_S.resample("ME").apply(np.sum), DataFrame | Series),
+        assert_type(GB_S.resample("ME").apply(np.sum), Series),
         Series,
     )
     check(
         assert_type(
             GB_S.resample("ME").aggregate([np.sum, np.mean]),
-            DataFrame | Series,
+            DataFrame,
         ),
         DataFrame,
     )
     check(
         assert_type(
             GB_S.resample("ME").aggregate(["sum", np.mean]),
-            DataFrame | Series,
+            DataFrame,
         ),
         DataFrame,
     )
     check(
         assert_type(
             GB_S.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
-            DataFrame | Series,
+            DataFrame,
         ),
         DataFrame,
     )
@@ -349,7 +359,7 @@ def test_series_groupby_resample() -> None:
     def f(val: Series) -> float:
         return val.mean()
 
-    check(assert_type(GB_S.resample("ME").aggregate(f), DataFrame | Series), Series)
+    check(assert_type(GB_S.resample("ME").aggregate(f), Series), Series)
 
     # asfreq
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
@@ -382,14 +392,34 @@ def test_series_groupby_resample() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
-    check(GB_S.resample("ME").aggregate(np.sum), Series)
-    check(GB_S.resample("ME").aggregate([np.mean]), DataFrame)
-    check(GB_S.resample("ME").aggregate(["sum", np.mean]), DataFrame)
-    check(GB_S.resample("ME").aggregate({"sum": np.sum}), DataFrame)
-    check(GB_S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
-    check(GB_S.resample("ME").aggregate("sum"), Series)
-    check(GB_S.resample("ME").aggregate(s2series), Series)
-    check(GB_S.resample("ME").aggregate(s2scalar), Series)
+    check(assert_type(GB_S.resample("ME").aggregate(np.sum), Series), Series)
+    check(
+        assert_type(GB_S.resample("ME").aggregate([np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(GB_S.resample("ME").aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(GB_S.resample("ME").aggregate({"sum": np.sum}), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            GB_S.resample("ME").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
+    check(assert_type(GB_S.resample("ME").aggregate("sum"), Series), Series)
+    check(
+        assert_type(GB_S.resample("ME").aggregate(s2series), Series),
+        Series,
+    )
+    check(
+        assert_type(GB_S.resample("ME").aggregate(s2scalar), Series),
+        Series,
+    )
 
 
 def test_frame_groupby_rolling() -> None:
@@ -452,16 +482,19 @@ def test_frame_groupby_rolling() -> None:
 
     # aggregate combinations
     def df2series(val: DataFrame) -> Series:
-        assert isinstance(val, Series)  # type: ignore[unreachable]
-        return val.mean()  # type: ignore[unreachable]
+        return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(GB_DF.rolling(1).aggregate(np.sum), DataFrame)
-    check(GB_DF.rolling(1).aggregate([np.mean]), DataFrame)
-    check(GB_DF.rolling(1).aggregate(["sum", np.mean]), DataFrame)
-    check(GB_DF.rolling(1).aggregate({"col1": np.sum}), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(GB_DF.rolling(1).aggregate(["sum", np.mean]), DataFrame), DataFrame
+    )
+    check(
+        assert_type(GB_DF.rolling(1).aggregate({"col1": np.sum}), DataFrame), DataFrame
+    )
     check(
         GB_DF.rolling(1).aggregate({"col1": np.sum, "col2": np.mean}),
         DataFrame,
@@ -478,9 +511,9 @@ def test_frame_groupby_rolling() -> None:
         GB_DF.rolling(1).aggregate({"col1": "sum", "col2": [np.mean]}),
         DataFrame,
     )
-    check(GB_DF.rolling(1).aggregate("sum"), DataFrame)
-    check(GB_DF.rolling(1).aggregate(df2series), DataFrame)
-    check(GB_DF.rolling(1).aggregate(df2scalar), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate("sum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate(df2series), DataFrame), DataFrame)
+    check(assert_type(GB_DF.rolling(1).aggregate(df2scalar), DataFrame), DataFrame)
 
     # getattr
     check(
@@ -624,16 +657,21 @@ def test_frame_groupby_expanding() -> None:
 
     # aggregate combinations
     def df2series(val: DataFrame) -> Series:
-        assert isinstance(val, Series)  # type: ignore[unreachable]
-        return val.mean()  # type: ignore[unreachable]
+        return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(GB_DF.expanding(1).aggregate(np.sum), DataFrame)
-    check(GB_DF.expanding(1).aggregate([np.mean]), DataFrame)
-    check(GB_DF.expanding(1).aggregate(["sum", np.mean]), DataFrame)
-    check(GB_DF.expanding(1).aggregate({"col1": np.sum}), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate(np.sum), DataFrame), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(GB_DF.expanding(1).aggregate(["sum", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(GB_DF.expanding(1).aggregate({"col1": np.sum}), DataFrame),
+        DataFrame,
+    )
     check(
         GB_DF.expanding(1).aggregate({"col1": np.sum, "col2": np.mean}),
         DataFrame,
@@ -650,9 +688,9 @@ def test_frame_groupby_expanding() -> None:
         GB_DF.expanding(1).aggregate({"col1": "sum", "col2": [np.mean]}),
         DataFrame,
     )
-    check(GB_DF.expanding(1).aggregate("sum"), DataFrame)
-    check(GB_DF.expanding(1).aggregate(df2series), DataFrame)
-    check(GB_DF.expanding(1).aggregate(df2scalar), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate("sum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate(df2series), DataFrame), DataFrame)
+    check(assert_type(GB_DF.expanding(1).aggregate(df2scalar), DataFrame), DataFrame)
 
     # getattr
     check(
@@ -759,7 +797,7 @@ def test_frame_groupby_ewm() -> None:
     check(assert_type(GB_DF.ewm(1).std(), DataFrame), DataFrame)
     check(assert_type(GB_DF.ewm(1).var(), DataFrame), DataFrame)
 
-    check(GB_DF.ewm(1).aggregate("sum"), DataFrame)
+    check(assert_type(GB_DF.ewm(1).aggregate("sum"), DataFrame), DataFrame)
 
     # getattr
     check(
@@ -786,22 +824,22 @@ def test_frame_groupby_ewm() -> None:
     check(assert_type(list(GB_DF.ewm(1)), list[DataFrame]), list, DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _1 = GB_DF.ewm(1).agg(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _2 = GB_DF.ewm(1).aggregate([np.sum, np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _3 = GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _4 = GB_DF.ewm(1).aggregate({"col1": "sum", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _5 = GB_DF.ewm(1).aggregate({"col1": ["sum", np.mean], "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).agg(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate([np.sum, np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": "sum", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": ["sum", np.mean], "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
 
         # aggregate combinations
-        _6 = GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _7 = GB_DF.ewm(1).aggregate([np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _8 = GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _9 = GB_DF.ewm(1).aggregate({"col1": np.sum})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _10 = GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _11 = GB_DF.ewm(1).aggregate({"col1": [np.sum], "col2": ["sum", np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _12 = GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": ["sum", np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        _13 = GB_DF.ewm(1).aggregate({"col1": "sum", "col2": [np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate([np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": np.sum})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": [np.sum], "col2": ["sum", np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": ["sum", np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": "sum", "col2": [np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
 
 
 def test_series_groupby_ewm() -> None:
@@ -827,13 +865,19 @@ def test_series_groupby_ewm() -> None:
     check(assert_type(next(iterator), "Series[float]"), Series, float)
     check(assert_type(list(GB_S.ewm(1)), "list[Series[float]]"), list, Series)
 
-    # TODO: pandas-dev/pandas-stubes#1641 in pandas 3.0 agg only supports str function and not callable
+    if TYPE_CHECKING_INVALID_USAGE:
+        GB_DF.ewm(1).agg(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+
+        def _func(x: Series) -> float:
+            return sum(x)
+
+        GB_DF.ewm(1).agg(_func)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
 
 
 def test_engine() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # See issue #810
-        DataFrameGroupBy().aggregate(
+        DataFrameGroupBy().aggregate(  # pyrefly: ignore[no-matching-overload]
             "size",
             "some",
             "args",
@@ -841,7 +885,11 @@ def test_engine() -> None:
             engine_kwargs="not valid",  # pyright: ignore
             other_kwarg="",
         )
-    GB_DF.aggregate("size", engine="cython", engine_kwargs={})
+
+    check(
+        assert_type(GB_DF.aggregate("size", engine="cython", engine_kwargs={}), Series),
+        Series,
+    )
 
 
 def test_groupby_getitem() -> None:
@@ -905,7 +953,9 @@ def test_dataframe_apply_kwargs() -> None:
         DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        df.groupby("group", group_keys=False)[["group", "value"]].apply(
+        df.groupby("group", group_keys=False)[
+            ["group", "value"]
+        ].apply(  # pyrefly: ignore[no-matching-overload]
             add_constant_to_mean,
             constant="5",  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
         )
@@ -925,3 +975,189 @@ def test_frame_groupby_aggregate() -> None:
 
     check(assert_type(df.groupby("b").agg(a=("a", "mean")), DataFrame), DataFrame)
     check(assert_type(df.groupby("b").agg(**dico), DataFrame), DataFrame)
+
+
+def test_frame_groupby_transform_reduction_kernels() -> None:
+    """Test DataFrameGroupBy.transform with ReductionKernelType literals."""
+    check(assert_type(GB_DF.transform("all"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("any"), DataFrame), DataFrame)
+    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated", lower="2.99"):
+        check(assert_type(GB_DF.transform("corrwith", other=DF), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("count"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("first"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("idxmax"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("idxmin"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("last"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("max"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("mean"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("median"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("min"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("nunique"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("prod"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("quantile"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("sem"), DataFrame), DataFrame)
+    # TODO: pandas-dev/pandas-stubs#1671, size, cumcount, ngroup return Series at runtime on DataFrameGroupBy
+    check(assert_type(GB_DF.transform("skew"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("std"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("sum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("var"), DataFrame), DataFrame)
+
+
+def test_frame_groupby_transform_transformation_kernels() -> None:
+    """Test DataFrameGroupBy.transform with TransformationKernelType literals."""
+    check(assert_type(GB_DF.transform("bfill"), DataFrame), DataFrame)
+    # TODO: pandas-dev/pandas-stubs#1671, cumcount and ngroup return Series at runtime on DataFrameGroupBy
+    check(assert_type(GB_DF.transform("cummax"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("cummin"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("cumprod"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("cumsum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("diff"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("ffill"), DataFrame), DataFrame)
+    # TODO: pandas-dev/pandas-stubs#1671, fillna is not a valid function name for transform(name) at runtime
+    check(assert_type(GB_DF.transform("pct_change"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("rank"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.transform("shift"), DataFrame), DataFrame)
+
+
+def test_series_groupby_transform_reduction_kernels() -> None:
+    """Test SeriesGroupBy.transform with ReductionKernelType literals."""
+    check(assert_type(GB_S.transform("all"), Series), Series)
+    check(assert_type(GB_S.transform("any"), Series), Series)
+    # TODO: pandas-dev/pandas-stubs#1671, corrwith does not exist on SeriesGroupBy
+    check(assert_type(GB_S.transform("count"), Series), Series)
+    check(assert_type(GB_S.transform("first"), Series), Series)
+    check(assert_type(GB_S.transform("idxmax"), Series), Series)
+    check(assert_type(GB_S.transform("idxmin"), Series), Series)
+    check(assert_type(GB_S.transform("last"), Series), Series)
+    check(assert_type(GB_S.transform("max"), Series), Series)
+    check(assert_type(GB_S.transform("mean"), Series), Series)
+    check(assert_type(GB_S.transform("median"), Series), Series)
+    check(assert_type(GB_S.transform("min"), Series), Series)
+    check(assert_type(GB_S.transform("nunique"), Series), Series)
+    check(assert_type(GB_S.transform("prod"), Series), Series)
+    check(assert_type(GB_S.transform("quantile"), Series), Series)
+    check(assert_type(GB_S.transform("sem"), Series), Series)
+    check(assert_type(GB_S.transform("size"), Series), Series)
+    check(assert_type(GB_S.transform("skew"), Series), Series)
+    check(assert_type(GB_S.transform("std"), Series), Series)
+    check(assert_type(GB_S.transform("sum"), Series), Series)
+    check(assert_type(GB_S.transform("var"), Series), Series)
+
+
+def test_series_groupby_transform_transformation_kernels() -> None:
+    """Test SeriesGroupBy.transform with TransformationKernelType literals."""
+    check(assert_type(GB_S.transform("bfill"), Series), Series)
+    check(assert_type(GB_S.transform("cumcount"), Series), Series)
+    check(assert_type(GB_S.transform("cummax"), Series), Series)
+    check(assert_type(GB_S.transform("cummin"), Series), Series)
+    check(assert_type(GB_S.transform("cumprod"), Series), Series)
+    check(assert_type(GB_S.transform("cumsum"), Series), Series)
+    check(assert_type(GB_S.transform("diff"), Series), Series)
+    check(assert_type(GB_S.transform("ffill"), Series), Series)
+    # TODO: pandas-dev/pandas-stubs#1671, fillna is not a valid function name for transform(name) at runtime
+    check(assert_type(GB_S.transform("ngroup"), Series), Series)
+    check(assert_type(GB_S.transform("pct_change"), Series), Series)
+    check(assert_type(GB_S.transform("rank"), Series), Series)
+    check(assert_type(GB_S.transform("shift"), Series), Series)
+
+
+def test_frame_groupby_agg_reduction_kernels() -> None:
+    """Test DataFrameGroupBy.agg with ReductionKernelType literals."""
+    check(assert_type(GB_DF.agg("all"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("any"), DataFrame), DataFrame)
+    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated", lower="2.99"):
+        check(assert_type(GB_DF.agg("corrwith", other=DF), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("count"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("first"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("idxmax"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("idxmin"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("last"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("max"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("mean"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("median"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("min"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("nunique"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("prod"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("quantile"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("sem"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.aggregate("size"), Series), Series)
+    check(assert_type(GB_DF.agg("skew"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("std"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("sum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("var"), DataFrame), DataFrame)
+
+
+def test_frame_groupby_agg_transformation_kernels() -> None:
+    """Test DataFrameGroupBy.agg with TransformationKernelType literals."""
+    check(assert_type(GB_DF.agg("bfill"), DataFrame), DataFrame)
+    # TODO: pandas-dev/pandas-stubs#1671, cumcount and ngroup return Series at runtime on DataFrameGroupBy
+    check(assert_type(GB_DF.agg("cummax"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("cummin"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("cumprod"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("cumsum"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("diff"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("ffill"), DataFrame), DataFrame)
+    # TODO: pandas-dev/pandas-stubs#1671, fillna is not a valid function for DataFrameGroupBy at runtime
+    check(assert_type(GB_DF.agg("pct_change"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("rank"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.agg("shift"), DataFrame), DataFrame)
+
+
+def test_series_groupby_agg_reduction_kernels() -> None:
+    """Test SeriesGroupBy.agg with ReductionKernelType literals."""
+    check(assert_type(GB_S.agg("all"), Series), Series)
+    check(assert_type(GB_S.agg("any"), Series), Series)
+    # TODO: pandas-dev/pandas-stubs#1671, corrwith does not exist on SeriesGroupBy
+    check(assert_type(GB_S.agg("count"), Series), Series)
+    check(assert_type(GB_S.agg("first"), Series), Series)
+    check(assert_type(GB_S.agg("idxmax"), Series), Series)
+    check(assert_type(GB_S.agg("idxmin"), Series), Series)
+    check(assert_type(GB_S.agg("last"), Series), Series)
+    check(assert_type(GB_S.agg("max"), Series), Series)
+    check(assert_type(GB_S.agg("mean"), Series), Series)
+    check(assert_type(GB_S.agg("median"), Series), Series)
+    check(assert_type(GB_S.agg("min"), Series), Series)
+    check(assert_type(GB_S.agg("nunique"), Series), Series)
+    check(assert_type(GB_S.agg("prod"), Series), Series)
+    check(assert_type(GB_S.agg("quantile"), Series), Series)
+    check(assert_type(GB_S.agg("sem"), Series), Series)
+    check(assert_type(GB_S.agg("size"), Series), Series)
+    check(assert_type(GB_S.agg("skew"), Series), Series)
+    check(assert_type(GB_S.agg("std"), Series), Series)
+    check(assert_type(GB_S.agg("sum"), Series), Series)
+    check(assert_type(GB_S.agg("var"), Series), Series)
+
+
+def test_series_groupby_agg_transformation_kernels() -> None:
+    """Test SeriesGroupBy.agg with TransformationKernelType literals."""
+    check(assert_type(GB_S.agg("bfill"), Series), Series)
+    check(assert_type(GB_S.agg("cumcount"), Series), Series)
+    check(assert_type(GB_S.agg("cummax"), Series), Series)
+    check(assert_type(GB_S.agg("cummin"), Series), Series)
+    check(assert_type(GB_S.agg("cumprod"), Series), Series)
+    check(assert_type(GB_S.agg("cumsum"), Series), Series)
+    check(assert_type(GB_S.agg("diff"), Series), Series)
+    check(assert_type(GB_S.agg("ffill"), Series), Series)
+    # TODO: pandas-dev/pandas-stubs#1671, fillna does not exist on SeriesGroupBy at runtime
+    check(assert_type(GB_S.agg("ngroup"), Series), Series)
+    check(assert_type(GB_S.agg("pct_change"), Series), Series)
+    check(assert_type(GB_S.agg("rank"), Series), Series)
+    check(assert_type(GB_S.agg("shift"), Series), Series)
+
+
+def test_groupby_shift() -> None:
+    """Test shift method on GroupBy."""
+    check(assert_type(GB_DF.shift(freq=None, fill_value=None), DataFrame), DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            GB_DF.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+
+
+def test_dataframe_groupby_dtypes() -> None:
+    """Test that the dtypes property has been removed in 3.0."""
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(GB_DF.dtypes, Never)

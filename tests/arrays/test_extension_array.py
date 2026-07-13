@@ -3,14 +3,13 @@ from typing import assert_type
 
 import numpy as np
 import pandas as pd
+from pandas.api.typing.aliases import ArrayLike
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.integer import (
     Int32Dtype,
     IntegerArray,
 )
 from pandas.core.construction import array
-
-from pandas._typing import ArrayLike
 
 from tests import check
 from tests._typing import (

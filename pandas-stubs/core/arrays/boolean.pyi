@@ -14,8 +14,7 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import BaseMaskedDtype
 
 class BooleanDtype(BaseMaskedDtype):
-    @classmethod
-    def construct_array_type(cls) -> type_t[BooleanArray]: ...
+    def construct_array_type(self) -> type_t[BooleanArray]: ...
 
 class BooleanArray(BaseMaskedArray):
     def __init__(

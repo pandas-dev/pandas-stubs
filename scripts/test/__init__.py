@@ -1,14 +1,21 @@
 import dataclasses
 from functools import partial
-from typing import Literal
+from typing import (
+    TYPE_CHECKING,
+    Literal,
+    get_args,
+)
 
 from scripts._job import run_job
 from scripts.test import _step
 
+if TYPE_CHECKING:
+    from scripts._job import Step
+
 _SRC_STEPS = [
-    _step.mypy_src,
     _step.ty_src,
     _step.pyrefly_src,
+    _step.mypy_src,
     _step.pyright_src,
     _step.pytest,
     _step.style,
@@ -17,17 +24,21 @@ _DIST_STEPS = [
     _step.build_dist,
     _step.install_dist,
     _step.rename_src,
-    _step.mypy_dist,
+    _step.ty_dist,
+    # _step.pyrefly_dist,  TODO: pandas-dev/pandas-stubs#1801
     _step.pyright_dist,
+    _step.mypy_dist,
 ]
+
+TypeChecker = Literal["mypy", "pyright", "pyrefly", "ty"]
 
 
 def run_tests(
     src: bool = False,
     dist: bool = False,
-    type_checker: Literal["", "mypy", "pyright"] = "",
+    type_checker: TypeChecker | None = None,
 ) -> None:
-    steps = []
+    steps: list[Step] = []
     if src:
         steps.extend(_SRC_STEPS)
 
@@ -35,9 +46,12 @@ def run_tests(
         steps.extend(_DIST_STEPS)
 
     if type_checker:
-        # either pyright or mypy
-        remove = "mypy" if type_checker == "pyright" else "pyright"
-        steps = [step for step in steps if remove not in step.name]
+        steps = [
+            s
+            for s in steps
+            if type_checker in s.name
+            or not any(t in s.name for t in get_args(TypeChecker))
+        ]
 
     run_job(steps)
 

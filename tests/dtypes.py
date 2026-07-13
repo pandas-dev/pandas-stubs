@@ -13,10 +13,10 @@ from tests._typing import (
     BuiltinBooleanDtypeArg,
     BuiltinBytesDtypeArg,
     BuiltinComplexDtypeArg,
-    BuiltinDtypeArg,
     BuiltinFloatDtypeArg,
     BuiltinIntDtypeArg,
-    BuiltinNotStrDtypeArg,
+    BuiltinNotObjDtypeArg,
+    BuiltinNotStrObjDtypeArg,
     BuiltinObjectDtypeArg,
     BuiltinStrDtypeArg,
     BytesDtypeArg,
@@ -268,15 +268,14 @@ ASTYPE_OBJECT_ARGS = PYTHON_OBJECT_ARGS | NUMPY_OBJECT_ARGS
 NUMPY_VOID_ARGS = dict.fromkeys((np.void, "void", "V"), np.void)
 ASTYPE_VOID_ARGS = NUMPY_VOID_ARGS
 
-PYTHON_NOT_STR_DTYPE_ARGS = (
+PYTHON_NOT_STR_OBJ_DTYPE_ARGS = (
     PYTHON_BOOL_ARGS
     | PYTHON_INT_ARGS
     | PYTHON_FLOAT_ARGS
     | PYTHON_COMPLEX_ARGS
     | PYTHON_BYTES_ARGS
-    | PYTHON_OBJECT_ARGS
 )
-PYTHON_DTYPE_ARGS = PYTHON_NOT_STR_DTYPE_ARGS | PYTHON_STRING_ARGS
+PYTHON_NOT_OBJ_DTYPE_ARGS = PYTHON_NOT_STR_OBJ_DTYPE_ARGS | PYTHON_STRING_ARGS
 NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS = (
     NUMPY_BOOL_ARGS
     | NUMPY_INT_ARGS
@@ -296,10 +295,10 @@ DTYPE_ARG_ALIAS_MAPS = {
     BuiltinBooleanDtypeArg: PYTHON_BOOL_ARGS,
     BuiltinBytesDtypeArg: PYTHON_BYTES_ARGS,
     BuiltinComplexDtypeArg: PYTHON_COMPLEX_ARGS,
-    BuiltinDtypeArg: PYTHON_DTYPE_ARGS,
+    BuiltinNotObjDtypeArg: PYTHON_NOT_OBJ_DTYPE_ARGS,
     BuiltinFloatDtypeArg: PYTHON_FLOAT_ARGS,
     BuiltinIntDtypeArg: PYTHON_INT_ARGS,
-    BuiltinNotStrDtypeArg: PYTHON_NOT_STR_DTYPE_ARGS,
+    BuiltinNotStrObjDtypeArg: PYTHON_NOT_STR_OBJ_DTYPE_ARGS,
     BuiltinObjectDtypeArg: PYTHON_OBJECT_ARGS,
     BuiltinStrDtypeArg: PYTHON_STRING_ARGS,
     BytesDtypeArg: ASTYPE_BYTES_ARGS,

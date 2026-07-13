@@ -10,7 +10,7 @@ from typing import (
     Concatenate,
     Generic,
     Literal,
-    NamedTuple,
+    Never,
     Protocol,
     Self,
     TypeAlias,
@@ -51,9 +51,18 @@ from pandas._typing import (
 
 AggScalar: TypeAlias = str | Callable[..., Any]
 
-class NamedAgg(NamedTuple):
-    column: str
-    aggfunc: AggScalar
+class NamedAgg:
+    def __init__(
+        self,
+        column: Hashable,
+        aggfunc: Callable[..., Any] | str,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None: ...
+    @property
+    def column(self) -> str: ...
+    @property
+    def aggfunc(self) -> AggScalar: ...
 
 class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
@@ -257,7 +266,14 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload
-    def aggregate(self, func: Literal["size"]) -> Series: ...  # type: ignore[overload-overlap]
+    def aggregate(  # pyright: ignore[reportOverlappingOverload]
+        self,
+        func: Literal["size"],
+        *args: Any,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        **kwargs: Any,
+    ) -> Series: ...
     @overload
     def aggregate(
         self,
@@ -303,9 +319,9 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
-    def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
+    def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, key: Iterable[Hashable]
     ) -> DataFrameGroupBy[ByT, _TT]: ...
     def nunique(self, dropna: bool = True) -> DataFrame: ...
@@ -456,7 +472,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs: Any,
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
-    def dtypes(self) -> Series: ...
+    def dtypes(self) -> Never: ...
     def __getattr__(self, attr: str) -> SeriesGroupBy[Any, ByT]: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
@@ -470,4 +486,6 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def size(self: DataFrameGroupBy[Timestamp, Literal[True]]) -> Series[int]: ...
     @overload
-    def size(self: DataFrameGroupBy[Timestamp, Literal[False]]) -> DataFrame: ...
+    def size(  # ty: ignore[invalid-method-override]
+        self: DataFrameGroupBy[Timestamp, Literal[False]],
+    ) -> DataFrame: ...

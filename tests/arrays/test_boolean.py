@@ -26,8 +26,8 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("data", powerset([True, np.bool_(True)], 1))
-@pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
+@pytest.mark.parametrize("data", list(powerset([True, np.bool_(True)], 1)))
+@pytest.mark.parametrize("missing_values", list(powerset([np.nan, None, pd.NA])))
 def test_construction_sequence(
     data: tuple[bool | np.bool_, ...],
     missing_values: tuple[Any, ...],
@@ -64,20 +64,42 @@ def test_construction_array_like() -> None:
     )
 
 
-@pytest.mark.parametrize("data", powerset([False, np.bool(False)]))
+@pytest.mark.parametrize("data", list(powerset([False, np.bool(False)])))
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_BOOL_ARGS.items())
 def test_construction_dtype(
     data: tuple[bool | np.bool, ...], dtype: PandasBooleanDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(pd.array([*data], dtype), BooleanArray, dtype_notna)
-    check(pd.array([True, *data], dtype), BooleanArray, dtype_notna)
-    check(pd.array([np.bool(True), *data], dtype), BooleanArray, dtype_notna)
+    check(
+        assert_type(pd.array([*data], dtype), BooleanArray), BooleanArray, dtype_notna
+    )
+    check(
+        assert_type(pd.array([True, *data], dtype), BooleanArray),
+        BooleanArray,
+        dtype_notna,
+    )
+    check(
+        assert_type(pd.array([np.bool(True), *data], dtype), BooleanArray),
+        BooleanArray,
+        dtype_notna,
+    )
 
     dtype_na = target_dtype if data else NAType
-    check(pd.array([*data, np.nan], dtype), BooleanArray, dtype_na)
-    check(pd.array([True, *data, np.nan], dtype), BooleanArray, target_dtype)
-    check(pd.array([np.bool(True), *data, np.nan], dtype), BooleanArray, target_dtype)
+    check(
+        assert_type(pd.array([*data, np.nan], dtype), BooleanArray),
+        BooleanArray,
+        dtype_na,
+    )
+    check(
+        assert_type(pd.array([True, *data, np.nan], dtype), BooleanArray),
+        BooleanArray,
+        target_dtype,
+    )
+    check(
+        assert_type(pd.array([np.bool(True), *data, np.nan], dtype), BooleanArray),
+        BooleanArray,
+        target_dtype,
+    )
 
     if TYPE_CHECKING:
         assert_type(pd.array([], pd.BooleanDtype()), BooleanArray)
@@ -117,12 +139,22 @@ def test_constructor() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list_np = BooleanArray([True], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _np_list = BooleanArray(np.array([True]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _pd_arr = BooleanArray(pd.array([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _i = BooleanArray(pd.Index([False]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        _s = BooleanArray(pd.Series([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        _list_np = BooleanArray([True], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _np_list = BooleanArray(np.array([True]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _pd_arr = BooleanArray(pd.array([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _i = BooleanArray(pd.Index([False]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _s = BooleanArray(pd.Series([True]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
 
 
 def test_dtype() -> None:
     check(assert_type(pd.array([True]).dtype, pd.BooleanDtype), pd.BooleanDtype)
+
+
+def test_construct_array_type() -> None:
+    """Test the constructor_array_type method."""
+    assert (
+        assert_type(
+            pd.array([True, False]).dtype.construct_array_type(), type[BooleanArray]
+        )
+        is BooleanArray
+    )

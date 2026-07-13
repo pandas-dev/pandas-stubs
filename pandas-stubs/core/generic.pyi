@@ -27,13 +27,14 @@ from pandas import Index
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 from sqlalchemy.engine import Connectable
+from sqlalchemy.sql.type_api import TypeEngineMixin
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     Axis,
     CompressionOptions,
     CSVQuoting,
-    DtypeArg,
+    Dtype,
     DtypeBackend,
     ExcelWriterMergeCells,
     FilePath,
@@ -175,7 +176,13 @@ class NDFrame:
         index: _bool = True,
         index_label: IndexLabel = None,
         chunksize: int | None = None,
-        dtype: DtypeArg | None = None,
+        dtype: (
+            Dtype
+            | type[TypeEngineMixin]
+            | TypeEngineMixin
+            | Mapping[Hashable, Dtype | type[TypeEngineMixin] | TypeEngineMixin]
+            | None
+        ) = None,
         method: (
             Literal["multi"]
             | Callable[
@@ -189,6 +196,7 @@ class NDFrame:
     def to_pickle(
         self,
         path: FilePath | WriteBuffer[bytes],
+        *,
         compression: CompressionOptions = "infer",
         protocol: int = 5,
         storage_options: StorageOptions = ...,
@@ -223,6 +231,7 @@ class NDFrame:
     def to_latex(
         self,
         buf: FilePath | WriteBuffer[str],
+        *,
         columns: list[_str] | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
@@ -248,6 +257,7 @@ class NDFrame:
     def to_latex(
         self,
         buf: None = None,
+        *,
         columns: list[_str] | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
@@ -273,6 +283,7 @@ class NDFrame:
     def to_csv(
         self,
         path_or_buf: FilePath | WriteBuffer[bytes] | WriteBuffer[str],
+        *,
         sep: _str = ...,
         na_rep: _str = ...,
         float_format: _str | Callable[[object], _str] | None = ...,
@@ -298,6 +309,7 @@ class NDFrame:
     def to_csv(
         self,
         path_or_buf: None = None,
+        *,
         sep: _str = ...,
         na_rep: _str = ...,
         float_format: _str | Callable[[object], _str] | None = ...,
@@ -455,7 +467,7 @@ class NDFrame:
     def resample(
         self,
         rule: Frequency | dt.timedelta,
-        axis: Axis | NoDefaultDoNotUse = 0,
+        axis: Axis | NoDefault = 0,
         closed: Literal["right", "left"] | None = None,
         label: Literal["right", "left"] | None = None,
         on: Level | None = None,
@@ -463,7 +475,7 @@ class NDFrame:
         origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
         offset: TimedeltaConvertibleTypes | None = None,
         group_keys: _bool = False,
-    ) -> DatetimeIndexResampler[Self]: ...  # pyrefly: ignore[bad-specialization]
+    ) -> DatetimeIndexResampler[Self]: ...
     @final
     def take(self, indices: TakeIndexer, axis: Axis = 0, **kwargs: Any) -> Self: ...
     def xs(

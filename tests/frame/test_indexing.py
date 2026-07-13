@@ -22,9 +22,8 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.api.typing.aliases import Scalar
 import pytest
-
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -160,7 +159,8 @@ def test_indexslice_getitem() -> None:
     )
     ind = pd.Index([2, 3])
     check(
-        assert_type(
+        # TODO: https://github.com/facebook/pyrefly/issues/3896
+        assert_type(  # pyrefly: ignore[assert-type]
             pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
         ),
         tuple,
@@ -574,9 +574,16 @@ def test_loc_list_str() -> None:
 
 
 def test_loc_returns_series() -> None:
-    df1 = pd.DataFrame({"x": [1, 2, 3, 4]}, index=[10, 20, 30, 40])
-    df2 = df1.loc[10, :]
-    check(assert_type(df2, pd.Series | pd.DataFrame), pd.Series)
+    df = pd.DataFrame(
+        {"x": [1, 2, 3, 4], "y": [10, 20, 30, 40]}, index=[10, 20, 30, 40]
+    )
+    ind = pd.MultiIndex.from_product([[10, 20], [80, 90]])
+    df2 = df.set_index(ind)
+
+    check(assert_type(df.loc[10, :], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[10, ["x", "y"]], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df2.loc[10, ["x", "y"]], pd.Series | pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[[10, 20], "x"], pd.Series), pd.Series)
 
 
 def test_frame_single_slice() -> None:
@@ -658,4 +665,4 @@ def test_frame_iat() -> None:
     df.iat[0, 0] = 999
     df.iat[0, 0] = float("nan")
     if TYPE_CHECKING_INVALID_USAGE:
-        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType]
+        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation]

@@ -27,6 +27,8 @@ from pandas._typing import (
     np_ndarray,
 )
 
+from pandas.core.dtypes.dtypes import CategoricalValueT
+
 # These are type: ignored because the Index types overlap due to inheritance but indices
 # with extension types return the same type while standard type return ndarray
 @overload
@@ -77,6 +79,13 @@ def factorize(
 ) -> tuple[np_1darray_int64, Index]: ...
 @overload
 def factorize(
+    values: Categorical[CategoricalValueT],
+    sort: bool = False,
+    use_na_sentinel: bool = True,
+    size_hint: int | None = None,
+) -> tuple[np_1darray_int64, Categorical[CategoricalValueT]]: ...
+@overload
+def factorize(  # type: ignore[overload-cannot-match] # pyright: ignore[reportOverlappingOverload]
     values: Categorical,
     sort: bool = False,
     use_na_sentinel: bool = True,

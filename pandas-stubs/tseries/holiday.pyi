@@ -46,6 +46,7 @@ class Holiday:
             np.integer | float | str | _date | datetime | np.datetime64 | None
         ) = None,
         days_of_week: tuple[int | relativedelta, ...] | None = None,
+        exclude_dates: DatetimeIndex | None = None,
     ) -> None: ...
     @overload
     def dates(

@@ -24,7 +24,7 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
 
 from pandas._libs import Timedelta
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import NoDefault
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
@@ -61,7 +61,7 @@ class TimedeltaIndex(
         data: (
             Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData | None
         ),
-        freq: Frequency | NoDefaultDoNotUse = ...,
+        freq: Frequency | NoDefault = ...,
         dtype: Literal["<m8[ns]"] | None = None,
         copy: bool | None = None,
         name: str | None = None,
@@ -79,9 +79,7 @@ class TimedeltaIndex(
         self, other: timedelta | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
-    def __radd__(  # pyrefly: ignore[bad-override]
-        self, other: Period
-    ) -> PeriodIndex: ...
+    def __radd__(self, other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
     @overload
@@ -108,9 +106,7 @@ class TimedeltaIndex(
     @overload
     def __rmul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
-    def __truediv__(  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
-        self, other: Index[Never]
-    ) -> Index: ...
+    def __truediv__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __truediv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
@@ -118,33 +114,31 @@ class TimedeltaIndex(
     @overload
     def __truediv__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload
-    def __truediv__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __truediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
-    def __rtruediv__(  # pyrefly: ignore[bad-override]
+    def __rtruediv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
     @overload
-    def __rtruediv__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __rtruediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
-    def __floordiv__(  # pyrefly: ignore [bad-override]
+    def __floordiv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
     @overload
     def __floordiv__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload
-    def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[int]: ...
     @overload
-    def __rfloordiv__(  # pyrefly: ignore[bad-override]
-        self, other: np_ndarray_num | np_ndarray_dt
-    ) -> Never: ...
+    def __rfloordiv__(self, other: np_ndarray_num | np_ndarray_dt) -> Never: ...
     @overload
-    def __rfloordiv__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __rfloordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[int]: ...
     @property

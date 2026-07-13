@@ -65,7 +65,7 @@ class DatetimeIndex(
     def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, other: timedelta | BaseOffset
     ) -> Self: ...
-    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: timedelta | BaseOffset
     ) -> Self: ...
     @overload  # type: ignore[override]
@@ -76,12 +76,8 @@ class DatetimeIndex(
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
     ) -> Self: ...
-    def __truediv__(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: np_ndarray
-    ) -> Never: ...
-    def __rtruediv__(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: np_ndarray
-    ) -> Never: ...
+    def __truediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
+    def __rtruediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
     @final
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None

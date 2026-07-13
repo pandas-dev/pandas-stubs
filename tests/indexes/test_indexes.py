@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from collections import (
+    UserList,
+    deque,
+)
 from collections.abc import (
     Hashable,
     Sequence,
@@ -8,6 +12,7 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
+    NamedTuple,
     Never,
     assert_type,
     cast,
@@ -23,12 +28,11 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.frozen import FrozenList
 import pytest
 
-from pandas._typing import Dtype  # noqa: F401
-from pandas._typing import Scalar  # noqa: F401
-
 from tests import (
+    PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -39,6 +43,12 @@ from tests._typing import (
     np_1darray_intp,
     np_ndarray_dt,
 )
+
+if TYPE_CHECKING:
+    from pandas.api.typing.aliases import (  # noqa: F401
+        Dtype,
+        Scalar,
+    )
 
 
 def test_index_unique() -> None:
@@ -68,8 +78,8 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
     if TYPE_CHECKING_INVALID_USAGE:
-        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_index_astype() -> None:
@@ -147,6 +157,48 @@ def test_multiindex_constructors() -> None:
         pd.MultiIndex,
     )
 
+    check(
+        assert_type(
+            pd.MultiIndex(levels=[[1, 2, 3], [4, 5, 6]], codes=[[0, 1, 2], [0, 1, 2]]),
+            pd.MultiIndex,
+        ),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(
+            pd.MultiIndex(levels=UserList([[1, 2], [4, 5]]), codes=[[0, 1], [0, 1]]),
+            pd.MultiIndex,
+        ),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(
+            pd.MultiIndex(
+                levels=UserList([UserList([1, 2]), UserList([4, 5])]),
+                codes=[[0, 1], [0, 1]],
+            ),
+            pd.MultiIndex,
+        ),
+        pd.MultiIndex,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.MultiIndex()  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
+
+        data = [(1,), (2,)]
+        pd.MultiIndex(data)  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
+        pd.MultiIndex(UserList(data))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
+        pd.MultiIndex(deque(data))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
+
+        pd.MultiIndex(UserList([[1, 2, 3], [4, 5, 6]]))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
+        pd.MultiIndex(UserList([UserList([1, 2, 3]), UserList([4, 5, 6])]))  # type: ignore[call-arg] # pyrefly: ignore[missing-argument] # pyright: ignore[reportCallIssue]
+
+        pd.MultiIndex("12345", "abcde")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex([[1, 2, 3], [4, 5, 6]], "abcdef")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex("abcdef", [[1, 2, 3], [4, 5, 6]])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex(["abcdef"], [[1, 2, 3], [4, 5, 6]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.MultiIndex([[1], [4]], codes=[["b"], ["a"]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+
 
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
@@ -202,8 +254,11 @@ def test_difference_none() -> None:
 def test_str_split() -> None:
     # GH 194
     ind = pd.Index(["a-b", "c-d"])
+
     check(assert_type(ind.str.split("-"), "pd.Index[list[str]]"), pd.Index, list)
+
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
+
     check(
         assert_type(ind.str.split("-", expand=False), "pd.Index[list[str]]"),
         pd.Index,
@@ -214,8 +269,11 @@ def test_str_split() -> None:
 def test_str_rsplit() -> None:
     # GH 1074
     ind = pd.Index(["a-b", "c-d"])
+
     check(assert_type(ind.str.rsplit("-"), "pd.Index[list[str]]"), pd.Index, list)
+
     check(assert_type(ind.str.rsplit("-", expand=True), pd.MultiIndex), pd.MultiIndex)
+
     check(
         assert_type(ind.str.rsplit("-", expand=False), "pd.Index[list[str]]"),
         pd.Index,
@@ -887,51 +945,15 @@ def test_index_operators() -> None:
     check(assert_type(divmod(10, i1), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(
-            i1
-            & i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
-        assert_type(  # type: ignore[assert-type]
-            i1
-            & 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
-        assert_type(  # type: ignore[assert-type]
-            10
-            & i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
-        assert_type(
-            i1
-            | i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
-        assert_type(  # type: ignore[assert-type]
-            i1
-            | 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
-        assert_type(  # type: ignore[assert-type]
-            10
-            | i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
-        assert_type(
-            i1
-            ^ i2,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
-        assert_type(  # type: ignore[assert-type]
-            i1
-            ^ 10,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
-        assert_type(  # type: ignore[assert-type]
-            10
-            ^ i1,  # type: ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
-            Never,
-        )
+        _i1_a_i2 = i1 & i2  # type: ignore[operator,var-annotated] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_a_10 = i1 & 10  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1_a_i1 = 1 & i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_o_i2 = i1 | i2  # type: ignore[operator,var-annotated] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_o_10 = i1 | 10  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1_o_i1 = 1 | i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_x_i2 = i1 ^ i2  # type: ignore[operator,var-annotated] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i1_x_10 = i1 ^ 10  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1_x_i1 = 1 ^ i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
 
 def test_getitem() -> None:
@@ -1281,7 +1303,7 @@ def test_index_categorical() -> None:
 def test_disallow_empty_index() -> None:
     # From GH 826
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_periodindex_shift() -> None:
@@ -1396,20 +1418,20 @@ def test_index_naming() -> None:
     """
     Test index names type both for the getter and the setter.
     The names of an index should be settable with a sequence (not str) and names
-    property is a list[Hashable | None] (FrozenList).
+    property is a FrozenList[Hashable | None].
     """
     df = pd.DataFrame({"a": ["a", "b", "c"], "i": [10, 11, 12]})
 
     df.index.names = ["idx"]
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
     df.index.names = [3]
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
     df.index.names = ("idx2",)
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
     df.index.names = [None]
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
     df.index.names = (None,)
-    check(assert_type(df.index.names, list[Hashable | None]), list)
+    check(assert_type(df.index.names, FrozenList[Hashable | None]), FrozenList)
 
 
 def test_index_searchsorted() -> None:
@@ -1547,11 +1569,19 @@ def test_index_where() -> None:
     """Test Index.where with multiple types of other GH1419."""
     idx = pd.Index(range(48))
     mask = np.ones(48, dtype=bool)
-    val_idx = idx.where(mask, idx)
-    check(assert_type(val_idx, "pd.Index[int]"), pd.Index, int)
 
-    val_sr = idx.where(mask, (idx).to_series())
-    check(assert_type(val_sr, "pd.Index[int]"), pd.Index, int)
+    val_idx = idx.where(mask, idx)
+    check(
+        assert_type(val_idx, "pd.Index[int]"),
+        pd.Index,
+        int if PD_LTE_31 else np.integer,
+    )
+
+    val_sr = idx.where(mask, idx.to_series())
+
+    check(
+        assert_type(val_sr, "pd.Index[int]"), pd.Index, int if PD_LTE_31 else np.int64
+    )
 
 
 def test_datetimeindex_where() -> None:
@@ -1576,7 +1606,7 @@ def test_datetimeindex_where() -> None:
     check(assert_type(val_scalar, pd.Index), pd.Index)
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
-    check(assert_type(val_range, pd.Index), pd.RangeIndex)
+    check(assert_type(val_range, pd.Index), pd.RangeIndex if PD_LTE_31 else pd.Index)
 
 
 def test_index_set_names() -> None:
@@ -1597,7 +1627,7 @@ def test_index_set_names() -> None:
         assert_type(mi.set_names({"elk": "beluga", "owl": "pig"}), pd.MultiIndex),
         pd.MultiIndex,
     )
-    mi = cast("pd.MultiIndex", pd.Index([(1,)]))
+    mi = assert_type(pd.Index([(1,)]), pd.MultiIndex)
     check(assert_type(mi.set_names(1), pd.MultiIndex), pd.MultiIndex, tuple)
 
 
@@ -1611,12 +1641,18 @@ def test_index_droplevel() -> None:
     check(assert_type(mi.droplevel(["elk"]), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(("elk",)), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(0), pd.MultiIndex | pd.Index), pd.Index)
+    if TYPE_CHECKING_INVALID_USAGE:
+        idx.droplevel()  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[missing-argument]
+        idx.droplevel(0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        # TODO: the following change is caused by python/mypy#21497. Remove unused-ignore after mypy 2.2.0.
+        idx.droplevel([0])  # type: ignore[arg-type,list-item,unused-ignore] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        idx.droplevel("name")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_index_setitem() -> None:
     idx = pd.Index([1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        idx[0] = 999  # type: ignore[index] # pyright: ignore[reportIndexIssue]
+        idx[0] = 999  # type: ignore[index] # pyright: ignore[reportIndexIssue] # pyrefly: ignore[unsupported-operation]
 
 
 def test_index_putmask() -> None:
@@ -1756,3 +1792,130 @@ def test_ravel(
         assert_type(
             pd.PeriodIndex([pd.Period("2022-01", freq="M")]).ravel(), pd.PeriodIndex
         )
+
+
+@pytest.mark.filterwarnings("ignore::pandas.errors.PerformanceWarning")
+def test_get_loc_named_tuples() -> None:
+    """Test get_loc for Index with named tuples."""
+
+    class NamedIndex(NamedTuple):
+        a: str
+        b: str
+
+    midx = pd.MultiIndex.from_tuples(
+        [NamedIndex("i1", "i2"), NamedIndex("i3", "i4"), NamedIndex("i5", "i6")]
+    )
+    flat_midx = midx.to_flat_index()
+
+    check(
+        assert_type(
+            midx.get_loc(NamedIndex("i1", "i2")), int | slice | np_1darray_bool
+        ),
+        int,
+    )
+    check(assert_type(midx.get_loc(("i1", "i2")), int | slice | np_1darray_bool), int)
+    check(assert_type(midx.get_loc(("i3", "i4")), int | slice | np_1darray_bool), int)
+    check(assert_type(midx.get_loc(("i5", "i6")), int | slice | np_1darray_bool), int)
+
+    check(
+        assert_type(
+            flat_midx.get_loc(NamedIndex("i1", "i2")), int | slice | np_1darray_bool
+        ),
+        int,
+    )
+    check(
+        assert_type(flat_midx.get_loc(("i1", "i2")), int | slice | np_1darray_bool), int
+    )
+    check(
+        assert_type(flat_midx.get_loc(("i3", "i4")), int | slice | np_1darray_bool), int
+    )
+    check(
+        assert_type(flat_midx.get_loc(("i5", "i6")), int | slice | np_1darray_bool), int
+    )
+
+    # Duplicate entries in sorted order → get_loc returns a slice
+    flat_midx_sorted_dupes = pd.Index(
+        [NamedIndex("i1", "i2"), NamedIndex("i1", "i2"), NamedIndex("i5", "i6")]
+    )
+    check(
+        assert_type(
+            flat_midx_sorted_dupes.get_loc(NamedIndex("i1", "i2")),
+            int | slice | np_1darray_bool,
+        ),
+        slice,
+    )
+
+    # Duplicate entries in contiguous order → get_loc returns a slice
+    flat_midx_unsorted_dupes = pd.Index(
+        [NamedIndex("i5", "i6"), NamedIndex("i1", "i2"), NamedIndex("i1", "i2")]
+    )
+    check(
+        assert_type(
+            flat_midx_unsorted_dupes.get_loc(NamedIndex("i1", "i2")),
+            int | slice | np_1darray_bool,
+        ),
+        slice if PD_LTE_31 else np_1darray_bool,
+    )
+
+
+def test_get_loc_bool_array() -> None:
+    """Test that get_loc returns a boolean ndarray for non-contiguous duplicates."""
+    idx = pd.Index(["a", "b", "a", "c"])
+    check(
+        assert_type(idx.get_loc("a"), int | slice | np_1darray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+
+
+def test_multiindex_get_loc() -> None:
+    """Test the different returns type of MultiIndex.get_loc."""
+    mi = pd.MultiIndex.from_arrays([["a", "b", "b"], ["d", "e", "f"]])
+
+    # int
+    loc_int = mi.get_loc(("b", "e"))
+    check(assert_type(loc_int, int | slice | np_1darray_bool), int)
+
+    # slice
+    loc_slice = mi.get_loc("b")
+    check(assert_type(loc_slice, int | slice | np_1darray_bool), slice)
+
+    # boolean mask
+    # (non-sorted level causes a mask to be returned)
+    mi_unsorted = pd.MultiIndex.from_arrays([["a", "b", "a"], ["d", "e", "f"]])
+    loc_mask = mi_unsorted.get_loc("a")
+    check(assert_type(loc_mask, int | slice | np_1darray_bool), np.ndarray, np.bool_)
+
+
+def test_index_from_tuples() -> None:
+    """Test creating pd.Index with a sequence of tuples should return MultiIndex."""
+    check(
+        assert_type(pd.Index([(1, 2), (3, 4)]), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index(UserList([(1, 2), (3, 4)])), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index(deque([(1, 2), (3, 4)])), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index([("a", 1), ("b", 2)]), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index(frozenset(((1,), (2,)))), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.Index(((1,), (2,))), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+
+    # tupleize_cols=False: should not be MultiIndex
+    check(
+        assert_type(pd.Index([(1, 2), (3, 4)], tupleize_cols=False), pd.Index),
+        pd.Index,
+    )

@@ -13,19 +13,20 @@ from jinja2.environment import (
 )
 from jinja2.loaders import FileSystemLoader
 import numpy as np
+import pandas as pd
 from pandas import (
     DataFrame,
     Index,
     Series,
 )
+from pandas.api.typing.aliases import Scalar
 import pytest
-
-from pandas._typing import Scalar
 
 from tests import check
 from tests._typing import np_ndarray_str
 
 from pandas.io.formats.style import Styler
+from pandas.io.formats.style_render import StylerRenderer
 
 if TYPE_CHECKING:
     from pandas.io.formats.style_render import StyleExportDict
@@ -74,12 +75,28 @@ def test_apply_index() -> None:
 
     check(assert_type(DF.style.apply_index(f1), Styler), Styler)
 
+    # GH 1723
+    def highlight_odd(index: pd.Series, color: str) -> list[str]:
+        return [f"color: {color}" if x % 2 else "" for x in index]
+
+    check(
+        assert_type(
+            DF.style.apply_index(highlight_odd, axis=0, color="purple"), Styler
+        ),
+        Styler,
+    )
+
 
 def test_map_index() -> None:
     def f(s: Scalar) -> str | None:
         return "background-color: yellow;" if s == "B" else None
 
     check(assert_type(DF.style.map_index(f), Styler), Styler)
+
+    def f1(s: Scalar, color: str) -> str | None:
+        return f"background-color: {color};" if s == "b" else None
+
+    check(assert_type(DF.style.map_index(f1, color="pink", axis=0), Styler), Styler)
 
 
 def test_background_gradient() -> None:
@@ -182,6 +199,14 @@ def test_set() -> None:
         index=DF.index,
     )
     check(assert_type(DF.style.set_tooltips(ttips), Styler), Styler)
+    check(
+        assert_type(DF.style.set_tooltips(ttips, as_title_attribute=True), Styler),
+        Styler,
+    )
+    check(
+        assert_type(DF.style.set_tooltips(ttips, as_title_attribute=False), Styler),
+        Styler,
+    )
     check(assert_type(DF.style.set_uuid("r4nd0mc44r4c73r5"), Styler), Styler)
 
 
@@ -253,3 +278,35 @@ def test_styler_map() -> None:
     df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
 
     check(assert_type(df.style.map(color_negative, color="red"), Styler), Styler)
+
+
+def test_to_typst(tmp_path: Path) -> None:
+    """Test Styler.to_typst."""
+    path = tmp_path / f"{uuid.uuid4()}test.typ"
+    path_str = str(path)
+    check(assert_type(DF.style.to_typst(path), None), type(None))
+    check(assert_type(DF.style.to_typst(path_str), None), type(None))
+    check(assert_type(DF.style.to_typst(), str), str)
+
+
+def test_format_index_names() -> None:
+    """Test StyleRender.format_index_names."""
+    midx = pd.MultiIndex.from_arrays([["_", "_"], ["_", "_"]], names=["zero", "one"])
+    df = pd.DataFrame([[1, 2], [3, 4]])
+    df.index = midx
+
+    check(
+        assert_type(
+            df.style.format_index_names(lambda _: "X", level=0, axis=1), StylerRenderer
+        ),
+        StylerRenderer,
+    )
+
+    df.columns = midx
+
+    check(
+        assert_type(
+            df.style.format_index_names(lambda _: "X", level=1, axis=0), StylerRenderer
+        ),
+        StylerRenderer,
+    )

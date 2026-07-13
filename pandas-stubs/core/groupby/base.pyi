@@ -32,6 +32,7 @@ ReductionKernelType: TypeAlias = Literal[
     "sem",
     "size",
     "skew",
+    "kurt",
     "std",
     "sum",
     "var",

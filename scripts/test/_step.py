@@ -1,21 +1,21 @@
 from scripts._job import Step
 from scripts.test import run
 
-mypy_src = Step(
-    name="Run mypy on 'tests' (using the local stubs) and on the local stubs",
-    run=run.mypy_src,
-)
 ty_src = Step(
-    name="Run ty on 'pandas-stubs' (using the local stubs) and on the local stubs",
-    run=run.ty,
+    name="Run ty on 'tests' (using the local stubs) and on the local stubs",
+    run=run.ty_src,
 )
 pyrefly_src = Step(
-    name="Run pyrefly on the local stubs",
-    run=run.pyrefly,
+    name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs",
+    run=run.pyrefly_src,
 )
 pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyright_src,
+)
+mypy_src = Step(
+    name="Run mypy on 'tests' (using the local stubs) and on the local stubs",
+    run=run.mypy_src,
 )
 pytest = Step(name="Run pytest", run=run.pytest)
 style = Step(name="Run pre-commit", run=run.style)
@@ -34,6 +34,10 @@ mypy_dist = Step(
 pyright_dist = Step(
     name="Run pyright on 'tests' using the installed stubs", run=run.pyright_dist
 )
+pyrefly_dist = Step(
+    name="Run pyrefly on 'tests' using the installed stubs", run=run.pyrefly_dist
+)
+ty_dist = Step(name="Run ty on 'tests' using the installed stubs", run=run.ty_dist)
 stubtest = Step(
     name="Run stubtest to compare the installed stubs against pandas", run=run.stubtest
 )

@@ -27,8 +27,8 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("data", powerset([1.15, np.float32(-2.3)], 1))
-@pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
+@pytest.mark.parametrize("data", list(powerset([1.15, np.float32(-2.3)], 1)))
+@pytest.mark.parametrize("missing_values", list(powerset([np.nan, None, pd.NA])))
 def test_construction_sequence(
     data: tuple[float | np.floating, ...],
     missing_values: tuple[Any, ...],
@@ -65,7 +65,8 @@ def test_construction_sequence(
 def test_construction_sequence_nan(
     data: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
-    check(pd.array(typ(data)), FloatingArray)
+    # can't use assert_type as mypy sees the result as Any while pyright matches to FloatingArray
+    check(assert_type(pd.array(typ(data)), FloatingArray), FloatingArray)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
 
     if TYPE_CHECKING:
         assert_type(pd.array([]), FloatingArray)
@@ -95,7 +96,11 @@ def test_construction_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> N
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.array([1.0], dtype), FloatingArray)
     else:
-        check(pd.array([1.0], dtype), FloatingArray, target_dtype)
+        check(
+            assert_type(pd.array([1.0], dtype), FloatingArray),
+            FloatingArray,
+            target_dtype,
+        )
 
     if TYPE_CHECKING:
         # pandas Float32
@@ -111,3 +116,13 @@ def test_dtype() -> None:
 
     check(assert_type(pd.array([1.0], "Float32").dtype, FloatingDtype), pd.Float32Dtype)
     check(assert_type(pd.array([1.0], "Float64").dtype, FloatingDtype), pd.Float64Dtype)
+
+
+def test_construct_array_type() -> None:
+    """Test the constructor_array_type method."""
+    assert (
+        assert_type(
+            pd.array([-1.0453]).dtype.construct_array_type(), type[FloatingArray]
+        )
+        is FloatingArray
+    )
