@@ -116,3 +116,19 @@ def test_rollforward_rollback_return_type() -> None:
         assert_type(bme.rollback(pd.Timestamp("2024-01-01")), pd.Timestamp),
         pd.Timestamp,
     )
+    check(
+        assert_type(bmb.rollforward(datetime(2024, 1, 1, 10, 30, 45)), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(bme.rollback(datetime(2024, 1, 1, 10, 30, 45)), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(bmb.rollforward(pd.Timestamp("2024-01-01 10:30:45")), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(bme.rollback(pd.Timestamp("2024-01-01 10:30:45")), pd.Timestamp),
+        pd.Timestamp,
+    )
