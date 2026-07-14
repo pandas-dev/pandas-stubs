@@ -20,7 +20,10 @@ from typing import (
 
 import numpy as np
 from pandas.core.frame import DataFrame
-from pandas.core.groupby import generic
+from pandas.core.groupby.generic import (
+    DataFrameGroupBy,
+    SeriesGroupBy,
+)
 from pandas.core.groupby.indexing import (
     GroupByIndexingMixin,
     GroupByNthSelector,
@@ -47,6 +50,7 @@ from pandas._typing import (
     Axis,
     AxisInt,
     CalculationMethod,
+    CovariantList,
     Dtype,
     Frequency,
     IndexLabel,
@@ -410,15 +414,17 @@ class BaseGroupBy(GroupByIndexingMixin, Generic[NDFrameT]):
     @final
     def __iter__(self) -> Iterator[tuple[Hashable, NDFrameT]]: ...
     @overload
-    def __getitem__(self: BaseGroupBy[DataFrame], key: Scalar) -> generic.SeriesGroupBy[Any, Any]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(
+        self: BaseGroupBy[DataFrame], key: Scalar
+    ) -> SeriesGroupBy[Any, Any]: ...
     @overload
     def __getitem__(
-        self: BaseGroupBy[DataFrame], key: Iterable[Hashable]
-    ) -> generic.DataFrameGroupBy[Any, Any]: ...
+        self: BaseGroupBy[DataFrame], key: CovariantList[Hashable]
+    ) -> DataFrameGroupBy[Any, Any]: ...
     @overload
     def __getitem__(
         self: BaseGroupBy[Series[S1]],
         idx: list[str] | Index | Series[S1] | MaskType | tuple[Hashable | slice, ...],
-    ) -> generic.SeriesGroupBy[Any, Any]: ...
+    ) -> SeriesGroupBy[Any, Any]: ...
     @overload
     def __getitem__(self: BaseGroupBy[Series[S1]], idx: Scalar) -> S1: ...

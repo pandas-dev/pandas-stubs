@@ -36,6 +36,7 @@ from pandas._typing import (
     AggFuncTypeFrame,
     ByT,
     CorrelationMethod,
+    CovariantList,
     Dtype,
     IndexLabel,
     Level,
@@ -319,10 +320,10 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
-    def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, key: Iterable[Hashable]
+        self, key: CovariantList[Hashable]
     ) -> DataFrameGroupBy[ByT, _TT]: ...
     def nunique(self, dropna: bool = True) -> DataFrame: ...
     def idxmax(
