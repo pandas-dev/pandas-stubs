@@ -33,6 +33,7 @@ Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 dev = [
   "mypy>=2.2.0",
   "pandas==3.0.3",
+  "numpy>=2.5.1;python_version>='3.12'",
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright>=1.1.410",
