@@ -118,22 +118,41 @@ def test_types_concat_none() -> None:
     )
     check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
-    )
-    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
-
-    check(
-        assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
-    check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat([None, series, df], axis=1), pd.DataFrame
+        ),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat([None, series, df]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": None, "b": series}), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": None, "b": df}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame
+        ),
         pd.DataFrame,
     )
 
@@ -149,7 +168,12 @@ def test_types_concat() -> None:
     s2 = pd.Series([7, -5, 10])
 
     check(assert_type(pd.concat([s, s2]), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(pd.concat([s, s2], axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat([s, s2], axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(
             pd.concat([s, s2], keys=["first", "second"], sort=True), "pd.Series[int]"
@@ -181,13 +205,20 @@ def test_types_concat() -> None:
         np.integer,
     )
     check(
-        assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame
+        ),
         pd.DataFrame,
     )
     check(
         assert_type(pd.concat({1: s, 2: s2}), "pd.Series[int]"), pd.Series, np.integer
     )
-    check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(pd.concat({1: s, None: s2}), "pd.Series[int]"),
         pd.Series,
@@ -203,7 +234,12 @@ def test_types_concat() -> None:
 
     check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(pd.concat({1: s, None: s2}, axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({1: s, None: s2}, axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
@@ -232,7 +268,7 @@ def test_types_concat() -> None:
     )
 
     check(
-        assert_type(
+        assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat(
                 {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
             ),
@@ -241,29 +277,54 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(
+        assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat({"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
 
-    check(assert_type(pd.concat({"a": df, "b": df2}), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat({1: df, 2: df2}), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat({1: df, None: df2}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": df, "b": df2}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({1: df, 2: df2}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({1: df, None: df2}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
     check(
-        assert_type(
+        assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1),  # noqa: C417
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     adict = {"a": df, 2: df2}
-    check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat(adict), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
     data: pd.DataFrame | pd.Series = pd.Series()
-    check(assert_type(pd.concat([pd.DataFrame(), data]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat([pd.DataFrame(), data]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_concat_series_mixed_numeric() -> None:
@@ -351,7 +412,7 @@ def test_concat_args() -> None:
     )
     check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
@@ -529,38 +590,122 @@ def test_isna() -> None:
     check(assert_type(pd.isna(l_any), np_ndarray_bool), np_ndarray_bool)
     check(assert_type(pd.notna(l_any), np_ndarray_bool), np_ndarray_bool)
 
-    assert check(assert_type(pd.isna(pd.NA), bool), bool)
-    assert not check(assert_type(pd.notna(pd.NA), bool), bool)
+    assert check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.isna(pd.NA), bool
+        ),
+        bool,
+    )
+    assert not check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.notna(pd.NA), bool
+        ),
+        bool,
+    )
 
-    assert check(assert_type(pd.isna(pd.NaT), bool), bool)
-    assert not check(assert_type(pd.notna(pd.NaT), bool), bool)
+    assert check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.isna(pd.NaT), bool
+        ),
+        bool,
+    )
+    assert not check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.notna(pd.NaT), bool
+        ),
+        bool,
+    )
 
-    assert check(assert_type(pd.isna(None), bool), bool)
-    assert not check(assert_type(pd.notna(None), bool), bool)
+    assert check(
+        assert_type(pd.isna(None), bool),  # ty: ignore[assert-type-unspellable-subtype]
+        bool,
+    )
+    assert not check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.notna(None), bool
+        ),
+        bool,
+    )
 
-    assert not check(assert_type(pd.isna(2.5), bool), bool)
-    assert check(assert_type(pd.notna(2.5), bool), bool)
+    assert not check(
+        assert_type(pd.isna(2.5), bool),  # ty: ignore[assert-type-unspellable-subtype]
+        bool,
+    )
+    assert check(
+        assert_type(pd.notna(2.5), bool),  # ty: ignore[assert-type-unspellable-subtype]
+        bool,
+    )
 
     # Checks for datetime, timedelta, np.datetime64 and np.timedelta64
     py_dt = dt.datetime.now()
-    assert check(assert_type(pd.notna(py_dt), bool), bool)
-    assert not check(assert_type(pd.isna(py_dt), bool), bool)
+    assert check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.notna(py_dt), bool
+        ),
+        bool,
+    )
+    assert not check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.isna(py_dt), bool
+        ),
+        bool,
+    )
 
     py_td = dt.datetime.now() - py_dt
-    assert check(assert_type(pd.notna(py_td), bool), bool)
-    assert not check(assert_type(pd.isna(py_td), bool), bool)
+    assert check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.notna(py_td), bool
+        ),
+        bool,
+    )
+    assert not check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.isna(py_td), bool
+        ),
+        bool,
+    )
 
     np_dt = np.datetime64(py_dt)
-    assert check(assert_type(pd.notna(np_dt), bool), bool)
-    assert not check(assert_type(pd.isna(np_dt), bool), bool)
+    assert check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.notna(np_dt), bool
+        ),
+        bool,
+    )
+    assert not check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.isna(np_dt), bool
+        ),
+        bool,
+    )
 
     np_td = np.timedelta64(py_td)
-    assert check(assert_type(pd.notna(np_td), bool), bool)
-    assert not check(assert_type(pd.isna(np_td), bool), bool)
+    assert check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.notna(np_td), bool
+        ),
+        bool,
+    )
+    assert not check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.isna(np_td), bool
+        ),
+        bool,
+    )
 
     np_nat = np.timedelta64("NaT")
-    assert check(assert_type(pd.isna(np_nat), bool), bool)
-    assert not check(assert_type(pd.notna(np_nat), bool), bool)
+    assert check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.isna(np_nat), bool
+        ),
+        bool,
+    )
+    assert not check(
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            pd.notna(np_nat), bool
+        ),
+        bool,
+    )
 
     # Check TypeIs type narrowing functionality
     nullable1: str | None | NAType | NaTType = random.choice(
@@ -569,19 +714,30 @@ def test_isna() -> None:
     if pd.notna(nullable1):
         check(assert_type(nullable1, str), str)
     if not pd.isna(nullable1):
-        check(assert_type(nullable1, str), str)
+        check(
+            assert_type(nullable1, str),  # ty: ignore[assert-type-unspellable-subtype]
+            str,
+        )
     if pd.isna(nullable1):
         assert_type(nullable1, NaTType | NAType | None)
     if not pd.notna(nullable1):
-        assert_type(nullable1, NaTType | NAType | None)
+        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
+            nullable1, NaTType | NAType | None
+        )
 
     nullable2 = random.choice([2, None])
     if pd.notna(nullable2):
         check(assert_type(nullable2, int), int)
     if not pd.isna(nullable2):
-        check(assert_type(nullable2, int), int)
+        check(
+            assert_type(nullable2, int),  # ty: ignore[assert-type-unspellable-subtype]
+            int,
+        )
     if pd.isna(nullable2):
-        check(assert_type(nullable2, None), type(None))
+        check(
+            assert_type(nullable2, None),  # ty: ignore[type-assertion-failure]
+            type(None),
+        )
     if not pd.notna(nullable2):
         check(assert_type(nullable2, None), type(None))
 
@@ -1428,7 +1584,7 @@ def test_merge_ordered() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             ls,
             rs,
             left_on="left",
@@ -1436,7 +1592,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="right",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             ls,
             rf,
             left_on="left",
@@ -1444,7 +1600,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="b",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             lf,
             rs,
             left_on="a",
