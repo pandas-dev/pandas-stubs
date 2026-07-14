@@ -1,9 +1,11 @@
 from collections.abc import (
+    Hashable,
     Iterator,
     Mapping,
 )
 from types import TracebackType
 from typing import (
+    Any,
     Generic,
     Literal,
     overload,
@@ -18,7 +20,7 @@ from pandas._typing import (
     DtypeArg,
     DtypeBackend,
     FilePath,
-    HashableT,
+    JSONEngine,
     JsonFrameOrient,
     JsonSeriesOrient,
     NDFrameT,
@@ -33,7 +35,7 @@ def read_json(
     *,
     orient: JsonSeriesOrient | None = None,
     typ: Literal["series"],
-    dtype: bool | Mapping[HashableT, DtypeArg] | None = None,
+    dtype: bool | Mapping[Hashable, DtypeArg] | None = None,
     convert_axes: bool | None = None,
     convert_dates: bool | list[str] = True,
     keep_default_dates: bool = True,
@@ -58,7 +60,7 @@ def read_json(
     *,
     orient: JsonSeriesOrient | None = None,
     typ: Literal["series"],
-    dtype: bool | Mapping[HashableT, DtypeArg] | None = None,
+    dtype: bool | Mapping[Hashable, DtypeArg] | None = None,
     convert_axes: bool | None = None,
     convert_dates: bool | list[str] = True,
     keep_default_dates: bool = True,
@@ -83,7 +85,7 @@ def read_json(
     *,
     orient: JsonFrameOrient | None = None,
     typ: Literal["frame"] = "frame",
-    dtype: bool | Mapping[HashableT, DtypeArg] | None = None,
+    dtype: bool | Mapping[Hashable, DtypeArg] | None = None,
     convert_axes: bool | None = None,
     convert_dates: bool | list[str] = True,
     keep_default_dates: bool = True,
@@ -108,7 +110,7 @@ def read_json(
     *,
     orient: JsonFrameOrient | None = None,
     typ: Literal["frame"] = "frame",
-    dtype: bool | Mapping[HashableT, DtypeArg] | None = None,
+    dtype: bool | Mapping[Hashable, DtypeArg] | None = None,
     convert_axes: bool | None = None,
     convert_dates: bool | list[str] = True,
     keep_default_dates: bool = True,
@@ -133,7 +135,7 @@ def read_json(
     *,
     orient: JsonSeriesOrient | None = None,
     typ: Literal["series"],
-    dtype: bool | Mapping[HashableT, DtypeArg] | None = None,
+    dtype: bool | Mapping[Hashable, DtypeArg] | None = None,
     convert_axes: bool | None = None,
     convert_dates: bool | list[str] = True,
     keep_default_dates: bool = True,
@@ -158,7 +160,7 @@ def read_json(
     *,
     orient: JsonSeriesOrient | None = None,
     typ: Literal["series"],
-    dtype: bool | Mapping[HashableT, DtypeArg] | None = None,
+    dtype: bool | Mapping[Hashable, DtypeArg] | None = None,
     convert_axes: bool | None = False,
     convert_dates: bool | list[str] = True,
     keep_default_dates: bool = True,
@@ -183,7 +185,7 @@ def read_json(
     *,
     orient: JsonFrameOrient | None = None,
     typ: Literal["frame"] = "frame",
-    dtype: bool | Mapping[HashableT, DtypeArg] | None = None,
+    dtype: bool | Mapping[Hashable, DtypeArg] | None = None,
     convert_axes: bool | None = False,
     convert_dates: bool | list[str] = True,
     keep_default_dates: bool = True,
@@ -208,7 +210,7 @@ def read_json(
     *,
     orient: JsonFrameOrient | None = None,
     typ: Literal["frame"] = "frame",
-    dtype: bool | Mapping[HashableT, DtypeArg] | None = None,
+    dtype: bool | Mapping[Hashable, DtypeArg] | None = None,
     convert_axes: bool | None = False,
     convert_dates: bool | list[str] = True,
     keep_default_dates: bool = True,
@@ -229,6 +231,55 @@ def read_json(
 ) -> DataFrame: ...
 
 class JsonReader(Iterator[NDFrameT], Generic[NDFrameT]):
+    def __init__(
+        self,
+        filepath_or_buffer: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
+        orient: JsonFrameOrient | JsonSeriesOrient | None,
+        typ: Literal["frame", "series"],
+        dtype: bool | Mapping[Hashable, DtypeArg] | None,
+        convert_axes: bool | None,
+        convert_dates: bool | list[str],
+        keep_default_dates: bool,
+        precise_float: bool,
+        date_unit: TimeUnit | None,
+        encoding: str | None,
+        lines: bool,
+        chunksize: int | None,
+        compression: CompressionOptions,
+        nrows: int | None,
+        storage_options: StorageOptions | None = None,
+        encoding_errors: (
+            Literal[
+                "strict", "ignore", "replace", "backslashreplace", "surrogateescape"
+            ]
+            | None
+        ) = "strict",
+        dtype_backend: DtypeBackend | NoDefault = ...,
+        engine: JSONEngine = "ujson",
+    ) -> None: ...
+    orient: JsonFrameOrient | JsonSeriesOrient | None
+    typ: Literal["frame", "series"]
+    dtype: bool | Mapping[Hashable, DtypeArg] | None
+    convert_axes: bool | None
+    convert_dates: bool | list[str]
+    keep_default_dates: bool
+    precise_float: bool
+    date_unit: TimeUnit | None
+    encoding: str | None
+    engine: JSONEngine
+    compression: CompressionOptions
+    storage_options: StorageOptions | None
+    lines: bool
+    chunksize: int | None
+    nrows_seen: int
+    nrows: int | None
+    encoding_errors: (
+        Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
+        | None
+    )
+    handles: Any
+    dtype_backend: DtypeBackend | NoDefault
+    data: Any
     def read(self) -> NDFrameT: ...
     def close(self) -> None: ...
     def __iter__(self) -> JsonReader[NDFrameT]: ...

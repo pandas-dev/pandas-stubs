@@ -11,6 +11,7 @@ from typing import (
     Any,
     Literal,
     assert_type,
+    get_args,
 )
 import uuid
 
@@ -50,6 +51,15 @@ import sqlalchemy.orm
 import sqlalchemy.orm.decl_api
 from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as XlsxWorkbook,
+)
+
+from pandas._libs.lib import NoDefault
+from pandas._typing import (
+    CompressionOptions,
+    DtypeBackend,
+    JSONEngine,
+    StorageOptions,
+    TimeUnit,
 )
 
 from tests import (
@@ -522,6 +532,67 @@ def test_json_chunk(tmp_path: Path) -> None:
     for sub_df in json_reader:
         check(assert_type(sub_df, DataFrame), DataFrame)
     check(assert_type(DF.to_json(), str), str)
+
+
+def test_json_reader_init(tmp_path: Path) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    DF.to_json(path_str, orient="records", lines=True)
+    json_reader: JsonReader[DataFrame] = JsonReader(
+        path_str,
+        orient="records",
+        typ="frame",
+        dtype={"a": "int64"},
+        convert_axes=True,
+        convert_dates=["a"],
+        keep_default_dates=False,
+        precise_float=True,
+        date_unit="ms",
+        encoding="utf-8",
+        lines=True,
+        chunksize=1,
+        compression="infer",
+        nrows=5,
+        storage_options=None,
+        encoding_errors="ignore",
+        dtype_backend="numpy_nullable",
+        engine="ujson",
+    )
+    check(assert_type(json_reader, JsonReader[DataFrame]), JsonReader)
+
+    check(assert_type(json_reader.typ, Literal["frame", "series"]), str)
+    check(assert_type(json_reader.convert_axes, bool | None), bool)
+    check(assert_type(json_reader.convert_dates, bool | list[str]), list)
+    check(assert_type(json_reader.keep_default_dates, bool), bool)
+    check(assert_type(json_reader.precise_float, bool), bool)
+    check(assert_type(json_reader.lines, bool), bool)
+    check(assert_type(json_reader.chunksize, int | None), int)
+    check(assert_type(json_reader.nrows, int | None), int)
+    check(assert_type(json_reader.nrows_seen, int), int)
+    assert assert_type(
+        json_reader.orient,
+        Literal["split", "records", "index", "columns", "values", "table"] | None,
+    ) in {"split", "records", "index", "columns", "values", "table"}
+    check(assert_type(json_reader.date_unit, TimeUnit | None), str)
+    check(assert_type(json_reader.encoding, str | None), str)
+    assert assert_type(
+        json_reader.encoding_errors,
+        (
+            Literal[
+                "strict", "ignore", "replace", "backslashreplace", "surrogateescape"
+            ]
+            | None
+        ),
+    ) in {"strict", "ignore", "replace", "backslashreplace", "surrogateescape"}
+    check(assert_type(json_reader.engine, JSONEngine), str)
+    assert assert_type(json_reader.dtype_backend, DtypeBackend | NoDefault) in get_args(
+        DtypeBackend
+    )
+    check(assert_type(json_reader.compression, CompressionOptions), str)
+    check(assert_type(json_reader.storage_options, StorageOptions | None), type(None))
+
+    for sub_df in json_reader:
+        check(assert_type(sub_df, DataFrame), DataFrame)
+    json_reader.close()
 
 
 def test_parquet(tmp_path: Path) -> None:
