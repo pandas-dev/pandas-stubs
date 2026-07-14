@@ -547,42 +547,31 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
         ) = None,
     ) -> np.recarray: ...
-    @overload
     def to_stata(
         self,
         path: FilePath | WriteBuffer[bytes],
         *,
-        convert_dates: dict[HashableT1, StataDateFormat] | None = ...,
-        write_index: _bool = ...,
-        byteorder: ToStataByteorder | None = ...,
-        time_stamp: dt.datetime | None = ...,
-        data_label: _str | None = ...,
-        variable_labels: dict[HashableT2, str] | None = ...,
-        version: Literal[117, 118, 119],
-        convert_strl: SequenceNotStr[Hashable] | None = ...,
-        compression: CompressionOptions = ...,
-        storage_options: StorageOptions = ...,
-        value_labels: dict[Hashable, dict[float, str]] | None = ...,
-    ) -> None: ...
-    @overload
-    def to_stata(
-        self,
-        path: FilePath | WriteBuffer[bytes],
-        *,
-        convert_dates: dict[HashableT1, StataDateFormat] | None = ...,
-        write_index: _bool = ...,
-        byteorder: Literal["<", ">", "little", "big"] | None = ...,
-        time_stamp: dt.datetime | None = ...,
-        data_label: _str | None = ...,
-        variable_labels: dict[HashableT2, str] | None = ...,
-        version: Literal[114, 117, 118, 119] | None = ...,
-        convert_strl: None = None,
-        compression: CompressionOptions = ...,
-        storage_options: StorageOptions = ...,
-        value_labels: dict[Hashable, dict[float, str]] | None = ...,
+        convert_dates: dict[HashableT1, StataDateFormat] | None = None,
+        write_index: _bool = True,
+        byteorder: ToStataByteorder | None = None,
+        time_stamp: dt.datetime | None = None,
+        data_label: _str | None = None,
+        variable_labels: dict[HashableT2, str] | None = None,
+        version: Literal[114, 117, 118, 119] | None = 114,
+        convert_strl: SequenceNotStr[Hashable] | None = None,
+        compression: CompressionOptions = "infer",
+        storage_options: StorageOptions = None,
+        value_labels: dict[HashableT3, dict[float, str]] | None = None,
     ) -> None: ...
     def to_feather(
-        self, path: FilePath | WriteBuffer[bytes], **kwargs: Any
+        self,
+        path: FilePath | WriteBuffer[bytes],
+        *,
+        # copied from https://arrow.apache.org/docs/python/generated/pyarrow.feather.write_feather.html#pyarrow.feather.write_feather
+        compression: Literal["zstd", "lz4", "uncompressed"] | None = None,
+        compression_level: int | None = None,
+        chunksize: int | None = None,
+        version: int = 2,
     ) -> None: ...
     @overload
     def to_parquet(
@@ -613,18 +602,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         path: FilePath | WriteBuffer[bytes],
         *,
-        engine: Literal["pyarrow"] = ...,
-        index: bool | None = ...,
-        engine_kwargs: dict[str, Any] | None = ...,
+        engine: Literal["pyarrow"] = "pyarrow",
+        index: bool | None = None,
+        engine_kwargs: dict[str, Any] | None = None,
     ) -> None: ...
     @overload
     def to_orc(
         self,
         path: None = None,
         *,
-        engine: Literal["pyarrow"] = ...,
-        index: bool | None = ...,
-        engine_kwargs: dict[str, Any] | None = ...,
+        engine: Literal["pyarrow"] = "pyarrow",
+        index: bool | None = None,
+        engine_kwargs: dict[str, Any] | None = None,
     ) -> bytes: ...
     @overload
     def to_html(
@@ -726,6 +715,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def to_xml(
         self,
         path_or_buffer: FilePath | WriteBuffer[bytes] | WriteBuffer[str],
+        *,
         index: bool = ...,
         root_name: str = ...,
         row_name: str = ...,
@@ -746,6 +736,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def to_xml(
         self,
         path_or_buffer: None = None,
+        *,
         index: bool = ...,
         root_name: str | None = ...,
         row_name: str | None = ...,
