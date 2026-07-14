@@ -11,6 +11,7 @@ from typing import (
     Any,
     Literal,
     assert_type,
+    get_args,
 )
 import uuid
 
@@ -567,25 +568,25 @@ def test_json_reader_init(tmp_path: Path) -> None:
     check(assert_type(json_reader.chunksize, int | None), int)
     check(assert_type(json_reader.nrows, int | None), int)
     check(assert_type(json_reader.nrows_seen, int), int)
-    assert
-        assert_type(
-            json_reader.orient,
-            Literal["split", "records", "index", "columns", "values", "table"] | None,
-        ) in {"split", "records", "index", "columns", "values", "table"}
+    assert assert_type(
+        json_reader.orient,
+        Literal["split", "records", "index", "columns", "values", "table"] | None,
+    ) in {"split", "records", "index", "columns", "values", "table"}
     check(assert_type(json_reader.date_unit, TimeUnit | None), str)
     check(assert_type(json_reader.encoding, str | None), str)
-    assert
-        assert_type(
-            json_reader.encoding_errors,
-            (
-                Literal[
-                    "strict", "ignore", "replace", "backslashreplace", "surrogateescape"
-                ]
-                | None
-            ),
-        ) in {"strict", "ignore", "replace", "backslashreplace", "surrogateescape"}
+    assert assert_type(
+        json_reader.encoding_errors,
+        (
+            Literal[
+                "strict", "ignore", "replace", "backslashreplace", "surrogateescape"
+            ]
+            | None
+        ),
+    ) in {"strict", "ignore", "replace", "backslashreplace", "surrogateescape"}
     check(assert_type(json_reader.engine, JSONEngine), str)
-    assert assert_type(json_reader.dtype_backend, DtypeBackend | NoDefault) in get_args(DtypeBackend)
+    assert assert_type(json_reader.dtype_backend, DtypeBackend | NoDefault) in get_args(
+        DtypeBackend
+    )
     check(assert_type(json_reader.compression, CompressionOptions), str)
     check(assert_type(json_reader.storage_options, StorageOptions | None), type(None))
 
