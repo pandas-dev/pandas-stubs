@@ -13,7 +13,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
@@ -32,22 +31,12 @@ from pandas._typing import (
     np_ndarray_float,
 )
 
-_FrameGroupByFunc: TypeAlias = (
-    Callable[[DataFrame], Scalar]
-    | Callable[[DataFrame], Series]
-    | Callable[[DataFrame], DataFrame]
-    | np.ufunc
-)
+_FrameGroupByFunc: TypeAlias = Callable[[DataFrame], Scalar | Series | DataFrame]
 _FrameGroupByFuncTypes: TypeAlias = (
     _FrameGroupByFunc | str | list[_FrameGroupByFunc | str]
 )
-_FrameGroupByFuncArgs: TypeAlias = (
-    _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes]
-)
 
-_SeriesGroupByFunc: TypeAlias = (
-    Callable[[Series], Scalar] | Callable[[Series], Series] | np.ufunc
-)
+_SeriesGroupByFunc: TypeAlias = Callable[[Series], Scalar | Series]
 _SeriesGroupByFuncTypes: TypeAlias = _SeriesGroupByFunc | str
 
 class Resampler(BaseGroupBy[NDFrameT]):
@@ -55,14 +44,16 @@ class Resampler(BaseGroupBy[NDFrameT]):
     @overload
     def aggregate(
         self: Resampler[DataFrame],
-        func: _FrameGroupByFuncArgs | None = ...,
+        func: (
+            _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes] | None
+        ) = None,
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: Resampler[Series],
-        func: _SeriesGroupByFuncTypes | None = ...,
+        func: _SeriesGroupByFuncTypes | None = None,
         *args: Any,
         **kwargs: Any,
     ) -> Series: ...
@@ -70,7 +61,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def aggregate(
         self: Resampler[Series],
         func: (
-            Mapping[Hashable, _SeriesGroupByFunc | str] | list[_SeriesGroupByFunc | str]
+            Mapping[Hashable, _SeriesGroupByFuncTypes] | list[_SeriesGroupByFuncTypes]
         ),
         *args: Any,
         **kwargs: Any,

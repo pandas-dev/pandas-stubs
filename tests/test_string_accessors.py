@@ -339,7 +339,7 @@ def test_string_accessors_string_series() -> None:
 
     # wrap doesn't accept positional arguments other than width
     if TYPE_CHECKING_INVALID_USAGE:
-        s.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.str.wrap(80, False)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
         sr_i = pd.Series([1])
 
@@ -470,7 +470,7 @@ def test_string_accessors_string_index() -> None:
 
     # wrap doesn't accept positional arguments other than width
     if TYPE_CHECKING_INVALID_USAGE:
-        idx.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        idx.str.wrap(80, False)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
 
         idx_i = pd.Index([1])
 

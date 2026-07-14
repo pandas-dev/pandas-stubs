@@ -31,12 +31,12 @@ Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 
 [dependency-groups]
 dev = [
-  "mypy>=2.0.0",
+  "mypy>=2.2.0",
   "pandas==3.0.3",
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright>=1.1.410",
-  "ty>=0.0.42",
+  "ty>=0.0.58",
   "pyrefly>=1.1.0",
   "poethepoet>=0.16.5",
   "loguru>=0.6.0",
@@ -363,7 +363,6 @@ exclude = [
   "tests/test_groupby.py",
   "tests/test_natype.py",
   "tests/test_pandas.py",
-  "tests/test_resampler.py",
   "tests/test_string_accessors.py",
   "tests/test_timefuncs.py",
 ]
