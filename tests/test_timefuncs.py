@@ -111,12 +111,9 @@ def test_types_arithmetic() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # TODO: pandas-dev/pandas-stubs#1511 numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
-        if sys.version_info >= (3, 14):
+        if sys.version_info >= (3, 12):
             assert_type(ts_np - ts, dt.timedelta)
             assert_type(ts_np_time - ts, dt.timedelta)
-        elif sys.version_info >= (3, 12):
-            # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
-            pass
         else:
             assert_type(  # pyrefly: ignore[assert-type]
                 ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]

@@ -79,14 +79,11 @@ def test_construction_sequence_pandas(
             pd.array([pd.Timestamp(2026, 1, 5, tzinfo=ZoneInfo("Africa/Ouagadougou"))]),
             DatetimeArray,
         )
-        if sys.version_info >= (3, 14):
+        if sys.version_info >= (3, 12):
             # TODO: pandas-dev/pandas-stubs#1786
             assert_type(  # type: ignore[assert-type]
                 pd.array([np.datetime64("2026-01-05 23:27:59")]), DatetimeArray
             )
-        elif sys.version_info >= (3, 12):
-            # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
-            pass
         else:
             assert_type(pd.array([np.datetime64("2026-01-05 23:27:59")]), DatetimeArray)
 
@@ -99,7 +96,7 @@ def test_construction_sequence_pandas(
         assert_type(
             pd.array([datetime(2052, 1, 5), pd.Timestamp(2, 1, 6)]), DatetimeArray
         )
-        if sys.version_info >= (3, 14):
+        if sys.version_info >= (3, 12):
             # TODO: pandas-dev/pandas-stubs#1786
             assert_type(  # type: ignore[assert-type]
                 pd.array(
@@ -113,9 +110,6 @@ def test_construction_sequence_pandas(
                 ),
                 DatetimeArray,
             )
-        elif sys.version_info >= (3, 12):
-            # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
-            pass
         else:
             assert_type(
                 pd.array(
@@ -140,14 +134,11 @@ def test_construction_sequence_pandas(
 
         assert_type(pd.array([datetime(2061, 1, 5, 1), None]), DatetimeArray)
         assert_type(pd.array([pd.Timestamp(1902, 1, 5, 3), None]), DatetimeArray)
-        if sys.version_info >= (3, 14):
+        if sys.version_info >= (3, 12):
             # TODO: pandas-dev/pandas-stubs#1786
             assert_type(  # type: ignore[assert-type]
                 pd.array([np.datetime64("2111-01-05"), None]), DatetimeArray
             )
-        elif sys.version_info >= (3, 12):
-            # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
-            pass
         else:
             assert_type(pd.array([np.datetime64("2111-01-05"), None]), DatetimeArray)
 
@@ -159,14 +150,11 @@ def test_construction_sequence_pandas(
         assert_type(
             pd.array([pd.Timestamp(2102, 1, 5, 3), None, pd.NaT]), DatetimeArray
         )
-        if sys.version_info >= (3, 14):
+        if sys.version_info >= (3, 12):
             # TODO: pandas-dev/pandas-stubs#1786
             assert_type(  # type: ignore[assert-type]
                 pd.array([np.datetime64("2114-01-05"), None, pd.NaT]), DatetimeArray
             )
-        elif sys.version_info >= (3, 12):
-            # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
-            pass
         else:
             assert_type(
                 pd.array([np.datetime64("2114-01-05"), None, pd.NaT]), DatetimeArray
@@ -174,13 +162,10 @@ def test_construction_sequence_pandas(
 
         assert_type(pd.array((datetime(2026, 1, 5),)), DatetimeArray)
         assert_type(pd.array(UserList([pd.Timestamp(2026, 1, 5)])), DatetimeArray)
-        if sys.version_info >= (3, 14):
+        if sys.version_info >= (3, 12):
             # TODO: pandas-dev/pandas-stubs#1786
             assert_type(pd.array((np.datetime64("1959-01-05"),)), DatetimeArray)  # type: ignore[assert-type]
             assert_type(pd.array(UserList([np.datetime64("1701-01-05")])), DatetimeArray)  # type: ignore[assert-type]
-        elif sys.version_info >= (3, 12):
-            # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
-            pass
         else:
             assert_type(pd.array((np.datetime64("1959-01-05"),)), DatetimeArray)
             assert_type(
@@ -374,12 +359,9 @@ def test_constructor() -> None:
     check(assert_type(pd.array([np_dt]), DatetimeArray), DatetimeArray)
     check(assert_type(pd.array([np_dt, None]), DatetimeArray), DatetimeArray)
     dt_nat = cast(list[np.datetime64 | NaTType], [np_dt, pd.NaT])
-    if sys.version_info >= (3, 14):
+    if sys.version_info >= (3, 12):
         # TODO: pandas-dev/pandas-stubs#1786
         check(assert_type(pd.array(dt_nat), DatetimeArray), DatetimeArray)  # type: ignore[assert-type]
-    elif sys.version_info >= (3, 12):
-        # TODO: pandas-dev/pandas-stubs#1786 inconsistecy between the stubs repo and the installed stubs
-        pass
     else:
         check(assert_type(pd.array(dt_nat), DatetimeArray), DatetimeArray)
 
