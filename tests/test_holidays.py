@@ -97,3 +97,22 @@ def test_custom_business_month() -> None:
         ),
         pd.offsets.CustomBusinessMonthEnd,
     )
+
+
+def test_rollforward_rollback_return_type() -> None:
+
+    bmb = pd.offsets.CustomBusinessMonthBegin()
+    bme = pd.offsets.CustomBusinessMonthEnd()
+
+    check(
+        assert_type(bmb.rollforward(datetime(2024, 1, 1)), pd.Timestamp), pd.Timestamp
+    )
+    check(assert_type(bme.rollback(datetime(2024, 1, 1)), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(bmb.rollforward(pd.Timestamp("2024-01-01")), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(bme.rollback(pd.Timestamp("2024-01-01")), pd.Timestamp),
+        pd.Timestamp,
+    )
