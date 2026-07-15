@@ -141,18 +141,20 @@ def test_sparse_dtype() -> None:
     check(assert_type(pd.SparseDtype(np.int64), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(str), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(float), pd.SparseDtype), pd.SparseDtype)
-    # TODO: pandas-dev/pandas-stubs#1786, also disable "datetime64"
-    if sys.version_info >= (3, 12):
+    # TODO: pandas-dev/pandas-stubs#1786 remove the conditional warning
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
         check(
             assert_type(pd.SparseDtype(np.datetime64), pd.SparseDtype), pd.SparseDtype
         )
-        check(
-            assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype
-        )
-    else:
-        check(
-            assert_type(pd.SparseDtype(np.datetime64), pd.SparseDtype), pd.SparseDtype
-        )
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
         check(
             assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype
         )
