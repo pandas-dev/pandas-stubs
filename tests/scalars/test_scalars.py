@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 import datetime as dt
 import sys
 from typing import (
@@ -20,9 +19,11 @@ from pandas._libs.tslibs.timedeltas import Components
 from pandas.errors import Pandas4Warning
 
 from tests import (
+    NP_GTE_25,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray_bool,
@@ -509,11 +510,18 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
-    # TODO: pandas-dev/pandas-stubs#1786
-    if sys.version_info >= (3, 12):
-        pass
-    else:
+    # TODO: pandas-dev/pandas-stubs#1786 remove the conditional warning
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
         check(assert_type(td.view(np.int64), object), np.int64)
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
         check(assert_type(td.view("i8"), object), np.int64)
 
     check(assert_type(td.as_unit("s"), pd.Timedelta), pd.Timedelta)
@@ -1626,13 +1634,11 @@ def test_period_construction() -> None:
     )
     check(assert_type(pd.Period(freq="Q", year=2012, quarter=2), pd.Period), pd.Period)
     check(
-        assert_type(
-            pd.Period(value=datetime.datetime(2012, 1, 1), freq="D"), pd.Period
-        ),
+        assert_type(pd.Period(value=dt.datetime(2012, 1, 1), freq="D"), pd.Period),
         pd.Period,
     )
     check(
-        assert_type(pd.Period(value=datetime.date(2012, 1, 1), freq="D"), pd.Period),
+        assert_type(pd.Period(value=dt.date(2012, 1, 1), freq="D"), pd.Period),
         pd.Period,
     )
     check(
@@ -1982,9 +1988,9 @@ def test_nattype_hashable() -> None:
 
 
 def test_nat_comparison_with_date() -> None:
-    # 2.0.0: inequality comparisons of NaT with datetime.date now raise TypeError
+    # 2.0.0: inequality comparisons of NaT with dt.date now raise TypeError
     # pandas-dev/pandas#39196
-    date_obj = datetime.date(2023, 1, 1)
+    date_obj = dt.date(2023, 1, 1)
 
     # Equality comparisons should still work
     check(assert_type(pd.NaT == date_obj, bool), bool)
