@@ -590,6 +590,7 @@ def test_isna() -> None:
     check(assert_type(pd.isna(l_any), np_ndarray_bool), np_ndarray_bool)
     check(assert_type(pd.notna(l_any), np_ndarray_bool), np_ndarray_bool)
 
+    # TODO: remove ty ignores below after astral-sh/ty#4005
     assert check(
         assert_type(  # ty: ignore[assert-type-unspellable-subtype]
             pd.isna(pd.NA), bool
