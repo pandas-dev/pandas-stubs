@@ -715,30 +715,19 @@ def test_isna() -> None:
     if pd.notna(nullable1):
         check(assert_type(nullable1, str), str)
     if not pd.isna(nullable1):
-        check(
-            assert_type(nullable1, str),  # ty: ignore[assert-type-unspellable-subtype]
-            str,
-        )
+        check(assert_type(nullable1, str), str)
     if pd.isna(nullable1):
         assert_type(nullable1, NaTType | NAType | None)
     if not pd.notna(nullable1):
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            nullable1, NaTType | NAType | None
-        )
+        assert_type(nullable1, NaTType | NAType | None)
 
     nullable2 = random.choice([2, None])
     if pd.notna(nullable2):
         check(assert_type(nullable2, int), int)
     if not pd.isna(nullable2):
-        check(
-            assert_type(nullable2, int),  # ty: ignore[assert-type-unspellable-subtype]
-            int,
-        )
+        check(assert_type(nullable2, int), int)
     if pd.isna(nullable2):
-        check(
-            assert_type(nullable2, None),  # ty: ignore[type-assertion-failure]
-            type(None),
-        )
+        check(assert_type(nullable2, None), type(None))
     if not pd.notna(nullable2):
         check(assert_type(nullable2, None), type(None))
 

@@ -3,6 +3,7 @@ from typing import (
     Any,
     Literal,
     Self,
+    final,
     overload,
 )
 
@@ -13,6 +14,7 @@ from pandas.core.series import Series
 
 from pandas._typing import Scalar
 
+@final
 class NAType:
     def __new__(cls, *args: Any, **kwargs: Any) -> Self: ...
     def __format__(self, format_spec: str) -> str: ...
