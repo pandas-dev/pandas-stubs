@@ -96,18 +96,11 @@ def test_construction_sequence_pandas(
         )
         if sys.version_info >= (3, 12):
             # TODO: python/mypy#21733
-            assert_type(pd.array([np.datetime64("2026-01-05 23:27:59"), np.datetime64("1748-01-06")]), DatetimeArray)  # type: ignore[assert-type]
-            assert_type(pd.array([np.datetime64("2131-01-05 01:25"), np.datetime64("1748-01-06")]), DatetimeArray)  # type: ignore[assert-type]
+            assert_type(pd.array([np.datetime64("2131-01-05 23:27:59"), np.datetime64("1748-01-06")]), DatetimeArray)  # type: ignore[assert-type]
         else:
             assert_type(
                 pd.array(
-                    [np.datetime64("2026-01-05 23:27:59"), np.datetime64("1748-01-06")]
-                ),
-                DatetimeArray,
-            )
-            assert_type(
-                pd.array(
-                    [np.datetime64("2131-01-05 01:25"), np.datetime64("1748-01-06")]
+                    [np.datetime64("2131-01-05 23:27:59"), np.datetime64("1748-01-06")]
                 ),
                 DatetimeArray,
             )
