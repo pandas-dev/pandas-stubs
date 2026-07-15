@@ -2163,7 +2163,7 @@ def test_types_to_feather(tmp_path: Path) -> None:
         r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
         upper="3.0.4",
     ):
-        df.to_feather(path_str, compression="zstd", compression_level=3, chunksize=2)
+        df.to_feather(path_str, compression="zstd", compression_level=3, chunksize=2, version=2)
 
     # to_feather has been able to accept a buffer since pandas 1.0.0
     # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
