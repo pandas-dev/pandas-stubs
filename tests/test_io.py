@@ -123,7 +123,7 @@ def test_xml(tmp_path: Path) -> None:
         check(assert_type(read_xml(f), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.to_xml(path_str, True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[no-matching-overload]
+        DF.to_xml(path_str, True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_xml_str() -> None:
@@ -1238,7 +1238,7 @@ def test_excel_writer(tmp_path: Path) -> None:
     check(assert_type(ef.close(), None), type(None))
 
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.to_excel(path_str, "Sheet1")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[too-many-positional-arguments]
+        DF.to_excel(path_str, "Sheet1")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
 
 
 def test_excel_writer_io() -> None:
