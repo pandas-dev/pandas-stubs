@@ -20,7 +20,9 @@ but follow a convention of suggesting best recommended practices for using panda
 
 The stubs are likely incomplete in terms of covering the published API of pandas.
 
-The stubs are tested with [mypy](http://mypy-lang.org/) and [pyright](https://github.com/microsoft/pyright#readme) and are currently shipped with the Visual Studio Code extension
+The stubs are tested with [mypy](http://mypy-lang.org/),
+[pyright](https://github.com/microsoft/pyright#readme) and
+[pyrefly](https://pyrefly.org/), and are currently shipped with the Visual Studio Code extension
 [pylance](https://github.com/microsoft/pylance-release#readme).
 
 ## Usage
@@ -75,6 +77,7 @@ decimals = pd.Series({'TSLA': 2, 'AMZN': 1})
 ## Versioning
 
 The version number of `pandas-stubs` follows the format **`x.y.z.yymmdd`**, where:
+
 - **`x.y.z`**: The version of pandas this release was **tested against** (e.g., `3.0.0` for pandas 3.0.0).
 - **`yymmdd`**: The release date of the stubs (year, month, day).
 
@@ -82,6 +85,7 @@ It is anticipated that the stubs will be released more frequently than pandas as
 public visibility.
 
 ### Compatibility with pandas
+
 - **No strict dependency**: `pandas-stubs` does **not** enforce a dependency on a specific pandas version. This allows you to use newer stubs with older pandas versions for forward compatibility.
 - **Recommended usage**:
   - Use the **latest `pandas-stubs`** to catch deprecations and API changes early, even if your pandas version is older.
@@ -184,7 +188,6 @@ Further, the [pandas-dev mailing list](https://mail.python.org/mailman/listinfo/
 There are also frequent [community meetings](https://pandas.pydata.org/docs/dev/development/community.html#community-meeting) for project maintainers open to the community as well as monthly [new contributor meetings](https://pandas.pydata.org/docs/dev/development/community.html#new-contributor-meeting) to help support new contributors.
 
 Additional information on the communication channels can be found on the [contributor community](https://pandas.pydata.org/docs/development/community.html) page.
-
 
 ## Contributing to pandas-stubs
 
