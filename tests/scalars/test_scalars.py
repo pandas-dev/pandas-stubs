@@ -922,7 +922,7 @@ def test_timedelta_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
-    # TODO: pandas-dev/pandas-stubs#1786 facebook/pyrefly#3977
+    # TODO: python/mypy#21733 facebook/pyrefly#3977
     if sys.version_info >= (3, 12):
         eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
@@ -1356,7 +1356,7 @@ def test_timestamp_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
-    # TODO: pandas-dev/pandas-stubs#1786 facebook/pyrefly#3977
+    # TODO: python/mypy#21733 facebook/pyrefly#3977
     if sys.version_info >= (3, 12):
         eq_nd1 = check(assert_type(ts == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         ne_nd1 = check(assert_type(ts != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
