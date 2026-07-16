@@ -119,6 +119,7 @@ def test_types_concat_none() -> None:
         assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
     )
     check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
+    # TODO: pandas-dev/pandas-stubs#1799 fix or report
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat([None, series, df], axis=1), pd.DataFrame
@@ -170,12 +171,7 @@ def test_types_concat() -> None:
     s2 = pd.Series([7, -5, 10])
 
     check(assert_type(pd.concat([s, s2]), "pd.Series[int]"), pd.Series, np.integer)
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat([s, s2], axis=1), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat([s, s2], axis=1), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(
             pd.concat([s, s2], keys=["first", "second"], sort=True), "pd.Series[int]"
@@ -206,21 +202,11 @@ def test_types_concat() -> None:
         pd.Series,
         np.integer,
     )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({1: s, 2: s2}), "pd.Series[int]"), pd.Series, np.integer
     )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({1: s, None: s2}), "pd.Series[int]"),
         pd.Series,
@@ -236,12 +222,7 @@ def test_types_concat() -> None:
 
     check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.integer)
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat({1: s, None: s2}, axis=1), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat({1: s, None: s2}, axis=1), pd.DataFrame), pd.DataFrame)
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
@@ -269,6 +250,7 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
 
+    # TODO: pandas-dev/pandas-stubs#1799 fix or report
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat(
@@ -279,7 +261,7 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
+        assert_type(
             pd.concat({"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1),
             pd.DataFrame,
         ),
@@ -306,7 +288,7 @@ def test_types_concat() -> None:
     )
 
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
+        assert_type(
             pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1),  # noqa: C417
             pd.DataFrame,
         ),
