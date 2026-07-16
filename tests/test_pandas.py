@@ -1,3 +1,5 @@
+# ty: ignore[assert-type-unspellable-subtype]
+# assert-type-unspellable-subtype is ty-specific astral-sh/ty#4005
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
@@ -590,123 +592,38 @@ def test_isna() -> None:
     check(assert_type(pd.isna(l_any), np_ndarray_bool), np_ndarray_bool)
     check(assert_type(pd.notna(l_any), np_ndarray_bool), np_ndarray_bool)
 
-    # assert-type-unspellable-subtype is ty-specific astral-sh/ty#4005
-    assert check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.isna(pd.NA), bool
-        ),
-        bool,
-    )
-    assert not check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.notna(pd.NA), bool
-        ),
-        bool,
-    )
+    assert check(assert_type(pd.isna(pd.NA), bool), bool)
+    assert not check(assert_type(pd.notna(pd.NA), bool), bool)
 
-    assert check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.isna(pd.NaT), bool
-        ),
-        bool,
-    )
-    assert not check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.notna(pd.NaT), bool
-        ),
-        bool,
-    )
+    assert check(assert_type(pd.isna(pd.NaT), bool), bool)
+    assert not check(assert_type(pd.notna(pd.NaT), bool), bool)
 
-    assert check(
-        assert_type(pd.isna(None), bool),  # ty: ignore[assert-type-unspellable-subtype]
-        bool,
-    )
-    assert not check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.notna(None), bool
-        ),
-        bool,
-    )
+    assert check(assert_type(pd.isna(None), bool), bool)
+    assert not check(assert_type(pd.notna(None), bool), bool)
 
-    assert not check(
-        assert_type(pd.isna(2.5), bool),  # ty: ignore[assert-type-unspellable-subtype]
-        bool,
-    )
-    assert check(
-        assert_type(pd.notna(2.5), bool),  # ty: ignore[assert-type-unspellable-subtype]
-        bool,
-    )
+    assert not check(assert_type(pd.isna(2.5), bool), bool)
+    assert check(assert_type(pd.notna(2.5), bool), bool)
 
     # Checks for datetime, timedelta, np.datetime64 and np.timedelta64
     py_dt = dt.datetime.now()
-    assert check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.notna(py_dt), bool
-        ),
-        bool,
-    )
-    assert not check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.isna(py_dt), bool
-        ),
-        bool,
-    )
+    assert check(assert_type(pd.notna(py_dt), bool), bool)
+    assert not check(assert_type(pd.isna(py_dt), bool), bool)
 
     py_td = dt.datetime.now() - py_dt
-    assert check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.notna(py_td), bool
-        ),
-        bool,
-    )
-    assert not check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.isna(py_td), bool
-        ),
-        bool,
-    )
+    assert check(assert_type(pd.notna(py_td), bool), bool)
+    assert not check(assert_type(pd.isna(py_td), bool), bool)
 
     np_dt = np.datetime64(py_dt)
-    assert check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.notna(np_dt), bool
-        ),
-        bool,
-    )
-    assert not check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.isna(np_dt), bool
-        ),
-        bool,
-    )
+    assert check(assert_type(pd.notna(np_dt), bool), bool)
+    assert not check(assert_type(pd.isna(np_dt), bool), bool)
 
     np_td = np.timedelta64(py_td)
-    assert check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.notna(np_td), bool
-        ),
-        bool,
-    )
-    assert not check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.isna(np_td), bool
-        ),
-        bool,
-    )
+    assert check(assert_type(pd.notna(np_td), bool), bool)
+    assert not check(assert_type(pd.isna(np_td), bool), bool)
 
     np_nat = np.timedelta64("NaT")
-    assert check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.isna(np_nat), bool
-        ),
-        bool,
-    )
-    assert not check(
-        assert_type(  # ty: ignore[assert-type-unspellable-subtype]
-            pd.notna(np_nat), bool
-        ),
-        bool,
-    )
+    assert check(assert_type(pd.isna(np_nat), bool), bool)
+    assert not check(assert_type(pd.notna(np_nat), bool), bool)
 
     # Check TypeIs type narrowing functionality
     nullable1: str | None | NAType | NaTType = random.choice(
