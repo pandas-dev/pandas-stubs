@@ -19,10 +19,9 @@ A clear and concise description of what the bug is.
 
 ## System specifications
 
-- OS: [e.g. Windows, Linux, MacOS]
-- OS Version [e.g. 22]
+- OS and its version: [e.g. Windows 11 10.0.26200, Linux 6.6.87.1 / Ubuntu 26.04, macOS 26]
 - python version
-- version of type checker
+- type checker and its version
 - version of installed `pandas-stubs`
 
 ## Additional context
