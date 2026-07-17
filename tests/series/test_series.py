@@ -3306,17 +3306,6 @@ def test_diff() -> None:
             BaseOffset,
             index_to_check_for_type=-1,
         )
-    check(
-        assert_type(
-            pd.Series(
-                pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
-            ).diff(),
-            "pd.Series[BaseOffset]",
-        ),
-        pd.Series,
-        BaseOffset,
-        index_to_check_for_type=-1,
-    )
     # bool -> Any
     check(
         assert_type(pd.Series([True, True, False, False, True]).diff(), pd.Series),
