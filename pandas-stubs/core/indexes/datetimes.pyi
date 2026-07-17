@@ -104,6 +104,7 @@ class DatetimeIndex(
     def shift(
         self, periods: int = 1, freq: Frequency | timedelta | None = None
     ) -> Self: ...
+    def diff(self, periods: int = 1) -> TimedeltaIndex: ...
 
 @overload
 def date_range(
