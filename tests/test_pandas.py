@@ -140,12 +140,7 @@ def test_types_concat_none() -> None:
         pd.Series,
         np.integer,
     )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat({"a": None, "b": df}), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame
@@ -250,9 +245,8 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
 
-    # TODO: pandas-dev/pandas-stubs#1799 fix or report
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
+        assert_type(
             pd.concat(
                 {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
             ),
@@ -268,24 +262,9 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
 
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat({"a": df, "b": df2}), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat({1: df, 2: df2}), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat({1: df, None: df2}), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat({"a": df, "b": df2}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat({1: df, 2: df2}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat({1: df, None: df2}), pd.DataFrame), pd.DataFrame)
 
     check(
         assert_type(
@@ -295,14 +274,10 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
     adict = {"a": df, 2: df2}
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.concat(adict), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
 
     data: pd.DataFrame | pd.Series = pd.Series()
+    # TODO: pandas-dev/pandas-stubs#1799 fix or report
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat([pd.DataFrame(), data]), pd.DataFrame

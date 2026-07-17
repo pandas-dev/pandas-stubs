@@ -94,7 +94,7 @@ def concat(
 ) -> DataFrame: ...
 @overload
 def concat(
-    objs: Iterable[DataFrameT0 | None],
+    objs: Iterable[DataFrameT0 | None] | Mapping[HashableT1, DataFrameT0 | None],
     *,
     axis: Axis = 0,
     join: Literal["inner", "outer"] = "outer",
