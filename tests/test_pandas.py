@@ -119,7 +119,7 @@ def test_types_concat_none() -> None:
         assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
     )
     check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
-    # TODO: pandas-dev/pandas-stubs#1799 fix or report
+    # TODO: astral-sh/ty#4022
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat([None, series, df], axis=1), pd.DataFrame
@@ -277,7 +277,7 @@ def test_types_concat() -> None:
     check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
 
     data: pd.DataFrame | pd.Series = pd.Series()
-    # TODO: pandas-dev/pandas-stubs#1799 fix or report
+    # TODO: astral-sh/ty#4022
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             pd.concat([pd.DataFrame(), data]), pd.DataFrame
