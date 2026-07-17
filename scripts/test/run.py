@@ -50,8 +50,18 @@ def build_dist() -> None:
 
 def install_dist() -> None:
     path = sorted(Path("dist/").glob("pandas_stubs-*.whl"))[-1]
-    cmd = [sys.executable, "-m", "pip", "install", "--force-reinstall", str(path)]
+    cmd = [
+        sys.executable,
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "--force-reinstall",
+        str(path),
+        "numpy-typing-compat",
+    ]
     subprocess.run(cmd, check=True)
+    subprocess.run([sys.executable, "-m", "pip", "check"], check=True)
 
 
 def rename_src() -> None:

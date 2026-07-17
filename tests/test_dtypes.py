@@ -30,8 +30,10 @@ import pyarrow as pa
 import pytest
 
 from tests import (
+    NP_GTE_25,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_conditioned,
 )
 from tests._typing import TimeUnit
 
@@ -138,9 +140,24 @@ def test_sparse_dtype() -> None:
     check(assert_type(pd.SparseDtype(np.int64), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(str), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(float), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype(np.datetime64), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype("datetime64"), pd.SparseDtype), pd.SparseDtype)
+    # TODO: pandas-dev/pandas-stubs#1786 remove the conditional warning
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
+        check(
+            assert_type(pd.SparseDtype(np.datetime64), pd.SparseDtype), pd.SparseDtype
+        )
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
+        check(
+            assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype
+        )
+    check(assert_type(pd.SparseDtype("datetime64[ms]"), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(s_dt.fill_value, Scalar | None), int)
 
@@ -162,7 +179,13 @@ def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
     check(assert_type(s_dt_bool.fill_value, Scalar | None), bool)
 
     # datetime64 subtype: default fill_value is NaT
-    s_dt_dt = pd.SparseDtype(np.datetime64)
+    # TODO: pandas-dev/pandas-stubs#1786 remove the conditional warning
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
+        s_dt_dt = pd.SparseDtype(np.datetime64)
     check(assert_type(s_dt_dt.subtype, np.dtype), np.dtypes.DateTime64DType)
     check(assert_type(s_dt_dt.fill_value, Scalar | None), np.datetime64)
 

@@ -40,6 +40,7 @@ LINUX = sys.platform == "linux"
 WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
 PD_LTE_31 = Version(pd.__version__) < Version("3.0.99")
+NP_GTE_25 = Version(np.__version__) >= Version("2.5.0")
 
 
 def check(
@@ -189,7 +190,16 @@ def pytest_warns_bounded(
         current = Version(pd.__version__)
     else:
         current = Version(version_str)
-    if lb < current < ub:
+    return pytest_warns_conditioned(warning, match, lb < current < ub, upper_exception)
+
+
+def pytest_warns_conditioned(
+    warning: type[Warning],
+    match: str,
+    condition: bool,
+    upper_exception: type[Exception] | None = None,
+) -> AbstractContextManager[Any]:
+    if condition:
         return pytest.warns(warning, match=match)
     if upper_exception is None:
         return nullcontext()

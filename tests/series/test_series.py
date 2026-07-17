@@ -15,6 +15,7 @@ import io
 import math
 from pathlib import Path
 import re
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -2614,26 +2615,62 @@ def test_types_to_numpy() -> None:
         np.str_,
     )
     # DateTime64DType — parametric, use np.dtype(...)
-    check(
-        assert_type(s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt),
-        np_1darray,
-        np.datetime64,
-    )
+    if sys.version_info >= (3, 12):
+        # TODO: pandas-dev/pandas-stubs#1786 mypy >= 2.5 gives np_1darray[np.datetime64[int]] for now, which is not ideal
+        check(
+            assert_type(
+                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")),
+                "np_1darray[np.datetime64[int]]",
+            ),
+            np_1darray,
+            np.datetime64,
+        )
+    else:
+        # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
+            ),
+            np_1darray,
+            np.datetime64,
+        )
     # TimeDelta64DType — parametric, use np.dtype(...)
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-        ),
-        np_1darray,
-        np.timedelta64,
-    )
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-        ),
-        np_1darray,
-        np.timedelta64,
-    )
+    if sys.version_info >= (3, 12):
+        # TODO: pandas-dev/pandas-stubs#1786 mypy >= 2.5 gives np_1darray[np.timedelta64[int]] for now, which is not ideal
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
+                "np_1darray[np.timedelta64[int]]",
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
+                "np_1darray[np.timedelta64[int]]",
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+    else:
+        # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
+                np_1darray_td,
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+
     # VoidDType — parametric, use np.dtype(...)
     check(
         assert_type(

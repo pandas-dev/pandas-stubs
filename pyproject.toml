@@ -21,7 +21,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
-dependencies = ["numpy>=1.23.5,<2.5"]  # TODO: pandas-dev/pandas-stubs#1786 remove <2.5
+dependencies = ["numpy>=1.23.5"]
 
 [project.urls]
 Homepage = "https://pandas.pydata.org"
@@ -33,6 +33,7 @@ Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 dev = [
   "mypy>=2.2.0",
   "pandas==3.0.3",
+  "numpy>=2.5.1;python_version>='3.12'",
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright>=1.1.410",
@@ -69,7 +70,7 @@ dev = [
   "pytz>=2025.2",
   "types-pytz>=2022.1.1",
   "pyiceberg>=0.10.0",
-  "numpy-typing-compat>=20260602",
+  "optype[numpy]"
 ]
 
 [build-system]
