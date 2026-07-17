@@ -5,6 +5,7 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Literal,
+    Never,
     TypeAlias,
     overload,
     type_check_only,
@@ -322,6 +323,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: object
     ) -> Literal[True]: ...
+    def diff(self, periods: int = 1) -> Never: ...
 
 # misc here because int and float overlap but interval has distinct types
 # int gets hit first and so the correct type is returned

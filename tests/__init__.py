@@ -189,7 +189,16 @@ def pytest_warns_bounded(
         current = Version(pd.__version__)
     else:
         current = Version(version_str)
-    if lb < current < ub:
+    return pytest_warns_conditioned(warning, match, lb < current < ub, upper_exception)
+
+
+def pytest_warns_conditioned(
+    warning: type[Warning],
+    match: str,
+    condition: bool,
+    upper_exception: type[Exception] | None = None,
+) -> AbstractContextManager[Any]:
+    if condition:
         return pytest.warns(warning, match=match)
     if upper_exception is None:
         return nullcontext()
