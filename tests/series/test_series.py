@@ -2645,7 +2645,7 @@ def test_types_to_numpy() -> None:
     )
     # DateTime64DType — parametric, use np.dtype(...)
     if sys.version_info >= (3, 12):
-        # TODO: pandas-dev/pandas-stubs#1786 np_1darray[np.timedelta64[int]] is not ideal
+        # TODO: pandas-dev/pandas-stubs#1786 mypy >= 2.5 gives np_1darray[np.datetime64[int]] for now, which is not ideal
         check(
             assert_type(
                 s_date.to_numpy(dtype=np.dtype("datetime64[ns]")),
@@ -2665,7 +2665,7 @@ def test_types_to_numpy() -> None:
         )
     # TimeDelta64DType — parametric, use np.dtype(...)
     if sys.version_info >= (3, 12):
-        # TODO: pandas-dev/pandas-stubs#1786 np_1darray[np.timedelta64[int]] is not ideal
+        # TODO: pandas-dev/pandas-stubs#1786 mypy >= 2.5 gives np_1darray[np.timedelta64[int]] for now, which is not ideal
         check(
             assert_type(
                 s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),

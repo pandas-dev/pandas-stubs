@@ -580,15 +580,10 @@ def test_timedelta_add_sub() -> None:
         pd.Timedelta,
     )
     if sys.version_info >= (3, 12):
+        # numpy >= 2.5 has eliminated the type checking errors
         check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
     else:
-        check(
-            assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-                as_timedelta64 + td,  # pyright: ignore[reportAssertTypeFailure]
-                pd.Timedelta,
-            ),
-            pd.Timedelta,
-        )
+        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -631,15 +626,10 @@ def test_timedelta_add_sub() -> None:
         pd.Timedelta,
     )
     if sys.version_info >= (3, 12):
+        # numpy >= 2.5 has eliminated the type checking errors
         check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
     else:
-        check(
-            assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-                as_timedelta64 - td,  # pyright: ignore[reportAssertTypeFailure]
-                pd.Timedelta,
-            ),
-            pd.Timedelta,
-        )
+        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -922,8 +912,9 @@ def test_timedelta_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
-    # TODO: python/mypy#21733 facebook/pyrefly#3977
+    # TODO: facebook/pyrefly#3977
     if sys.version_info >= (3, 12):
+        # TODO: python/mypy#21733 the mypy bugs have manifested in numpy >= 2.5
         eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         assert (eq_nd1 != ne_nd1).all()
@@ -1356,8 +1347,9 @@ def test_timestamp_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
-    # TODO: python/mypy#21733 facebook/pyrefly#3977
+    # TODO: facebook/pyrefly#3977
     if sys.version_info >= (3, 12):
+        # TODO: python/mypy#21733 the mypy bugs have manifested in numpy >= 2.5
         eq_nd1 = check(assert_type(ts == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         ne_nd1 = check(assert_type(ts != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         assert (eq_nd1 != ne_nd1).all()
