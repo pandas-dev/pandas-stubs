@@ -23,6 +23,7 @@ from typing import (
 
 from _typeshed import (
     SupportsAdd,
+    SupportsGetItem,
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
@@ -32,7 +33,10 @@ from pandas._stubs_only import (
     OrderableT,
     T_contra,
 )
-from pandas.core.arrays.boolean import BooleanArray
+from pandas.core.arrays.boolean import (
+    BooleanArray,
+    BooleanDtype,
+)
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.base import (
     ArrayIndexTimedeltaNoSeq,
@@ -63,7 +67,10 @@ from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.series import Series
+from pandas.core.series import (
+    Series,
+    SupportsSelfSub,
+)
 from pandas.core.strings.accessor import StrDescriptor
 
 from pandas._libs.interval import Interval
@@ -83,12 +90,14 @@ from pandas._typing import (
     Axis,
     BuiltinFloatDtypeArg,
     CategoryDtypeArg,
+    ComplexDtypeArg,
     DropKeep,
     Dtype,
     DtypeArg,
     DtypeObj,
     HashableT,
     IgnoreRaise,
+    IntDtypeArg,
     JoinHow,
     Just,
     Label,
@@ -112,6 +121,7 @@ from pandas._typing import (
     TakeIndexer,
     TimedeltaDtypeArg,
     TimestampDtypeArg,
+    UIntDtypeArg,
     np_1darray,
     np_1darray_bool,
     np_1darray_intp,
@@ -378,17 +388,17 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg,
     ) -> np_1darray: ...
     @overload
-    def astype(
-        self,
-        dtype: NumpyFloat16DtypeArg,
-        copy: bool = True,
-    ) -> Never: ...
+    def astype(self, dtype: NumpyFloat16DtypeArg, copy: bool = True) -> Never: ...
     @overload
     def astype(
-        self,
-        dtype: FloatNotNumpy16DtypeArg,
-        copy: bool = True,
+        self, dtype: IntDtypeArg | UIntDtypeArg, copy: bool = True
+    ) -> Index[int]: ...
+    @overload
+    def astype(
+        self, dtype: FloatNotNumpy16DtypeArg, copy: bool = True
     ) -> Index[float]: ...
+    @overload
+    def astype(self, dtype: ComplexDtypeArg, copy: bool = True) -> Index[complex]: ...
     @overload
     def astype(self, dtype: DtypeArg, copy: bool = True) -> Index: ...
     def take(
@@ -468,6 +478,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self, other: list[S1] | Self, sort: bool | None = False
     ) -> Self: ...
     def difference(self, other: list[Any] | Self, sort: bool | None = None) -> Self: ...
+    @overload
+    def diff(self: Index[bool], periods: int = ...) -> Index: ...
+    @overload
+    def diff(self: Index[int], periods: int = ...) -> Index[float]: ...
+    @overload
+    def diff(self: Index[BooleanDtype], periods: int = ...) -> Index[BooleanDtype]: ...
+    @overload
+    def diff(
+        self: SupportsGetItem[int, SupportsSelfSub[S2]], periods: int = ...
+    ) -> Index[S2]: ...
     def symmetric_difference(
         self,
         other: list[S1] | Self,

@@ -58,6 +58,7 @@ from tests import (
     WINDOWS,
     check,
     pytest_warns_bounded,
+    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray,
@@ -3328,22 +3329,9 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    if WINDOWS:
-        with pytest_warns_bounded(
-            RuntimeWarning, "overflow encountered in scalar multiply"
-        ):
-            check(
-                assert_type(
-                    pd.Series(
-                        pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
-                    ).diff(),
-                    "pd.Series[BaseOffset]",
-                ),
-                pd.Series,
-                BaseOffset,
-                index_to_check_for_type=-1,
-            )
-    else:
+    with pytest_warns_conditioned(
+        RuntimeWarning, "overflow encountered in scalar multiply", WINDOWS
+    ):
         check(
             assert_type(
                 pd.Series(
