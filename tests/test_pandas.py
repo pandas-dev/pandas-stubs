@@ -1,3 +1,5 @@
+# ty: ignore[assert-type-unspellable-subtype]
+# assert-type-unspellable-subtype is ty-specific astral-sh/ty#4005
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
@@ -117,23 +119,38 @@ def test_types_concat_none() -> None:
         assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
     )
     check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
+    # TODO: astral-sh/ty#4022
     check(
-        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat([None, series, df], axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
     )
-    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat([None, series, df]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
     check(
-        assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": None, "b": series}), "pd.Series[int]"
+        ),
         pd.Series,
         np.integer,
     )
     check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame
+        ),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame
+        ),
         pd.DataFrame,
     )
 
@@ -180,10 +197,7 @@ def test_types_concat() -> None:
         pd.Series,
         np.integer,
     )
-    check(
-        assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({1: s, 2: s2}), "pd.Series[int]"), pd.Series, np.integer
     )
@@ -263,7 +277,13 @@ def test_types_concat() -> None:
     check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
 
     data: pd.DataFrame | pd.Series = pd.Series()
-    check(assert_type(pd.concat([pd.DataFrame(), data]), pd.DataFrame), pd.DataFrame)
+    # TODO: astral-sh/ty#4022
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.concat([pd.DataFrame(), data]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_concat_series_mixed_numeric() -> None:
@@ -351,7 +371,7 @@ def test_concat_args() -> None:
     )
     check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
@@ -1428,7 +1448,7 @@ def test_merge_ordered() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             ls,
             rs,
             left_on="left",
@@ -1436,7 +1456,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="right",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             ls,
             rf,
             left_on="left",
@@ -1444,7 +1464,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="b",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             lf,
             rs,
             left_on="a",
