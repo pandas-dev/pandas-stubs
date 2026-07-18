@@ -101,12 +101,9 @@ def test_aggregate() -> None:
         ),
         DataFrame,
     )
-    # TODO: astral-sh/ty#3956
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
-                {"col1": ["sum", np.mean], "col2": np.mean}
-            ),
+        assert_type(
+            DF.resample("ME").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
             DataFrame,
         ),
         DataFrame,
@@ -372,31 +369,23 @@ def test_aggregate_frame_combinations() -> None:
         ),
         DataFrame,
     )
-    # TODO: astral-sh/ty#3956 for the following three cases
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
-                {"col1": [np.sum], "col2": ["sum", np.mean]}
-            ),
+        assert_type(
+            DF.resample("ME").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
             DataFrame,
         ),
         DataFrame,
     )
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
-                {"col1": np.sum, "col2": ["sum", np.mean]}
-            ),
+        assert_type(
+            DF.resample("ME").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
             DataFrame,
         ),
         DataFrame,
     )
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
-                {"col1": "sum", "col2": [np.mean]}
-            ),
-            DataFrame,
+        assert_type(
+            DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}), DataFrame
         ),
         DataFrame,
     )

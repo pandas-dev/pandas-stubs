@@ -86,7 +86,7 @@ poetry run poe test_all
 
 All checks must pass before submitting changes. These commands verify:
 
-- Type stubs are correctly annotated (mypy, pyright, pyrefly)
+- Type stubs are correctly annotated (`mypy`, `pyright`, `pyrefly`)
 - Invalid usage is properly rejected by type checkers (ty)
 - Tests execute successfully at runtime (test)
 

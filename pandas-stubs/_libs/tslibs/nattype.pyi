@@ -7,6 +7,7 @@ from typing import (
     Literal,
     Self,
     TypeAlias,
+    final,
 )
 
 import numpy as np
@@ -30,6 +31,7 @@ _NaTComparisonTypes: TypeAlias = (
 class _NatComparison:
     def __call__(self, other: _NaTComparisonTypes) -> bool: ...
 
+@final
 class NaTType:
     value: np.int64
     def __hash__(self) -> int: ...

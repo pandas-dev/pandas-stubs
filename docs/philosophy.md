@@ -98,7 +98,7 @@ at runtime.  Users are invited to verify the results provided progressivly by th
 type checkers and be warned if they are unreasonable.
 
 When there are several possible valid outcomes of an arithmetic expression,
-for example numeric types `Series[bool]`, `Series[int]`, etc., `Series[Any]` 
+for example numeric types `Series[bool]`, `Series[int]`, etc., `Series[Any]`
 will be given as the resulting type of the arithmetic operation.
 
 ### Interval is Generic
@@ -112,7 +112,8 @@ interval of `Timestamp`s.
 ## Testing the Type Stubs
 
 A set of (most likely incomplete) tests for testing the type stubs is in the pandas-stubs
-repository in the `tests` directory.  The tests are used with `mypy` and `pyright` to
+repository in the `tests` directory.  The tests are used with `mypy`, `pyright`
+and `pyrefly` to
 validate correct typing, and also with `pytest` to validate that the provided code
 actually executes.  The recent decision for Python 3.11 to include `assert_type()`,
 which is supported by `typing_extensions` version 4.2 and beyond makes it easier
@@ -164,12 +165,14 @@ Type checkers report errors
 - when writing `overload`s that return incompatible return values, or
 - when type checkers have bugs themselves.
 
-Since mypy and pyright behave slightly differently, we use separate ignore comments
+Since type checkers behave slightly differently, we use separate ignore comments
 for them.
 
-- If mypy reports an error, please use `# type: ignore[<error code>]`
-- If pyright reports an error, please use `# pyright: ignore[<error code>]`
+- If `mypy` reports an error, please use `# type: ignore[<error code>]`
+- If `pyright` reports an error, please use `# pyright: ignore[<error code>]`
+- If `pyrefly` reports an error, please use `# pyrefly: ignore[<error code>]`
+- If `ty` reports an error, please use `# ty: ignore[<error code>]`
 
-If mypy and pyright report errors, for example, inside a `TYPE_CHECKING_INVALID_USAGE`
+If type checkers report errors, for example, inside a `TYPE_CHECKING_INVALID_USAGE`
 block, please ensure that the comment for mypy comes first:
-`# type: ignore[<error code>] # pyright: ignore[<error code>]`.
+`# type: ignore[<error code>] # pyright: ignore[<error code>] # pyrefly: ignore[<error code>] # ty: ignore[<error code>]`.

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import datetime
 import datetime as dt
+import sys
 from typing import (
     Any,
     Literal,
@@ -19,9 +19,11 @@ from pandas._libs.tslibs.timedeltas import Components
 from pandas.errors import Pandas4Warning
 
 from tests import (
+    NP_GTE_25,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray_bool,
@@ -508,8 +510,19 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
-    check(assert_type(td.view(np.int64), object), np.int64)
-    check(assert_type(td.view("i8"), object), np.int64)
+    # TODO: pandas-dev/pandas-stubs#1786 remove the conditional warning
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
+        check(assert_type(td.view(np.int64), object), np.int64)
+    with pytest_warns_conditioned(
+        DeprecationWarning,
+        r"The 'generic' unit for NumPy timedelta is deprecated",
+        NP_GTE_25,
+    ):
+        check(assert_type(td.view("i8"), object), np.int64)
 
     check(assert_type(td.as_unit("s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.as_unit("ms"), pd.Timedelta), pd.Timedelta)
@@ -558,7 +571,7 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime64 + td, pd.Timestamp), pd.Timestamp)
     # pyright can't know that as_td_timedelta + td calls
     # td.__radd__(as_td_timedelta),  not timedelta.__add__
-    # https://github.com/microsoft/pyright/issues/4088
+    # TODO: https://github.com/microsoft/pyright/issues/4088
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             as_dt_timedelta + td,  # pyright: ignore[reportAssertTypeFailure]
@@ -566,13 +579,11 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    check(
-        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-            as_timedelta64 + td,  # pyright: ignore[reportAssertTypeFailure]
-            pd.Timedelta,
-        ),
-        pd.Timedelta,
-    )
+    if sys.version_info >= (3, 12):
+        # numpy >= 2.5 has eliminated the type checking errors
+        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
+    else:
+        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -614,13 +625,11 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    check(
-        assert_type(  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-            as_timedelta64 - td,  # pyright: ignore[reportAssertTypeFailure]
-            pd.Timedelta,
-        ),
-        pd.Timedelta,
-    )
+    if sys.version_info >= (3, 12):
+        # numpy >= 2.5 has eliminated the type checking errors
+        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
+    else:
+        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -903,24 +912,40 @@ def test_timedelta_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
-    # TODO: https://github.com/facebook/pyrefly/issues/3977
-    eq_nd1 = check(
-        assert_type(td == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
-        np_ndarray_bool,
-        np.bool,
-    )
-    ne_nd1 = check(
-        assert_type(td != arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
-        np_ndarray_bool,
-        np.bool,
-    )
-    assert (eq_nd1 != ne_nd1).all()
-    eq_2d1 = check(assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
-    ne_2d1 = check(assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
-    assert (eq_2d1 != ne_2d1).all()
-    eq_1d1 = check(assert_type(td == arr_1d, np_1darray_bool), np_1darray_bool)
-    ne_1d1 = check(assert_type(td != arr_1d, np_1darray_bool), np_1darray_bool)
-    assert (eq_1d1 != ne_1d1).all()
+    # TODO: facebook/pyrefly#3977
+    if sys.version_info >= (3, 12):
+        # TODO: python/mypy#21733 the mypy bugs have manifested in numpy >= 2.5
+        eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        assert (eq_nd1 != ne_nd1).all()
+        eq_2d1 = check(assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
+        ne_2d1 = check(assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
+        assert (eq_2d1 != ne_2d1).all()
+        eq_1d1 = check(assert_type(td == arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+        ne_1d1 = check(assert_type(td != arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+        assert (eq_1d1 != ne_1d1).all()
+    else:
+        eq_nd1 = check(
+            assert_type(td == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
+            np_ndarray_bool,
+            np.bool,
+        )
+        ne_nd1 = check(
+            assert_type(td != arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
+            np_ndarray_bool,
+            np.bool,
+        )
+        assert (eq_nd1 != ne_nd1).all()
+        eq_2d1 = check(
+            assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool]
+        )
+        ne_2d1 = check(
+            assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool]
+        )
+        assert (eq_2d1 != ne_2d1).all()
+        eq_1d1 = check(assert_type(td == arr_1d, np_1darray_bool), np_1darray_bool)
+        ne_1d1 = check(assert_type(td != arr_1d, np_1darray_bool), np_1darray_bool)
+        assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
     eq_rhs_nd1 = check(assert_type(arr_nd == td, Any), np_ndarray_bool)
@@ -1322,24 +1347,40 @@ def test_timestamp_cmp_array() -> None:
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
-    # TODO: https://github.com/facebook/pyrefly/issues/3977
-    eq_nd1 = check(
-        assert_type(ts == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
-        np_ndarray_bool,
-        np.bool,
-    )
-    ne_nd1 = check(
-        assert_type(ts != arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
-        np_ndarray_bool,
-        np.bool,
-    )
-    assert (eq_nd1 != ne_nd1).all()
-    eq_2d1 = check(assert_type(ts == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
-    ne_2d1 = check(assert_type(ts != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
-    assert (eq_2d1 != ne_2d1).all()
-    eq_1d1 = check(assert_type(ts == arr_1d, np_1darray_bool), np_1darray_bool)
-    ne_1d1 = check(assert_type(ts != arr_1d, np_1darray_bool), np_1darray_bool)
-    assert (eq_1d1 != ne_1d1).all()
+    # TODO: facebook/pyrefly#3977
+    if sys.version_info >= (3, 12):
+        # TODO: python/mypy#21733 the mypy bugs have manifested in numpy >= 2.5
+        eq_nd1 = check(assert_type(ts == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        ne_nd1 = check(assert_type(ts != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        assert (eq_nd1 != ne_nd1).all()
+        eq_2d1 = check(assert_type(ts == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
+        ne_2d1 = check(assert_type(ts != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
+        assert (eq_2d1 != ne_2d1).all()
+        eq_1d1 = check(assert_type(ts == arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+        ne_1d1 = check(assert_type(ts != arr_1d, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+        assert (eq_1d1 != ne_1d1).all()
+    else:
+        eq_nd1 = check(
+            assert_type(ts == arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
+            np_ndarray_bool,
+            np.bool,
+        )
+        ne_nd1 = check(
+            assert_type(ts != arr_nd, np_ndarray_bool),  # pyrefly: ignore[assert-type]
+            np_ndarray_bool,
+            np.bool,
+        )
+        assert (eq_nd1 != ne_nd1).all()
+        eq_2d1 = check(
+            assert_type(ts == arr_2d, np_2darray[np.bool]), np_2darray[np.bool]
+        )
+        ne_2d1 = check(
+            assert_type(ts != arr_2d, np_2darray[np.bool]), np_2darray[np.bool]
+        )
+        assert (eq_2d1 != ne_2d1).all()
+        eq_1d1 = check(assert_type(ts == arr_1d, np_1darray_bool), np_1darray_bool)
+        ne_1d1 = check(assert_type(ts != arr_1d, np_1darray_bool), np_1darray_bool)
+        assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
     eq_rhs_nd1 = check(assert_type(arr_nd == ts, Any), np_ndarray_bool)
@@ -1585,13 +1626,11 @@ def test_period_construction() -> None:
     )
     check(assert_type(pd.Period(freq="Q", year=2012, quarter=2), pd.Period), pd.Period)
     check(
-        assert_type(
-            pd.Period(value=datetime.datetime(2012, 1, 1), freq="D"), pd.Period
-        ),
+        assert_type(pd.Period(value=dt.datetime(2012, 1, 1), freq="D"), pd.Period),
         pd.Period,
     )
     check(
-        assert_type(pd.Period(value=datetime.date(2012, 1, 1), freq="D"), pd.Period),
+        assert_type(pd.Period(value=dt.date(2012, 1, 1), freq="D"), pd.Period),
         pd.Period,
     )
     check(
@@ -1722,7 +1761,10 @@ def test_period_add_subtract() -> None:
     check(assert_type(as_np_td + p, pd.Period), pd.Period)
     check(assert_type(p.__radd__(as_np_td), pd.Period), pd.Period)
 
-    check(assert_type(as_np_i64 + p, pd.Period), pd.Period)
+    # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
+    check(
+        assert_type(as_np_i64 + p, pd.Period), pd.Period  # pyrefly: ignore[assert-type]
+    )
     check(assert_type(p.__radd__(as_np_i64), pd.Period), pd.Period)
 
     check(assert_type(as_int + p, pd.Period), pd.Period)
@@ -1938,9 +1980,9 @@ def test_nattype_hashable() -> None:
 
 
 def test_nat_comparison_with_date() -> None:
-    # 2.0.0: inequality comparisons of NaT with datetime.date now raise TypeError
+    # 2.0.0: inequality comparisons of NaT with dt.date now raise TypeError
     # pandas-dev/pandas#39196
-    date_obj = datetime.date(2023, 1, 1)
+    date_obj = dt.date(2023, 1, 1)
 
     # Equality comparisons should still work
     check(assert_type(pd.NaT == date_obj, bool), bool)
