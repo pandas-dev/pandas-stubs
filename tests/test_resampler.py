@@ -385,8 +385,7 @@ def test_aggregate_frame_combinations() -> None:
     )
     check(
         assert_type(
-            DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}),
-            DataFrame,
+            DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}), DataFrame
         ),
         DataFrame,
     )
