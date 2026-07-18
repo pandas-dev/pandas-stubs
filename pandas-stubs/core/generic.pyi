@@ -124,7 +124,7 @@ class NDFrame:
         startrow: int = 0,
         startcol: int = 0,
         engine: Literal["openpyxl", "xlsxwriter"] | None = None,
-        merge_cells: ExcelWriterMergeCells = False,
+        merge_cells: ExcelWriterMergeCells = True,
         inf_rep: _str = "inf",
         freeze_panes: tuple[int, int] | None = None,
         storage_options: dict[str, Any] | None = None,
