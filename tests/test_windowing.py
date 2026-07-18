@@ -149,6 +149,10 @@ def test_rolling_aggregate() -> None:
     # func: np.ufunc | Callable[..., Any] | str | list[Callable[..., Any] | str, np.ufunc] | dict[Hashable, Callable[..., Any] | str | np.ufunc | list[Callable[..., Any] | str]]
     check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.rolling(10).aggregate("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # ty: ignore[no-matching-overload]  # pyrefly: ignore[no-matching-overload]  # pyrefly: ignore[no-matching-overload]
+        DF.rolling(10).aggregate({"col1": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # ty: ignore[no-matching-overload]  # pyrefly: ignore[no-matching-overload]
+
 
 def test_rolling_basic_math_series() -> None:
     check(assert_type(S.rolling(10, min_periods=10).count(), Series), Series)
