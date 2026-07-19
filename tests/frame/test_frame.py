@@ -2932,13 +2932,15 @@ def test_read_csv(tmp_path: Path) -> None:
 def test_dataframe_pct_change() -> None:
     df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10, 20, 30, 40, 50]})
     check(assert_type(df.pct_change(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(periods=-1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(fill_value=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis="columns"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis="index"), pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.pct_change(fill_method=None)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_compute_values() -> None:

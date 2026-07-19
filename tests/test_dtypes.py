@@ -26,6 +26,7 @@ from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
 )
+from pandas.core.arrays.datetimes import DatetimeArray
 import pyarrow as pa
 import pytest
 
@@ -66,6 +67,9 @@ def test_datetimetz_dtype() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+    pa_arr = pa.array([1, 2, 3], type=pa.timestamp("ns", tz="UTC"))
+    check(assert_type(dttz_dt.__from_arrow__(pa_arr), DatetimeArray), DatetimeArray)
 
 
 @pytest.mark.parametrize("key", available_timezones())
