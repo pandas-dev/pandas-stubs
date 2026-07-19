@@ -2065,9 +2065,9 @@ def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     check(assert_type(df.expanding(), "Expanding[pd.DataFrame]"), Expanding)
     if TYPE_CHECKING_INVALID_USAGE:
-        df.expanding(axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        df.expanding(axis=1, center=True)  # type: ignore[arg-type, call-arg] # pyright: ignore[reportCallIssue]  # pyrefly: ignore[bad-argument-type,unexpected-keyword]
+        df.expanding(axis=1)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.expanding(axis=1, center=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]  # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
     check(assert_type(df.rolling(2), "Rolling[pd.DataFrame]"), Rolling)
 
