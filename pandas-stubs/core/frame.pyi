@@ -157,6 +157,7 @@ from pandas._typing import (
     Suffixes,
     T as _T,
     TimeAmbiguous,
+    TimedeltaConvertibleTypes,
     TimeNonexistent,
     TimeUnit,
     TimeZones,
@@ -2050,18 +2051,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         com: float | None = ...,
         span: float | None = ...,
-        halflife: float | None = ...,
+        halflife: TimedeltaConvertibleTypes | None = ...,
         alpha: float | None = ...,
         min_periods: int = 0,
         adjust: _bool = True,
         ignore_na: _bool = False,
-        axis: Axis = 0,
+        times: np.ndarray | DataFrame | Series | None = None,
+        method: Literal["single", "table"] = "single",
     ) -> ExponentialMovingWindow[Self]: ...
     @final
     def expanding(
         self,
         min_periods: int = 1,
-        axis: AxisIndex = 0,
         method: CalculationMethod = "single",
     ) -> Expanding[Self]: ...
     def ffill(
@@ -2268,7 +2269,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def pct_change(
         self,
         periods: int = 1,
-        fill_method: None = None,
         freq: Frequency | dt.timedelta | None = ...,
         fill_value: Scalar | NAType | None = ...,
         axis: Axis | None = ...,
@@ -2384,7 +2384,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
@@ -2398,7 +2397,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,

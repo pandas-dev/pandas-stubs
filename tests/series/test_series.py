@@ -444,15 +444,13 @@ def test_series_pct_change() -> None:
     s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
     check(assert_type(s.pct_change(), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(s.pct_change(fill_method=None), "pd.Series[float]"),
-        pd.Series,
-        np.floating,
-    )
-    check(
         assert_type(s.pct_change(periods=-1), "pd.Series[float]"),
         pd.Series,
         np.floating,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.pct_change(fill_method=None)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_types_rank() -> None:

@@ -9,8 +9,10 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
+import pyarrow as pa
 from typing_extensions import TypeVar
 
 from pandas._libs import NaTType
@@ -70,6 +72,9 @@ class DatetimeTZDtype(PandasExtensionDtype):
     def tz(self) -> timezone: ...
     @property
     def na_value(self) -> NaTType: ...
+    def __from_arrow__(
+        self, array: pa.Array[Any] | pa.ChunkedArray[Any]
+    ) -> DatetimeArray: ...
 
 class PeriodDtype(PandasExtensionDtype):
     def __init__(

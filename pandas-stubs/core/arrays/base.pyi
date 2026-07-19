@@ -10,6 +10,7 @@ from typing import (
 )
 
 import numpy as np
+from pandas import Index
 
 from pandas._typing import (
     AnyArrayLikeInt,
@@ -17,6 +18,7 @@ from pandas._typing import (
     AstypeArg,
     AxisInt,
     Dtype,
+    InterpolateOptions,
     ListLike,
     Renamer,
     Scalar,
@@ -120,6 +122,18 @@ class ExtensionArray:
     ) -> Self: ...
     def map(
         self, mapper: Renamer, na_action: Literal["ignore"] | None = None
+    ) -> Self: ...
+    def interpolate(
+        self,
+        *,
+        method: InterpolateOptions,
+        axis: int,
+        index: Index,
+        limit: int | None,
+        limit_direction: Literal["forward", "backward", "both"],
+        limit_area: Literal["inside", "outside"] | None,
+        copy: bool,
+        **kwargs: Any,
     ) -> Self: ...
 
 class ExtensionArraySupportsAnyAll(ExtensionArray):

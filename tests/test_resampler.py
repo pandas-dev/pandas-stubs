@@ -34,6 +34,9 @@ def test_iter() -> None:
     for v in DF.resample("ME"):
         check(assert_type(v, tuple[Hashable, DataFrame]), tuple)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.resample("ME", axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
 
 def test_agg_funcs() -> None:
     check(assert_type(DF.resample("ME").sum(), DataFrame), DataFrame)
@@ -205,6 +208,9 @@ def test_transform() -> None:
 def test_iter_series() -> None:
     for v in S.resample("ME"):
         check(assert_type(v, tuple[Hashable, Series]), tuple)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        S.resample("ME", axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_agg_funcs_series() -> None:
