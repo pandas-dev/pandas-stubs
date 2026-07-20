@@ -38,11 +38,17 @@ def test_get_dtype() -> None:
         )
 
 
+def _to_type(t: Any) -> type:
+    if isinstance(t, ExtensionDtype):
+        return type(t)
+    if issubclass(type(t), np.dtype):
+        return t.type
+    return t
+
+
 @pytest.mark.parametrize(("dtype_arg", "alias_map"), DTYPE_ARG_ALIAS_MAPS.items())
 def test_dtype_arg_aliases(dtype_arg: Any, alias_map: Mapping[Any, Any]) -> None:
-    assert set(get_dtype(dtype_arg)) == {
-        type(t) if isinstance(t, ExtensionDtype) else t for t in alias_map
-    }
+    assert set(get_dtype(dtype_arg)) == set(map(_to_type, alias_map.keys()))
 
 
 def test_covariant_list() -> None:

@@ -400,22 +400,25 @@ PandasAstypeTimedeltaDtypeArg: TypeAlias = Literal[
     "<m8[as]",
 ]
 # Refer to https://numpy.org/doc/stable/reference/arrays.datetime.html#datetime-units
-NumpyTimedeltaDtypeArg: TypeAlias = Literal[
-    "timedelta64[s]",
-    "timedelta64[ms]",
-    "timedelta64[us]",
-    "timedelta64[ns]",
-    # numpy type codes
-    "m8[s]",
-    "m8[ms]",
-    "m8[us]",
-    "m8[ns]",
-    # little endian
-    "<m8[s]",
-    "<m8[ms]",
-    "<m8[us]",
-    "<m8[ns]",
-]
+NumpyTimedeltaDtypeArg: TypeAlias = (
+    Literal[
+        "timedelta64[s]",
+        "timedelta64[ms]",
+        "timedelta64[us]",
+        "timedelta64[ns]",
+        # numpy type codes
+        "m8[s]",
+        "m8[ms]",
+        "m8[us]",
+        "m8[ns]",
+        # little endian
+        "<m8[s]",
+        "<m8[ms]",
+        "<m8[us]",
+        "<m8[ns]",
+    ]
+    | np.dtype[np.timedelta64]
+)
 # PyArrow duration type and its string alias
 PyArrowTimedeltaDtypeArg: TypeAlias = Literal[
     "duration[s][pyarrow]",
@@ -468,22 +471,25 @@ PandasAstypeTimestampDtypeArg: TypeAlias = Literal[
     "<M8[as]",
 ]
 # Numpy timestamp type and its string alias
-NumpyTimestampDtypeArg: TypeAlias = Literal[
-    "datetime64[s]",
-    "datetime64[ms]",
-    "datetime64[us]",
-    "datetime64[ns]",
-    # numpy type codes
-    "M8[s]",
-    "M8[ms]",
-    "M8[us]",
-    "M8[ns]",
-    # little endian
-    "<M8[s]",
-    "<M8[ms]",
-    "<M8[us]",
-    "<M8[ns]",
-]
+NumpyTimestampDtypeArg: TypeAlias = (
+    Literal[
+        "datetime64[s]",
+        "datetime64[ms]",
+        "datetime64[us]",
+        "datetime64[ns]",
+        # numpy type codes
+        "M8[s]",
+        "M8[ms]",
+        "M8[us]",
+        "M8[ns]",
+        # little endian
+        "<M8[s]",
+        "<M8[ms]",
+        "<M8[us]",
+        "<M8[ns]",
+    ]
+    | np.dtype[np.datetime64]
+)
 # PyArrow timestamp type and its string alias
 PyArrowTimestampDtypeArg: TypeAlias = Literal[
     "date32[pyarrow]",
