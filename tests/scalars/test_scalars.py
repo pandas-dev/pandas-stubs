@@ -915,8 +915,8 @@ def test_timedelta_cmp_array() -> None:
     # TODO: facebook/pyrefly#3977
     if sys.version_info >= (3, 12):
         # TODO: python/mypy#21733 the mypy bugs have manifested in numpy >= 2.5
-        eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
-        ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type]
+        ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type]
         assert (eq_nd1 != ne_nd1).all()
         eq_2d1 = check(assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
         ne_2d1 = check(assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]

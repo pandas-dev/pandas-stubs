@@ -64,7 +64,6 @@ from pandas.core.api import (
     to_timedelta as to_timedelta,
     unique as unique,
 )
-from pandas.core.arrays.sparse import SparseDtype as SparseDtype
 from pandas.core.col import col as col
 from pandas.core.computation.api import eval as eval
 from pandas.core.reshape.api import (
@@ -94,6 +93,8 @@ from pandas._config import (
 )
 
 from pandas.util._print_versions import show_versions as show_versions
+
+from pandas.core.dtypes.dtypes import SparseDtype as SparseDtype
 
 from pandas.io.api import (
     ExcelFile as ExcelFile,
