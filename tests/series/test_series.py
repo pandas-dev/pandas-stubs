@@ -2614,11 +2614,8 @@ def test_types_to_numpy() -> None:
         np.str_,
     )
     # DateTime64DType — parametric
-    # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
-        ),
+        assert_type(s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt),
         np_1darray,
         np.datetime64,
     )
@@ -2628,9 +2625,8 @@ def test_types_to_numpy() -> None:
         np.datetime64,
     )
     # TimeDelta64DType — parametric
-    # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
         ),
         np_1darray,
