@@ -46,7 +46,10 @@ def test_construction_sequence(
 
     if TYPE_CHECKING:
         assert_type(pd.array([-2, 3]), IntegerArray)
-        assert_type(pd.array([1 << 32, np.int8(1) << 6]), IntegerArray)
+        # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.array([1 << 32, np.int8(1) << 6]), IntegerArray
+        )
 
         assert_type(pd.array([2, np.int8(3)]), IntegerArray)
 
