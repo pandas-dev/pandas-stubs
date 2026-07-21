@@ -108,21 +108,14 @@ def test_types_arithmetic() -> None:
     check(assert_type(ts + delta, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - delta, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - dt.datetime(2021, 1, 3), pd.Timedelta), pd.Timedelta)
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        if sys.version_info >= (3, 12):
-            # numpy >= 2.5 has eliminated the type checking errors
-            assert_type(ts_np - ts, dt.timedelta)
-            assert_type(ts_np_time - ts, dt.timedelta)
-        else:
-            # TODO: pandas-dev/pandas-stubs#1511 for numpy < 2.5, numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
-            assert_type(  # pyrefly: ignore[assert-type]
-                ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
-            )
-            assert_type(  # pyrefly: ignore[assert-type]
-                ts_np_time - ts,  # pyright: ignore[reportAssertTypeFailure]
-                dt.timedelta,
-            )
+    # TODO: pandas-dev/pandas-stubs#1511 for numpy >= 2.5, numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
+    if sys.version_info >= (3, 12):
+        check(assert_type(ts_np - ts, dt.timedelta), pd.Timedelta)
+        check(assert_type(ts_np_time - ts, dt.timedelta), pd.Timedelta)
+    else:
+        # TODO: resume assert_type when astral-sh/ty#2681 is resolved
+        check(ts_np - ts, pd.Timedelta)
+        check(ts_np_time - ts, pd.Timedelta)
 
 
 def test_types_comparison() -> None:
@@ -176,8 +169,19 @@ def test_timedelta_arithmetic() -> None:
     td2 = pd.to_timedelta(4, "hours")
     td3 = td1 + td2
     check(assert_type(td1 - td2, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td1 * 4.3, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td3 / 10.2, pd.Timedelta), pd.Timedelta)
+    # TODO: astral-sh/ty#4053
+    check(
+        assert_type(
+            td1 * 4.3, pd.Timedelta  # ty: ignore[unsupported-operator]
+        ),  # ty: ignore[type-assertion-failure]
+        pd.Timedelta,
+    )
+    check(
+        assert_type(
+            td3 / 10.2, pd.Timedelta  # ty: ignore[unsupported-operator]
+        ),  # ty: ignore[type-assertion-failure]
+        pd.Timedelta,
+    )
 
 
 def test_timedelta_index_arithmetic() -> None:
@@ -187,8 +191,19 @@ def test_timedelta_index_arithmetic() -> None:
     check(assert_type(td1, pd.Timedelta), pd.Timedelta)
     check(assert_type(tds1 + td1, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(tds1 - td1, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(tds1 * 4.3, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(tds1 / 10.2, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    # TODO: astral-sh/ty#4053
+    check(
+        assert_type(
+            tds1 * 4.3, pd.TimedeltaIndex  # ty: ignore[unsupported-operator]
+        ),  # ty: ignore[type-assertion-failure]
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            tds1 / 10.2, pd.TimedeltaIndex  # ty: ignore[unsupported-operator]
+        ),  # ty: ignore[type-assertion-failure]
+        pd.TimedeltaIndex,
+    )
 
 
 def test_timedelta_float_value() -> None:
@@ -1081,8 +1096,11 @@ def test_series_types_to_numpy() -> None:
     )
 
     # passed dtype-like with statically known generic
+    # TODO: astral-sh/ty#4055
     check(
-        assert_type(td_s.to_numpy(dtype=np.int64), np_1darray_int64),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            td_s.to_numpy(dtype=np.int64), np_1darray_int64
+        ),
         np_1darray,
         np.int64,
     )
@@ -1091,8 +1109,11 @@ def test_series_types_to_numpy() -> None:
         np_1darray,
         np.timedelta64,
     )
+    # TODO: astral-sh/ty#4055
     check(
-        assert_type(ts_s.to_numpy(dtype=np.int64), np_1darray_int64),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            ts_s.to_numpy(dtype=np.int64), np_1darray_int64
+        ),
         np_1darray,
         np.int64,
     )
@@ -1174,18 +1195,25 @@ def test_index_types_to_numpy() -> None:
     check(assert_type(i_i.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
 
     # passed dtype-like with statically known generic
+    # TODO: astral-sh/ty#4055
     check(
-        assert_type(td_i.to_numpy(dtype=np.int64), np_1darray_int64),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            td_i.to_numpy(dtype=np.int64), np_1darray_int64
+        ),
         np_1darray,
         np.int64,
     )
     check(
-        assert_type(ts_i.to_numpy(dtype=np.int64), np_1darray_int64),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            ts_i.to_numpy(dtype=np.int64), np_1darray_int64
+        ),
         np_1darray,
         np.int64,
     )
     check(
-        assert_type(p_i.to_numpy(dtype=np.int64), np_1darray_int64),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            p_i.to_numpy(dtype=np.int64), np_1darray_int64
+        ),
         np_1darray,
         np.int64,
     )
@@ -1750,14 +1778,21 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     td1 = pd.Timedelta(1, "D")
     # GH 758
     s4 = s1.astype(object)
-    check(assert_type(s4 - td1, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
+    # TODO: astral-sh/ty#4055
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            s4 - td1, "pd.Series[pd.Timestamp]"
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
 
     td = np.timedelta64(1, "D")
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:
@@ -1771,8 +1806,8 @@ def test_timestamp_strptime_fails() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_never(
             pd.Timestamp.strptime(  # pyright: ignore[reportUnknownArgumentType]
-                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
             )
         )
 
@@ -1882,12 +1917,12 @@ def test_date_range_overloads() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.date_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.date_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.date_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.date_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.date_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.date_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.date_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.date_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_timedelta_range_overloads() -> None:
@@ -1939,12 +1974,12 @@ def test_timedelta_range_overloads() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.timedelta_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        pd.timedelta_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.timedelta_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.timedelta_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.timedelta_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.timedelta_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.timedelta_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.timedelta_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_DatetimeIndex_sub_timedelta() -> None:
