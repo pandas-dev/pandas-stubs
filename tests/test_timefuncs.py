@@ -169,7 +169,7 @@ def test_timedelta_arithmetic() -> None:
     td2 = pd.to_timedelta(4, "hours")
     td3 = td1 + td2
     check(assert_type(td1 - td2, pd.Timedelta), pd.Timedelta)
-    # TODO: #1799 inspect and report to ty
+    # TODO: astral-sh/ty#4053
     check(
         assert_type(
             td1 * 4.3, pd.Timedelta  # ty: ignore[unsupported-operator]
@@ -191,7 +191,7 @@ def test_timedelta_index_arithmetic() -> None:
     check(assert_type(td1, pd.Timedelta), pd.Timedelta)
     check(assert_type(tds1 + td1, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(tds1 - td1, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    # TODO: #1799 inspect and report to ty
+    # TODO: astral-sh/ty#4053
     check(
         assert_type(
             tds1 * 4.3, pd.TimedeltaIndex  # ty: ignore[unsupported-operator]
