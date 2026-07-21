@@ -108,21 +108,13 @@ def test_types_arithmetic() -> None:
     check(assert_type(ts + delta, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - delta, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - dt.datetime(2021, 1, 3), pd.Timedelta), pd.Timedelta)
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        if sys.version_info >= (3, 12):
-            # numpy >= 2.5 has eliminated the type checking errors
-            assert_type(ts_np - ts, dt.timedelta)
-            assert_type(ts_np_time - ts, dt.timedelta)
-        else:
-            # TODO: pandas-dev/pandas-stubs#1511 for numpy < 2.5, numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
-            assert_type(  # pyrefly: ignore[assert-type]
-                ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
-            )
-            assert_type(  # pyrefly: ignore[assert-type]
-                ts_np_time - ts,  # pyright: ignore[reportAssertTypeFailure]
-                dt.timedelta,
-            )
+    # TODO: pandas-dev/pandas-stubs#1511 for numpy >= 2.5, numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
+    if sys.version_info >= (3, 12):
+        check(assert_type(ts_np - ts, dt.timedelta), pd.Timedelta)
+        check(assert_type(ts_np_time - ts, dt.timedelta), pd.Timedelta)
+    else:
+        check(assert_type(ts_np - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        check(assert_type(ts_np_time - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
 
 
 def test_types_comparison() -> None:
