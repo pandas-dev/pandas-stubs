@@ -191,13 +191,13 @@ class Timedelta(timedelta):
     @overload  # type: ignore[override]
     def __mul__(self, other: Just[float] | Just[int]) -> Self: ...
     @overload
-    def __mul__(  # ty: ignore[invalid-method-override]
+    def __mul__(
         self, other: np_ndarray[ShapeT, np.bool_ | np.integer | np.floating]
     ) -> np_ndarray_td[ShapeT]: ...
     @overload
     def __rmul__(self, other: Just[float] | Just[int]) -> Self: ...
     @overload
-    def __rmul__(  # ty: ignore[invalid-method-override]
+    def __rmul__(
         self, other: np_ndarray[ShapeT, np.bool_ | np.integer | np.floating]
     ) -> np_ndarray_td[ShapeT]: ...
     # Override due to more types supported than timedelta
