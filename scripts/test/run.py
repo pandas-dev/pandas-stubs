@@ -11,6 +11,11 @@ def mypy_src() -> None:
     subprocess.run(cmd, check=True)
 
 
+def mypy_src_strict() -> None:
+    cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental", "--strict"]
+    subprocess.run(cmd, check=True)
+
+
 def pyright_src() -> None:
     cmd = ["pyright"]
     subprocess.run(cmd, check=True)
@@ -175,7 +180,7 @@ def ty_src() -> None:
     subprocess.run(cmd, check=True)
 
 
-def ty_all() -> None:
+def ty_src_all() -> None:
     cmd = [
         "ty",
         "check",

@@ -19,6 +19,7 @@ The following tests are **optional**. Some of them are run by the CI but it is o
 
 - Run pytest against pandas nightly: `poe pytest --nightly`
 - Use mypy nightly to validate the annotations: `poe mypy --mypy_nightly`
+- Use mypy with [all optional errors enabled](https://mypy.readthedocs.io/en/stable/config_file.html#confval-strict): `poe mypy_strict`
 - Use pyrefly with [preset](https://pyrefly.org/en/docs/configuration/#preset) 'strict': `poe pyrefly_strict`
 - Use pyrefly with preset 'all': `poe pyrefly_all`
 - Use ty with [all rules raising errors](https://docs.astral.sh/ty/rules/#rule-levels): `poe ty_all`
@@ -28,6 +29,7 @@ Among the tests above, the following can be run directly during a PR by commenti
 
 - Run pytest against pandas nightly by commenting `/pandas_nightly`
 - Use mypy nightly to validate the annotations by commenting `/mypy_nightly`
+- Use mypy with all optional errors enabled: `/mypy_strict`
 - Use pyrefly with preset 'strict': `/pyrefly_strict`
 - Use pyrefly with preset 'all': `/pyrefly_all`
 - Use ty with all rules raising errors: `/ty_all`
