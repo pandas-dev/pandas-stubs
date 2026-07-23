@@ -111,6 +111,10 @@ script = "scripts.test.run:ty_src"
 help = "Run ty on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='ty')"
 
+[tool.poe.tasks.ty_all]
+help = "Run ty on 'tests' (using the local stubs) and on the local stubs with all rules raising errors"
+script = "scripts.test.run:ty_all"
+
 [tool.poe.tasks.pyrefly]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyrefly_src"
@@ -118,6 +122,14 @@ script = "scripts.test.run:pyrefly_src"
 [tool.poe.tasks.pyrefly_dist]
 help = "Run pyrefly on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='pyrefly')"
+
+[tool.poe.tasks.pyrefly_strict]
+help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'strict'"
+script = "scripts.test.run:pyrefly_src_strict"
+
+[tool.poe.tasks.pyrefly_all]
+help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'all'"
+script = "scripts.test.run:pyrefly_src_all"
 
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
@@ -329,19 +341,9 @@ enabled-ignores = ["pyrefly"]
 python-version = "3.11"
 
 [tool.pyrefly.errors]
-# Import discovery
-untyped-import = false
-# enable optional checks
-implicit-abstract-class = true
-implicitly-defined-attribute = true
-open-unpacking = true
-unannotated-attribute = true
-# TODO: enable
-# implicit-any = true
-# missing-source = true
-# missing-override-decorator = true
-# unannotated-parameter = true
-# unannotated-return = true
+explicit-any = false  # We do use implicit Any
+implicit-any-type-argument = false  # We do use implicit Any
+untyped-import = false  # Import discovery
 
 [tool.ty.environment]
 python-platform = "all"
