@@ -2817,9 +2817,9 @@ def test_series_iloc_series_bool() -> None:
 
 
 def test_change_to_dict_return_type() -> None:
-    id = [1, 2, 3]
+    id_ = [1, 2, 3]
     value = ["a", "b", "c"]
-    df = pd.DataFrame(zip(id, value), columns=["id", "value"])
+    df = pd.DataFrame(zip(id_, value), columns=["id", "value"])
     fd = df.set_index("id")["value"].to_dict()
     check(assert_type(fd, dict[Hashable, Any]), dict)
 
@@ -3443,13 +3443,11 @@ def test_map() -> None:
         str,
     )
 
-    def callable(x: int) -> str:
+    def to_str(x: int) -> str:
         return str(x)
 
     check(
-        assert_type(s.map(callable, na_action="ignore"), "pd.Series[str]"),
-        pd.Series,
-        str,
+        assert_type(s.map(to_str, na_action="ignore"), "pd.Series[str]"), pd.Series, str
     )
 
     series = pd.Series(["a", "b", "c"])
@@ -3478,13 +3476,13 @@ def test_map_na() -> None:
         assert_type(s.map(user_dict, na_action=None), "pd.Series[str]"), pd.Series, str
     )
 
-    def callable(x: int | NAType) -> str | NAType:
+    def to_str_na(x: int | NAType) -> str | NAType:
         if isinstance(x, int):
             return str(x)
         return x
 
     check(
-        assert_type(s.map(callable, na_action=None), "pd.Series[str]"), pd.Series, str
+        assert_type(s.map(to_str_na, na_action=None), "pd.Series[str]"), pd.Series, str
     )
 
     series = pd.Series(["a", "b", "c"])
