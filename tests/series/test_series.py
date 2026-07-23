@@ -89,7 +89,7 @@ from tests.dtypes import (
 from tests.extension.decimal.array import DecimalDtype
 
 if TYPE_CHECKING:
-    from typing import Any  # noqa: F401
+    from typing import Any
 
 from pandas.io.formats.format import EngFormatter
 from pandas.tseries.offsets import (
