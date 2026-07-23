@@ -174,9 +174,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
     def __array_ufunc__(
         self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
     ) -> Any:
-        if not all(
-            isinstance(t, self._HANDLED_TYPES + (DecimalArray,)) for t in inputs
-        ):
+        if not all(isinstance(t, (*self._HANDLED_TYPES, DecimalArray)) for t in inputs):
             return NotImplemented
 
         if "out" in kwargs:
