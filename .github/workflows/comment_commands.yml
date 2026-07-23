@@ -16,7 +16,7 @@ jobs:
       actions: write
       checks: write
     # if more commands are added, they will need to be added here too as we don't have access to env at this stage
-    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly"]'), github.event.comment.body) && github.event.comment.author_association == 'MEMBER'
+    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly", "/pyrefly_strict", "/pyrefly_all", "/ty_all"]'), github.event.comment.body) && github.event.comment.author_association == 'MEMBER'
 
     steps:
       - name: Resolve comment command
@@ -33,6 +33,18 @@ jobs:
             /mypy_nightly)
               echo "poe_command=mypy --mypy_nightly" >> "${GITHUB_OUTPUT}"
               echo "check_name=Mypy nightly tests" >> "${GITHUB_OUTPUT}"
+              ;;
+            /pyrefly_strict)
+              echo "poe_command=pyrefly_strict" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Pyrefly tests strict preset" >> "${GITHUB_OUTPUT}"
+              ;;
+            /pyrefly_all)
+              echo "poe_command=pyrefly_all" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Pyrefly tests all preset" >> "${GITHUB_OUTPUT}"
+              ;;
+            /ty_all)
+              echo "poe_command=ty_all" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Ty tests all rules raising errors" >> "${GITHUB_OUTPUT}"
               ;;
             *)
               echo "Unknown command: ${COMMENT_BODY}" >&2
