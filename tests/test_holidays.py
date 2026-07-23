@@ -28,16 +28,19 @@ from pandas.tseries.offsets import BaseOffset
 
 def test_custom_calendar() -> None:
     class ExampleCalendar(AbstractHolidayCalendar):
-        rules = [
-            USMemorialDay,
-            Holiday("July 4th", month=7, day=4, observance=nearest_workday),
-            Holiday(
-                "Columbus Day",
-                month=10,
-                day=1,
-                offset=pd.DateOffset(weekday=1),
-            ),
-        ]
+        def __init__(self, name: str = "", rules: list[Holiday] | None = None) -> None:
+            if rules is None:
+                rules = [
+                    USMemorialDay,
+                    Holiday("July 4th", month=7, day=4, observance=nearest_workday),
+                    Holiday(
+                        "Columbus Day",
+                        month=10,
+                        day=1,
+                        offset=pd.DateOffset(weekday=1),
+                    ),
+                ]
+            super().__init__(name=name, rules=rules)
 
     cal = ExampleCalendar()
 
@@ -120,10 +123,13 @@ def test_holiday_attributes() -> None:
 
 def test_calendar_attributes() -> None:
     class ExampleCalendar(AbstractHolidayCalendar):
-        rules = [
-            USMemorialDay,
-            Holiday("July 4th", month=7, day=4, observance=nearest_workday),
-        ]
+        def __init__(self, name: str = "", rules: list[Holiday] | None = None) -> None:
+            if rules is None:
+                rules = [
+                    USMemorialDay,
+                    Holiday("July 4th", month=7, day=4, observance=nearest_workday),
+                ]
+            super().__init__(name=name, rules=rules)
 
     cal = ExampleCalendar(name="example")
     check(assert_type(cal.name, str), str)
