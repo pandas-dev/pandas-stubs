@@ -289,21 +289,8 @@ def test_interval_math() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _i = interval_i - pd.Interval(1, 2)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
         _f = interval_f - pd.Interval(1.0, 2.0)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        # TODO: psf/black#4880
-        # fmt: off
-        _ts = (  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-            interval_ts # pyrefly: ignore[unsupported-operation]
-            - pd.Interval(  # type: ignore[operator]
-                pd.Timestamp(2025, 9, 29), pd.Timestamp(2025, 9, 30), closed="both"
-            )
-        )
-        _td = (  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
-            interval_td # pyrefly: ignore[unsupported-operation]
-            - pd.Interval(  # type: ignore[operator]
-                pd.Timedelta(1, "ns"), pd.Timedelta(2, "ns")
-            )
-        )
-        # fmt: on
+        _ts = interval_ts - pd.Interval(pd.Timestamp(2025, 9, 29), pd.Timestamp(2025, 9, 30), closed="both")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _td = interval_td - pd.Interval(pd.Timedelta(1, "ns"), pd.Timedelta(2, "ns"))  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
 
 def test_interval_cmp() -> None:
