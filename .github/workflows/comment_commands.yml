@@ -16,7 +16,7 @@ jobs:
       actions: write
       checks: write
     # if more commands are added, they will need to be added here too as we don't have access to env at this stage
-    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly"]'), github.event.comment.body) && github.event.comment.author_association == 'MEMBER'
+    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/mypy_nightly", "/mypy_strict", "/pyrefly_strict", "/pyrefly_all", "/ty_all"]'), github.event.comment.body) && github.event.comment.author_association == 'MEMBER'
 
     steps:
       - name: Resolve comment command
@@ -33,6 +33,22 @@ jobs:
             /mypy_nightly)
               echo "poe_command=mypy --mypy_nightly" >> "${GITHUB_OUTPUT}"
               echo "check_name=Mypy nightly tests" >> "${GITHUB_OUTPUT}"
+              ;;
+            /mypy_strict)
+              echo "poe_command=mypy_strict" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Mypy strict tests" >> "${GITHUB_OUTPUT}"
+              ;;
+            /pyrefly_strict)
+              echo "poe_command=pyrefly_strict" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Pyrefly tests strict preset" >> "${GITHUB_OUTPUT}"
+              ;;
+            /pyrefly_all)
+              echo "poe_command=pyrefly_all" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Pyrefly tests all preset" >> "${GITHUB_OUTPUT}"
+              ;;
+            /ty_all)
+              echo "poe_command=ty_all" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Ty tests all rules raising errors" >> "${GITHUB_OUTPUT}"
               ;;
             *)
               echo "Unknown command: ${COMMENT_BODY}" >&2
@@ -60,7 +76,7 @@ jobs:
             core.setOutput('repository', pr.data.head.repo.full_name)
 
       - name: Checkout code on the correct branch
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v7
         with:
           # context is not aware which branch to checkout so it would otherwise
           # default to main (we also need repo name to source from the right user
