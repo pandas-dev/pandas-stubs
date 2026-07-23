@@ -7,7 +7,7 @@ ty_src = Step(
 )
 ty_src_all = Step(
     name="Run ty on 'tests' (using the local stubs) and on the local stubs with all rules raising errors",
-    run=run.ty_all,
+    run=run.ty_src_all,
 )
 pyrefly_src = Step(
     name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs",
@@ -28,6 +28,10 @@ pyright_src = Step(
 mypy_src = Step(
     name="Run mypy on 'tests' (using the local stubs) and on the local stubs",
     run=run.mypy_src,
+)
+mypy_src_strict = Step(
+    name="Run mypy on 'tests' (using the local stubs) and on the local stubs with all optional errors enabled",
+    run=run.mypy_src_strict,
 )
 pytest = Step(name="Run pytest", run=run.pytest)
 style = Step(name="Run pre-commit", run=run.style)
