@@ -12,7 +12,7 @@ def mypy_src() -> None:
 
 
 def pyright_src() -> None:
-    cmd = ["pyright"]
+    cmd = ["pyright", "--warnings"]
     subprocess.run(cmd, check=True)
 
 
@@ -77,7 +77,7 @@ def mypy_dist() -> None:
 
 
 def pyright_dist() -> None:
-    cmd = ["pyright", "tests"]
+    cmd = ["pyright", "tests", "--warnings"]
     subprocess.run(cmd, check=True)
 
 

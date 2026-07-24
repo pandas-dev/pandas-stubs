@@ -307,9 +307,21 @@ typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false    # use pyright-specific ignores
-reportUnnecessaryTypeIgnoreComment = true
 # enable optional checks
-reportMissingModuleSource = true
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-settings-defaults
+deprecateTypingAliases = true
+enableExperimentalFeatures = false
+reportCallInDefaultInitializer = true
+reportImplicitOverride = "none"
+reportImplicitStringConcatenation = true
+reportImportCycles = "none"
+reportMissingSuperCall = true
+reportPropertyTypeMismatch = "none"
+reportUninitializedInstanceVariable = "none"
+reportUnnecessaryTypeIgnoreComment = true
+reportUnreachable = "none"
+reportUnusedCallResult = "none"
+
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser, ttest"
