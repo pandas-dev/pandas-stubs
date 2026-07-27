@@ -886,6 +886,18 @@ def test_types_read_csv_date(tmp_path: Path) -> None:
     )
 
 
+def test_read_csv_dtype_dict() -> None:
+    # GH 1842
+    csv = io.StringIO("i,f\n1,2.5\n")
+
+    my_col_types = {
+        "i": int,
+        "f": float,
+    }
+
+    check(assert_type(pd.read_csv(csv, dtype=my_col_types), pd.DataFrame), pd.DataFrame)
+
+
 def test_read_table(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_csv(path_str, sep="\t"), None), type(None))
