@@ -2,6 +2,7 @@ from collections.abc import Hashable
 from typing import Self
 
 from pandas.core.series import Series
+from pandas.core.strings.accessor import StrDescriptor
 
 from pandas._typing import Scalar
 
@@ -34,5 +35,8 @@ class Expression:
     def __xor__(self, other: Scalar | Series | Self) -> Expression: ...
     def __rxor__(self, other: Scalar | Series | Self) -> Expression: ...
     def __invert__(self) -> Expression: ...
+
+    # Special Series attributes
+    str = StrDescriptor()
 
 def col(col_name: Hashable) -> Expression: ...

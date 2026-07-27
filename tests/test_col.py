@@ -88,3 +88,12 @@ def test_logical_operators_with_series() -> None:
     check(assert_type(x & s, Expression), Expression)
     check(assert_type(x | s, Expression), Expression)
     check(assert_type(x ^ s, Expression), Expression)
+
+
+def test_str_accessor() -> None:
+    """Test the str accessor for Expression."""
+    df = pd.DataFrame({"name": ["beluga", "narwhal"], "speed": [100, 110]})
+    check(
+        assert_type(df.assign(name_titlecase=pd.col("name").str.title()), pd.DataFrame),
+        pd.DataFrame,
+    )

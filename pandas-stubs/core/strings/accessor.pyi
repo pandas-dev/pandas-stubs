@@ -15,6 +15,7 @@ from typing import (
 )
 
 from pandas.core.base import NoNewAttributesMixin
+from pandas.core.col import Expression
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.multi import MultiIndex
@@ -561,3 +562,7 @@ class StrDescriptor:
     def __get__(
         self, instance: Index[S2], owner: type[Index]
     ) -> IndexStringMethods[S2]: ...
+    @overload
+    def __get__(
+        self, instance: Expression, owner: type[Expression]
+    ) -> SeriesStringMethods[str]: ...
