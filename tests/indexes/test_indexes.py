@@ -76,7 +76,11 @@ def test_index_isin() -> None:
 
     mi = pd.MultiIndex.from_arrays([[1, 2, 3]])
     check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
-    check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
+
+    if PD_LTE_31:
+        # TODO: pandas-dev/pandas#0000 pandas bug
+        check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
+
     if TYPE_CHECKING_INVALID_USAGE:
         mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
