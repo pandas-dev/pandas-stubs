@@ -25,6 +25,7 @@ from pandas._typing import (
     DtypeBackend,
     FilePath,
     HashableT,
+    HashableT1,
     ListLikeHashable,
     ReadCsvBuffer,
     StorageOptions,
@@ -41,7 +42,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = None,
+    dtype: DtypeArg | Mapping[HashableT1, DtypeArg] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -96,7 +97,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = None,
+    dtype: DtypeArg | Mapping[HashableT1, DtypeArg] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -151,7 +152,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType[HashableT] = ...,
-    dtype: DtypeArg | Mapping[Hashable, DtypeArg] | None = ...,
+    dtype: DtypeArg | Mapping[HashableT1, DtypeArg] | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
