@@ -120,13 +120,10 @@ def test_types_concat_none() -> None:
     )
     check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
     )
-    check(
-        assert_type(pd.concat([None, series, df]), pd.DataFrame),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
     check(
         assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
@@ -266,10 +263,7 @@ def test_types_concat() -> None:
     check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
 
     data: pd.DataFrame | pd.Series = pd.Series()
-    check(
-        assert_type(pd.concat([pd.DataFrame(), data]), pd.DataFrame),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat([pd.DataFrame(), data]), pd.DataFrame), pd.DataFrame)
 
 
 def test_concat_series_mixed_numeric() -> None:

@@ -18,7 +18,7 @@ from pandas._typing import (
     np_ndarray,
 )
 
-def eval(
+def eval(  # noqa: A001
     expr: str | BinOp,
     parser: Literal["pandas", "python"] = "pandas",
     engine: Literal["python", "numexpr"] | None = None,

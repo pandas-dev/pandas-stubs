@@ -150,6 +150,7 @@ class TimedeltaIndex(
     def shift(
         self, periods: int = 1, freq: Frequency | timedelta | None = None
     ) -> Self: ...
+    def diff(self, periods: int = 1) -> Self: ...
 
 @overload
 def timedelta_range(
