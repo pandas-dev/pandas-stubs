@@ -82,7 +82,7 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
 
     if PD_LTE_31:
-        # TODO: pandas-dev/pandas#0000 pandas bug
+        # TODO: pandas-dev/pandas#66514 pandas bug on nightly
         check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
