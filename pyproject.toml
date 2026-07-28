@@ -206,8 +206,6 @@ ignore = [
   "N",      # https://docs.astral.sh/ruff/rules/#pep8-naming-n
   "TD002",  # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
-  "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
-  "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
   "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "ERA001",
@@ -234,11 +232,9 @@ ignore = [
   "S101",    # https://docs.astral.sh/ruff/rules/assert/
   "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
-  "A001",   # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
   "PYI042", # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "SLF001", # https://docs.astral.sh/ruff/rules/private-member-access/
-  "ERA",
-  "RUF",
+  "ERA001",  # https://docs.astral.sh/ruff/rules/commented-out-code/
   "SIM",
   "TRY",
   "PT",

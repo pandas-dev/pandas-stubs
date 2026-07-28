@@ -66,7 +66,7 @@ from pandas.core.api import (
 )
 from pandas.core.arrays.sparse import SparseDtype as SparseDtype
 from pandas.core.col import col as col
-from pandas.core.computation.api import eval as eval
+from pandas.core.computation.api import eval as eval  # noqa: A004
 from pandas.core.reshape.api import (
     concat as concat,
     crosstab as crosstab,
