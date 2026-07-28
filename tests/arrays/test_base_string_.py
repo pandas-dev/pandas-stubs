@@ -1,3 +1,5 @@
+# ty: ignore[no-matching-overload,type-assertion-failure]
+# TODO: remove the above ignores astral-sh/ty#3199, astral-sh/ty#4102
 from collections import UserList
 from collections.abc import (
     Callable,

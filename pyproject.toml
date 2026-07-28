@@ -350,7 +350,13 @@ respect-type-ignore-comments = false
 
 [tool.ty.src]
 exclude = [
-  "tests/arrays/**/*",
+  "tests/arrays/test_boolean.py",
+  "tests/arrays/test_categorical.py",
+  "tests/arrays/test_datetime_array.py",
+  "tests/arrays/test_floating.py",
+  "tests/arrays/test_integer.py",
+  "tests/arrays/test_string_.py",
+  "tests/arrays/test_string_arrow.py",
   "tests/frame/**/*",
   "tests/indexes/**/*",
   "tests/scalars/**/*",
