@@ -31,10 +31,14 @@ from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.frozen import FrozenList
 import pytest
 
+from pandas._libs.tslibs.offsets import BaseOffset
+
 from tests import (
     PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
+    WINDOWS,
     check,
+    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray,
@@ -1919,3 +1923,104 @@ def test_index_from_tuples() -> None:
         assert_type(pd.Index([(1, 2), (3, 4)], tupleize_cols=False), pd.Index),
         pd.Index,
     )
+
+
+def test_diff() -> None:
+    ind = pd.Index([1, 1, 2, 3, 5, 8])
+    # int -> float
+    check(assert_type(ind.diff(), "pd.Index[float]"), pd.Index, float)
+    # unint -> float
+    check(assert_type(ind.astype(np.uint32).diff(), "pd.Index[float]"), pd.Index, float)
+    # float -> float
+    check(assert_type(ind.astype(float).diff(), "pd.Index[float]"), pd.Index, float)
+    # datetime.date -> timeDelta
+    check(
+        assert_type(
+            pd.Index([dt.datetime.now(), dt.datetime.now()]).diff(),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
+    )
+    # timestamp -> timedelta
+    times = pd.Index([pd.Timestamp(0), pd.Timestamp(1)])
+    check(
+        assert_type(times.diff(), pd.TimedeltaIndex),
+        pd.Index,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
+    )
+    # timedelta -> timedelta64
+    check(
+        assert_type(
+            pd.Index([pd.Timedelta(0), pd.Timedelta(1)]).diff(),
+            pd.TimedeltaIndex,
+        ),
+        pd.Index,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
+    )
+    # period -> object
+    with pytest_warns_conditioned(
+        RuntimeWarning, "overflow encountered in scalar multiply", WINDOWS
+    ):
+        check(
+            assert_type(
+                pd.period_range(start="2017-01-01", end="2017-02-01", freq="D").diff(),
+                pd.Index,  # "pd.Index[BaseOffset]" has dtype object
+            ),
+            pd.Index,
+            BaseOffset,
+            index_to_check_for_type=-1,
+        )
+    # bool -> Any
+    check(
+        assert_type(pd.Index([True, True, False, False, True]).diff(), pd.Index),
+        pd.Index,
+        bool,
+        index_to_check_for_type=-1,
+    )
+    # nullable bool -> nullable bool
+    # casting due to pandas-dev/pandas-stubs#1395
+    check(
+        assert_type(
+            cast(
+                "pd.Index[pd.BooleanDtype]",
+                pd.Index([True, True, False, False, True], dtype="boolean").diff(),
+            ),
+            "pd.Index[pd.BooleanDtype]",
+        ),
+        pd.Index,
+        np.bool_,
+        index_to_check_for_type=-1,
+    )
+    # Any -> Any
+    s_o = ind.astype(object)
+    assert_type(s_o, pd.Index)
+    check(assert_type(s_o.diff(), pd.Index), pd.Index, float)
+    mi = pd.MultiIndex.from_arrays(
+        [range(4), pd.date_range("2026-01-30", "2026-02-02")], names=["a", "b"]
+    )
+    check(assert_type(mi.get_level_values("a").diff(), pd.Index), pd.Index, float)
+    check(
+        assert_type(mi.get_level_values("b").diff(), pd.Index),
+        pd.Index,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
+    )
+    # complex -> complex
+    check(
+        assert_type(ind.astype(complex).diff(), "pd.Index[complex]"), pd.Index, complex
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
+        pd.Index([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+
+        # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
+        pd.Index(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+
+        def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
+            # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+            assert_type(pd.Index([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
