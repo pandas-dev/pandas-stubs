@@ -223,6 +223,7 @@ def test_construction_dtype(
         assert_type(pd.array([], "<M8[us]"), DatetimeArray)
         assert_type(pd.array([], "<M8[ns]"), DatetimeArray)
         assert_type(pd.array([], np.dtype("<M8[ns]")), DatetimeArray)
+        assert_type(pd.array([], np.dtype("datetime64[ns]")), DatetimeArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
         pd.array([], "datetime64[Y]")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
