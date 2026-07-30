@@ -611,14 +611,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     # categorical indexes are also ambiguous
-
-    # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
     categorical_index = pd.CategoricalIndex(df.a)
     iterator2 = df.groupby(categorical_index).__iter__()
-    check(
-        assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]]),
-        Iterator,
-    )
+    check(assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]]), Iterator)
     index2, value2 = next(iterator2)
     check(
         assert_type((index2, value2), tuple[Any, pd.DataFrame]),
