@@ -435,7 +435,7 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.nth((0, 1, 2)), pd.DataFrame | pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword]
+        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_groupby_index() -> None:
@@ -563,7 +563,10 @@ def test_groupby_result_for_scalar_indexes() -> None:
         assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]"),
         pd.IntervalIndex,
     )
-    iterator4 = df.groupby(interval_index).__iter__()
+    # TODO: astral-sh/ty#0
+    iterator4 = df.groupby(
+        interval_index
+    ).__iter__()  # ty: ignore[invalid-argument-type]
     check(
         assert_type(
             iterator4, Iterator[tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]]
@@ -588,7 +591,8 @@ def test_groupby_result_for_scalar_indexes() -> None:
     for _tdelta, _g in df.groupby(tdelta_index):
         pass
 
-    for _interval, _g in df.groupby(interval_index):
+    # TODO: astral-sh/ty#0
+    for _interval, _g in df.groupby(interval_index):  # ty: ignore[not-iterable]
         pass
 
 
@@ -637,7 +641,13 @@ def test_groupby_apply() -> None:
     )
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
+    # TODO: astral-sh/ty#0
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            df.groupby("col1").apply(lfunc), pd.Series
+        ),
+        pd.Series,
+    )
 
     def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()
