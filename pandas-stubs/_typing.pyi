@@ -1073,40 +1073,36 @@ Function: TypeAlias = np.ufunc | Callable[..., Any]
 # type is need in a function that uses GroupByObjectNonScalar
 _HashableTa = TypeVar("_HashableTa", bound=Hashable, default=Any)
 if TYPE_CHECKING:
-    ByT = TypeVar(
-        "ByT",
-        bound=str
+    SeriesByT_bound: TypeAlias = (
+        str
         | bytes
         | datetime.date
+        | bool
+        | int
+        | float
+        | complex
+        | datetime.datetime
+        | datetime.timedelta
+        | Period
+        # TODO: can write Interval[int | float | Timestamp | Timedelta] after astral-sh/ty#3199 is resolved
+        | Interval[int]
+        | Interval[float]
+        | Interval[Timestamp]
+        | Interval[Timedelta]
+    )
+    ByT_bound: TypeAlias = (
+        SeriesByT_bound
         | datetime.datetime
         | datetime.timedelta
         | np.datetime64
         | np.timedelta64
-        | bool
-        | int
-        | float
-        | complex
         | Scalar
-        | Period
-        | Interval[int | float | Timestamp | Timedelta]
-        | tuple[Any, ...],
+        | tuple[Any, ...]
     )
+    ByT = TypeVar("ByT", bound=ByT_bound)
     # Use a distinct SeriesByT when using groupby with Series of known dtype.
     # Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
-    SeriesByT = TypeVar(
-        "SeriesByT",
-        bound=str
-        | bytes
-        | datetime.date
-        | bool
-        | int
-        | float
-        | complex
-        | datetime.datetime
-        | datetime.timedelta
-        | Period
-        | Interval[int | float | Timestamp | Timedelta],
-    )
+    SeriesByT = TypeVar("SeriesByT", bound=SeriesByT_bound)
     GroupByObjectNonScalar: TypeAlias = (
         tuple[_HashableTa, ...]
         | list[_HashableTa]

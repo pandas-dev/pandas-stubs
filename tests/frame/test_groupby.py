@@ -563,10 +563,7 @@ def test_groupby_result_for_scalar_indexes() -> None:
         assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]"),
         pd.IntervalIndex,
     )
-    # TODO: astral-sh/ty#0
-    iterator4 = df.groupby(
-        interval_index
-    ).__iter__()  # ty: ignore[invalid-argument-type]
+    iterator4 = df.groupby(interval_index).__iter__()
     check(
         assert_type(
             iterator4, Iterator[tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]]
@@ -591,8 +588,7 @@ def test_groupby_result_for_scalar_indexes() -> None:
     for _tdelta, _g in df.groupby(tdelta_index):
         pass
 
-    # TODO: astral-sh/ty#0
-    for _interval, _g in df.groupby(interval_index):  # ty: ignore[not-iterable]
+    for _interval, _g in df.groupby(interval_index):
         pass
 
 
@@ -635,19 +631,11 @@ def test_groupby_apply() -> None:
     def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    check(
-        assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
-        pd.Series,
-    )
+    check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
 
-    lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    # TODO: astral-sh/ty#0
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.groupby("col1").apply(lfunc), pd.Series
-        ),
-        pd.Series,
-    )
+    # TODO: revert to the original once astral-sh/ty#4055 astral-sh/ty#4135 are fixed
+    lfunc: Callable[[pd.DataFrame], float] = lambda _: 1.0  # x: x.sum().mean()
+    check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
     def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()

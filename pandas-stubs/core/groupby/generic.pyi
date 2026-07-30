@@ -11,7 +11,6 @@ from typing import (
     Generic,
     Literal,
     Never,
-    Protocol,
     Self,
     TypeAlias,
     TypeVar,
@@ -224,44 +223,20 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
 
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
-class DFCallable1(Protocol[P]):
-    def __call__(
-        self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
-    ) -> Scalar | list[Any] | dict[Hashable, Any]: ...
-
-class DFCallable2(Protocol[P]):
-    def __call__(
-        self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
-    ) -> DataFrame | Series: ...
-
-class DFCallable3(Protocol[P]):
-    def __call__(
-        self, df: Iterable[Any], /, *args: P.args, **kwargs: P.kwargs
-    ) -> float: ...
-
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
-    # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
-    @overload  # type: ignore[override]
-    def apply(  # pyrefly: ignore[bad-override]
+    @overload
+    def apply(
         self,
-        func: DFCallable1[P],
-        /,
+        func: Callable[
+            Concatenate[DataFrame, P], Scalar | list[Any] | dict[Hashable, Any]
+        ],
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> Series: ...
     @overload
     def apply(
         self,
-        func: DFCallable2[P],
-        /,
-        *args: P.args,
-        **kwargs: P.kwargs,
-    ) -> DataFrame: ...
-    @overload
-    def apply(  # ty: ignore[invalid-method-override]
-        self,
-        func: DFCallable3[P],
-        /,
+        func: Callable[Concatenate[DataFrame, P], DataFrame | Series] | str,
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> DataFrame: ...
