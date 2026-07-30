@@ -52,6 +52,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_excel_pandas4,
 )
 from tests._typing import (
     np_1darray,
@@ -2966,57 +2967,33 @@ def test_to_excel(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl")
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The default engine for reading 'xlsx' files will ch",
-        lower="3.0.99",
-    ):
+    with pytest_warns_excel_pandas4():
         check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     path = tmp_path / str(uuid.uuid4())
     df.to_excel(path, engine="openpyxl")
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The default engine for reading 'xlsx' files will ch",
-        lower="3.0.99",
-    ):
+    with pytest_warns_excel_pandas4():
         check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
 
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl", startrow=1, startcol=1, header=False)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The default engine for reading 'xlsx' files will ch",
-        lower="3.0.99",
-    ):
+    with pytest_warns_excel_pandas4():
         check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl", sheet_name="sheet", index=False)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The default engine for reading 'xlsx' files will ch",
-        lower="3.0.99",
-    ):
+    with pytest_warns_excel_pandas4():
         check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl", header=["x", "y"])
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The default engine for reading 'xlsx' files will ch",
-        lower="3.0.99",
-    ):
+    with pytest_warns_excel_pandas4():
         check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl", columns=["col1"])
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The default engine for reading 'xlsx' files will ch",
-        lower="3.0.99",
-    ):
+    with pytest_warns_excel_pandas4():
         check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
 
 

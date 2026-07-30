@@ -123,7 +123,6 @@ def test_types_concat_none() -> None:
         assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
     )
     check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
     check(
         assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),

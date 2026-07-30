@@ -208,12 +208,12 @@ def pytest_warns_conditioned(
     return suppress(upper_exception)
 
 
-def pytest_warns_pandas4(
-    match: str, lb: str | None = None, ub: str | None = None
-) -> AbstractContextManager[Any]:
-    lb = lb or "3.0.99"
-    ub = ub or "3.1.99"
-    return pytest_warns_bounded(Pandas4Warning, match, lb, ub)
+def pytest_warns_excel_pandas4() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        "The default engine for reading 'xlsx' files will ch",
+        lower="3.0.99",
+    )
 
 
 def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception] | None:
