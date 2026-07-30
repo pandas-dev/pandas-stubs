@@ -39,7 +39,6 @@ from typing import (
 
 from _typeshed import (
     SupportsAdd,
-    SupportsGetItem,
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
@@ -1081,9 +1080,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def diff(self: Series[Interval], periods: int = ...) -> Never: ...
     @overload
-    def diff(
-        self: SupportsGetItem[Scalar, SupportsSelfSub[S2]], periods: int = ...
-    ) -> Series[S2]: ...
+    def diff(self: Iterable[SupportsSelfSub[S2]], periods: int = ...) -> Series[S2]: ...
     def autocorr(self, lag: int = 1) -> float: ...
     @overload
     def dot(self, other: Series[S1]) -> Scalar: ...
@@ -4222,7 +4219,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[int]: ...
     @overload
     def cumprod(
-        self: SupportsGetItem[Scalar, _SupportsMul[S1]],
+        self: Iterable[_SupportsMul[S1]],
         axis: AxisIndex = ...,
         skipna: _bool = ...,
         *args: Any,
@@ -4346,7 +4343,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Timestamp: ...
     @overload
     def mean(
-        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        self: Iterable[SupportsTruedivInt[S2]],
         *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
@@ -4376,7 +4373,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> float: ...
     @overload
     def median(
-        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        self: Iterable[SupportsTruedivInt[S2]],
         *,
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
@@ -4541,7 +4538,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Timedelta: ...
     @overload
     def std(
-        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        self: Iterable[SupportsTruedivInt[S2]],
         *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
@@ -4550,7 +4547,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         **kwargs: Any,
     ) -> S2: ...
     def sum(
-        self: SupportsGetItem[Scalar, _SupportsAdd[_T]],
+        self: Iterable[_SupportsAdd[_T]],
         *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
@@ -4816,7 +4813,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> float: ...
     @overload
     def var(
-        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        self: Iterable[SupportsTruedivInt[S2]],
         *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
