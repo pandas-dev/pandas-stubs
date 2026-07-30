@@ -203,6 +203,8 @@ from pandas._typing import (
     NumpyIntDtypeArg,
     NumpyObjectDtypeArg,
     NumpyStrDtypeArg,
+    NumpyTimedeltaDtypeArg,
+    NumpyTimestampDtypeArg,
     NumpyUIntDtypeArg,
     ObjectDtypeArg,
     PandasAstypeTimedeltaDtypeArg,
@@ -4568,7 +4570,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[Timestamp],
-        dtype: type[np.datetime64] | None = None,
+        dtype: type[np.datetime64] | NumpyTimestampDtypeArg | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
@@ -4584,7 +4586,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[Timedelta],
-        dtype: type[np.timedelta64] | None = None,
+        dtype: type[np.timedelta64] | NumpyTimedeltaDtypeArg | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
