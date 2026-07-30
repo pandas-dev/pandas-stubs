@@ -56,7 +56,13 @@ def test_construction_array_like() -> None:
 
     check(assert_type(pd.array(data), NumpyExtensionArray), NumpyExtensionArray)
 
-    check(assert_type(pd.array(np_arr), NumpyExtensionArray), NumpyExtensionArray)
+    # TODO: astral-sh/ty#3199 ty does not support nested numpy typing
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            pd.array(np_arr), NumpyExtensionArray
+        ),
+        NumpyExtensionArray,
+    )
 
     check(
         assert_type(pd.array(pd.array(data)), NumpyExtensionArray), NumpyExtensionArray
@@ -260,8 +266,12 @@ def test_construction_dtype(
 
 @pytest.mark.parametrize("creator", [np.array, pd.array])
 def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -> None:
+    # TODO: astral-sh/ty#3199 ty does not support nested numpy typing
     check(
-        assert_type(NumpyExtensionArray(creator([None])), NumpyExtensionArray),
+        assert_type(
+            NumpyExtensionArray(creator([None])),  # ty: ignore[invalid-argument-type]
+            NumpyExtensionArray,
+        ),
         NumpyExtensionArray,
     )
 
@@ -270,7 +280,7 @@ def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -
         assert_type(NumpyExtensionArray(pd.array([None])), NumpyExtensionArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _list = NumpyExtensionArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
