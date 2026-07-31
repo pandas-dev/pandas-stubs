@@ -218,15 +218,7 @@ def test_frame_groupby_resample() -> None:
     def resample_interpolate_linear(x: DataFrame) -> DataFrame:
         return x.resample("ME").interpolate(method="linear")
 
-    check(
-        assert_type(
-            GB_DF.apply(
-                resample_interpolate_linear,
-            ),
-            DataFrame,
-        ),
-        DataFrame,
-    )
+    check(assert_type(GB_DF.apply(resample_interpolate_linear), DataFrame), DataFrame)
 
     # mypy cannot infer the return type of raw lambdas against Protocol-based overloads;
     # use typed Callable variables to work around this limitation.
