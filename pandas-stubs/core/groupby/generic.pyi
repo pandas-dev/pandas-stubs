@@ -236,7 +236,14 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def apply(
         self,
-        func: Callable[Concatenate[DataFrame, P], DataFrame | Series] | str,
+        func: Callable[Concatenate[DataFrame, P], Series],
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> Series | DataFrame: ...
+    @overload
+    def apply(
+        self,
+        func: Callable[Concatenate[DataFrame, P], DataFrame] | str,
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> DataFrame: ...
