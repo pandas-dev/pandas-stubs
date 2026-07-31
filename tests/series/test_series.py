@@ -2783,6 +2783,16 @@ def test_series_iloc_series_bool() -> None:
     )
 
 
+def test_loc_str() -> None:
+    """Test Series.loc for str and np.str_ types."""
+    sr = pd.Series([1, 2, 3, 4], index=["a", "b", "c", "d"])
+
+    check(assert_type(sr.loc["b"], int), np.integer)
+    check(assert_type(sr.loc[["b"]], "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(sr.loc[np.str_("a")], int), np.integer)
+    check(assert_type(sr.loc[[np.str_("b")]], "pd.Series[int]"), pd.Series, np.integer)
+
+
 def test_change_to_dict_return_type() -> None:
     id_ = [1, 2, 3]
     value = ["a", "b", "c"]

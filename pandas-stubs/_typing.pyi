@@ -932,8 +932,6 @@ PyArrowNotStrDtypeArg: TypeAlias = (
     | PyArrowBytesDtypeArg
 )
 
-StrLike: TypeAlias = str | np.str_
-
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 ScalarT0 = TypeVar("ScalarT0", bound=Scalar, default=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.

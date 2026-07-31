@@ -35,7 +35,7 @@ from tests.utils import powerset
 @pytest.mark.parametrize("data", list(powerset(["pd", np.str_("pd")], 1)))
 @pytest.mark.parametrize("missing_values", list(powerset([np.nan, None, pd.NA])))
 def test_construction_sequence(
-    data: tuple[str | np.str_, ...],
+    data: tuple[str, ...],
     missing_values: tuple[Any, ...],
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
@@ -75,7 +75,7 @@ def test_construction_array_like() -> None:
     ("dtype", "target_dtype"), (PYTHON_STRING_ARGS | PANDAS_BASE_STRING_ARGS).items()
 )
 def test_construction_dtype(
-    data: tuple[str | np.str_, ...],
+    data: tuple[str, ...],
     dtype: BuiltinStrDtypeArg | PandasBaseStrDtypeArg,
     target_dtype: type,
 ) -> None:
