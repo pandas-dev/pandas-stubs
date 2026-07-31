@@ -101,6 +101,7 @@ if TYPE_CHECKING:
 _T_co = TypeVar("_T_co", covariant=True)
 _T_contra = TypeVar("_T_contra", contravariant=True)
 
+# TODO: caveats pandas-dev/pandas-stubs#1609 hauntsaninja/useful_types#25
 class SequenceNotStr(Protocol[_T_co]):
     @overload
     def __getitem__(self, index: SupportsIndex, /) -> _T_co: ...
@@ -1234,6 +1235,7 @@ class Just(Protocol, Generic[T]):
     def __class__(self, t: type[T], /) -> None: ...
 
 # Read-only (covariant) list for use in parameter annotations (See GH #1745)
+# TODO: caveats astral-sh/ty#4150 python/mypy#21795
 class CovariantList(Protocol[_T_co]):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
     @property  # type: ignore[override]
