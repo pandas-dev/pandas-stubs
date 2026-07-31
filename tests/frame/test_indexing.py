@@ -665,4 +665,4 @@ def test_frame_iat() -> None:
     df.iat[0, 0] = 999
     df.iat[0, 0] = float("nan")
     if TYPE_CHECKING_INVALID_USAGE:
-        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation]
+        df.iat[(0,), 0] = 999  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
