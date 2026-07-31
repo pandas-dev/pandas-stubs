@@ -17,7 +17,7 @@ jobs:
       actions: write
 
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
 
@@ -38,7 +38,7 @@ jobs:
       actions: write
 
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
 
@@ -50,3 +50,73 @@ jobs:
 
     - name: Run mypy tests with mypy nightly
       run: poetry run poe mypy --mypy_nightly
+
+
+  mypy_strict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.11'
+
+    - name: Run mypy tests with all optional errors enabled
+      run: poetry run poe mypy_strict
+
+  pyrefly_strict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.11'
+
+    - name: Run pyrefly tests with preset 'strict'
+      run: poetry run poe pyrefly_strict
+
+  pyrefly_all:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.11'
+
+    - name: Run pyrefly tests with preset 'all'
+      run: poetry run poe pyrefly_all
+  
+  ty_all:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.11'
+
+    - name: Run ty tests with all rules raising errors
+      run: poetry run poe ty_all
