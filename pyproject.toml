@@ -377,6 +377,5 @@ exclude = [
   "tests/arrays/test_string_arrow.py",
   "tests/frame/test_frame.py",
   "tests/indexes/**/*",
-  "tests/scalars/**/*",
   "tests/series/**/*",
 ]
