@@ -711,8 +711,7 @@ def test_series_overloads_cat() -> None:
     check(assert_type(s.str.cat(None, sep=";"), str), str)
     check(
         assert_type(
-            s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"),
-            "pd.Series[str]",
+            s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), "pd.Series[str]"
         ),
         pd.Series,
         str,
@@ -733,6 +732,14 @@ def test_series_overloads_cat() -> None:
         pd.Series,
         str,
     )
+    check(
+        assert_type(s.str.cat(pd.Categorical(["b"])), "pd.Series[str]"), pd.Series, str
+    )
+    check(assert_type(s.str.cat(pd.array(["b"])), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.str.cat(("b",)), "pd.Series[str]"), pd.Series, str)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.str.cat("a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_index_overloads_cat() -> None:
@@ -741,8 +748,7 @@ def test_index_overloads_cat() -> None:
     check(assert_type(idx.str.cat(None, sep=";"), str), str)
     check(
         assert_type(
-            idx.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"),
-            "pd.Index[str]",
+            idx.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), "pd.Index[str]"
         ),
         pd.Index,
         str,
@@ -767,6 +773,14 @@ def test_index_overloads_cat() -> None:
         pd.Index,
         str,
     )
+    check(
+        assert_type(idx.str.cat(pd.Categorical(["b"])), "pd.Index[str]"), pd.Index, str
+    )
+    check(assert_type(idx.str.cat(pd.array(["b"])), "pd.Index[str]"), pd.Index, str)
+    check(assert_type(idx.str.cat(("b",)), "pd.Index[str]"), pd.Index, str)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        idx.str.cat("a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_series_overloads_extract() -> None:
