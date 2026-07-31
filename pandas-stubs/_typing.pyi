@@ -101,6 +101,7 @@ if TYPE_CHECKING:
 _T_co = TypeVar("_T_co", covariant=True)
 _T_contra = TypeVar("_T_contra", contravariant=True)
 
+# TODO: caveats pandas-dev/pandas-stubs#1609 hauntsaninja/useful_types#25
 class SequenceNotStr(Protocol[_T_co]):
     @overload
     def __getitem__(self, index: SupportsIndex, /) -> _T_co: ...
