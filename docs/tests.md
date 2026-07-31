@@ -8,6 +8,8 @@ Here are the most important options. Fore more details, please use `poe --help`.
 - Run tests against the source code: `poe test`
   - Run only mypy: `poe mypy`
   - Run only pyright: `poe pyright`
+  - Run only pyrefly: `poe pyrefly`
+  - Run only ty: `poe ty`
   - Run only pytest: `poe pytest`
   - Run only pre-commit: `poe style`
 - Run tests against the installed stubs (this will install and uninstall the stubs): `poe test_dist`
