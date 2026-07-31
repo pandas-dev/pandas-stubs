@@ -14,6 +14,8 @@ from typing import (
     type_check_only,
 )
 
+from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.string_ import BaseStringArray
 from pandas.core.base import NoNewAttributesMixin
 from pandas.core.col import Expression
 from pandas.core.frame import DataFrame
@@ -50,7 +52,15 @@ class IndexStringMethods(StringMethods[S2]):
     @overload
     def cat(
         self: IndexStringMethods[str],
-        others: list[str] | np_ndarray_str | Index[str] | DataFrame,
+        others: (
+            tuple[str, ...]
+            | list[str]
+            | np_ndarray_str
+            | BaseStringArray
+            | Categorical[str]
+            | Index[str]
+            | DataFrame
+        ),
         sep: str | None = None,
         na_rep: str | None = None,
         join: AlignJoin = "left",
@@ -308,7 +318,16 @@ class SeriesStringMethods(StringMethods[S2]):
     @overload
     def cat(
         self: SeriesStringMethods[str],
-        others: list[str] | np_ndarray_str | Series[str] | Index[str] | DataFrame,
+        others: (
+            tuple[str, ...]
+            | list[str]
+            | np_ndarray_str
+            | BaseStringArray
+            | Categorical[str]
+            | Series[str]
+            | Index[str]
+            | DataFrame
+        ),
         sep: str | None = None,
         na_rep: str | None = None,
         join: AlignJoin = "left",
