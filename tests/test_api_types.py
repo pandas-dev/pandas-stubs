@@ -1,3 +1,5 @@
+# ty: ignore[assert-type-unspellable-subtype]
+# assert-type-unspellable-subtype is ty-specific astral-sh/ty#4005
 from typing import assert_type
 
 import numpy as np
@@ -371,9 +373,9 @@ def test_infer_dtype() -> None:
 
 def test_union_categoricals() -> None:
     to_union = [pd.Categorical([1, 2, 3]), pd.Categorical([3, 4, 5])]
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
+    # TODO: facebook/pyrefly#3891 # astral-sh/ty#0
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
             api.union_categoricals(to_union), "pd.Categorical[int]"
         ),
         pd.Categorical,

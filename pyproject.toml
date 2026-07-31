@@ -361,7 +361,4 @@ exclude = [
   "tests/indexes/**/*",
   "tests/scalars/**/*",
   "tests/series/**/*",
-  "tests/test_api_types.py",
-  "tests/test_extension.py",
-  "tests/test_natype.py",
 ]
