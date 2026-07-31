@@ -650,11 +650,11 @@ def test_groupby_apply() -> None:
         assert_type(df_gb.apply(sum_to_series), pd.Series | pd.DataFrame), pd.DataFrame
     )
 
-    def different_size(_: pd.DataFrame) -> pd.Series:
-        return pd.Series([])
+    def same_len(x: pd.DataFrame) -> pd.Series:
+        return x["col2"]
 
     check(
-        assert_type(df_gb.apply(different_size), pd.Series | pd.DataFrame), pd.DataFrame
+        assert_type(df_gb.apply(same_len), pd.Series | pd.DataFrame), pd.Series
     )
 
     def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
