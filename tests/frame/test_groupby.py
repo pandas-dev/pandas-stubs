@@ -653,9 +653,7 @@ def test_groupby_apply() -> None:
     def same_len(x: pd.DataFrame) -> pd.Series:
         return x["col2"]
 
-    check(
-        assert_type(df_gb.apply(same_len), pd.Series | pd.DataFrame), pd.Series
-    )
+    check(assert_type(df_gb.apply(same_len), pd.Series | pd.DataFrame), pd.Series)
 
     def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
         return x.sample()
