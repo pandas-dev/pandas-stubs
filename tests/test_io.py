@@ -900,6 +900,19 @@ def test_read_csv_dtype_dict() -> None:
     check(assert_type(pd.read_csv(csv, dtype=my_col_types), pd.DataFrame), pd.DataFrame)
 
 
+def test_read_table_dtype_dict() -> None:
+    # GH 1844
+    table = io.StringIO("i\tf\n1\t2.5\n")
+    my_col_types = {
+        "i": int,
+        "f": float,
+    }
+    check(
+        assert_type(pd.read_table(table, dtype=my_col_types), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
 def test_read_table(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_csv(path_str, sep="\t"), None), type(None))
