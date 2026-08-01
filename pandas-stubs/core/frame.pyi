@@ -154,7 +154,6 @@ from pandas._typing import (
     StataDateFormat,
     StorageOptions,
     StrDtypeArg,
-    StrLike,
     Suffixes,
     T as _T,
     TimeAmbiguous,
@@ -252,12 +251,8 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
         idx: tuple[
-            int
-            | StrLike
-            | Timestamp
-            | tuple[Scalar, ...]
-            | Callable[[DataFrame], ScalarT],
-            int | StrLike | tuple[Scalar, ...],
+            int | str | Timestamp | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
+            int | str | tuple[Scalar, ...],
         ],
     ) -> Scalar: ...
     @overload

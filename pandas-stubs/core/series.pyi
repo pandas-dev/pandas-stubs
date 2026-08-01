@@ -222,7 +222,6 @@ from pandas._typing import (
     SeriesByT,
     SortKind,
     StrDtypeArg,
-    StrLike,
     Suffixes,
     SupportsDType,
     T as _T,
@@ -350,7 +349,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __setitem__(
         self,
-        key: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
+        key: MaskType | str | _IndexSliceTuple | list[ScalarT],
         value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
 
@@ -729,7 +728,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __setitem__(
         self,
-        idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
+        idx: MaskType | _str | _IndexSliceTuple | list[ScalarT],
         value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
     @overload

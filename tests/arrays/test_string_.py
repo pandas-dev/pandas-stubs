@@ -26,7 +26,7 @@ from tests.utils import powerset
 @pytest.mark.parametrize("data", list(powerset(["pd", np.str_("pd")])))
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_STRING_ARGS.items())
 def test_construction_dtype(
-    data: tuple[str | np.str_, ...], dtype: PandasStrDtypeArg, target_dtype: type
+    data: tuple[str, ...], dtype: PandasStrDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
     check(assert_type(pd.array([*data], dtype), StringArray), StringArray, dtype_notna)

@@ -3707,6 +3707,18 @@ def test_loc_slice() -> None:
     check(assert_type(df.loc[:, "c1":"c2"], pd.DataFrame), pd.DataFrame)
 
 
+def test_loc_str() -> None:
+    """Test DataFrame.loc for str and np.str_ types."""
+    df = pd.DataFrame(
+        {"c1": [1, 2, 3, 4], "c2": [10, 20, 30, 40]}, index=["a", "b", "c", "d"]
+    )
+
+    check(assert_type(df.loc["b", :], pd.DataFrame | pd.Series), pd.Series)
+    check(assert_type(df.loc[["b"], :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[np.str_("a")], pd.DataFrame | pd.Series), pd.Series)
+    check(assert_type(df.loc[[np.str_("b")], :], pd.DataFrame), pd.DataFrame)
+
+
 def test_insert_newvalues() -> None:
     df = pd.DataFrame({"a": [1, 2]})
     ab = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
