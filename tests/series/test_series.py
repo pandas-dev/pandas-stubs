@@ -876,6 +876,13 @@ def test_types_element_wise_arithmetic() -> None:
     check(assert_type(divmod(s, s2), tuple["pd.Series[int]", "pd.Series[int]"]), tuple)
 
 
+def test_types_bool_removed() -> None:
+    # `bool()` was removed from `NDFrame` in pandas 2.1
+    s = pd.Series([1])
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+
+
 def test_types_scalar_arithmetic() -> None:
     s = pd.Series([0, 1, -10])
 

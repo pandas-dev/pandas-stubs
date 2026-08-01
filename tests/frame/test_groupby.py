@@ -436,6 +436,7 @@ def test_groupby_series_methods() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        gb.pct_change(fill_method=None)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_groupby_index() -> None:

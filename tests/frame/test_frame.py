@@ -1397,6 +1397,13 @@ def test_types_element_wise_arithmetic() -> None:
     )
 
 
+def test_types_bool_removed() -> None:
+    # `bool()` was removed from `NDFrame` in pandas 2.1
+    df = pd.DataFrame(data={"col1": [1]})
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+
+
 def test_types_scalar_arithmetic() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
 
