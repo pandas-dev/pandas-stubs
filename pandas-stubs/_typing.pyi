@@ -101,6 +101,7 @@ if TYPE_CHECKING:
 _T_co = TypeVar("_T_co", covariant=True)
 _T_contra = TypeVar("_T_contra", contravariant=True)
 
+# TODO: caveats pandas-dev/pandas-stubs#1609 hauntsaninja/useful_types#25
 class SequenceNotStr(Protocol[_T_co]):
     @overload
     def __getitem__(self, index: SupportsIndex, /) -> _T_co: ...
@@ -400,22 +401,25 @@ PandasAstypeTimedeltaDtypeArg: TypeAlias = Literal[
     "<m8[as]",
 ]
 # Refer to https://numpy.org/doc/stable/reference/arrays.datetime.html#datetime-units
-NumpyTimedeltaDtypeArg: TypeAlias = Literal[
-    "timedelta64[s]",
-    "timedelta64[ms]",
-    "timedelta64[us]",
-    "timedelta64[ns]",
-    # numpy type codes
-    "m8[s]",
-    "m8[ms]",
-    "m8[us]",
-    "m8[ns]",
-    # little endian
-    "<m8[s]",
-    "<m8[ms]",
-    "<m8[us]",
-    "<m8[ns]",
-]
+NumpyTimedeltaDtypeArg: TypeAlias = (
+    Literal[
+        "timedelta64[s]",
+        "timedelta64[ms]",
+        "timedelta64[us]",
+        "timedelta64[ns]",
+        # numpy type codes
+        "m8[s]",
+        "m8[ms]",
+        "m8[us]",
+        "m8[ns]",
+        # little endian
+        "<m8[s]",
+        "<m8[ms]",
+        "<m8[us]",
+        "<m8[ns]",
+    ]
+    | np.dtype[np.timedelta64]
+)
 # PyArrow duration type and its string alias
 PyArrowTimedeltaDtypeArg: TypeAlias = Literal[
     "duration[s][pyarrow]",
@@ -468,22 +472,25 @@ PandasAstypeTimestampDtypeArg: TypeAlias = Literal[
     "<M8[as]",
 ]
 # Numpy timestamp type and its string alias
-NumpyTimestampDtypeArg: TypeAlias = Literal[
-    "datetime64[s]",
-    "datetime64[ms]",
-    "datetime64[us]",
-    "datetime64[ns]",
-    # numpy type codes
-    "M8[s]",
-    "M8[ms]",
-    "M8[us]",
-    "M8[ns]",
-    # little endian
-    "<M8[s]",
-    "<M8[ms]",
-    "<M8[us]",
-    "<M8[ns]",
-]
+NumpyTimestampDtypeArg: TypeAlias = (
+    Literal[
+        "datetime64[s]",
+        "datetime64[ms]",
+        "datetime64[us]",
+        "datetime64[ns]",
+        # numpy type codes
+        "M8[s]",
+        "M8[ms]",
+        "M8[us]",
+        "M8[ns]",
+        # little endian
+        "<M8[s]",
+        "<M8[ms]",
+        "<M8[us]",
+        "<M8[ns]",
+    ]
+    | np.dtype[np.datetime64]
+)
 # PyArrow timestamp type and its string alias
 PyArrowTimestampDtypeArg: TypeAlias = Literal[
     "date32[pyarrow]",
@@ -1067,40 +1074,36 @@ Function: TypeAlias = np.ufunc | Callable[..., Any]
 # type is need in a function that uses GroupByObjectNonScalar
 _HashableTa = TypeVar("_HashableTa", bound=Hashable, default=Any)
 if TYPE_CHECKING:
-    ByT = TypeVar(
-        "ByT",
-        bound=str
+    SeriesByT_bound: TypeAlias = (
+        str
         | bytes
         | datetime.date
+        | bool
+        | int
+        | float
+        | complex
+        | datetime.datetime
+        | datetime.timedelta
+        | Period
+        # TODO: can write Interval[int | float | Timestamp | Timedelta] after astral-sh/ty#3199 is resolved
+        | Interval[int]
+        | Interval[float]
+        | Interval[Timestamp]
+        | Interval[Timedelta]
+    )
+    ByT_bound: TypeAlias = (
+        SeriesByT_bound
         | datetime.datetime
         | datetime.timedelta
         | np.datetime64
         | np.timedelta64
-        | bool
-        | int
-        | float
-        | complex
         | Scalar
-        | Period
-        | Interval[int | float | Timestamp | Timedelta]
-        | tuple[Any, ...],
+        | tuple[Any, ...]
     )
+    ByT = TypeVar("ByT", bound=ByT_bound)
     # Use a distinct SeriesByT when using groupby with Series of known dtype.
     # Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
-    SeriesByT = TypeVar(
-        "SeriesByT",
-        bound=str
-        | bytes
-        | datetime.date
-        | bool
-        | int
-        | float
-        | complex
-        | datetime.datetime
-        | datetime.timedelta
-        | Period
-        | Interval[int | float | Timestamp | Timedelta],
-    )
+    SeriesByT = TypeVar("SeriesByT", bound=SeriesByT_bound)
     GroupByObjectNonScalar: TypeAlias = (
         tuple[_HashableTa, ...]
         | list[_HashableTa]
@@ -1232,6 +1235,7 @@ class Just(Protocol, Generic[T]):
     def __class__(self, t: type[T], /) -> None: ...
 
 # Read-only (covariant) list for use in parameter annotations (See GH #1745)
+# TODO: caveats astral-sh/ty#4150 python/mypy#21795
 class CovariantList(Protocol[_T_co]):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
     @property  # type: ignore[override]

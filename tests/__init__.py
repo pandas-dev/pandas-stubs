@@ -30,6 +30,8 @@ from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.util.version import Version
 import pytest
 
+from pandas.errors import Pandas4Warning
+
 from pandas.core.dtypes.base import ExtensionDtype
 
 if TYPE_CHECKING:
@@ -204,6 +206,14 @@ def pytest_warns_conditioned(
     if upper_exception is None:
         return nullcontext()
     return suppress(upper_exception)
+
+
+def pytest_warns_excel_pandas4() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        "The default engine for reading 'xlsx' files will ch",
+        lower="3.0.99",
+    )
 
 
 def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception] | None:

@@ -1,11 +1,18 @@
 from collections.abc import Hashable
-from typing import Self
+from typing import (
+    ClassVar,
+    Self,
+)
 
 from pandas.core.series import Series
+from pandas.core.strings.accessor import StrDescriptor
 
 from pandas._typing import Scalar
 
 class Expression:
+    # `__eq__` returns an `Expression`, so instances are unhashable at runtime
+    __hash__: ClassVar[None]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleMethodOverride]
+
     # binary ops
     def __add__(self, other: Scalar | Series | Self) -> Expression: ...
     def __radd__(self, other: Scalar | Series | Self) -> Expression: ...
@@ -34,5 +41,8 @@ class Expression:
     def __xor__(self, other: Scalar | Series | Self) -> Expression: ...
     def __rxor__(self, other: Scalar | Series | Self) -> Expression: ...
     def __invert__(self) -> Expression: ...
+
+    # Special Series attributes
+    str = StrDescriptor()
 
 def col(col_name: Hashable) -> Expression: ...

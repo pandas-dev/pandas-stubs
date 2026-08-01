@@ -8,6 +8,8 @@ Here are the most important options. Fore more details, please use `poe --help`.
 - Run tests against the source code: `poe test`
   - Run only mypy: `poe mypy`
   - Run only pyright: `poe pyright`
+  - Run only pyrefly: `poe pyrefly`
+  - Run only ty: `poe ty`
   - Run only pytest: `poe pytest`
   - Run only pre-commit: `poe style`
 - Run tests against the installed stubs (this will install and uninstall the stubs): `poe test_dist`
@@ -19,9 +21,17 @@ The following tests are **optional**. Some of them are run by the CI but it is o
 
 - Run pytest against pandas nightly: `poe pytest --nightly`
 - Use mypy nightly to validate the annotations: `poe mypy --mypy_nightly`
+- Use mypy with [all optional errors enabled](https://mypy.readthedocs.io/en/stable/config_file.html#confval-strict): `poe mypy_strict`
+- Use pyrefly with [preset](https://pyrefly.org/en/docs/configuration/#preset) 'strict': `poe pyrefly_strict`
+- Use pyrefly with preset 'all': `poe pyrefly_all`
+- Use ty with [all rules raising errors](https://docs.astral.sh/ty/rules/#rule-levels): `poe ty_all`
 - Run stubtest to compare the installed pandas-stubs against pandas (this will fail): `poe stubtest`. If you have created an allowlist to ignore certain errors: `poe stubtest path_to_the_allow_list`
 
 Among the tests above, the following can be run directly during a PR by commenting in the discussion.
 
 - Run pytest against pandas nightly by commenting `/pandas_nightly`
 - Use mypy nightly to validate the annotations by commenting `/mypy_nightly`
+- Use mypy with all optional errors enabled: `/mypy_strict`
+- Use pyrefly with preset 'strict': `/pyrefly_strict`
+- Use pyrefly with preset 'all': `/pyrefly_all`
+- Use ty with all rules raising errors: `/ty_all`

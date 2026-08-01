@@ -5,7 +5,10 @@ from typing import assert_type
 import pandas as pd
 from pandas.api.typing import Expression
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_constructor() -> None:
@@ -88,3 +91,34 @@ def test_logical_operators_with_series() -> None:
     check(assert_type(x & s, Expression), Expression)
     check(assert_type(x | s, Expression), Expression)
     check(assert_type(x ^ s, Expression), Expression)
+
+
+def test_str_accessor() -> None:
+    """Test the str accessor for Expression."""
+    df = pd.DataFrame({"name": ["beluga", "narwhal"], "speed": [100, 110]})
+    check(
+        assert_type(df.assign(name_titlecase=pd.col("name").str.title()), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_indexing() -> None:
+    """Test DataFrame indexing with Expression."""
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4.0, 5.0, 6.0]})
+
+    check(assert_type(df.loc[pd.col("a") > 1], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[pd.col("a") > 1], pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.loc[(pd.col("a") > 1) & (pd.col("b") < 6.0)], pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.loc[pd.col("a") > 1, "b"], pd.Series), pd.Series, float)
+    check(assert_type(df.loc[pd.col("a") > 1, ["a", "b"]], pd.DataFrame), pd.DataFrame)
+
+    df.loc[pd.col("a") > 1] = 0
+
+    # `Series` has no columns, so expression indexing fails at runtime
+    if TYPE_CHECKING_INVALID_USAGE:
+        s = df["a"]
+        _0 = s.loc[pd.col("a") > 1]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType] # ty: ignore[invalid-argument-type] # pyrefly: ignore[bad-index]
+        _1 = s[pd.col("a") > 1]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType] # ty: ignore[invalid-argument-type] # pyrefly: ignore[bad-index]

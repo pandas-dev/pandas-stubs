@@ -435,7 +435,7 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.nth((0, 1, 2)), pd.DataFrame | pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword]
+        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_groupby_index() -> None:
@@ -611,14 +611,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     # categorical indexes are also ambiguous
-
-    # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
     categorical_index = pd.CategoricalIndex(df.a)
     iterator2 = df.groupby(categorical_index).__iter__()
-    check(
-        assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]]),
-        Iterator,
-    )
+    check(assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]]), Iterator)
     index2, value2 = next(iterator2)
     check(
         assert_type((index2, value2), tuple[Any, pd.DataFrame]),
@@ -632,30 +627,33 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
 def test_groupby_apply() -> None:
     # GH 167
     df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
+    df_gb = df.groupby("col1")
 
     def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    check(
-        assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
-        pd.Series,
-    )
+    check(assert_type(df_gb.apply(sum_mean), pd.Series), pd.Series)
 
-    lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
+    # TODO: revert to the original once astral-sh/ty#4055 astral-sh/ty#4135 are fixed
+    lfunc: Callable[[pd.DataFrame], float] = lambda _: 1.0  # x: x.sum().mean()
+    check(assert_type(df_gb.apply(lfunc), pd.Series), pd.Series)
 
     def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()
 
-    check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
+    check(assert_type(df_gb.apply(sum_to_list), pd.Series), pd.Series)
 
     def sum_to_series(x: pd.DataFrame) -> pd.Series:
         return x.sum()
 
     check(
-        assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(df_gb.apply(sum_to_series), pd.Series | pd.DataFrame), pd.DataFrame
     )
+
+    def same_len(x: pd.DataFrame) -> pd.Series:
+        return x["col2"]
+
+    check(assert_type(df_gb.apply(same_len), pd.Series | pd.DataFrame), pd.Series)
 
     def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
         return x.sample()

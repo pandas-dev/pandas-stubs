@@ -76,6 +76,7 @@ class DecimalDtype(ExtensionDtype):
         return decimal.Decimal("NaN")
 
     def __init__(self, context: decimal.Context | None = None) -> None:
+        super().__init__()
         self.context = context or decimal.getcontext()
 
     def __repr__(self) -> str:
@@ -106,6 +107,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         copy: bool = False,
         context: decimal.Context | None = None,
     ) -> None:
+        super().__init__()
         for i, val in enumerate(values):
             if is_float(val):
                 if np.isnan(val):
@@ -174,9 +176,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
     def __array_ufunc__(
         self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
     ) -> Any:
-        if not all(
-            isinstance(t, self._HANDLED_TYPES + (DecimalArray,)) for t in inputs
-        ):
+        if not all(isinstance(t, (*self._HANDLED_TYPES, DecimalArray)) for t in inputs):
             return NotImplemented
 
         if "out" in kwargs:

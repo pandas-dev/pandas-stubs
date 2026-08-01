@@ -49,6 +49,7 @@ from pandas._stubs_only import (
 )
 from pandas.core.arraylike import OpsMixin
 from pandas.core.base import IndexOpsMixin
+from pandas.core.col import Expression
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.indexers import BaseIndexer
@@ -192,7 +193,13 @@ _iLocSetItemKey: TypeAlias = (
     | tuple[int, IndexType]
 )
 _LocSetItemKey: TypeAlias = (
-    MaskType | Hashable | _IndexSliceTuple | Iterable[Scalar] | IndexingInt | slice
+    Expression
+    | MaskType
+    | Hashable
+    | _IndexSliceTuple
+    | Iterable[Scalar]
+    | IndexingInt
+    | slice
 )
 _SetItemValueNotDataFrame: TypeAlias = (
     ScalarOrNA
@@ -234,6 +241,14 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer, Generic[_T]):
+    @overload
+    def __getitem__(self, idx: Expression) -> _T: ...
+    @overload
+    def __getitem__(self, idx: tuple[Expression, Scalar]) -> Series: ...
+    @overload
+    def __getitem__(
+        self, idx: tuple[Expression, list[HashableT] | Index | slice]
+    ) -> _T: ...
     @overload
     def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
@@ -324,6 +339,8 @@ class _AtIndexerFrame(_AtIndexer):
     ) -> None: ...
 
 class _GetItemHack:
+    @overload
+    def __getitem__(self, key: Expression) -> Self: ...
     @overload
     def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     # With python 3.12+, the second overload needs a type-ignore statement

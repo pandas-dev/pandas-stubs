@@ -11,8 +11,13 @@ def mypy_src() -> None:
     subprocess.run(cmd, check=True)
 
 
+def mypy_src_strict() -> None:
+    cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental", "--strict"]
+    subprocess.run(cmd, check=True)
+
+
 def pyright_src() -> None:
-    cmd = ["pyright"]
+    cmd = ["pyright", "--warnings"]
     subprocess.run(cmd, check=True)
 
 
@@ -77,7 +82,7 @@ def mypy_dist() -> None:
 
 
 def pyright_dist() -> None:
-    cmd = ["pyright", "tests"]
+    cmd = ["pyright", "tests", "--warnings"]
     subprocess.run(cmd, check=True)
 
 
@@ -175,8 +180,32 @@ def ty_src() -> None:
     subprocess.run(cmd, check=True)
 
 
+def ty_src_all() -> None:
+    cmd = [
+        "ty",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python",
+        sys.executable,
+        "--error",
+        "all",
+    ]
+    subprocess.run(cmd, check=True)
+
+
 def pyrefly_src() -> None:
     cmd = ["pyrefly", "check", "pandas-stubs", "tests"]
+    subprocess.run(cmd, check=True)
+
+
+def pyrefly_src_strict() -> None:
+    cmd = ["pyrefly", "check", "pandas-stubs", "tests", "--preset", "strict"]
+    subprocess.run(cmd, check=True)
+
+
+def pyrefly_src_all() -> None:
+    cmd = ["pyrefly", "check", "pandas-stubs", "tests", "--preset", "all"]
     subprocess.run(cmd, check=True)
 
 

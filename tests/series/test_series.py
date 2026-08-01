@@ -15,7 +15,6 @@ import io
 import math
 from pathlib import Path
 import re
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -58,6 +57,7 @@ from tests import (
     WINDOWS,
     check,
     pytest_warns_bounded,
+    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray,
@@ -89,7 +89,7 @@ from tests.dtypes import (
 from tests.extension.decimal.array import DecimalDtype
 
 if TYPE_CHECKING:
-    from typing import Any  # noqa: F401
+    from typing import Any
 
 from pandas.io.formats.format import EngFormatter
 from pandas.tseries.offsets import (
@@ -1110,12 +1110,11 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
     # categorical indexes are also ambiguous
-    # TODO: pandas-dev/pandas#54054, needs to be fixed
     categorical_index = pd.CategoricalIndex(s.index)
     iterator2 = s.groupby(categorical_index).__iter__()
     assert_type(iterator2, Iterator[tuple[Any, "pd.Series[int]"]])
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), tuple[Any, "pd.Series[int]"])
+    check(assert_type((index2, value2), tuple[Any, "pd.Series[int]"]), tuple)
 
     check(assert_type(index2, Any), str)
     check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
@@ -2612,62 +2611,30 @@ def test_types_to_numpy() -> None:
         np_1darray,
         np.str_,
     )
-    # DateTime64DType — parametric, use np.dtype(...)
-    if sys.version_info >= (3, 12):
-        # TODO: pandas-dev/pandas-stubs#1786 mypy >= 2.5 gives np_1darray[np.datetime64[int]] for now, which is not ideal
-        check(
-            assert_type(
-                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")),
-                "np_1darray[np.datetime64[int]]",
-            ),
-            np_1darray,
-            np.datetime64,
-        )
-    else:
-        # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
-        check(
-            assert_type(  # pyrefly: ignore[assert-type]
-                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
-            ),
-            np_1darray,
-            np.datetime64,
-        )
-    # TimeDelta64DType — parametric, use np.dtype(...)
-    if sys.version_info >= (3, 12):
-        # TODO: pandas-dev/pandas-stubs#1786 mypy >= 2.5 gives np_1darray[np.timedelta64[int]] for now, which is not ideal
-        check(
-            assert_type(
-                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
-                "np_1darray[np.timedelta64[int]]",
-            ),
-            np_1darray,
-            np.timedelta64,
-        )
-        check(
-            assert_type(
-                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
-                "np_1darray[np.timedelta64[int]]",
-            ),
-            np_1darray,
-            np.timedelta64,
-        )
-    else:
-        # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
-        check(
-            assert_type(  # pyrefly: ignore[assert-type]
-                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")),
-                np_1darray_td,
-            ),
-            np_1darray,
-            np.timedelta64,
-        )
-        check(
-            assert_type(  # pyrefly: ignore[assert-type]
-                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-            ),
-            np_1darray,
-            np.timedelta64,
-        )
+    # DateTime64DType — parametric
+    check(
+        assert_type(s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt),
+        np_1darray,
+        np.datetime64,
+    )
+    check(
+        assert_type(s_date.to_numpy(dtype="datetime64[ns]"), np_1darray_dt),
+        np_1darray,
+        np.datetime64,
+    )
+    # TimeDelta64DType — parametric
+    check(
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+        ),
+        np_1darray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(s_td_small.to_numpy(dtype="timedelta64[ns]"), np_1darray_td),
+        np_1darray,
+        np.timedelta64,
+    )
 
     # VoidDType — parametric, use np.dtype(...)
     check(
@@ -2815,9 +2782,9 @@ def test_series_iloc_series_bool() -> None:
 
 
 def test_change_to_dict_return_type() -> None:
-    id = [1, 2, 3]
+    id_ = [1, 2, 3]
     value = ["a", "b", "c"]
-    df = pd.DataFrame(zip(id, value), columns=["id", "value"])
+    df = pd.DataFrame(zip(id_, value), columns=["id", "value"])
     fd = df.set_index("id")["value"].to_dict()
     check(assert_type(fd, dict[Hashable, Any]), dict)
 
@@ -3326,22 +3293,9 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    if WINDOWS:
-        with pytest_warns_bounded(
-            RuntimeWarning, "overflow encountered in scalar multiply"
-        ):
-            check(
-                assert_type(
-                    pd.Series(
-                        pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
-                    ).diff(),
-                    "pd.Series[BaseOffset]",
-                ),
-                pd.Series,
-                BaseOffset,
-                index_to_check_for_type=-1,
-            )
-    else:
+    with pytest_warns_conditioned(
+        RuntimeWarning, "overflow encountered in scalar multiply", WINDOWS
+    ):
         check(
             assert_type(
                 pd.Series(
@@ -3441,13 +3395,11 @@ def test_map() -> None:
         str,
     )
 
-    def callable(x: int) -> str:
+    def to_str(x: int) -> str:
         return str(x)
 
     check(
-        assert_type(s.map(callable, na_action="ignore"), "pd.Series[str]"),
-        pd.Series,
-        str,
+        assert_type(s.map(to_str, na_action="ignore"), "pd.Series[str]"), pd.Series, str
     )
 
     series = pd.Series(["a", "b", "c"])
@@ -3476,13 +3428,13 @@ def test_map_na() -> None:
         assert_type(s.map(user_dict, na_action=None), "pd.Series[str]"), pd.Series, str
     )
 
-    def callable(x: int | NAType) -> str | NAType:
+    def to_str_na(x: int | NAType) -> str | NAType:
         if isinstance(x, int):
             return str(x)
         return x
 
     check(
-        assert_type(s.map(callable, na_action=None), "pd.Series[str]"), pd.Series, str
+        assert_type(s.map(to_str_na, na_action=None), "pd.Series[str]"), pd.Series, str
     )
 
     series = pd.Series(["a", "b", "c"])
