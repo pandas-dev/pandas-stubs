@@ -115,14 +115,15 @@ def test_types_arithmetic() -> None:
     else:
         # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
         check(
-            assert_type(  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
-                ts_np - ts, dt.timedelta
+            assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+                ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
             ),
             pd.Timedelta,
         )
         check(
-            assert_type(  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
-                ts_np_time - ts, dt.timedelta
+            assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+                ts_np_time - ts,  # pyright: ignore[reportAssertTypeFailure]
+                dt.timedelta,
             ),
             pd.Timedelta,
         )
