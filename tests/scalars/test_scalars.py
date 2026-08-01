@@ -556,10 +556,9 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime + td, dt.datetime), dt.datetime)
     check(assert_type(as_date + td, dt.date), dt.date)
     check(assert_type(as_datetime64 + td, pd.Timestamp), pd.Timestamp)
-    # pyright can't know that as_td_timedelta + td calls
-    # td.__radd__(as_td_timedelta),  not timedelta.__add__
+    # pyright, pyrefly and ty can't know that as_td_timedelta + td calls
+    # td.__radd__(as_td_timedelta),  not as_dt_timedelta.__add__(td)
     # https://github.com/microsoft/pyright/issues/4088
-    # TODO: astral-sh/ty#0
     check(
         assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
             as_dt_timedelta + td,  # pyright: ignore[reportAssertTypeFailure]
@@ -603,10 +602,9 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime - td, dt.datetime), dt.datetime)
     check(assert_type(as_date - td, dt.date), dt.date)
     check(assert_type(as_datetime64 - td, pd.Timestamp), pd.Timestamp)
-    # pyright can't know that as_dt_timedelta - td calls td.__rsub__(as_dt_timedelta),
-    # not as_dt_timedelta.__sub__
+    # pyright, pyrefly and ty can't know that as_dt_timedelta - td calls
+    # td.__rsub__(as_dt_timedelta), not as_dt_timedelta.__sub__(td)
     # https://github.com/microsoft/pyright/issues/4088
-    # TODO: astral-sh/ty#0
     check(
         assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
             as_dt_timedelta - td,  # pyright: ignore[reportAssertTypeFailure]
@@ -1718,7 +1716,7 @@ def test_period_add_subtract() -> None:
     # offset_index is tested below
     offset_index = p - as_period_index
     # https://github.com/pandas-dev/pandas/issues/50162
-    # TODO: astral-sh/ty#0
+    # TODO: astral-sh/ty#4055
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             p + offset_index, pd.PeriodIndex
