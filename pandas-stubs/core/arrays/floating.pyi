@@ -1,9 +1,16 @@
+from typing import (
+    Any,
+    Literal,
+)
+
+from pandas import Index
 from pandas.core.arrays.numeric import (
     NumericArray,
     NumericDtype,
 )
 
 from pandas._typing import (
+    InterpolateOptions,
     np_ndarray_bool,
     np_ndarray_float,
 )
@@ -17,6 +24,18 @@ class FloatingArray(NumericArray):
     def __init__(
         self, values: np_ndarray_float, mask: np_ndarray_bool, copy: bool = False
     ) -> None: ...
+    def interpolate(
+        self,
+        *,
+        method: InterpolateOptions,
+        axis: int,
+        index: Index,
+        limit: int | None,
+        limit_direction: Literal["forward", "backward", "both"],
+        limit_area: Literal["inside", "outside"] | None,
+        copy: bool,
+        **kwargs: Any,
+    ) -> FloatingArray: ...
 
 class Float32Dtype(FloatingDtype): ...
 class Float64Dtype(FloatingDtype): ...
