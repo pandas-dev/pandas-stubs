@@ -1662,9 +1662,11 @@ def test_series_replace() -> None:
         str,
     )
     pattern = re.compile(r"^a.*")
+    replace_dict = {"a": "b"}
     check(assert_type(s.replace("a", "x"), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.replace({"a": "z"}), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.replace(replace_dict), "pd.Series[str]"), pd.Series, str)
     check(
         assert_type(s.replace({"a": "b", "": pd.NA}), "pd.Series[str]"), pd.Series, str
     )
