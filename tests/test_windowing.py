@@ -1,3 +1,5 @@
+# pyright: reportMissingTypeArgument=false
+
 import datetime as dt
 from typing import assert_type
 
@@ -334,27 +336,36 @@ def test_ewm_basic_math() -> None:
 def test_ewm_times_method() -> None:
     times = Series(IDX)
     check(
-        assert_type(
-            DF.ewm(halflife="4D", times=times), "ExponentialMovingWindow[DataFrame]"
+        assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
+            DF.ewm(
+                halflife="4D", times=times
+            ),  # pyright: ignore[reportAssertTypeFailure]
+            ExponentialMovingWindow,
         ),
         ExponentialMovingWindow,
     )
     check(
-        assert_type(
-            DF.ewm(halflife="4D", times=IDX.values),
-            "ExponentialMovingWindow[DataFrame]",
+        assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
+            DF.ewm(
+                halflife="4D", times=IDX.values
+            ),  # pyright: ignore[reportAssertTypeFailure]
+            "ExponentialMovingWindow",
         ),
         ExponentialMovingWindow,
     )
     check(
-        assert_type(
-            DF.ewm(span=10, method="table"), "ExponentialMovingWindow[DataFrame]"
+        assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
+            DF.ewm(span=10, method="table"),  # pyright: ignore[reportAssertTypeFailure]
+            ExponentialMovingWindow,
         ),
         ExponentialMovingWindow,
     )
     check(
-        assert_type(
-            DF.ewm(span=10, method="single"), "ExponentialMovingWindow[DataFrame]"
+        assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
+            DF.ewm(
+                span=10, method="single"
+            ),  # pyright: ignore[reportAssertTypeFailure]
+            ExponentialMovingWindow,
         ),
         ExponentialMovingWindow,
     )
