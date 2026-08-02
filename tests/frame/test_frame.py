@@ -139,10 +139,15 @@ def test_types_init() -> None:
         assert_type(pd.DataFrame(data=itertools.repeat([1, 2, 3], 3)), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"Constructing a DataFrame from a list of sequences with mismatched",
+        "3.0.99",
+    ):
+        check(
+            assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
+            pd.DataFrame,
+        )
     check(
         assert_type(pd.DataFrame(data=[1, 2, 3, 4], dtype=np.int8), pd.DataFrame),
         pd.DataFrame,
