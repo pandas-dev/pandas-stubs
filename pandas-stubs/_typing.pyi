@@ -1137,8 +1137,8 @@ StataDateFormat: TypeAlias = Literal[
     "%ty",
 ]
 
-# Can be passed to `to_replace`, `value`, or `regex` in `Series.replace`.
-# `DataFrame.replace` also accepts mappings of these.
+# Can be passed to `to_replace`, `value`, or `regex` in `DataFrame.replace`.
+# `Series.replace` has a specialised `_ReplaceValueStr`.
 ReplaceValue: TypeAlias = (
     Scalar
     | Pattern[str]

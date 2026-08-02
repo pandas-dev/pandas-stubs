@@ -21,6 +21,7 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
+from re import Pattern
 from typing import (
     Any,
     ClassVar,
@@ -163,6 +164,7 @@ from pandas._typing import (
     CategoryDtypeArg,
     ComplexDtypeArg,
     CompressionOptions,
+    CovariantList,
     DropKeep,
     Dtype,
     DTypeLike,
@@ -213,7 +215,6 @@ from pandas._typing import (
     RandomState,
     ReindexMethod,
     Renamer,
-    ReplaceValue,
     S2_contra,
     S2_NDT_contra,
     Scalar,
@@ -363,6 +364,15 @@ class _CatDescriptor:
     ) -> CategoricalAccessor[CategoricalValueT]: ...
     @overload
     def __get__(self, instance: Series, owner: Any) -> CategoricalAccessor[Any]: ...
+
+_StrOrPattern: TypeAlias = str | Pattern[str]
+_ReplaceValueStr: TypeAlias = (
+    _StrOrPattern
+    | CovariantList[_StrOrPattern]
+    | Mapping[_StrOrPattern, _StrOrPattern | NAType]
+    | Series[str]
+    | None
+)
 
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
@@ -1395,14 +1405,33 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         limit: int | None = ...,
         inplace: _bool = False,
     ) -> Series[S1]: ...
+    @overload
+    def replace(
+        self: Series[_str],
+        to_replace: _ReplaceValueStr = None,
+        value: _ReplaceValueStr | NoDefault = ...,
+        *,
+        regex: _bool = False,
+        inplace: _bool = False,
+    ) -> Series[_str]: ...
+    @overload
+    def replace(
+        self: Series[_str],
+        to_replace: None = None,
+        value: _ReplaceValueStr | NoDefault = ...,
+        *,
+        regex: _ReplaceValueStr,
+        inplace: _bool = False,
+    ) -> Series[_str]: ...
+    @overload
     def replace(
         self,
-        to_replace: ReplaceValue = ...,
-        value: ReplaceValue = ...,
+        to_replace: S1 | Mapping[S1, S1] | CovariantList[S1] | Self | None = None,
+        value: S1 | Mapping[S1, S1] | CovariantList[S1] | None = ...,
         *,
-        regex: ReplaceValue = ...,
+        regex: Literal[False] = False,
         inplace: _bool = False,
-    ) -> Series[S1]: ...
+    ) -> Self: ...
     @overload
     def shift(
         self,
