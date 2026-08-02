@@ -1,4 +1,5 @@
 import datetime as dt
+import sys
 from typing import assert_type
 
 import numpy as np
@@ -96,7 +97,9 @@ def test_rolling_apply() -> None:
     check(assert_type(DF.rolling(10).apply(_mean), DataFrame), DataFrame)
 
     def _mean2(df: DataFrame) -> np_ndarray:
-        return np.mean(df, axis=0)
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(DF.rolling(10).apply(_mean2, raw=True), DataFrame), DataFrame)
 
@@ -179,7 +182,9 @@ def test_rolling_apply_series() -> None:
     check(assert_type(S.rolling(10).apply(_mean), Series), Series)
 
     def _mean2(df: Series) -> np_ndarray:
-        return np.mean(df, axis=0)
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(S.rolling(10).apply(_mean2, raw=True), Series), Series)
 
@@ -238,7 +243,9 @@ def test_expanding_apply() -> None:
     check(assert_type(DF.expanding(10).apply(_mean), DataFrame), DataFrame)
 
     def _mean2(df: DataFrame) -> np_ndarray:
-        return np.mean(df, axis=0)
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(DF.expanding(10).apply(_mean2, raw=True), DataFrame), DataFrame)
 
@@ -292,7 +299,9 @@ def test_expanding_apply_series() -> None:
     check(assert_type(S.expanding(10).apply(_mean), Series), Series)
 
     def _mean2(df: Series) -> np_ndarray:
-        return np.mean(df, axis=0)
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(S.expanding(10).apply(_mean2, raw=True), Series), Series)
 
