@@ -1656,13 +1656,20 @@ def test_types_replace() -> None:
 
 
 def test_series_replace() -> None:
-    s: pd.Series[str] = pd.DataFrame({"col1": ["a", "ab", "ba"]})["col1"]
+    s = check(
+        assert_type(pd.Series(["a", "ab", "ba"], name="col1"), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
     pattern = re.compile(r"^a.*")
-    replace_dict = {"a": "b"}
     check(assert_type(s.replace("a", "x"), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.replace({"a": "z"}), "pd.Series[str]"), pd.Series, str)
-    check(assert_type(s.replace(replace_dict), "pd.Series[str]"), pd.Series, str)
+    check(
+        assert_type(s.replace({"a": "b", "": pd.NA}), "pd.Series[str]"), pd.Series, str
+    )
+    # pandas-dev/pandas-stubs#1861
+    check(assert_type(s.replace({"": pd.NA}), "pd.Series[str]"), pd.Series, str)
     check(
         assert_type(s.replace(pd.Series({"a": "z"})), "pd.Series[str]"), pd.Series, str
     )
@@ -1708,7 +1715,6 @@ def test_series_replace() -> None:
         pd.Series,
         str,
     )
-    check(assert_type(s.replace({"": pd.NA}), "pd.Series[str]"), pd.Series, str)
 
     s_i = pd.Series([1])
     check(assert_type(s_i.replace({1: 2}), "pd.Series[int]"), pd.Series, np.integer)
