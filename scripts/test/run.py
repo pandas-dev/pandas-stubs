@@ -72,7 +72,7 @@ def rename_src() -> None:
 
 
 def mypy_dist() -> None:
-    cmd = ["mypy", "tests", "--no-incremental"]
+    cmd = ["mypy", "tests", "--no-incremental", "--strict"]
     subprocess.run(cmd, check=True)
 
 
