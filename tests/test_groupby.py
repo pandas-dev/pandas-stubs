@@ -861,7 +861,7 @@ def test_series_groupby_ewm() -> None:
         GB_DF.ewm(1).agg(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         def _func(x: Series) -> float:
-            return sum(x)
+            return sum(x)  # type: ignore[no-any-return]
 
         GB_DF.ewm(1).agg(_func)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 

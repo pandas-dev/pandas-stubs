@@ -82,7 +82,7 @@ def getCols(k: int) -> str:
 
 
 def makeStringIndex(k: int = 10) -> pd.Index:
-    return pd.Index(rands_array(nchars=10, size=k), name=None)
+    return pd.Index(rands_array(nchars=10, size=k), name=None)  # type: ignore[no-any-return]
 
 
 def rands_array(nchars: int, size: int) -> np_ndarray:

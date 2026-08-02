@@ -7,11 +7,6 @@ import sys
 
 
 def mypy_src() -> None:
-    cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
-    subprocess.run(cmd, check=True)
-
-
-def mypy_src_strict() -> None:
     cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental", "--strict"]
     subprocess.run(cmd, check=True)
 
