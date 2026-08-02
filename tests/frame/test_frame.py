@@ -3315,7 +3315,7 @@ def test_not_hashable() -> None:
         pass
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: astrah-sh/ty#0 need ty ignores here
+        # TODO: astral-sh/ty#4157 need ty ignores here
         test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
@@ -3800,7 +3800,7 @@ def test_xs_frame_new() -> None:
     check(assert_type(s2, pd.Series | pd.DataFrame), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: astral-sh/ty#0
+        # TODO: astral-sh/ty#4157 need ty ignore here
         df.xs(["mammel"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
@@ -4037,8 +4037,8 @@ def test_itertuples() -> None:
         assert_type(item.a, Scalar)
 
 
-def test_get() -> None:
-    # TODO: astrah-sh/ty#0
+@pytest.mark.parametrize("d", [1])
+def test_get(d: int) -> None:
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]})
 
     # Get single column
@@ -4050,71 +4050,23 @@ def test_get() -> None:
         np.int64,
     )
     check(assert_type(df.get("z", default=None), pd.Series | None), type(None))
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get("a", default=1), pd.Series | int
-        ),
-        pd.Series,
-        np.int64,
-    )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get("z", default=1), pd.Series | int
-        ),
-        int,
-    )
+    # ty specialises to pd.Series | Literal[1] if we insert default=1
+    check(assert_type(df.get("a", default=d), pd.Series | int), pd.Series, np.integer)
+    check(assert_type(df.get("z", default=d), pd.Series | int), int)
 
     # Get multiple columns
+    check(assert_type(df.get(["a"]), pd.DataFrame | None), pd.DataFrame)
+    check(assert_type(df.get(["a", "b"]), pd.DataFrame | None), pd.DataFrame)
+    check(assert_type(df.get(["z"]), pd.DataFrame | None), type(None))
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get(["a"]), pd.DataFrame | None
-        ),
-        pd.DataFrame,
+        assert_type(df.get(["a", "b"], default=None), pd.DataFrame | None), pd.DataFrame
     )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get(["a", "b"]), pd.DataFrame | None
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get(["z"]), pd.DataFrame | None
-        ),
-        type(None),
-    )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get(["a", "b"], default=None), pd.DataFrame | None
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get(["z"], default=None), pd.DataFrame | None
-        ),
-        type(None),
-    )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get(["a", "b"], default=1), pd.DataFrame | int
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get(["z"], default=1), pd.DataFrame | int
-        ),
-        int,
-    )
+    check(assert_type(df.get(["z"], default=None), pd.DataFrame | None), type(None))
+    check(assert_type(df.get(["a", "b"], default=d), pd.DataFrame | int), pd.DataFrame)
+    check(assert_type(df.get(["z"], default=d), pd.DataFrame | int), int)
 
     key = ["a", "b"]
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            df.get(key), pd.DataFrame | None
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(df.get(key), pd.DataFrame | None), pd.DataFrame)
 
 
 def test_info() -> None:
