@@ -113,9 +113,20 @@ def test_types_arithmetic() -> None:
         check(assert_type(ts_np - ts, dt.timedelta), pd.Timedelta)
         check(assert_type(ts_np_time - ts, dt.timedelta), pd.Timedelta)
     else:
-        # TODO: resume assert_type when astral-sh/ty#2681 is resolved
-        check(ts_np - ts, pd.Timedelta)
-        check(ts_np_time - ts, pd.Timedelta)
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        check(
+            assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+                ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
+            ),
+            pd.Timedelta,
+        )
+        check(
+            assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+                ts_np_time - ts,  # pyright: ignore[reportAssertTypeFailure]
+                dt.timedelta,
+            ),
+            pd.Timedelta,
+        )
 
 
 def test_types_comparison() -> None:
