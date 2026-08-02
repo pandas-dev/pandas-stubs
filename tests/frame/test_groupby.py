@@ -294,7 +294,7 @@ def test_types_groupby_agg() -> None:
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
     def wrapped_min(x: pd.Series) -> Scalar:
-        return x.min()
+        return x.min()  # type: ignore[no-any-return]
 
     # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(

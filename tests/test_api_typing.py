@@ -1,4 +1,6 @@
+# mypy: disable-error-code=type-arg
 # pyright: reportMissingTypeArgument=false,reportUnknownArgumentType=false,reportUnknownParameterType=false
+# ty: ignore[missing-type-argument]
 """Test module for classes in pandas.api.typing."""
 
 from pathlib import Path

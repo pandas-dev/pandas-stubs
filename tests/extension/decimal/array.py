@@ -235,7 +235,9 @@ class DecimalArray(OpsMixin, ExtensionArray):
     @overload
     def astype(self, dtype: AstypeArg, copy: bool = True) -> ArrayLike: ...
 
-    def astype(self, dtype: Dtype, copy: bool = True):
+    def astype(
+        self, dtype: Dtype, copy: bool = True
+    ) -> np_1darray | ExtensionArray | ArrayLike:
         if is_dtype_equal(dtype, self._dtype):
             if not copy:
                 return self
@@ -323,7 +325,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
             else:
                 # Assume it's an object
                 ovalues = [param] * len(self)
-            return ovalues
+            return ovalues  # type: ignore[no-any-return]
 
         lvalues = self
         rvalues = convert_values(other)
