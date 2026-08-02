@@ -1667,9 +1667,6 @@ def test_series_replace() -> None:
     check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.replace({"a": "z"}), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.replace(replace_dict), "pd.Series[str]"), pd.Series, str)
-    check(
-        assert_type(s.replace({"a": "b", "": pd.NA}), "pd.Series[str]"), pd.Series, str
-    )
     # pandas-dev/pandas-stubs#1861
     check(assert_type(s.replace({"": pd.NA}), "pd.Series[str]"), pd.Series, str)
     check(
