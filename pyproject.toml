@@ -358,6 +358,7 @@ python-platform = "all"
 
 [tool.ty.rules]
 possibly-unresolved-reference = "error"
+missing-type-argument = "error"
 
 [tool.ty.analysis]
 respect-type-ignore-comments = false
