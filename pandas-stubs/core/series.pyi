@@ -365,12 +365,13 @@ class _CatDescriptor:
     @overload
     def __get__(self, instance: Series, owner: Any) -> CategoricalAccessor[Any]: ...
 
-_StrOrPattern: TypeAlias = str | Pattern[str]
+_StrOrPattern: TypeAlias = _str | Pattern[_str]
 _ReplaceValueStr: TypeAlias = (
     _StrOrPattern
     | CovariantList[_StrOrPattern]
-    | Mapping[_StrOrPattern, _StrOrPattern | NAType]
-    | Series[str]
+    | Mapping[_str, _StrOrPattern | NAType]  # _KT is invariant, hence has to split
+    | Mapping[Pattern[_str], _StrOrPattern | NAType]
+    | Series[_str]
     | None
 )
 
