@@ -4555,26 +4555,20 @@ def test_frame_pipe() -> None:
         }
     )
 
-    def func_r(x: Rolling[pd.DataFrame], k: int) -> pd.DataFrame:
+    def func_r(x: pd.DataFrame, k: int) -> pd.Series:
         return x.max() - k * x.min()
 
-    def func_e(x: Expanding[pd.DataFrame], k: int) -> pd.DataFrame:
+    def func_e(x: pd.DataFrame, k: int) -> pd.Series:
         return x.max() - k * x.min()
 
-    # TODO: facebook/pyrefly#3268 astral-sh/ty#0
     check(
-        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
-            df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame
-        ),
+        assert_type(df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
     check(assert_type(df.rolling(2).pipe(func_r, k=2), pd.DataFrame), pd.DataFrame)
 
-    # TODO: facebook/pyrefly#3268 astral-sh/ty#0
     check(
-        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
-            df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame
-        ),
+        assert_type(df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
     check(assert_type(df.expanding().pipe(func_e, k=2), pd.DataFrame), pd.DataFrame)
