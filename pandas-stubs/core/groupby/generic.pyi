@@ -29,6 +29,7 @@ from pandas.core.series import Series
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
+    C2,
     S2,
     S3,
     AggFuncTypeBase,
@@ -68,22 +69,13 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
     def aggregate(
         self,
-        func: Callable[Concatenate[Series[S2], P], S3],
+        func: Callable[[Series], C2] | Callable[Concatenate[Series, ...], C2],
         /,
         *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs: Any,
-    ) -> Series[S3]: ...
-    @overload
-    def aggregate(
-        self,
-        func: Callable[[Series], S3],
-        *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs: Any,
-    ) -> Series[S3]: ...
+    ) -> Series[C2]: ...
     @overload
     def aggregate(
         self,

@@ -7,6 +7,7 @@ from collections.abc import (
     Iterator,
 )
 from typing import (
+    TYPE_CHECKING,
     Any,
     assert_type,
 )
@@ -25,6 +26,9 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+
+if TYPE_CHECKING:
+    from pandas._typing import S1
 
 
 def test_types_groupby_as_index() -> None:
@@ -293,8 +297,8 @@ def test_types_groupby_agg() -> None:
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
-    def wrapped_min(x: pd.Series) -> Scalar:
-        return x.min()  # type: ignore[no-any-return]
+    def wrapped_min(x: pd.Series[S1]) -> S1:
+        return x.min()
 
     # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
