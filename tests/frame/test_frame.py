@@ -88,7 +88,8 @@ def makeStringIndex(k: int = 10) -> pd.Index:
 def rands_array(nchars: int, size: int) -> np_ndarray:
     chars = np.array(list(string.ascii_letters + string.digits), dtype=(np.str_, 1))
     retval = (
-        np.random.default_rng(2)  # ty: ignore[no-matching-overload]
+        # TODO: remove the double unused-ignore-comment astral-sh/ty#2681
+        np.random.default_rng(2)  # ty: ignore[no-matching-overload,unused-ignore-comment,unused-ignore-comment]
         .choice(chars, size=nchars * np.prod(size), replace=True)
         .view((np.str_, nchars))
         .reshape(size)
