@@ -29,6 +29,7 @@ from pandas.core.indexes.accessors import ArrayDescriptor
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -56,6 +57,7 @@ from pandas._typing import (
 T_INTERVAL_NP = TypeVar("T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 
 class NoNewAttributesMixin:
+    @override
     def __setattr__(self, key: str, value: Any) -> None: ...
 
 class PandasObject(DirNamesMixin): ...

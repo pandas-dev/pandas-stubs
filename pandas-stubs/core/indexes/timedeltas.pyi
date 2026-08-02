@@ -22,6 +22,7 @@ from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs import Timedelta
 from pandas._libs.lib import NoDefault
@@ -69,9 +70,9 @@ class TimedeltaIndex(
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload  # type: ignore[override]
-    def __add__(  # pyrefly: ignore[bad-override]
-        self, other: Period
-    ) -> PeriodIndex: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __add__(self, other: Period) -> PeriodIndex: ...
     @overload
     def __add__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
     @overload
@@ -79,6 +80,7 @@ class TimedeltaIndex(
         self, other: timedelta | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
+    @override
     def __radd__(self, other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
@@ -86,11 +88,14 @@ class TimedeltaIndex(
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: timedelta | Self
     ) -> Self: ...
+    @override
     def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
-    def __rsub__(  # pyrefly: ignore[bad-override]
+    @override
+    # pyrefly: ignore[bad-override]
+    def __rsub__(
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload
@@ -98,14 +103,17 @@ class TimedeltaIndex(
         self, other: datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
     ) -> DatetimeIndex: ...
     @overload  # type: ignore[override]
+    @override
     def __mul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
     @overload
     def __mul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
+    @override
     def __rmul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
     @overload
     def __rmul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
+    @override
     def __truediv__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __truediv__(
@@ -118,6 +126,7 @@ class TimedeltaIndex(
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
+    @override
     def __rtruediv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
@@ -126,6 +135,7 @@ class TimedeltaIndex(
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
+    @override
     def __floordiv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
@@ -136,20 +146,24 @@ class TimedeltaIndex(
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[int]: ...
     @overload
+    @override
     def __rfloordiv__(self, other: np_ndarray_num | np_ndarray_dt) -> Never: ...
     @overload
     def __rfloordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[int]: ...
     @property
+    @override
     def inferred_type(self) -> str: ...
     @final
+    @override
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None
     ) -> Series[Timedelta]: ...
     def shift(
         self, periods: int = 1, freq: Frequency | timedelta | None = None
     ) -> Self: ...
+    @override
     def diff(self, periods: int = 1) -> Self: ...
 
 @overload

@@ -378,6 +378,7 @@ def test_types_sort_index() -> None:
 def test_types_sort_index_with_key() -> None:
     s = pd.Series([1, 2, 3], index=["a", "B", "c"])
     check(
+        # pyrefly: ignore[implicit-any-lambda]
         assert_type(s.sort_index(key=lambda k: k.str.lower()), "pd.Series[int]"),
         pd.Series,
         np.integer,
@@ -412,6 +413,7 @@ def test_types_sort_values() -> None:
 def test_types_sort_values_with_key() -> None:
     s = pd.Series([1, 2, 3], index=[2, 3, 1])
     check(
+        # pyrefly: ignore[implicit-any-lambda]
         assert_type(s.sort_values(key=lambda k: -k), "pd.Series[int]"),
         pd.Series,
         np.integer,
@@ -934,7 +936,7 @@ def test_types_groupby() -> None:
     )
     s.groupby(np.array([1, 0, 1, 0]))
     s.groupby([np.array([1, 0, 0, 0]), np.array([0, 0, 1, 0])])
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
+    # TODO: facebook/pyrefly#3268
     s.groupby({"a": 1, "b": 2})  # pyrefly: ignore[no-matching-overload]
     s.groupby([{"a": 1, "b": 3}, {"a": 1, "b": 1}])
     s.groupby(s.index)
@@ -1498,6 +1500,7 @@ def test_types_rename() -> None:
         np.integer,
     )
     check(
+        # pyrefly: ignore[implicit-any-lambda]
         assert_type(pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None),
         type(None),
     )
@@ -1772,11 +1775,8 @@ def test_cat_ctor_values() -> None:
     s = ["a", "b", "a"]
     check(assert_type(pd.Categorical(s), "pd.Categorical[str]"), pd.Categorical)
     # GH 107
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"
-        ),
+        assert_type(pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"),
         pd.Categorical,
     )
 
@@ -3410,10 +3410,9 @@ def test_map() -> None:
 
     unknown_series = pd.Series([1, 0, None])
     check(
-        # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
-        assert_type(  # pyrefly: ignore[assert-type]
-            unknown_series.map({1: True, 0: False, None: None}), pd.Series
-        ),
+        # TODO: facebook/pyrefly#3268
+        # pyrefly: ignore[assert-type]
+        assert_type(unknown_series.map({1: True, 0: False, None: None}), pd.Series),
         pd.Series,
     )
 

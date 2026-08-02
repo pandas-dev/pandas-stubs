@@ -181,11 +181,6 @@ def released_mypy() -> None:
 
 
 def ty_src() -> None:
-    cmd = ["ty", "check", "pandas-stubs", "tests", "--python-version", _PYTHON_VERSION]
-    subprocess.run(cmd, check=True)
-
-
-def ty_src_all() -> None:
     cmd = [
         "ty",
         "check",
@@ -200,18 +195,6 @@ def ty_src_all() -> None:
 
 
 def pyrefly_src() -> None:
-    cmd = [
-        "pyrefly",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
-    ]
-    subprocess.run(cmd, check=True)
-
-
-def pyrefly_src_strict() -> None:
     cmd = [
         "pyrefly",
         "check",

@@ -14,7 +14,10 @@ from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 import pyarrow as pa
-from typing_extensions import TypeVar
+from typing_extensions import (
+    TypeVar,
+    override,
+)
 
 from pandas._libs import NaTType
 from pandas._libs.missing import NAType
@@ -46,6 +49,7 @@ CategoricalValueT1 = TypeVar("CategoricalValueT1", str, int, float)
 
 class BaseMaskedDtype(ExtensionDtype):
     @property
+    @override
     def na_value(self) -> NAType: ...
 
 class PandasExtensionDtype(ExtensionDtype): ...
@@ -74,6 +78,7 @@ class DatetimeTZDtype(PandasExtensionDtype):
     @property
     def tz(self) -> timezone: ...
     @property
+    @override
     def na_value(self) -> NaTType: ...
     def __from_arrow__(
         self, array: pa.Array[Any] | pa.ChunkedArray[Any]
@@ -86,6 +91,7 @@ class PeriodDtype(PandasExtensionDtype):
     @property
     def freq(self) -> BaseOffset: ...
     @property
+    @override
     def na_value(self) -> NaTType: ...
 
 class IntervalDtype(PandasExtensionDtype):

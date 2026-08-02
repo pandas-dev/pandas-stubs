@@ -4,6 +4,7 @@ from typing import Self
 import numpy as np
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
+from typing_extensions import override
 
 from pandas._libs.missing import NAType
 from pandas._typing import (
@@ -14,6 +15,7 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import BaseMaskedDtype
 
 class BooleanDtype(BaseMaskedDtype):
+    @override
     def construct_array_type(self) -> type_t[BooleanArray]: ...
 
 class BooleanArray(BaseMaskedArray):
@@ -21,6 +23,7 @@ class BooleanArray(BaseMaskedArray):
         self, values: np_ndarray_bool, mask: np_ndarray_bool, copy: bool = False
     ) -> None: ...
     @property
+    @override
     def dtype(self) -> BooleanDtype: ...
     def __and__(
         self,

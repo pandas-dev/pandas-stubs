@@ -111,10 +111,6 @@ script = "scripts.test.run:ty_src"
 help = "Run ty on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='ty')"
 
-[tool.poe.tasks.ty_all]
-help = "Run ty on 'tests' (using the local stubs) and on the local stubs with all rules raising errors"
-script = "scripts.test.run:ty_src_all"
-
 [tool.poe.tasks.pyrefly]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyrefly_src"
@@ -122,10 +118,6 @@ script = "scripts.test.run:pyrefly_src"
 [tool.poe.tasks.pyrefly_dist]
 help = "Run pyrefly on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='pyrefly')"
-
-[tool.poe.tasks.pyrefly_strict]
-help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'strict'"
-script = "scripts.test.run:pyrefly_src_strict"
 
 [tool.poe.tasks.pyrefly_all]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'all'"
@@ -323,7 +315,7 @@ reportUnknownLambdaType = false     # users will do the same
 deprecateTypingAliases = true
 enableExperimentalFeatures = false
 reportCallInDefaultInitializer = true
-reportImplicitOverride = "none"
+reportImplicitOverride = true
 reportImplicitStringConcatenation = true
 reportImportCycles = "none"
 reportMissingSuperCall = true
@@ -374,8 +366,6 @@ missing-super-call = false
 python-platform = "all"
 
 [tool.ty.rules]
-possibly-unresolved-reference = "error"
-missing-type-argument = "error"
 
 [tool.ty.analysis]
 respect-type-ignore-comments = false

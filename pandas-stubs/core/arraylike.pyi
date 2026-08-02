@@ -4,9 +4,12 @@ from typing import (
 )
 
 import numpy as np
+from typing_extensions import override
 
 class OpsMixin:
+    @override
     def __eq__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
     def __ne__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     def __lt__(self, other: Any) -> Self: ...
     def __le__(self, other: Any) -> Self: ...

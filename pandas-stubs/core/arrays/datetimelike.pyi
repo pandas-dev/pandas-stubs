@@ -11,6 +11,7 @@ from typing import (
 
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
+from typing_extensions import override
 
 from pandas._libs import (
     NaT as NaT,
@@ -63,24 +64,30 @@ class TimelikeOps(DatetimeLikeArrayMixin):
 
 class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
     @property
+    @override
     def ndim(self) -> int: ...
+    @override
     def reshape(self, *args: Any, **kwargs: Any) -> Self: ...
+    @override
     def __iter__(self) -> Iterator[Any]: ...
     @property
+    @override
     def nbytes(self) -> int: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...
     @property
+    @override
     def size(self) -> int: ...
     @overload
-    def __getitem__(  # pyrefly: ignore[bad-override]
-        self, key: ScalarIndexer
-    ) -> DTScalarOrNaT: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __getitem__(self, key: ScalarIndexer) -> DTScalarOrNaT: ...
     @overload
     def __getitem__(  # ty: ignore[invalid-method-override]
         self, key: SequenceIndexer | PositionalIndexerTuple
     ) -> Self: ...
+    @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: int | Sequence[int] | Sequence[bool] | slice, value: Any
     ) -> None: ...

@@ -24,6 +24,7 @@ from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -62,13 +63,12 @@ class DatetimeIndex(
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: timedelta | BaseOffset
-    ) -> Self: ...
-    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | BaseOffset
-    ) -> Self: ...
+    @override
+    def __add__(self, other: timedelta | BaseOffset) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
+    def __radd__(self, other: timedelta | BaseOffset) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     @overload  # type: ignore[override]
+    @override
     def __sub__(  # pyrefly: ignore[bad-override]
         self, other: datetime | np.datetime64 | np_ndarray_dt | Self
     ) -> TimedeltaIndex: ...
@@ -76,14 +76,18 @@ class DatetimeIndex(
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
     ) -> Self: ...
+    @override
     def __truediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
+    @override
     def __rtruediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
     @final
+    @override
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None
     ) -> Series[Timestamp]: ...
     def snap(self, freq: Frequency = "S") -> Self: ...
     @property
+    @override
     def inferred_type(self) -> str: ...
     def indexer_at_time(
         self, time: str | time, asof: bool = False
@@ -98,12 +102,15 @@ class DatetimeIndex(
     def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
     @property
+    @override
     def tzinfo(self) -> _tzinfo | None: ...
     @property
+    @override
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
     def shift(
         self, periods: int = 1, freq: Frequency | timedelta | None = None
     ) -> Self: ...
+    @override
     def diff(self, periods: int = 1) -> TimedeltaIndex: ...
 
 @overload

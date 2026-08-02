@@ -1237,8 +1237,10 @@ class Just(Protocol, Generic[T]):
 class CovariantList(Protocol[_T_co]):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
     @property  # type: ignore[override]
+    @override
     def __class__(self) -> type[list[Any]]: ...  # pyrefly: ignore[bad-override]
     @__class__.setter
+    @override
     def __class__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, value: type[list[Any]], /
     ) -> None: ...

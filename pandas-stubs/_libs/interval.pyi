@@ -8,18 +8,17 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    IntervalIndex,
-    Series,
-    Timedelta,
-    Timestamp,
-)
 from pandas._stubs_only import (
     OrderableScalarT,
     OrderableT,
     OrderableTimesT,
 )
+from pandas.core.indexes.interval import IntervalIndex
+from pandas.core.series import Series
+from typing_extensions import override
 
+from pandas._libs.tslibs.timedeltas import Timedelta
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     IntervalClosedType,
     IntervalT,
@@ -78,6 +77,7 @@ class Interval(IntervalMixin, Generic[OrderableT]):
         right: OrderableT,
         closed: IntervalClosedType = "right",
     ) -> Self: ...
+    @override
     def __hash__(self) -> int: ...
     @overload
     def __contains__(self: Interval[int], key: float | np.floating) -> bool: ...
@@ -191,18 +191,24 @@ class Interval(IntervalMixin, Generic[OrderableT]):
     @overload
     def __le__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
-    def __eq__(self, other: Interval[OrderableT]) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    @override
+    def __eq__(self, other: Interval[OrderableT]) -> bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
     def __eq__(self, other: Series[OrderableT]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: object) -> Literal[False]: ...
+    def __eq__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: object
+    ) -> Literal[False]: ...
     @overload
-    def __ne__(self, other: Interval[OrderableT]) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    @override
+    def __ne__(self, other: Interval[OrderableT]) -> bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
     def __ne__(self, other: Series[OrderableT]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: object) -> Literal[True]: ...
+    def __ne__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: object
+    ) -> Literal[True]: ...

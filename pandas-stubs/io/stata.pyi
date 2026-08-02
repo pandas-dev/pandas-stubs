@@ -13,6 +13,7 @@ from typing import (
 )
 
 from pandas.core.frame import DataFrame
+from typing_extensions import override
 
 from pandas._typing import (
     CompressionOptions,
@@ -103,6 +104,7 @@ class StataReader(StataParser, Iterator[Any]):
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None: ...
+    @override
     def __next__(self) -> DataFrame: ...
     @property
     def data_label(self) -> str: ...

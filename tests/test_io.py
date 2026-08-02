@@ -743,6 +743,7 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
         assert_type(
             pd.read_csv(
                 path_str,
+                # pyrefly: ignore[implicit-any-lambda]
                 skiprows=lambda x: x in [0, 2],
                 skip_blank_lines=True,
                 dayfirst=False,

@@ -11,6 +11,7 @@ from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 import pyarrow as pa
+from typing_extensions import override
 
 from pandas._libs.interval import (
     Interval as Interval,
@@ -91,18 +92,25 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray_object: ...
     @overload
+    @override
     def __getitem__(self, item: ScalarIndexer) -> IntervalOrNA: ...
     @overload
     def __getitem__(self, item: SequenceIndexer) -> Self: ...
-    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
-    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
+    @override
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @property
+    @override
     def dtype(self) -> IntervalDtype: ...
     @property
+    @override
     def nbytes(self) -> int: ...
     @property
     def size(self) -> int: ...
+    @override
     def shift(self, periods: int = 1, fill_value: object = ...) -> IntervalArray: ...
+    @override
     def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override] # ty: ignore[invalid-method-override]
         self,
         indices: TakeIndexer,
@@ -137,4 +145,5 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     ) -> np_1darray_bool: ...
     def overlaps(self, other: Interval) -> np_1darray_bool: ...
     @property
-    def is_empty(self) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
+    @override
+    def is_empty(self) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]

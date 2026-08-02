@@ -253,6 +253,7 @@ def test_types_concat() -> None:
 
     check(
         assert_type(
+            # pyrefly: ignore[implicit-any-lambda]
             pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1),  # noqa: C417
             pd.DataFrame,
         ),
@@ -2055,9 +2056,8 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": "sum"}
             ),
             pd.DataFrame,
@@ -2065,9 +2065,8 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 df,
                 values="D",
                 index=["A", "B"],
@@ -2495,9 +2494,8 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
 def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using list of strings."""
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df, values="C", index="A", columns="B", aggfunc=["sum", "mean"]
             ),
             pd.DataFrame,
@@ -2505,9 +2503,8 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         pd.DataFrame,
     )
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df,
                 values="C",
                 index="A",
@@ -2534,14 +2531,9 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     )
 
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
-                sample_df,
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["sum", np.mean],
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=["sum", np.mean]
             ),
             pd.DataFrame,
         ),
@@ -2552,9 +2544,8 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
 def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
     """Test dict of aggfuncs mapping columns to functions."""
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df,
                 values=["C", "D"],
                 index="A",
@@ -2566,9 +2557,8 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
         pd.DataFrame,
     )
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df,
                 values=["C", "D"],
                 index="A",
@@ -2595,9 +2585,8 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
     )
 
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df,
                 values=["C", "D"],
                 index="A",

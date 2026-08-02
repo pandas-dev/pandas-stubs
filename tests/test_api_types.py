@@ -373,9 +373,9 @@ def test_infer_dtype() -> None:
 
 def test_union_categoricals() -> None:
     to_union = [pd.Categorical([1, 2, 3]), pd.Categorical([3, 4, 5])]
-    # TODO: facebook/pyrefly#3891 astral-sh/ty#4150
+    # TODO: astral-sh/ty#4150
     check(
-        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(  # ty: ignore[type-assertion-failure]
             api.union_categoricals(to_union), "pd.Categorical[int]"
         ),
         pd.Categorical,

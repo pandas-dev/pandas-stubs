@@ -60,7 +60,10 @@ def test_apply() -> None:
         return [f"color: {color}" if val == x.max() else "" for val in x]
 
     check(
-        assert_type(DF.style.apply(highlight_max, color="red", axis=1), Styler), Styler
+        # TODO: facebook/pyrefly#0
+        # pyrefly: ignore[assert-type,no-matching-overload]
+        assert_type(DF.style.apply(highlight_max, color="red", axis=1), Styler),
+        Styler,
     )
 
 
@@ -81,7 +84,10 @@ def test_apply_index() -> None:
 
     check(
         assert_type(
-            DF.style.apply_index(highlight_odd, axis=0, color="purple"), Styler
+            # TODO: facebook/pyrefly#0
+            # pyrefly: ignore[bad-argument-type]
+            DF.style.apply_index(highlight_odd, axis=0, color="purple"),
+            Styler,
         ),
         Styler,
     )
@@ -96,6 +102,8 @@ def test_map_index() -> None:
     def f1(s: Scalar, color: str) -> str | None:
         return f"background-color: {color};" if s == "b" else None
 
+    # TODO: facebook/pyrefly#0
+    # pyrefly: ignore[bad-argument-type]
     check(assert_type(DF.style.map_index(f1, color="pink", axis=0), Styler), Styler)
 
 
@@ -265,6 +273,7 @@ def test_styler_map() -> None:
     check(
         assert_type(
             df.style.map(
+                # pyrefly: ignore[implicit-any-lambda]
                 lambda v: "color: red;" if isinstance(v, float) and v < 0 else None
             ),
             Styler,
@@ -277,6 +286,8 @@ def test_styler_map() -> None:
 
     df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
 
+    # TODO: facebook/pyrefly#0
+    # pyrefly: ignore[assert-type,no-matching-overload]
     check(assert_type(df.style.map(color_negative, color="red"), Styler), Styler)
 
 

@@ -193,6 +193,7 @@ def test_iloc_setitem_ndarray() -> None:
 def test_loc_callable() -> None:
     # GH 586
     s = pd.Series([1, 2])
+    # pyrefly: ignore[implicit-any-lambda]
     check(assert_type(s.loc[lambda x: x > 1], "pd.Series[int]"), pd.Series, np.integer)
 
 
@@ -200,8 +201,10 @@ def test_series_setitem_multiindex() -> None:
     # GH 767
     df = (
         pd.DataFrame({"x": [1, 2, 3, 4]})
-        .assign(y=lambda df: df["x"] * 10, z=lambda df: df["x"] * 100)
-        .set_index(["x", "y"])
+        # pyrefly: ignore[implicit-any-lambda]
+        .assign(y=lambda df: df["x"] * 10, z=lambda df: df["x"] * 100).set_index(
+            ["x", "y"]
+        )
     )
     ind = pd.Index([2, 3])
     s = df["z"]

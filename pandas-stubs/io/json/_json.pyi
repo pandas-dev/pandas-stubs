@@ -13,6 +13,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
@@ -283,7 +284,9 @@ class JsonReader(Iterator[NDFrameT], Generic[NDFrameT]):
     data: Any
     def read(self) -> NDFrameT: ...
     def close(self) -> None: ...
+    @override
     def __iter__(self) -> JsonReader[NDFrameT]: ...
+    @override
     def __next__(self) -> NDFrameT: ...
     def __enter__(self) -> JsonReader[NDFrameT]: ...
     def __exit__(

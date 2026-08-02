@@ -168,6 +168,7 @@ def test_types_groupby() -> None:
     )
     check(
         assert_type(
+            # pyrefly: ignore[implicit-any-lambda]
             df.groupby([lambda x: x % 2, lambda x: x % 3]),
             "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
         ),
@@ -236,6 +237,7 @@ def test_types_groupby() -> None:
     check(
         assert_type(
             df.groupby(by="col1", sort=False, as_index=True).transform(
+                # pyrefly: ignore[implicit-any-lambda]
                 lambda x: x.max()
             ),
             pd.DataFrame,
@@ -694,8 +696,10 @@ def test_groupby_and_transform() -> None:
     grouped = df.groupby("A")[["C", "D"]]
     grouped1 = ser.groupby(ser > 100)
     c1 = grouped.transform("sum")
+    # pyrefly: ignore[implicit-any-lambda]
     c2 = grouped.transform(lambda x: (x - x.mean()) / x.std())
     c3 = grouped1.transform("cumsum")
+    # pyrefly: ignore[implicit-any-lambda]
     c4 = grouped1.transform(lambda x: x.max() - x.min())
     check(assert_type(c1, pd.DataFrame), pd.DataFrame)
     check(assert_type(c2, pd.DataFrame), pd.DataFrame)
@@ -709,8 +713,7 @@ def test_getattr_and_dataframe_groupby() -> None:
     )
     check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
     check(
-        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame), pd.DataFrame
     )
 
 

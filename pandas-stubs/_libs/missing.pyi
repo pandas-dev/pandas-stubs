@@ -11,14 +11,18 @@ import numpy as np
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._typing import Scalar
 
 @final
 class NAType:
     def __new__(cls, *args: Any, **kwargs: Any) -> Self: ...
+    @override
     def __format__(self, format_spec: str) -> str: ...
+    @override
     def __hash__(self) -> int: ...
+    @override
     def __reduce__(self) -> str: ...
     @overload
     def __add__(self, other: Series, /) -> Series: ...
@@ -107,9 +111,9 @@ class NAType:
     @overload
     def __rdivmod__(self, other: Scalar, /) -> tuple[NAType, NAType]: ...
     @overload  # type: ignore[override]
-    def __eq__(  # pyrefly: ignore[bad-override]
-        self, other: Series, /
-    ) -> Series[bool]: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __eq__(self, other: Series, /) -> Series[bool]: ...
     @overload
     def __eq__(self, other: Index, /) -> BooleanArray: ...
     @overload
@@ -117,9 +121,9 @@ class NAType:
         self, other: Scalar, /
     ) -> NAType: ...
     @overload  # type: ignore[override]
-    def __ne__(  # pyrefly: ignore[bad-override]
-        self, other: Series, /
-    ) -> Series[bool]: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __ne__(self, other: Series, /) -> Series[bool]: ...
     @overload
     def __ne__(self, other: Index, /) -> BooleanArray: ...
     @overload

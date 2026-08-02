@@ -79,6 +79,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+from typing_extensions import override
 import xarray as xr
 
 from pandas._libs.lib import NoDefault
@@ -324,15 +325,19 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
+    @override
     def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[int, int], value: ScalarOrNA
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
+    @override
     def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable]
     ) -> Scalar: ...
+    @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA
     ) -> None: ...
@@ -404,6 +409,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def axes(self) -> list[Index]: ...
     @property
+    @override
     def shape(self) -> tuple[int, int]: ...
     @property
     def style(self) -> Styler: ...
@@ -1186,7 +1192,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         errors: IgnoreRaise = "ignore",
     ) -> None: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: Scalar,
         level: IndexLabel | None = ...,
@@ -1210,7 +1216,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: DatetimeIndex,
         level: IndexLabel | None = ...,
@@ -1222,7 +1228,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[True]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: DatetimeIndex,
         level: IndexLabel | None = ...,
@@ -1234,7 +1240,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: TimedeltaIndex,
         level: IndexLabel | None = ...,
@@ -1258,7 +1264,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timedelta, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: PeriodIndex,
         level: IndexLabel | None = ...,
@@ -1282,7 +1288,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: IntervalIndex[IntervalT],
         level: IndexLabel | None = ...,
@@ -1330,7 +1336,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: Series[SeriesByT],
         level: IndexLabel | None = ...,
@@ -1824,6 +1830,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def dtypes(self) -> Series: ...
     @property
+    @override
     def empty(self) -> _bool: ...
     @property
     def iat(self) -> _iAtIndexerFrame: ...
@@ -1838,8 +1845,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def loc(self) -> _LocIndexerFrame[Self]: ...
     @property
+    @override
     def ndim(self) -> int: ...
     @property
+    @override
     def size(self) -> int: ...
     @property
     def values(self) -> np_2darray: ...
@@ -2064,6 +2073,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
     ) -> Self: ...
     @final
+    @override
     def equals(self, other: Series | DataFrame) -> _bool: ...
     @final
     def ewm(

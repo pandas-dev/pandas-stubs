@@ -208,10 +208,7 @@ def test_string_dtype(
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
         check(s_dt, pd.StringDtype)
-        # TODO: facebook/pyrefly#3742
-        assert s_dt.storage in (  # pyrefly: ignore[no-matching-overload]
-            {storage} if storage else {"python", "pyarrow"}
-        )
+        assert s_dt.storage in ({storage} if storage else {"python", "pyarrow"})
         check(assert_type(s_dt.na_value, NAType | float), type(na_value))
 
     if TYPE_CHECKING:
@@ -222,15 +219,8 @@ def test_string_dtype(
 
         assert_type(pd.StringDtype().storage, Literal["python", "pyarrow"])
         assert_type(pd.StringDtype(None).storage, Literal["python", "pyarrow"])
-        # TODO: facebook/pyrefly#3742
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.StringDtype("python").storage,  # pyrefly: ignore[no-matching-overload]
-            Literal["python"],
-        )
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.StringDtype("pyarrow").storage,  # pyrefly: ignore[no-matching-overload]
-            Literal["pyarrow"],
-        )
+        assert_type(pd.StringDtype("python").storage, Literal["python"])
+        assert_type(pd.StringDtype("pyarrow").storage, Literal["pyarrow"])
 
     if TYPE_CHECKING_INVALID_USAGE:
         pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]

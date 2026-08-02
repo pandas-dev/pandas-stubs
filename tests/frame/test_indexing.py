@@ -154,13 +154,12 @@ def test_indexslice_getitem() -> None:
     # GH 300
     df = (
         pd.DataFrame({"x": [1, 2, 2, 3, 4], "y": [10, 20, 30, 40, 10]})
-        .assign(z=lambda df: df.x * df.y)
-        .set_index(["x", "y"])
+        # pyrefly: ignore[implicit-any-lambda]
+        .assign(z=lambda df: df.x * df.y).set_index(["x", "y"])
     )
     ind = pd.Index([2, 3])
     check(
-        # TODO: https://github.com/facebook/pyrefly/issues/3896
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
         ),
         tuple,
