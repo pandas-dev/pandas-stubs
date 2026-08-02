@@ -36,9 +36,9 @@ from pandas._typing import (
     SequenceNotStr,
     np_1darray,
     np_1darray_bool,
-    np_1darray_str,
     np_ndarray_anyint,
     np_ndarray_float,
+    np_ndarray_str,
 )
 
 from pandas.core.dtypes.dtypes import (
@@ -50,7 +50,7 @@ from pandas.core.dtypes.dtypes import (
 class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     __array_priority__: int = ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
         values: Sequence[Never],
         categories: SequenceNotStr[Hashable] | AnyArrayLike | None = None,
@@ -62,10 +62,10 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     def __new__(  # pyright: ignore[reportOverlappingOverload]
         cls,
         values: (
-            list[str] | np_1darray_str | SequenceNotStr[str] | Series[str] | Index[str]
+            list[str] | np_ndarray_str | SequenceNotStr[str] | Series[str] | Index[str]
         ),
         categories: (
-            SequenceNotStr[str] | Series[str] | Index[str] | np_1darray_str | None
+            SequenceNotStr[str] | Series[str] | Index[str] | np_ndarray_str | None
         ) = None,
         ordered: bool | None = None,
         dtype: CategoricalDtype | None = None,
@@ -101,7 +101,7 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
             SequenceNotStr[CategoricalValueT1]
             | Series[CategoricalValueT1]
             | Index[CategoricalValueT1]
-            | np_1darray_str
+            | np_ndarray_str
             | None
         ) = None,
         ordered: bool | None = None,

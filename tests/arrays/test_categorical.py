@@ -7,9 +7,7 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Categorical
-from pandas.api.typing.aliases import (
-    Ordered,
-)
+from pandas.api.typing.aliases import Ordered
 from pandas.core.arrays.categorical import CategoricalDtype
 from pandas.core.indexes.base import Index
 
@@ -19,6 +17,7 @@ from tests import check
 from tests._typing import (
     np_1darray,
     np_1darray_bool,
+    np_ndarray_str,
 )
 
 
@@ -60,39 +59,34 @@ def test_constructor() -> None:
     cat = Categorical(dd)
     check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
-    values = np.array(["a", "b", "c", "a"])
-    cat_np = Categorical(values)
-    # np.array() is typed as ndarray[Any, Any] by numpy stubs, so mypy cannot infer
-    # the element type; the actual type is Categorical[str]
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(assert_type(cat_np, "Categorical[str]"), Categorical)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+    values = check(
+        assert_type(np.array(["a", "b", "c", "a"], np.str_), np_ndarray_str),
+        np_1darray,
+        np.str_,
+    )
+    check(assert_type(Categorical(values), "Categorical[str]"), Categorical, str)
 
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c", "d"])
-    check(assert_type(cat, "Categorical[str]"), Categorical)
-
-    cat = Categorical(["a", "b", "c"], categories=np.array(["a", "b", "c", "d"]))
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(cat, "Categorical[str]"),  # pyrefly: ignore[assert-type]
-        Categorical,
-    )
-
-    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
-
-    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=False)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
-
-    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=None)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     cat = Categorical(
-        values=["x", "y", "z", "x"],
-        categories=["x", "y", "z"],
-        ordered=True,
-        copy=True,
+        ["a", "b", "c"], categories=np.array(["a", "b", "c", "d"], np.str_)
     )
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
+
+    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
+
+    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=False)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
+
+    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=None)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
+
+    cat = Categorical(
+        values=["x", "y", "z", "x"], categories=["x", "y", "z"], ordered=True, copy=True
+    )
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     dtype = pd.CategoricalDtype(categories=["x", "y", "z"], ordered=True)
     cat = Categorical(
@@ -100,14 +94,10 @@ def test_constructor() -> None:
         dtype=dtype,
         copy=True,
     )
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     cat_int = Categorical([1, 2, 3, 1, 2])
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(cat_int, "Categorical[int]"),  # pyrefly: ignore[assert-type]
-        Categorical,
-    )
+    check(assert_type(cat_int, "Categorical[int]"), Categorical, int)
 
     cat_mixed = Categorical(["a", 1, "b", 2])
     # TODO: https://github.com/facebook/pyrefly/issues/3891
@@ -119,19 +109,19 @@ def test_constructor() -> None:
     check(assert_type(cat_empty, Categorical), Categorical)
 
     cat = Categorical(["a", "b", "c"], categories=None)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     cat1 = Categorical(["a", "b", "c"])
     cat = Categorical(cat1)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     values_series = pd.Series(["a", "b", "c", "a"])
     cat = Categorical(values_series)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     values_index = pd.Index(["a", "b", "c", "a"])
     cat = Categorical(values_index)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
 
 def test_categorical_dtype() -> None:
