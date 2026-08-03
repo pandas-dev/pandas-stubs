@@ -171,6 +171,7 @@ from pandas._typing import (
     np_2darray,
     np_ndarray,
     np_ndarray_bool,
+    np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_num,
     np_ndarray_object,
@@ -2073,7 +2074,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         min_periods: int = 0,
         adjust: _bool = True,
         ignore_na: _bool = False,
-        times: np.ndarray | DataFrame | Series | None = None,
+        times: np_ndarray_dt | Series[Timestamp] | None = None,
         method: Literal["single", "table"] = "single",
     ) -> ExponentialMovingWindow[Self]: ...
     @final

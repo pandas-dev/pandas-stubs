@@ -10,7 +10,7 @@ from typing import (
 )
 
 import numpy as np
-from pandas import Index
+from pandas.core.indexes.base import Index
 
 from pandas._typing import (
     AnyArrayLikeInt,

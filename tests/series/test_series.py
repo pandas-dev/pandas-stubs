@@ -448,9 +448,11 @@ def test_series_pct_change() -> None:
         pd.Series,
         np.floating,
     )
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        s.pct_change(fill_method=None)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+    check(
+        assert_type(s.pct_change(fill_method=None), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
 
 
 def test_types_rank() -> None:

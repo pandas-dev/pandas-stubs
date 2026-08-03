@@ -1832,6 +1832,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def pct_change(
         self,
         periods: int = 1,
+        fill_method: None = None,
         freq: Frequency | timedelta | None = None,
     ) -> Series[float]: ...
     @final
