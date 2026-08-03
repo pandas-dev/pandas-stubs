@@ -335,15 +335,7 @@ def test_ewm_basic_math() -> None:
 
 def test_ewm_times_method() -> None:
     times = Series(IDX)
-    check(
-        assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
-            DF.ewm(
-                halflife="4D", times=times
-            ),  # pyright: ignore[reportAssertTypeFailure]
-            "ExponentialMovingWindow",
-        ),
-        ExponentialMovingWindow,
-    )
+    check(assert_type(DF.ewm(halflife="4D", times=times), ExponentialMovingWindow), ExponentialMovingWindow)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
     check(
         assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
             DF.ewm(
