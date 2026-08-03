@@ -497,7 +497,7 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
-    # TODO: pandas-dev/pandas-stubs#1786 remove the conditional warning
+    # TODO: pandas-dev/pandas#66608 remove the conditional warning
     with pytest_warns_conditioned(
         DeprecationWarning,
         r"The 'generic' unit for NumPy timedelta is deprecated",
