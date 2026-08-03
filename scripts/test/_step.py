@@ -29,10 +29,6 @@ mypy_src = Step(
     name="Run mypy on 'tests' (using the local stubs) and on the local stubs",
     run=run.mypy_src,
 )
-mypy_src_strict = Step(
-    name="Run mypy on 'tests' (using the local stubs) and on the local stubs with all optional errors enabled",
-    run=run.mypy_src_strict,
-)
 pytest = Step(name="Run pytest", run=run.pytest)
 style = Step(name="Run pre-commit", run=run.style)
 build_dist = Step(name="Build pandas-stubs", run=run.build_dist)

@@ -150,10 +150,6 @@ script = "scripts.test:mypy_src(mypy_nightly)"
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='mypy')"
 
-[tool.poe.tasks.mypy_strict]
-help = "Run mypy on 'tests' (using the local stubs) and on the local stubs with all optional errors enabled"
-script = "scripts.test.run:mypy_src_strict"
-
 [tool.poe.tasks.stubtest]
 script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
 help = "Run stubtest to compare the installed stubs against pandas"
@@ -362,6 +358,7 @@ python-platform = "all"
 
 [tool.ty.rules]
 possibly-unresolved-reference = "error"
+missing-type-argument = "error"
 
 [tool.ty.analysis]
 respect-type-ignore-comments = false
@@ -377,6 +374,5 @@ exclude = [
   "tests/arrays/test_string_arrow.py",
   "tests/frame/test_frame.py",
   "tests/indexes/**/*",
-  "tests/scalars/**/*",
   "tests/series/**/*",
 ]

@@ -1,4 +1,6 @@
+# mypy: disable-error-code=type-arg
 # pyright: reportMissingTypeArgument=false
+# ty: ignore[missing-type-argument]
 from collections.abc import (
     Hashable,
     Iterator,

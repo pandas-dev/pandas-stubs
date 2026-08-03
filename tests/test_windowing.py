@@ -1,6 +1,7 @@
 # pyright: reportMissingTypeArgument=false
 
 import datetime as dt
+import sys
 from typing import assert_type
 
 import numpy as np
@@ -102,7 +103,11 @@ def test_rolling_apply() -> None:
     check(assert_type(DF.rolling(10).apply(_mean), DataFrame), DataFrame)
 
     def _mean2(df: DataFrame) -> np_ndarray:
-        return np.mean(df, axis=0)
+        # numpy >= 2.5 has eliminated the type checking errors
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        else:  # noqa: RET505
+            return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(DF.rolling(10).apply(_mean2, raw=True), DataFrame), DataFrame)
 
@@ -185,7 +190,11 @@ def test_rolling_apply_series() -> None:
     check(assert_type(S.rolling(10).apply(_mean), Series), Series)
 
     def _mean2(df: Series) -> np_ndarray:
-        return np.mean(df, axis=0)
+        # numpy >= 2.5 has eliminated the type checking errors
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        else:  # noqa: RET505
+            return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(S.rolling(10).apply(_mean2, raw=True), Series), Series)
 
@@ -247,7 +256,11 @@ def test_expanding_apply() -> None:
     check(assert_type(DF.expanding(10).apply(_mean), DataFrame), DataFrame)
 
     def _mean2(df: DataFrame) -> np_ndarray:
-        return np.mean(df, axis=0)
+        # numpy >= 2.5 has eliminated the type checking errors
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        else:  # noqa: RET505
+            return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(DF.expanding(10).apply(_mean2, raw=True), DataFrame), DataFrame)
 
@@ -301,7 +314,11 @@ def test_expanding_apply_series() -> None:
     check(assert_type(S.expanding(10).apply(_mean), Series), Series)
 
     def _mean2(df: Series) -> np_ndarray:
-        return np.mean(df, axis=0)
+        # numpy >= 2.5 has eliminated the type checking errors
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        else:  # noqa: RET505
+            return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(S.expanding(10).apply(_mean2, raw=True), Series), Series)
 
@@ -335,20 +352,20 @@ def test_ewm_basic_math() -> None:
 
 def test_ewm_times_method() -> None:
     times = Series(IDX)
-    check(assert_type(DF.ewm(halflife="4D", times=times), ExponentialMovingWindow), ExponentialMovingWindow)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+    check(assert_type(DF.ewm(halflife="4D", times=times), ExponentialMovingWindow), ExponentialMovingWindow)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure, missing-type-argument]
     check(
         assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
             DF.ewm(
                 halflife="4D", times=IDX.values
             ),  # pyright: ignore[reportAssertTypeFailure]
-            "ExponentialMovingWindow",
+            "ExponentialMovingWindow",  # ty: ignore [missing-type-argument]
         ),
         ExponentialMovingWindow,
     )
     check(
         assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
             DF.ewm(span=10, method="table"),  # pyright: ignore[reportAssertTypeFailure]
-            "ExponentialMovingWindow",
+            "ExponentialMovingWindow",  # ty: ignore [missing-type-argument]
         ),
         ExponentialMovingWindow,
     )
@@ -357,7 +374,7 @@ def test_ewm_times_method() -> None:
             DF.ewm(
                 span=10, method="single"
             ),  # pyright: ignore[reportAssertTypeFailure]
-            "ExponentialMovingWindow",
+            "ExponentialMovingWindow",  # ty: ignore [missing-type-argument]
         ),
         ExponentialMovingWindow,
     )

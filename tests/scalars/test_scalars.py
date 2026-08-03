@@ -287,10 +287,10 @@ def test_interval_math() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _i = interval_i - pd.Interval(1, 2)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _f = interval_f - pd.Interval(1.0, 2.0)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _ts = interval_ts - pd.Interval(pd.Timestamp(2025, 9, 29), pd.Timestamp(2025, 9, 30), closed="both")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _td = interval_td - pd.Interval(pd.Timedelta(1, "ns"), pd.Timedelta(2, "ns"))  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _i = interval_i - pd.Interval(1, 2)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _f = interval_f - pd.Interval(1.0, 2.0)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ts = interval_ts - pd.Interval(pd.Timestamp(2025, 9, 29), pd.Timestamp(2025, 9, 30), closed="both")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _td = interval_td - pd.Interval(pd.Timedelta(1, "ns"), pd.Timedelta(2, "ns"))  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_interval_cmp() -> None:
@@ -468,11 +468,11 @@ def test_timedelta_construction() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # These should be type errors now as they are not in TimeDeltaUnitChoices
-        pd.Timedelta(1, unit="Y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        pd.Timedelta(1, unit="y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        pd.Timedelta(1, unit="M")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        pd.Timedelta(1, unit="Y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.Timedelta(1, unit="y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.Timedelta(1, unit="M")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
-        pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_timedelta_properties_methods() -> None:
@@ -556,11 +556,11 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime + td, dt.datetime), dt.datetime)
     check(assert_type(as_date + td, dt.date), dt.date)
     check(assert_type(as_datetime64 + td, pd.Timestamp), pd.Timestamp)
-    # pyright can't know that as_td_timedelta + td calls
-    # td.__radd__(as_td_timedelta),  not timedelta.__add__
-    # TODO: https://github.com/microsoft/pyright/issues/4088
+    # pyright, pyrefly and ty can't know that as_td_timedelta + td calls
+    # td.__radd__(as_td_timedelta),  not as_dt_timedelta.__add__(td)
+    # https://github.com/microsoft/pyright/issues/4088
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
             as_dt_timedelta + td,  # pyright: ignore[reportAssertTypeFailure]
             pd.Timedelta,
         ),
@@ -570,7 +570,8 @@ def test_timedelta_add_sub() -> None:
         # numpy >= 2.5 has eliminated the type checking errors
         check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
     else:
-        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -582,14 +583,14 @@ def test_timedelta_add_sub() -> None:
     # TypeError: as_period, as_timestamp, as_datetime, as_date, as_datetime64,
     #            as_period_index, as_datetime_index, as_ndarray_dt64
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = td - as_period  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _1 = td - as_timestamp  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _2 = td - as_datetime  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _3 = td - as_date  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _4 = td - as_datetime64  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _5 = td - as_period_index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _6 = td - as_datetime_index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _7 = td - as_ndarray_dt64  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = td - as_period  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _1 = td - as_timestamp  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _2 = td - as_datetime  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _3 = td - as_date  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _4 = td - as_datetime64  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _5 = td - as_period_index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _6 = td - as_datetime_index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _7 = td - as_ndarray_dt64  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
     check(assert_type(td - td, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_dt_timedelta, pd.Timedelta), pd.Timedelta)
@@ -602,11 +603,11 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime - td, dt.datetime), dt.datetime)
     check(assert_type(as_date - td, dt.date), dt.date)
     check(assert_type(as_datetime64 - td, pd.Timestamp), pd.Timestamp)
-    # pyright can't know that as_dt_timedelta - td calls td.__rsub__(as_dt_timedelta),
-    # not as_dt_timedelta.__sub__
+    # pyright, pyrefly and ty can't know that as_dt_timedelta - td calls
+    # td.__rsub__(as_dt_timedelta), not as_dt_timedelta.__sub__(td)
     # https://github.com/microsoft/pyright/issues/4088
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
             as_dt_timedelta - td,  # pyright: ignore[reportAssertTypeFailure]
             pd.Timedelta,
         ),
@@ -616,7 +617,8 @@ def test_timedelta_add_sub() -> None:
         # numpy >= 2.5 has eliminated the type checking errors
         check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
     else:
-        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -660,10 +662,10 @@ def test_timedelta_mul_div() -> None:
     # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
     #            mp_series_float, md_int64_index, md_float_index
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = md_int // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _01 = md_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _02 = md_ndarray_intp // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _03 = md_ndarray_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _00 = md_int // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _01 = md_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _02 = md_ndarray_intp // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _03 = md_ndarray_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
     check(assert_type(td / td, float), float)
     check(assert_type(td / pd.NaT, float), float)
@@ -677,10 +679,10 @@ def test_timedelta_mul_div() -> None:
     # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
     #            mp_series_float, md_int64_index, md_float_index
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = md_int / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _11 = md_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _12 = md_ndarray_intp / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _13 = md_ndarray_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _10 = md_int / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _11 = md_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _12 = md_ndarray_intp / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _13 = md_ndarray_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_timedelta_mod_abs_unary() -> None:
@@ -1716,7 +1718,13 @@ def test_period_add_subtract() -> None:
     # offset_index is tested below
     offset_index = p - as_period_index
     # https://github.com/pandas-dev/pandas/issues/50162
-    check(assert_type(p + offset_index, pd.PeriodIndex), pd.Index)
+    # TODO: astral-sh/ty#4055
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            p + offset_index, pd.PeriodIndex
+        ),
+        pd.Index,
+    )
 
     check(assert_type(p + as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p + as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
@@ -1979,11 +1987,11 @@ def test_nat_comparison_with_date() -> None:
 
     # Inequality comparisons should raise TypeError
     if TYPE_CHECKING_INVALID_USAGE:
-        _llt = pd.NaT < date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _lgt = pd.NaT > date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _lle = pd.NaT <= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _lge = pd.NaT >= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _rlt = date_obj < pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _rgt = date_obj > pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _rle = date_obj <= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _rge = date_obj >= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _llt = pd.NaT < date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lgt = pd.NaT > date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lle = pd.NaT <= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lge = pd.NaT >= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rlt = date_obj < pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rgt = date_obj > pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rle = date_obj <= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rge = date_obj >= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]

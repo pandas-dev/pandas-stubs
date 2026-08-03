@@ -82,7 +82,7 @@ def getCols(k: int) -> str:
 
 
 def makeStringIndex(k: int = 10) -> pd.Index:
-    return pd.Index(rands_array(nchars=10, size=k), name=None)
+    return pd.Index(rands_array(nchars=10, size=k), name=None)  # type: ignore[no-any-return]
 
 
 def rands_array(nchars: int, size: int) -> np_ndarray:
@@ -139,10 +139,15 @@ def test_types_init() -> None:
         assert_type(pd.DataFrame(data=itertools.repeat([1, 2, 3], 3)), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"Constructing a DataFrame from a list of sequences with mismatched",
+        "3.0.99",
+    ):
+        check(
+            assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
+            pd.DataFrame,
+        )
     check(
         assert_type(pd.DataFrame(data=[1, 2, 3, 4], dtype=np.int8), pd.DataFrame),
         pd.DataFrame,
@@ -3714,6 +3719,18 @@ def test_loc_slice() -> None:
 
     check(assert_type(df.loc["b":"c", :], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[:, "c1":"c2"], pd.DataFrame), pd.DataFrame)
+
+
+def test_loc_str() -> None:
+    """Test DataFrame.loc for str and np.str_ types."""
+    df = pd.DataFrame(
+        {"c1": [1, 2, 3, 4], "c2": [10, 20, 30, 40]}, index=["a", "b", "c", "d"]
+    )
+
+    check(assert_type(df.loc["b", :], pd.DataFrame | pd.Series), pd.Series)
+    check(assert_type(df.loc[["b"], :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[np.str_("a")], pd.DataFrame | pd.Series), pd.Series)
+    check(assert_type(df.loc[[np.str_("b")], :], pd.DataFrame), pd.DataFrame)
 
 
 def test_insert_newvalues() -> None:
