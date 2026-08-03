@@ -340,7 +340,7 @@ def test_ewm_times_method() -> None:
             DF.ewm(
                 halflife="4D", times=times
             ),  # pyright: ignore[reportAssertTypeFailure]
-            ExponentialMovingWindow,
+            "ExponentialMovingWindow",
         ),
         ExponentialMovingWindow,
     )
@@ -356,7 +356,7 @@ def test_ewm_times_method() -> None:
     check(
         assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
             DF.ewm(span=10, method="table"),  # pyright: ignore[reportAssertTypeFailure]
-            ExponentialMovingWindow,
+            "ExponentialMovingWindow",
         ),
         ExponentialMovingWindow,
     )
@@ -365,7 +365,7 @@ def test_ewm_times_method() -> None:
             DF.ewm(
                 span=10, method="single"
             ),  # pyright: ignore[reportAssertTypeFailure]
-            ExponentialMovingWindow,
+            "ExponentialMovingWindow",
         ),
         ExponentialMovingWindow,
     )
