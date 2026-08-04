@@ -360,6 +360,8 @@ unused-call-result = false  # results of check(...) are never used
 unused-ignore = false
 # TODO: remove when facebook/pyrefly#4439 is resolved
 missing-source = false
+# TOdo: remove when facebook/pyrefly#4443 is resolved
+missing-super-call = false
 
 [tool.ty.environment]
 python-platform = "all"
