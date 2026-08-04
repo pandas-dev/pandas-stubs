@@ -1,4 +1,3 @@
-# pyrefly: ignore-errors[implicit-any-lambda]
 from __future__ import annotations
 
 from collections import (
