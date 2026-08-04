@@ -1357,8 +1357,10 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test1.xlsx")
     with pd.ExcelWriter(path_str, engine="openpyxl") as ew:
         check(
+            # TODO: remove the pyrefly ignores facebook/pyrefly#4425
+            # pyrefly: ignore[assert-type,bad-specialization]
             assert_type(ew, pd.ExcelWriter[OpenXlWorkbook]),
-            pd.ExcelWriter[OpenXlWorkbook],
+            pd.ExcelWriter[OpenXlWorkbook],  # pyrefly: ignore[bad-specialization]
         )
         DF.to_excel(ew, sheet_name="A")
         check(
