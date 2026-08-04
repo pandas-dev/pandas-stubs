@@ -42,8 +42,8 @@ def _to_type(t: Any) -> type:
     if isinstance(t, ExtensionDtype):
         return type(t)
     if issubclass(type(t), np.dtype):
-        return t.type  # type: ignore[no-any-return]
-    return t  # type: ignore[no-any-return]
+        return t.type  # type: ignore[no-any-return] # pyrefly: ignore[no-any-return-explicit]
+    return t  # type: ignore[no-any-return] # pyrefly: ignore[no-any-return-explicit]
 
 
 @pytest.mark.parametrize(("dtype_arg", "alias_map"), DTYPE_ARG_ALIAS_MAPS.items())

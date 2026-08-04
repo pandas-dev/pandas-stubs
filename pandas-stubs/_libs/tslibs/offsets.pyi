@@ -18,6 +18,7 @@ import numpy as np
 from pandas import Timestamp
 
 from pandas._typing import (
+    Frequency,
     ShapeT,
     np_ndarray_object,
 )
@@ -103,6 +104,11 @@ class BaseOffset:
     def nanos(self) -> int: ...
 
 class SingleConstructorOffset(BaseOffset): ...
+
+@overload
+def to_offset(freq: None, is_period: bool = False) -> None: ...
+@overload
+def to_offset(freq: Frequency | timedelta, is_period: bool = False) -> BaseOffset: ...
 
 class Tick(SingleConstructorOffset):
     def __init__(self, n: int = ..., normalize: bool = ...) -> None: ...

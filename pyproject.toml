@@ -347,10 +347,12 @@ filterwarnings = [
 project-includes = ["pandas-stubs", "tests"]
 enabled-ignores = ["pyrefly"]
 python-version = "3.11"
+min-severity = "warn"
 
 [tool.pyrefly.errors]
 explicit-any = false  # We do use implicit Any
 implicit-any-type-argument = false  # We do use implicit Any
+implicit-bool = false  # We do use implicit bool
 untyped-import = false  # Import discovery
 
 [tool.ty.environment]

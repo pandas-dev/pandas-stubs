@@ -91,8 +91,10 @@ def check(
     value: Any
     if isinstance(actual, pd.Series):
         # cast is by design microsoft/pyright#11191
+        # pyrefly: ignore[redundant-cast]
         value = cast(pd.Series, actual).iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
+        # pyrefly: ignore[redundant-cast]
         # cast is by design microsoft/pyright#11191
         value = cast(pd.Index, actual)[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):

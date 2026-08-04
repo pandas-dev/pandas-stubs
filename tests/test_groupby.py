@@ -156,6 +156,7 @@ def test_frame_groupby_resample() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
@@ -245,6 +246,7 @@ def test_frame_groupby_resample() -> None:
 
     def i(val: Resampler[DataFrame]) -> float:
         assert isinstance(val, Resampler)
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean().mean())
 
     check(assert_type(GB_DF.resample("ME").pipe(i), float), float)
@@ -367,6 +369,7 @@ def test_series_groupby_resample() -> None:
     # pipe
     def g(val: Resampler[Series]) -> float:
         assert isinstance(val, Resampler)
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_S.resample("ME").pipe(g), float), float)
@@ -382,6 +385,7 @@ def test_series_groupby_resample() -> None:
         return Series(val)
 
     def s2scalar(val: Series) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean())
 
     check(assert_type(GB_S.resample("ME").aggregate(np.sum), Series), Series)
@@ -477,6 +481,7 @@ def test_frame_groupby_rolling() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.rolling(1).aggregate(np.sum), DataFrame), DataFrame)
@@ -578,6 +583,7 @@ def test_series_groupby_rolling() -> None:
     check(assert_type(GB_S.rolling(1).aggregate(f), Series), Series)
 
     def s2scalar(val: Series) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean())
 
     check(assert_type(GB_S.rolling(1).aggregate(s2scalar), Series), Series)
@@ -652,6 +658,7 @@ def test_frame_groupby_expanding() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.expanding(1).aggregate(np.sum), DataFrame), DataFrame)
@@ -757,6 +764,7 @@ def test_series_groupby_expanding() -> None:
     check(assert_type(GB_S.expanding(1).aggregate(f), Series), Series)
 
     def s2scalar(val: Series) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean())
 
     check(assert_type(GB_S.expanding(1).aggregate(s2scalar), Series), Series)
