@@ -265,7 +265,6 @@ def test_styler_map() -> None:
     check(
         assert_type(
             df.style.map(
-                # pyrefly: ignore[implicit-any-lambda]
                 lambda v: "color: red;" if isinstance(v, float) and v < 0 else None
             ),
             Styler,
