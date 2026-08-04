@@ -355,8 +355,11 @@ explicit-any = false  # We do use implicit Any
 implicit-any-type-argument = false  # We do use implicit Any
 implicit-bool = false  # We do use implicit bool
 untyped-import = false  # Import discovery
+unused-call-result = false  # results of check(...) are never used
 # TODO: remove when facebook/pyrefly#4427 is resolved
 unused-ignore = false
+# TODO: remove when facebook/pyrefly#4439 is resolved
+missing-source = false
 
 [tool.ty.environment]
 python-platform = "all"
