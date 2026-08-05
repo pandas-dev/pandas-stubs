@@ -352,29 +352,30 @@ def test_ewm_basic_math() -> None:
 
 def test_ewm_times_method() -> None:
     times = Series(IDX)
-    check(assert_type(DF.ewm(halflife="4D", times=times), ExponentialMovingWindow), ExponentialMovingWindow)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure, missing-type-argument]
     check(
-        assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
-            DF.ewm(
-                halflife="4D", times=IDX.values
-            ),  # pyright: ignore[reportAssertTypeFailure]
-            "ExponentialMovingWindow",  # ty: ignore [missing-type-argument]
+        assert_type(
+            DF.ewm(halflife="4D", times=times), "ExponentialMovingWindow[DataFrame]"
         ),
         ExponentialMovingWindow,
     )
     check(
-        assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
-            DF.ewm(span=10, method="table"),  # pyright: ignore[reportAssertTypeFailure]
-            "ExponentialMovingWindow",  # ty: ignore [missing-type-argument]
+        assert_type(
+            DF.ewm(halflife="4D", times=IDX.values),
+            "ExponentialMovingWindow[DataFrame]",
         ),
         ExponentialMovingWindow,
     )
     check(
-        assert_type(  # type: ignore[assert-type] # ty: ignore[type-assertion-failure] # pyrefly: ignore[assert-type]
-            DF.ewm(
-                span=10, method="single"
-            ),  # pyright: ignore[reportAssertTypeFailure]
-            "ExponentialMovingWindow",  # ty: ignore [missing-type-argument]
+        assert_type(
+            DF.ewm(span=10, method="table"),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(span=10, method="single"),
+            "ExponentialMovingWindow[DataFrame]",
         ),
         ExponentialMovingWindow,
     )
