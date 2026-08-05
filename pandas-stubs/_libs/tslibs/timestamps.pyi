@@ -112,7 +112,8 @@ class Timestamp(datetime, SupportsIndex):
     if sys.version_info >= (3, 12):
         @classmethod
         @override
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override-param-name] # ty: ignore[invalid-method-override]
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override-param-name] # ty: ignore[invalid-method-override,unused-ignore-comment,unused-ignore-comment]
             cls, t: float, tz: _tzinfo | str | None = None
         ) -> Self: ...
     else:
