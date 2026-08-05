@@ -4,6 +4,9 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+from typing import Final
+
+_PYTHON_VERSION: Final = "{}.{}".format(*sys.version_info[:2])
 
 
 def mypy_src() -> None:
@@ -12,7 +15,7 @@ def mypy_src() -> None:
 
 
 def pyright_src() -> None:
-    cmd = ["pyright", "--warnings"]
+    cmd = ["pyright", "--warnings", "--pythonversion", _PYTHON_VERSION]
     subprocess.run(cmd, check=True)
 
 
@@ -49,7 +52,7 @@ def build_dist() -> None:
 
 
 def install_dist() -> None:
-    path = sorted(Path("dist/").glob("pandas_stubs-*.whl"))[-1]
+    path = max(Path("dist/").glob("pandas_stubs-*.whl"))
     cmd = [
         sys.executable,
         "-m",
@@ -72,22 +75,29 @@ def rename_src() -> None:
 
 
 def mypy_dist() -> None:
-    cmd = ["mypy", "tests", "--no-incremental", "--strict"]
+    cmd = [
+        "mypy",
+        "tests",
+        "--no-incremental",
+        "--strict",
+        "--python-version",
+        _PYTHON_VERSION,
+    ]
     subprocess.run(cmd, check=True)
 
 
 def pyright_dist() -> None:
-    cmd = ["pyright", "tests", "--warnings"]
+    cmd = ["pyright", "tests", "--warnings", "--pythonversion", _PYTHON_VERSION]
     subprocess.run(cmd, check=True)
 
 
 def pyrefly_dist() -> None:
-    cmd = ["pyrefly", "check", "tests"]
+    cmd = ["pyrefly", "check", "tests", "--python-version", _PYTHON_VERSION]
     subprocess.run(cmd, check=True)
 
 
 def ty_dist() -> None:
-    cmd = ["ty", "check", "tests"]
+    cmd = ["ty", "check", "tests", "--python-version", _PYTHON_VERSION]
     subprocess.run(cmd, check=True)
 
 
@@ -171,7 +181,7 @@ def released_mypy() -> None:
 
 
 def ty_src() -> None:
-    cmd = ["ty", "check", "pandas-stubs", "tests", "--python", sys.executable]
+    cmd = ["ty", "check", "pandas-stubs", "tests", "--python-version", _PYTHON_VERSION]
     subprocess.run(cmd, check=True)
 
 
@@ -182,7 +192,8 @@ def ty_src_all() -> None:
         "pandas-stubs",
         "tests",
         "--python",
-        sys.executable,
+        "--python-version",
+        _PYTHON_VERSION,
         "--error",
         "all",
     ]
@@ -190,17 +201,42 @@ def ty_src_all() -> None:
 
 
 def pyrefly_src() -> None:
-    cmd = ["pyrefly", "check", "pandas-stubs", "tests"]
+    cmd = [
+        "pyrefly",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+    ]
     subprocess.run(cmd, check=True)
 
 
 def pyrefly_src_strict() -> None:
-    cmd = ["pyrefly", "check", "pandas-stubs", "tests", "--preset", "strict"]
+    cmd = [
+        "pyrefly",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--preset",
+        "strict",
+    ]
     subprocess.run(cmd, check=True)
 
 
 def pyrefly_src_all() -> None:
-    cmd = ["pyrefly", "check", "pandas-stubs", "tests", "--preset", "all"]
+    cmd = [
+        "pyrefly",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--preset",
+        "all",
+    ]
     subprocess.run(cmd, check=True)
 
 

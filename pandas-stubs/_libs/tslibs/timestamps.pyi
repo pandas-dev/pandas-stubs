@@ -101,7 +101,7 @@ class Timestamp(datetime, SupportsIndex):
     def fold(self) -> int: ...
     if sys.version_info >= (3, 12):
         @classmethod
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override-param-name] # ty: ignore[invalid-method-override]
             cls, t: float, tz: _tzinfo | str | None = None
         ) -> Self: ...
     else:
