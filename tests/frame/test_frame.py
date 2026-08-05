@@ -3319,10 +3319,9 @@ def test_not_hashable() -> None:
         pass
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: astral-sh/ty#4157 need ty ignores here
-        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_resample() -> None:
@@ -3804,8 +3803,7 @@ def test_xs_frame_new() -> None:
     check(assert_type(s2, pd.Series | pd.DataFrame), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: astral-sh/ty#4157 need ty ignore here
-        df.xs(["mammel"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        df.xs(["mammel"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_align() -> None:
