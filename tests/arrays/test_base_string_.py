@@ -1,5 +1,5 @@
 # ty: ignore[no-matching-overload,type-assertion-failure]
-# TODO: remove the above ignores astral-sh/ty#3199, astral-sh/ty#4111
+# TODO: pandas-dev/pandas-stubs#1799 investigate and report to ty
 from collections import UserList
 from collections.abc import (
     Callable,

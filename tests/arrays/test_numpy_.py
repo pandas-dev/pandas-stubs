@@ -56,13 +56,7 @@ def test_construction_array_like() -> None:
 
     check(assert_type(pd.array(data), NumpyExtensionArray), NumpyExtensionArray)
 
-    # TODO: astral-sh/ty#3199 ty does not support nested numpy typing
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.array(np_arr), NumpyExtensionArray
-        ),
-        NumpyExtensionArray,
-    )
+    check(assert_type(pd.array(np_arr), NumpyExtensionArray), NumpyExtensionArray)
 
     check(
         assert_type(pd.array(pd.array(data)), NumpyExtensionArray), NumpyExtensionArray
@@ -266,7 +260,7 @@ def test_construction_dtype(
 
 @pytest.mark.parametrize("creator", [np.array, pd.array])
 def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -> None:
-    # TODO: astral-sh/ty#3199 ty does not support nested numpy typing
+    # TODO: pandas-dev/pandas-stubs#1799 investigate and report to ty
     check(
         assert_type(
             NumpyExtensionArray(creator([None])),  # ty: ignore[invalid-argument-type]

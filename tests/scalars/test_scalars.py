@@ -904,8 +904,8 @@ def test_timedelta_cmp_array() -> None:
     # TODO: facebook/pyrefly#3977
     if sys.version_info >= (3, 12):
         # TODO: python/mypy#21733 the mypy bugs have manifested in numpy >= 2.5
-        eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type]
-        ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type]
+        eq_nd1 = check(assert_type(td == arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+        ne_nd1 = check(assert_type(td != arr_nd, np_ndarray_bool), np_ndarray_bool, np.bool)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
         assert (eq_nd1 != ne_nd1).all()
         eq_2d1 = check(assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
         ne_2d1 = check(assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])  # type: ignore[assert-type]
@@ -1717,13 +1717,12 @@ def test_period_add_subtract() -> None:
     check(assert_type(p + p.freq, pd.Period), pd.Period)
     # offset_index is tested below
     offset_index = p - as_period_index
-    # https://github.com/pandas-dev/pandas/issues/50162
-    # TODO: astral-sh/ty#4055
+    # https://github.com/pandas-dev/pandas/issues/50162 dtype=object
+    # TODO: remove the ignore astral-sh/ty#4195
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            p + offset_index, pd.PeriodIndex
-        ),
+        assert_type(p + offset_index, pd.Index),  # ty: ignore[type-assertion-failure]
         pd.Index,
+        pd.Period,
     )
 
     check(assert_type(p + as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)

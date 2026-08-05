@@ -101,7 +101,8 @@ class Timestamp(datetime, SupportsIndex):
     def fold(self) -> int: ...
     if sys.version_info >= (3, 12):
         @classmethod
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override-param-name] # ty: ignore[invalid-method-override,unused-ignore-comment,unused-ignore-comment]
             cls, t: float, tz: _tzinfo | str | None = None
         ) -> Self: ...
     else:

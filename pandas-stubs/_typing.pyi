@@ -1083,7 +1083,7 @@ if TYPE_CHECKING:
         | datetime.datetime
         | datetime.timedelta
         | Period
-        # TODO: can write Interval[int | float | Timestamp | Timedelta] after astral-sh/ty#3199 is resolved
+        # TODO: pandas-dev/pandas-stubs#1799 investigate why ty does not accept Interval[int | float | Timestamp | Timedelta] and eventually report
         | Interval[int]
         | Interval[float]
         | Interval[Timestamp]
