@@ -451,7 +451,8 @@ def test_frame_setitem_na() -> None:
 
     # TODO: mypy bug, remove after python/mypy#20420 has been resolved
     df.loc[:, iter(["x"])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
-    df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+    # TODO: pandas-stubs/pandas-dev#1799 investigate and report to ty
+    df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index] # ty: ignore[invalid-assignment]
 
 
 def test_loc_set() -> None:

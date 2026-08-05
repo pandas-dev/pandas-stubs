@@ -56,13 +56,7 @@ def test_construction_array_like() -> None:
 
     check(assert_type(pd.array(data), NumpyExtensionArray), NumpyExtensionArray)
 
-    # TODO: astral-sh/ty#3199 ty does not support nested numpy typing
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            pd.array(np_arr), NumpyExtensionArray
-        ),
-        NumpyExtensionArray,
-    )
+    check(assert_type(pd.array(np_arr), NumpyExtensionArray), NumpyExtensionArray)
 
     check(
         assert_type(pd.array(pd.array(data)), NumpyExtensionArray), NumpyExtensionArray

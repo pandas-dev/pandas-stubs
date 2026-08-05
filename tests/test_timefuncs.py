@@ -1085,12 +1085,9 @@ def test_series_types_to_numpy() -> None:
     )
 
     # passed dtype-like with statically known generic
-    # TODO: astral-sh/ty#4055
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            td_s.to_numpy(dtype=np.int64), np_1darray_int64
-        ),
-        np_1darray,
+        assert_type(td_s.to_numpy(dtype=np.int64), np_1darray_int64),
+        np_1darray_int64,
         np.int64,
     )
     check(
@@ -1098,12 +1095,9 @@ def test_series_types_to_numpy() -> None:
         np_1darray,
         np.timedelta64,
     )
-    # TODO: astral-sh/ty#4055
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            ts_s.to_numpy(dtype=np.int64), np_1darray_int64
-        ),
-        np_1darray,
+        assert_type(ts_s.to_numpy(dtype=np.int64), np_1darray_int64),
+        np_1darray_int64,
         np.int64,
     )
     check(
@@ -1184,26 +1178,19 @@ def test_index_types_to_numpy() -> None:
     check(assert_type(i_i.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
 
     # passed dtype-like with statically known generic
-    # TODO: astral-sh/ty#4055
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            td_i.to_numpy(dtype=np.int64), np_1darray_int64
-        ),
-        np_1darray,
+        assert_type(td_i.to_numpy(dtype=np.int64), np_1darray_int64),
+        np_1darray_int64,
         np.int64,
     )
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            ts_i.to_numpy(dtype=np.int64), np_1darray_int64
-        ),
-        np_1darray,
+        assert_type(ts_i.to_numpy(dtype=np.int64), np_1darray_int64),
+        np_1darray_int64,
         np.int64,
     )
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            p_i.to_numpy(dtype=np.int64), np_1darray_int64
-        ),
-        np_1darray,
+        assert_type(p_i.to_numpy(dtype=np.int64), np_1darray_int64),
+        np_1darray_int64,
         np.int64,
     )
     # |S6, not bytes_
@@ -1767,7 +1754,7 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     td1 = pd.Timedelta(1, "D")
     # GH 758
     s4 = s1.astype(object)
-    # TODO: astral-sh/ty#4055
+    # TODO: pandas-dev/pandas-stubs#1799 investigate and report to ty
     check(
         assert_type(  # ty: ignore[type-assertion-failure]
             s4 - td1, "pd.Series[pd.Timestamp]"
