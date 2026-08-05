@@ -637,12 +637,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __add__(self: Index[Never], other: _str) -> Index[_str]: ...
     @overload
     def __add__(
-        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+        self: Index[Never],
+        other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
     ) -> Index: ...
     @overload
     def __add__(self, other: Index[Never]) -> Index: ...
-    @overload
-    def __add__(self: Index[Never], other: Period) -> PeriodIndex: ...
     @overload
     def __add__(
         self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra]
@@ -691,10 +690,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __radd__(self: Index[Never], other: _str) -> Index[_str]: ...
     @overload
     def __radd__(
-        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+        self: Index[Never],
+        other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
     ) -> Index: ...
-    @overload
-    def __radd__(self: Index[Never], other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(
         self: Supports_ProtoRAdd[T_contra, S2],

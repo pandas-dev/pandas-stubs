@@ -1717,13 +1717,12 @@ def test_period_add_subtract() -> None:
     check(assert_type(p + p.freq, pd.Period), pd.Period)
     # offset_index is tested below
     offset_index = p - as_period_index
-    # https://github.com/pandas-dev/pandas/issues/50162
-    # TODO: astral-sh/ty#4055
+    # https://github.com/pandas-dev/pandas/issues/50162 dtype=object
+    # TODO: remove the ignore astral-sh/ty#4195
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            p + offset_index, pd.PeriodIndex
-        ),
+        assert_type(p + offset_index, pd.Index),  # ty: ignore[type-assertion-failure]
         pd.Index,
+        pd.Period,
     )
 
     check(assert_type(p + as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)

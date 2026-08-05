@@ -191,7 +191,6 @@ def ty_src_all() -> None:
         "check",
         "pandas-stubs",
         "tests",
-        "--python",
         "--python-version",
         _PYTHON_VERSION,
         "--error",

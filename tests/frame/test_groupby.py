@@ -634,7 +634,7 @@ def test_groupby_apply() -> None:
 
     check(assert_type(df_gb.apply(sum_mean), pd.Series), pd.Series)
 
-    # TODO: revert to the original once astral-sh/ty#4055 astral-sh/ty#4135 are fixed
+    # TODO: revert to the original once astral-sh/ty#4135 are fixed
     lfunc: Callable[[pd.DataFrame], float] = lambda _: 1.0  # x: x.sum().mean()
     check(assert_type(df_gb.apply(lfunc), pd.Series), pd.Series)
 
