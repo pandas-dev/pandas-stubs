@@ -8,7 +8,6 @@ from typing import (
     Any,
     Concatenate,
     Literal,
-    Protocol,
     Self,
     overload,
 )
@@ -52,26 +51,6 @@ from pandas.io.formats.style_render import (
     Subset,
 )
 
-class _SeriesFunc(Protocol):
-    def __call__(
-        self, series: Series, /, *args: Any, **kwargs: Any
-    ) -> list[Any] | Series: ...
-
-class _SeriesStrFunc(Protocol):
-    def __call__(
-        self, series: Series[str], /, *args: Any, **kwargs: Any
-    ) -> list[str] | Series[str]: ...
-
-class _DataFrameFunc(Protocol):
-    def __call__(
-        self, series: DataFrame, /, *args: Any, **kwargs: Any
-    ) -> np_ndarray | DataFrame: ...
-
-class _MapCallable(Protocol):
-    def __call__(
-        self, first_arg: Scalar, /, *args: Any, **kwargs: Any
-    ) -> str | None: ...
-
 class Styler(StylerRenderer):
     def __init__(
         self,
@@ -90,16 +69,12 @@ class Styler(StylerRenderer):
         formatter: ExtFormatter | None = ...,
     ) -> None: ...
     def concat(self, other: Styler) -> Styler: ...
-    @overload
     def map(
         self,
-        func: Callable[[Scalar], str | None],
-        subset: Subset[Hashable] | None = ...,
-    ) -> Styler: ...
-    @overload
-    def map(
-        self,
-        func: _MapCallable,
+        func: (
+            Callable[[Scalar], str | None]
+            | Callable[Concatenate[Scalar, ...], str | None]
+        ),
         subset: Subset[Hashable] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
@@ -267,7 +242,10 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: _SeriesFunc | Callable[[Series], list[Any] | Series],
+        func: (
+            Callable[[Series], list[Any] | Series]
+            | Callable[Concatenate[Series, ...], list[Any] | Series]
+        ),
         axis: Axis = ...,
         subset: Subset[Hashable] | None = ...,
         **kwargs: Any,
@@ -275,7 +253,10 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: _DataFrameFunc | Callable[[DataFrame], np_ndarray | DataFrame],
+        func: (
+            Callable[[DataFrame], np_ndarray | DataFrame]
+            | Callable[Concatenate[DataFrame, ...], np_ndarray | DataFrame]
+        ),
         axis: None,
         subset: Subset[Hashable] | None = ...,
         **kwargs: Any,
@@ -283,8 +264,10 @@ class Styler(StylerRenderer):
     def apply_index(
         self,
         func: (
-            _SeriesStrFunc
-            | Callable[[Series], list[str] | np_ndarray_str | Series[str]]
+            Callable[[Series], list[str] | np_ndarray_str | Series[str]]
+            | Callable[
+                Concatenate[Series, ...], list[str] | np_ndarray_str | Series[str]
+            ]
         ),
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
@@ -292,7 +275,10 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def map_index(
         self,
-        func: _MapCallable | Callable[[Scalar], str | None],
+        func: (
+            Callable[[Scalar], str | None]
+            | Callable[Concatenate[Scalar, ...], str | None]
+        ),
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
