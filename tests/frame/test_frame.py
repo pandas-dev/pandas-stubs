@@ -2944,12 +2944,14 @@ def test_dataframe_pct_change() -> None:
 def test_compute_values() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4]})
     s: pd.Series = pd.Series([10, 20, 30, 40])
-    # TODO: pandas-dev/pandas-stubs#1799 the original code causes ty
-    # crashing with a marked overload of Series.__add__ in
-    # pandas-stubs/core/series.pyi. Investigate and report to ty. When fixed,
-    # use the following line and remove the line with __add__.
-    # check(assert_type(df["x"] + s.values, pd.Series), pd.Series, np.int64)
-    check(assert_type(df["x"].__add__(s.values), pd.Series), pd.Series, np.int64)
+    # TODO: pandas-dev/pandas-stubs#1799 investigate and report to ty
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            df["x"] + s.values, pd.Series
+        ),
+        pd.Series,
+        np.int64,
+    )
 
 
 # https://github.com/microsoft/python-type-stubs/issues/164
