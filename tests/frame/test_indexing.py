@@ -445,13 +445,13 @@ def test_frame_setitem_na() -> None:
     df.loc[:, "x"] = [None, pd.NA, pd.NaT]
     df.iloc[:, 0] = [None, pd.NA, pd.NaT]
 
-    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+    # TODO: mypy bug, remove after python/mypy#20420 is resolved
     df.loc[:, ["x"]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
     df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
 
-    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+    # TODO: mypy bug, remove after python/mypy#20420 is resolved
     df.loc[:, iter(["x"])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
-    # TODO: pandas-stubs/pandas-dev#1799 investigate and report to ty
+    # TODO: remove after python/mypy#21813 astral-sh/ty#4196 are resolved
     df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index] # ty: ignore[invalid-assignment]
 
 
