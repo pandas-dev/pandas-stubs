@@ -843,9 +843,7 @@ def test_types_apply() -> None:
 
     check(
         assert_type(
-            s.apply(
-                lambda x: pd.NA  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-            ),
+            s.apply(lambda x: pd.NA),  # pyright: ignore[reportUnknownArgumentType]
             pd.Series,
         ),
         pd.Series,
@@ -934,15 +932,11 @@ def test_types_groupby() -> None:
     s.groupby(s > 2)
     # GH 284
     s.groupby([s > 2, s % 2 == 1])
-    s.groupby(
-        lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-    )
+    s.groupby(lambda x: x)  # pyright: ignore[reportUnknownArgumentType]
     s.groupby(
         [
-            lambda x: x,  # pyright: ignore[reportUnknownLambdaType]
-            lambda x: x.replace(  # pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]
-                "a", "b"
-            ),
+            lambda x: x,
+            lambda x: x.replace("a", "b"),  # pyright: ignore[reportUnknownMemberType]
         ]
     )
     s.groupby(np.array([1, 0, 1, 0]))
@@ -1159,7 +1153,7 @@ def test_types_groupby_transform() -> None:
     check(
         assert_type(
             s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
             ).transform(transform_func, True, kw_arg="foo"),
             "pd.Series[float]",
         ),
@@ -1169,7 +1163,7 @@ def test_types_groupby_transform() -> None:
     check(
         assert_type(
             s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
             ).transform(transform_func, True, engine="cython", kw_arg="foo"),
             "pd.Series[float]",
         ),
@@ -1179,7 +1173,7 @@ def test_types_groupby_transform() -> None:
     check(
         assert_type(
             s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
             ).transform("mean"),
             pd.Series,
         ),
@@ -1188,7 +1182,7 @@ def test_types_groupby_transform() -> None:
     check(
         assert_type(
             s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
             ).transform("first"),
             pd.Series,
         ),
@@ -1439,7 +1433,7 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             s.rename_axis(
-                index=lambda name: name.upper()  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
+                index=lambda name: name.upper()  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
             ),
             "pd.Series[int]",
         ),
@@ -2944,9 +2938,7 @@ def test_types_apply_set() -> None:
     check(
         assert_type(
             series_of_lists.apply(
-                lambda x: set(  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-                    x  # pyright: ignore[reportUnknownArgumentType]
-                )
+                lambda x: set(x)  # pyright: ignore[reportUnknownArgumentType]
             ),
             pd.Series,
         ),
@@ -2999,9 +2991,7 @@ def test_apply_returns_none() -> None:
     s = pd.Series([1, 2, 3])
     check(
         assert_type(
-            s.apply(
-                lambda x: None  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-            ),
+            s.apply(lambda x: None),  # pyright: ignore[reportUnknownArgumentType]
             pd.Series,
         ),
         pd.Series,
@@ -3579,7 +3569,7 @@ def test_apply_dateoffset() -> None:
     check(
         assert_type(
             s.apply(
-                lambda x: pd.DateOffset(  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
+                lambda x: pd.DateOffset(  # pyright: ignore[reportUnknownArgumentType]
                     months=x  # pyright: ignore[reportUnknownArgumentType]
                 )
             ),

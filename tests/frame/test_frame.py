@@ -297,7 +297,7 @@ def test_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], 1: [4, 5, 6]})
 
     my_unnamed_func = (  # pyright: ignore[reportUnknownVariableType]
-        lambda df: df["a"] * 2  # pyright: ignore[reportUnknownLambdaType]
+        lambda df: df["a"] * 2
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
@@ -1341,10 +1341,7 @@ def test_types_map() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(
         assert_type(
-            df.map(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-                ** 2
-            ),
+            df.map(lambda x: x**2),  # pyright: ignore[reportUnknownArgumentType]
             pd.DataFrame,
         ),
         pd.DataFrame,
@@ -2712,8 +2709,7 @@ def test_types_rename() -> None:
     check(assert_type(df.rename(columns={None: "b"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.rename(columns={"": "b"}), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(df.rename(columns=lambda s: s.upper()), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(df.rename(columns=lambda s: s.upper()), pd.DataFrame), pd.DataFrame
     )
 
     df_multiindex = pd.DataFrame(columns=[("a", 1), ("a", 2)])
@@ -2770,8 +2766,8 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
-                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
+                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
+                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
             ),
             pd.DataFrame,
         ),
@@ -4183,7 +4179,8 @@ def test_transpose() -> None:
 def test_combine() -> None:
     df1 = pd.DataFrame({"A": [0, 0], "B": [4, 4]})
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
-    take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownLambdaType,reportUnknownVariableType]
+
+    take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownVariableType]
         s1 if s1.sum() < s2.sum() else s2  # pyright: ignore[reportUnknownMemberType]
     )
     assert_type(

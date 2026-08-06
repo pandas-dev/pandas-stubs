@@ -316,6 +316,7 @@ typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false    # use pyright-specific ignores
+reportUnknownLambdaType = false     # users will do the same
 # enable optional checks
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-settings-defaults
 deprecateTypingAliases = true
@@ -326,7 +327,7 @@ reportImplicitStringConcatenation = true
 reportImportCycles = "none"
 reportMissingSuperCall = true
 reportPropertyTypeMismatch = "none"
-reportUninitializedInstanceVariable = "none"
+reportUninitializedInstanceVariable = true
 reportUnnecessaryTypeIgnoreComment = true
 reportUnreachable = "none"
 reportUnusedCallResult = "none"

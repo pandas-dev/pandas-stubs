@@ -540,7 +540,7 @@ def test_loc_callable() -> None:
         assert_type(
             df.loc[
                 :,
-                lambda df: df.columns.str.startswith(  # pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]
+                lambda df: df.columns.str.startswith(  # pyright: ignore[reportUnknownMemberType]
                     "x"
                 ),
             ],
