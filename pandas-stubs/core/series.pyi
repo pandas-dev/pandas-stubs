@@ -21,6 +21,7 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
+from re import Pattern
 from typing import (
     Any,
     ClassVar,
@@ -163,6 +164,7 @@ from pandas._typing import (
     CategoryDtypeArg,
     ComplexDtypeArg,
     CompressionOptions,
+    CovariantList,
     DropKeep,
     Dtype,
     DTypeLike,
@@ -213,7 +215,6 @@ from pandas._typing import (
     RandomState,
     ReindexMethod,
     Renamer,
-    ReplaceValue,
     S2_contra,
     S2_NDT_contra,
     Scalar,
@@ -363,6 +364,16 @@ class _CatDescriptor:
     ) -> CategoricalAccessor[CategoricalValueT]: ...
     @overload
     def __get__(self, instance: Series, owner: Any) -> CategoricalAccessor[Any]: ...
+
+_StrOrPattern: TypeAlias = _str | Pattern[_str]
+_ReplaceValueStr: TypeAlias = (
+    _StrOrPattern
+    | CovariantList[_StrOrPattern]
+    | Mapping[_str, _StrOrPattern | NAType]  # _KT is invariant, hence has to split
+    | Mapping[Pattern[_str], _StrOrPattern | NAType]
+    | Series[_str]
+    | None
+)
 
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
@@ -1209,7 +1220,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def swaplevel(self, i: Level = -2, j: Level = -1) -> Series[S1]: ...
     def reorder_levels(self, order: Sequence[int | np.integer]) -> Series[S1]: ...
-    def explode(self, ignore_index: _bool = ...) -> Series[S1]: ...
+    @overload
+    def explode(
+        self: Iterable[CovariantList[S2]], ignore_index: _bool = False
+    ) -> Series[S2]: ...
+    @overload
+    def explode(self, ignore_index: _bool = False) -> Series[S1]: ...
     def unstack(
         self,
         level: IndexLabel = -1,
@@ -1395,14 +1411,33 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         limit: int | None = ...,
         inplace: _bool = False,
     ) -> Series[S1]: ...
+    @overload
+    def replace(
+        self: Series[_str],
+        to_replace: _ReplaceValueStr = None,
+        value: _ReplaceValueStr | NoDefault = ...,
+        *,
+        regex: _bool = False,
+        inplace: _bool = False,
+    ) -> Series[_str]: ...
+    @overload
+    def replace(
+        self: Series[_str],
+        to_replace: None = None,
+        value: _ReplaceValueStr | NoDefault = ...,
+        *,
+        regex: _ReplaceValueStr,
+        inplace: _bool = False,
+    ) -> Series[_str]: ...
+    @overload
     def replace(
         self,
-        to_replace: ReplaceValue = ...,
-        value: ReplaceValue = ...,
+        to_replace: S1 | Mapping[S1, S1] | CovariantList[S1] | Self | None = None,
+        value: S1 | Mapping[S1, S1] | CovariantList[S1] | None = ...,
         *,
-        regex: ReplaceValue = ...,
+        regex: Literal[False] = False,
         inplace: _bool = False,
-    ) -> Series[S1]: ...
+    ) -> Self: ...
     @overload
     def shift(
         self,
@@ -1906,6 +1941,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __add__(
         self: Supports_ProtoAdd[S2_contra, S2], other: S2_contra | Sequence[S2_contra]
     ) -> Series[S2]: ...
+    # TODO: pandas-dev/pandas-stubs#1799 the following overload causes ty
+    # frozen with test_compute_values in tests/frame/test_frame.py.
+    # Investigate and report to ty.
+    # see https://github.com/pandas-dev/pandas-stubs/actions/runs/31049878204
     @overload
     def __add__(
         self: Series[S2_contra], other: SupportsRAdd[S2_contra, S2]

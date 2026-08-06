@@ -1663,45 +1663,70 @@ def test_types_replace() -> None:
 
 
 def test_series_replace() -> None:
-    s: pd.Series[str] = pd.DataFrame({"col1": ["a", "ab", "ba"]})["col1"]
+    s = check(
+        assert_type(pd.Series(["a", "ab", "ba"], name="col1"), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
     pattern = re.compile(r"^a.*")
     replace_dict = {"a": "b"}
-    check(assert_type(s.replace("a", "x"), "pd.Series[str]"), pd.Series)
-    check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series)
+    check(assert_type(s.replace("a", "x"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.replace({"a": "z"}), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.replace(replace_dict), "pd.Series[str]"), pd.Series, str)
+    # pandas-dev/pandas-stubs#1861
+    check(assert_type(s.replace({"": pd.NA}), "pd.Series[str]"), pd.Series, str)
     check(
-        assert_type(s.replace({"a": "z"}), "pd.Series[str]"),
-        pd.Series,
-    )
-    check(
-        assert_type(s.replace(replace_dict), "pd.Series[str]"),
-        pd.Series,
-    )
-    check(
-        assert_type(s.replace(pd.Series({"a": "z"})), "pd.Series[str]"),
-        pd.Series,
+        assert_type(s.replace(pd.Series({"a": "z"})), "pd.Series[str]"), pd.Series, str
     )
     check(
         assert_type(s.replace({pattern: "z"}, regex=True), "pd.Series[str]"),
         pd.Series,
+        str,
     )
-    check(assert_type(s.replace(["a"], ["x"]), "pd.Series[str]"), pd.Series)
+    check(assert_type(s.replace(["a"], ["x"]), "pd.Series[str]"), pd.Series, str)
     check(
         assert_type(s.replace([pattern], ["x"], regex=True), "pd.Series[str]"),
         pd.Series,
+        str,
     )
-    check(assert_type(s.replace(r"^a.*", "x", regex=True), "pd.Series[str]"), pd.Series)
-    check(assert_type(s.replace(value="x", regex=r"^a.*"), "pd.Series[str]"), pd.Series)
     check(
-        assert_type(s.replace(value="x", regex=[r"^a.*"]), "pd.Series[str]"), pd.Series
+        assert_type(s.replace(r"^a.*", "x", regex=True), "pd.Series[str]"),
+        pd.Series,
+        str,
     )
-    check(assert_type(s.replace(value="x", regex=pattern), "pd.Series[str]"), pd.Series)
     check(
-        assert_type(s.replace(value="x", regex=[pattern]), "pd.Series[str]"), pd.Series
+        assert_type(s.replace(value="x", regex=r"^a.*"), "pd.Series[str]"),
+        pd.Series,
+        str,
     )
-    check(assert_type(s.replace(regex={"a": "x"}), "pd.Series[str]"), pd.Series)
     check(
-        assert_type(s.replace(regex=pd.Series({"a": "x"})), "pd.Series[str]"), pd.Series
+        assert_type(s.replace(value="x", regex=[r"^a.*"]), "pd.Series[str]"),
+        pd.Series,
+        str,
     )
+    check(
+        assert_type(s.replace(value="x", regex=pattern), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+    check(
+        assert_type(s.replace(value="x", regex=[pattern]), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+    check(assert_type(s.replace(regex={"a": "x"}), "pd.Series[str]"), pd.Series, str)
+    check(
+        assert_type(s.replace(regex=pd.Series({"a": "x"})), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+
+    s_i = pd.Series([1])
+    check(assert_type(s_i.replace({1: 2}), "pd.Series[int]"), pd.Series, np.integer)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.replace({"1": "2"}, regex={"1": "2"})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
 
 
 def test_cat_accessor() -> None:
@@ -3816,6 +3841,9 @@ def test_series_explode() -> None:
 
     check(assert_type(s.explode(), pd.Series), pd.Series)
     check(assert_type(s.explode(ignore_index=True), pd.Series), pd.Series)
+
+    s_str = pd.Series(["a,b,c"])
+    check(assert_type(s_str.str.split(",").explode(), "pd.Series[str]"), pd.Series, str)
 
 
 def test_series_index_setter() -> None:
