@@ -29,7 +29,6 @@ from pandas.core.series import Series
 from sqlalchemy.engine import Connectable
 from sqlalchemy.sql.type_api import TypeEngineMixin
 
-from pandas._libs.lib import NoDefault
 from pandas._typing import (
     Axis,
     CompressionOptions,
@@ -94,8 +93,6 @@ class NDFrame:
     def __pos__(self) -> Self: ...
     @final
     def __nonzero__(self) -> None: ...
-    @final
-    def bool(self) -> _bool: ...
     def __abs__(self) -> Self: ...
     @final
     def __round__(self, decimals: int = ...) -> Self: ...
@@ -472,7 +469,6 @@ class NDFrame:
     def resample(
         self,
         rule: Frequency | dt.timedelta,
-        axis: Axis | NoDefault = 0,
         closed: Literal["right", "left"] | None = None,
         label: Literal["right", "left"] | None = None,
         on: Level | None = None,

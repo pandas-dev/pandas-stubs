@@ -1402,6 +1402,13 @@ def test_types_element_wise_arithmetic() -> None:
     )
 
 
+def test_types_bool_removed() -> None:
+    # `bool()` was removed from `NDFrame` in pandas 2.1
+    df = pd.DataFrame(data={"col1": [1]})
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+
+
 def test_types_scalar_arithmetic() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
 
@@ -2071,9 +2078,9 @@ def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     check(assert_type(df.expanding(), "Expanding[pd.DataFrame]"), Expanding)
     if TYPE_CHECKING_INVALID_USAGE:
-        df.expanding(axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
-        df.expanding(axis=1, center=True)  # type: ignore[arg-type, call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-type,unexpected-keyword] # ty: ignore[invalid-argument-type,unknown-argument]
+        df.expanding(axis=1)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.expanding(axis=1, center=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
     check(assert_type(df.rolling(2), "Rolling[pd.DataFrame]"), Rolling)
 
@@ -2932,13 +2939,13 @@ def test_read_csv(tmp_path: Path) -> None:
 def test_dataframe_pct_change() -> None:
     df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10, 20, 30, 40, 50]})
     check(assert_type(df.pct_change(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(periods=-1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(fill_value=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis="columns"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis="index"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
 
 
 def test_compute_values() -> None:

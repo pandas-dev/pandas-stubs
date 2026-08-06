@@ -444,12 +444,12 @@ def test_series_pct_change() -> None:
     s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
     check(assert_type(s.pct_change(), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(s.pct_change(fill_method=None), "pd.Series[float]"),
+        assert_type(s.pct_change(periods=-1), "pd.Series[float]"),
         pd.Series,
         np.floating,
     )
     check(
-        assert_type(s.pct_change(periods=-1), "pd.Series[float]"),
+        assert_type(s.pct_change(fill_method=None), "pd.Series[float]"),
         pd.Series,
         np.floating,
     )
@@ -876,6 +876,13 @@ def test_types_element_wise_arithmetic() -> None:
     _res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
 
     check(assert_type(divmod(s, s2), tuple["pd.Series[int]", "pd.Series[int]"]), tuple)
+
+
+def test_types_bool_removed() -> None:
+    # `bool()` was removed from `NDFrame` in pandas 2.1
+    s = pd.Series([1])
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
 
 
 def test_types_scalar_arithmetic() -> None:

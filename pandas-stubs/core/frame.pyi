@@ -157,6 +157,7 @@ from pandas._typing import (
     Suffixes,
     T as _T,
     TimeAmbiguous,
+    TimedeltaConvertibleTypes,
     TimeNonexistent,
     TimeUnit,
     TimeZones,
@@ -169,6 +170,7 @@ from pandas._typing import (
     np_2darray,
     np_ndarray,
     np_ndarray_bool,
+    np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_num,
     np_ndarray_object,
@@ -2062,18 +2064,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         com: float | None = ...,
         span: float | None = ...,
-        halflife: float | None = ...,
+        halflife: TimedeltaConvertibleTypes | None = ...,
         alpha: float | None = ...,
         min_periods: int = 0,
         adjust: _bool = True,
         ignore_na: _bool = False,
-        axis: Axis = 0,
+        times: np_ndarray_dt | Series[Timestamp] | None = None,
+        method: Literal["single", "table"] = "single",
     ) -> ExponentialMovingWindow[Self]: ...
     @final
     def expanding(
         self,
         min_periods: int = 1,
-        axis: AxisIndex = 0,
         method: CalculationMethod = "single",
     ) -> Expanding[Self]: ...
     def ffill(
@@ -2396,7 +2398,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
@@ -2410,7 +2411,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,

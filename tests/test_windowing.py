@@ -1,3 +1,5 @@
+# pyright: reportMissingTypeArgument=false
+
 import datetime as dt
 import sys
 from typing import assert_type
@@ -15,6 +17,7 @@ from pandas.core.indexers.objects import (
     VariableOffsetWindowIndexer,
 )
 from pandas.core.window import (
+    ExponentialMovingWindow,
     Rolling,
     Window,
 )
@@ -42,6 +45,9 @@ DF_DTI = DataFrame(data=np.random.standard_normal(700), index=IDX)
 def test_rolling_basic() -> None:
     check(assert_type(DF.rolling(10, win_type="gaussian"), "Window[DataFrame]"), Window)
     check(assert_type(DF.rolling(10, min_periods=10), "Rolling[DataFrame]"), Rolling)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.rolling(10, axis=0)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_rolling_basic_math() -> None:
@@ -237,6 +243,9 @@ def test_expanding_basic_math() -> None:
     check(assert_type(DF.expanding(10).rank("min"), DataFrame), DataFrame)
     check(assert_type(DF.expanding(10).rank("max"), DataFrame), DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.expanding(10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
 
 def test_expanding_apply() -> None:
     check(assert_type(DF.expanding(10).apply(np.mean), DataFrame), DataFrame)
@@ -336,6 +345,40 @@ def test_ewm_basic_math() -> None:
     check(assert_type(DF.ewm(span=10).std(), DataFrame), DataFrame)
     check(assert_type(DF.ewm(span=10).corr(), DataFrame), DataFrame)
     check(assert_type(DF.ewm(span=10).cov(), DataFrame), DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.ewm(span=10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
+
+def test_ewm_times_method() -> None:
+    times = Series(IDX)
+    check(
+        assert_type(
+            DF.ewm(halflife="4D", times=times), "ExponentialMovingWindow[DataFrame]"
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(halflife="4D", times=IDX.values),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(span=10, method="table"),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(span=10, method="single"),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
 
 
 def test_ewm_aggregate() -> None:
