@@ -154,8 +154,8 @@ def test_indexslice_getitem() -> None:
     # GH 300
     df = (
         pd.DataFrame({"x": [1, 2, 2, 3, 4], "y": [10, 20, 30, 40, 10]})
-        # pyrefly: ignore[implicit-any-lambda]
-        .assign(z=lambda df: df.x * df.y).set_index(["x", "y"])
+        .assign(z=lambda df: df.x * df.y)
+        .set_index(["x", "y"])
     )
     ind = pd.Index([2, 3])
     check(

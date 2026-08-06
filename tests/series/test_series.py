@@ -378,7 +378,6 @@ def test_types_sort_index() -> None:
 def test_types_sort_index_with_key() -> None:
     s = pd.Series([1, 2, 3], index=["a", "B", "c"])
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(s.sort_index(key=lambda k: k.str.lower()), "pd.Series[int]"),
         pd.Series,
         np.integer,
@@ -413,7 +412,6 @@ def test_types_sort_values() -> None:
 def test_types_sort_values_with_key() -> None:
     s = pd.Series([1, 2, 3], index=[2, 3, 1])
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(s.sort_values(key=lambda k: -k), "pd.Series[int]"),
         pd.Series,
         np.integer,
@@ -1500,7 +1498,6 @@ def test_types_rename() -> None:
         np.integer,
     )
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None),
         type(None),
     )

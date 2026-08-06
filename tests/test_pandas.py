@@ -253,7 +253,6 @@ def test_types_concat() -> None:
 
     check(
         assert_type(
-            # pyrefly: ignore[implicit-any-lambda]
             pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1),  # noqa: C417
             pd.DataFrame,
         ),

@@ -262,7 +262,6 @@ def test_types_assign() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(df.assign(col3=lambda frame: frame.sum(axis=1)), pd.DataFrame),
         pd.DataFrame,
     )
@@ -272,11 +271,8 @@ def test_types_assign() -> None:
     check(
         assert_type(
             df.assign(
-                # pyrefly: ignore[implicit-any-lambda]
                 b=lambda df: range(len(df)),
-                # pyrefly: ignore[implicit-any-lambda]
                 c=lambda _: [10, 20, 30],
-                # pyrefly: ignore[implicit-any-lambda]
                 d=lambda _: (10, 20, 30),
             ),
             pd.DataFrame,
@@ -310,19 +306,16 @@ def test_assign() -> None:
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
 
-    # pyrefly: ignore[implicit-any-lambda]
     check(assert_type(df.assign(c=lambda df: df["a"] * 2), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.assign(c=lambda df: df["a"].index), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(df.assign(c=lambda df: df["a"].to_numpy()), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(df.assign(c=lambda df: df["a"].max()), pd.DataFrame),
         pd.DataFrame,
     )
@@ -335,7 +328,6 @@ def test_assign() -> None:
     check(assert_type(df.assign(c=my_named_func_2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=None), pd.DataFrame), pd.DataFrame)
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(df.assign(foo=lambda df: df.get("abc", None)), pd.DataFrame),
         pd.DataFrame,
     )
@@ -498,7 +490,6 @@ def test_types_sort_index() -> None:
 def test_types_sort_index_with_key() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4]}, index=["a", "b", "C", "d"])
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(df.sort_index(key=lambda k: k.str.lower()), pd.DataFrame),
         pd.DataFrame,
     )
@@ -588,7 +579,6 @@ def test_types_sort_values_with_key() -> None:
     # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(df.sort_values(by="col1", key=lambda k: -k), pd.DataFrame),
         pd.DataFrame,
     )
@@ -2677,7 +2667,6 @@ def test_types_rename() -> None:
     check(assert_type(df.rename(columns={None: "b"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.rename(columns={"": "b"}), pd.DataFrame), pd.DataFrame)
     check(
-        # pyrefly: ignore[implicit-any-lambda]
         assert_type(df.rename(columns=lambda s: s.upper()), pd.DataFrame),
         pd.DataFrame,
     )
