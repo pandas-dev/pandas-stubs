@@ -356,6 +356,10 @@ explicit-any = false  # We do use implicit Any
 implicit-any-lambda = false # Users do this
 implicit-any-type-argument = false  # We do use implicit Any
 implicit-bool = false  # We do use implicit bool
+no-any-return-explicit = false  # np.mean(DataFrame(...), axis=0) is such an example
+no-any-return-implicit = false  # x.sum() / len(x) is such an example
+unknown-argument-type = false  # Only in tests, companion with other errors
+unknown-variable-type = false  # Implicit Any is fine
 untyped-import = false  # Import discovery
 unused-call-result = false  # results of check(...) are never used
 # TODO: remove when facebook/pyrefly#4427 is resolved

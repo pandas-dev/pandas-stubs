@@ -3598,6 +3598,7 @@ def test_series_empty_dtype() -> None:
     check(assert_type(pd.Series(new_tab), pd.Series), pd.Series)
     check(assert_type(pd.Series([]), pd.Series), pd.Series)
     # ensure that an empty string does not get matched to Sequence[Never]
+    # pyrefly: ignore[string-as-iterable]
     check(assert_type(pd.Series(""), "pd.Series[str]"), pd.Series)
 
 
