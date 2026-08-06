@@ -352,6 +352,7 @@ min-severity = "warn"
 
 [tool.pyrefly.errors]
 explicit-any = false  # We do use implicit Any
+implicit-any-lambda = false # Users do this
 implicit-any-type-argument = false  # We do use implicit Any
 implicit-bool = false  # We do use implicit bool
 untyped-import = false  # Import discovery

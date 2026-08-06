@@ -297,10 +297,7 @@ def test_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], 1: [4, 5, 6]})
 
     my_unnamed_func = (  # pyright: ignore[reportUnknownVariableType]
-        lambda df: df[  # pyright: ignore[reportUnknownLambdaType] # pyrefly: ignore[implicit-any-lambda]
-            "a"
-        ]
-        * 2
+        lambda df: df["a"] * 2  # pyright: ignore[reportUnknownLambdaType]
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
@@ -311,7 +308,8 @@ def test_assign() -> None:
 
     check(assert_type(df.assign(c=lambda df: df["a"] * 2), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(df.assign(c=lambda df: df["a"].index), pd.DataFrame), pd.DataFrame
+        assert_type(df.assign(c=lambda df: df["a"].index), pd.DataFrame),
+        pd.DataFrame,
     )
     check(
         assert_type(df.assign(c=lambda df: df["a"].to_numpy()), pd.DataFrame),
@@ -2714,7 +2712,8 @@ def test_types_rename() -> None:
     check(assert_type(df.rename(columns={None: "b"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.rename(columns={"": "b"}), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(df.rename(columns=lambda s: s.upper()), pd.DataFrame), pd.DataFrame
+        assert_type(df.rename(columns=lambda s: s.upper()), pd.DataFrame),
+        pd.DataFrame,
     )
 
     df_multiindex = pd.DataFrame(columns=[("a", 1), ("a", 2)])
@@ -4575,14 +4574,12 @@ def test_frame_pipe() -> None:
         return x.max() - k * x.min()
 
     check(
-        # pyrefly: ignore[implicity-any-lambda]
         assert_type(df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
     check(assert_type(df.rolling(2).pipe(func_r, k=2), pd.DataFrame), pd.DataFrame)
 
     check(
-        # pyrefly: ignore[implicity-any-lambda]
         assert_type(df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
