@@ -562,7 +562,7 @@ def test_isna() -> None:
     assert not check(assert_type(pd.notna(np_nat), bool), bool)
 
     # Check TypeIs type narrowing functionality
-    nullable1: str | None | NAType | NaTType = random.choice(
+    nullable1: str | NAType | NaTType | None = random.choice(
         ["value", None, pd.NA, pd.NaT]
     )
     if pd.notna(nullable1):
@@ -584,7 +584,7 @@ def test_isna() -> None:
     if not pd.notna(nullable2):
         check(assert_type(nullable2, None), type(None))
 
-    nullable3: bool | None | NAType = random.choice([True, None, pd.NA])
+    nullable3: bool | NAType | None = random.choice([True, None, pd.NA])
     if pd.notna(nullable3):
         check(assert_type(nullable3, bool), bool)
     if not pd.isna(nullable3):

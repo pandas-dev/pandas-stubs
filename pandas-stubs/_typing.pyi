@@ -703,7 +703,7 @@ StorageOptions: TypeAlias = dict[str, Any] | None
 # compression keywords and compression
 CompressionDict: TypeAlias = dict[str, Any]
 CompressionOptions: TypeAlias = (
-    None | Literal["infer", "gzip", "bz2", "zip", "xz", "zstd", "tar"] | CompressionDict
+    Literal["infer", "gzip", "bz2", "zip", "xz", "zstd", "tar"] | CompressionDict | None
 )
 ParquetCompressionOptions: TypeAlias = (
     Literal["snappy", "gzip", "brotli", "lz4", "zstd"] | None
@@ -1203,7 +1203,7 @@ ExcelWriteEngine: TypeAlias = Literal["openpyxl", "odf", "xlsxwriter"]
 
 # Repeated in `timestamps.pyi` so as to satisfy mixed strict / non-strict paths.
 # https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
-TimeZones: TypeAlias = str | tzinfo | None | int
+TimeZones: TypeAlias = str | tzinfo | int | None
 
 ColumnValue: TypeAlias = AnyArrayLike | Scalar | Sequence[Scalar] | range | None
 # Evaluates to a DataFrame column in DataFrame.assign context.
