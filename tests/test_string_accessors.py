@@ -262,6 +262,8 @@ def test_string_accessors_string_series() -> None:
     _check(assert_type(s.str.rstrip(), "pd.Series[str]"))
     _check(assert_type(s.str.slice_replace(0, 2, "XX"), "pd.Series[str]"))
     _check(assert_type(s.str.strip(), "pd.Series[str]"))
+    # pandas-dev/pandas-stubs#1868
+    _check(assert_type(s.str.split("a").explode().str.strip(), "pd.Series[str]"))
     _check(assert_type(s.str.swapcase(), "pd.Series[str]"))
     _check(assert_type(s.str.title(), "pd.Series[str]"))
     _check(
@@ -527,6 +529,8 @@ def test_string_accessors_list_series() -> None:
     _check(assert_type(s.str.split("a", expand=False), "pd.Series[list[str]]"))
     _check(assert_type(s.str.rsplit("a"), "pd.Series[list[str]]"))
     _check(assert_type(s.str.rsplit("a", expand=False), "pd.Series[list[str]]"))
+    # pandas-dev/pandas-stubs#1868
+    _check(assert_type(s.str.split("a").explode().str.split(), "pd.Series[list[str]]"))
 
     s_a = pd.DataFrame({"a": DATA})["a"]
     _check(assert_type(s_a.str.findall("pp"), "pd.Series[list[str]]"))

@@ -3835,6 +3835,9 @@ def test_series_explode() -> None:
     check(assert_type(s.explode(), pd.Series), pd.Series)
     check(assert_type(s.explode(ignore_index=True), pd.Series), pd.Series)
 
+    s_str = pd.Series(["a,b,c"])
+    check(assert_type(s_str.str.split(",").explode(), "pd.Series[str]"), pd.Series, str)
+
 
 def test_series_index_setter() -> None:
     """Test Series.index setter property GH1366."""
