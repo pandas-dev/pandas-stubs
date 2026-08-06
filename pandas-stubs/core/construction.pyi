@@ -136,7 +136,7 @@ def array(  # type: ignore[overload-overlap]
 @overload
 def array(
     data: (
-        Sequence[IntervalT | None | float]
+        Sequence[IntervalT | float | None]
         | IntervalArray
         | IntervalIndex
         | Series[Interval]

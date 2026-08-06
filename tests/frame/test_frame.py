@@ -297,7 +297,10 @@ def test_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], 1: [4, 5, 6]})
 
     my_unnamed_func = (  # pyright: ignore[reportUnknownVariableType]
-        lambda df: df["a"] * 2  # pyright: ignore[reportUnknownLambdaType]
+        lambda df: df[  # pyright: ignore[reportUnknownLambdaType] # pyrefly: ignore[implicit-any-lambda]
+            "a"
+        ]
+        * 2
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
@@ -4572,12 +4575,14 @@ def test_frame_pipe() -> None:
         return x.max() - k * x.min()
 
     check(
+        # pyrefly: ignore[implicity-any-lambda]
         assert_type(df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
     check(assert_type(df.rolling(2).pipe(func_r, k=2), pd.DataFrame), pd.DataFrame)
 
     check(
+        # pyrefly: ignore[implicity-any-lambda]
         assert_type(df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )

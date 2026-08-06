@@ -3,12 +3,12 @@ ci:
     autofix_prs: false
 repos:
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.22
+    rev: v0.16.1
     hooks:
     -   id: ruff-check
         args: [--exit-non-zero-on-fix]
 -   repo: https://github.com/codespell-project/codespell
-    rev: v2.4.2
+    rev: v2.4.3
     hooks:
     - id: codespell
       args: [-L, "THIRDPARTY"]

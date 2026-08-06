@@ -48,7 +48,7 @@ _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
 
 # Repeated from `_typing.pyi` so as to satisfy mixed strict / non-strict paths.
 # https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
-TimeZones: TypeAlias = str | _tzinfo | None | int
+TimeZones: TypeAlias = str | _tzinfo | int | None
 
 class Timestamp(datetime, SupportsIndex):
     min: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]

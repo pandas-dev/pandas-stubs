@@ -128,6 +128,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+from typing_extensions import override
 import xarray as xr
 
 from pandas._libs.interval import Interval
@@ -1874,7 +1875,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @final
     def last_valid_index(self) -> Scalar: ...
     @overload
-    def value_counts(  # pyrefly: ignore
+    @override
+    def value_counts(
         self,
         normalize: Literal[False] = False,
         sort: _bool = ...,

@@ -160,6 +160,7 @@ def test_pipe() -> None:
 
     def i(val: "DatetimeIndexResampler[DataFrame]") -> float:
         assert isinstance(val, DatetimeIndexResampler)
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean().mean())
 
     check(assert_type(DF.resample("ME").pipe(i), float), float)
@@ -304,6 +305,7 @@ def test_pipe_series() -> None:
 
     def g(val: "DatetimeIndexResampler[Series]") -> float:
         assert isinstance(val, DatetimeIndexResampler)
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(S.resample("ME").pipe(g), float), float)
@@ -327,6 +329,7 @@ def test_aggregate_series_combinations() -> None:
         return Series(val)
 
     def s2scalar(val: Series) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean())
 
     check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
@@ -361,6 +364,7 @@ def test_aggregate_frame_combinations() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)

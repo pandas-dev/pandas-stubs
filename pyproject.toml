@@ -201,6 +201,7 @@ extend-select = ["ALL"]
 ignore = [
   # The following rules are ignored permanently for good reasons
   "COM",    # https://docs.astral.sh/ruff/rules/#flake8-commas-com
+  "CPY001", # https://docs.astral.sh/ruff/rules/missing-copyright-notice/
   "D",      # https://docs.astral.sh/ruff/rules/#pydocstyle-d
   "E501",   # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
   "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
@@ -347,10 +348,12 @@ filterwarnings = [
 project-includes = ["pandas-stubs", "tests"]
 enabled-ignores = ["pyrefly"]
 python-version = "3.11"
+min-severity = "warn"
 
 [tool.pyrefly.errors]
 explicit-any = false  # We do use implicit Any
 implicit-any-type-argument = false  # We do use implicit Any
+implicit-bool = false  # We do use implicit bool
 untyped-import = false  # Import discovery
 
 [tool.ty.environment]
