@@ -1936,6 +1936,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __add__(
         self: Supports_ProtoAdd[S2_contra, S2], other: S2_contra | Sequence[S2_contra]
     ) -> Series[S2]: ...
+    # TODO: pandas-dev/pandas-stubs#1799 the following overload causes ty
+    # frozen with test_compute_values in tests/frame/test_frame.py.
+    # Investigate and report to ty.
+    # see https://github.com/pandas-dev/pandas-stubs/actions/runs/31049878204
     @overload
     def __add__(
         self: Series[S2_contra], other: SupportsRAdd[S2_contra, S2]

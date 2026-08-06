@@ -10,6 +10,7 @@ from typing import (
     Concatenate,
     Generic,
     Self,
+    TypeAlias,
     overload,
 )
 
@@ -31,7 +32,6 @@ from pandas._typing import (
     NDFrameT,
     P,
     QuantileInterpolation,
-    T,
     WindowingEngine,
     WindowingEngineKwargs,
     WindowingRankType,
@@ -84,6 +84,8 @@ class Window(BaseWindow[NDFrameT]):
     def std(
         self, ddof: int = ..., numeric_only: bool = False, **kwargs: Any
     ) -> NDFrameT: ...
+
+_PipeCallable: TypeAlias = Callable[Concatenate[NDFrameT, P], Any]
 
 class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def count(self, numeric_only: bool = ...) -> NDFrameT: ...
@@ -176,18 +178,15 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def nunique(self, numeric_only: bool = False) -> NDFrameT: ...
     @overload
     def pipe(
-        self,
-        func: Callable[Concatenate[Self, P], T],
-        *args: P.args,
-        **kwargs: P.kwargs,
-    ) -> T: ...
+        self, func: _PipeCallable[NDFrameT, P], *args: P.args, **kwargs: P.kwargs
+    ) -> NDFrameT: ...
     @overload
     def pipe(
         self,
-        func: tuple[Callable[Concatenate[Self, P], T], str],
+        func: tuple[_PipeCallable[NDFrameT, P], str],
         *args: P.args,
         **kwargs: P.kwargs,
-    ) -> T: ...
+    ) -> NDFrameT: ...
 
 class Rolling(RollingAndExpandingMixin[NDFrameT]): ...
 class RollingGroupby(BaseWindowGroupby[NDFrameT], Rolling[NDFrameT]): ...
