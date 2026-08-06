@@ -2951,9 +2951,7 @@ def test_dataframe_pct_change() -> None:
     check(assert_type(df.pct_change(axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis="columns"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis="index"), pd.DataFrame), pd.DataFrame)
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        df.pct_change(fill_method=None)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+    check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
 
 
 def test_compute_values() -> None:
