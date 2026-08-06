@@ -497,7 +497,7 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
-    # TODO: pandas-dev/pandas-stubs#1786 remove the conditional warning
+    # TODO: pandas-dev/pandas#66608 remove the conditional warning
     with pytest_warns_conditioned(
         DeprecationWarning,
         r"The 'generic' unit for NumPy timedelta is deprecated",
@@ -1755,10 +1755,9 @@ def test_period_add_subtract() -> None:
     check(assert_type(as_np_td + p, pd.Period), pd.Period)
     check(assert_type(p.__radd__(as_np_td), pd.Period), pd.Period)
 
-    # TODO: pandas-dev/pandas-stubs#1786 investigate and report to pyrefly
-    check(
-        assert_type(as_np_i64 + p, pd.Period), pd.Period  # pyrefly: ignore[assert-type]
-    )
+    # TODO: facebook/pyrefly#4422
+    # pyrefly: ignore[assert-type]
+    check(assert_type(as_np_i64 + p, pd.Period), pd.Period)
     check(assert_type(p.__radd__(as_np_i64), pd.Period), pd.Period)
 
     check(assert_type(as_int + p, pd.Period), pd.Period)
