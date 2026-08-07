@@ -397,7 +397,15 @@ def test_series_dt_accessors() -> None:
 
     check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.tz, dt.tzinfo | None), type(None))
-    check(assert_type(s0.dt.freq, str | None), str)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "return a BaseOffset object instead of a string from Series.dt.freq",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(assert_type(s0.dt.freq, str | None), str)
+
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
