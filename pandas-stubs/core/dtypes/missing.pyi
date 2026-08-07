@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from typing import (
     Any,
     overload,
@@ -23,9 +22,6 @@ from pandas._typing import (
     np_ndarray,
     np_ndarray_bool,
 )
-
-isposinf_scalar: Callable[[], Any] = ...
-isneginf_scalar: Callable[[], Any] = ...
 
 @overload
 def isna(obj: DataFrame) -> DataFrame: ...
