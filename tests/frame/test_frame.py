@@ -3932,7 +3932,7 @@ def test_convert_dtypes_convert_floating() -> None:
         lower="3.0.99",
     ):
         dfn = df.convert_dtypes(convert_floating=False)
-        check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
+    check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
 
 
 def test_convert_dtypes_dtype_backend() -> None:
