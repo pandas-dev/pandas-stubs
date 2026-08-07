@@ -291,7 +291,11 @@ warn_return_any = false     # TODO
 warn_unreachable = true
 # Suppressing errors
 ignore_errors = false
-enable_error_code = "ignore-without-code" # same as in pandas
+enable_error_code = [
+  "ignore-without-code",  # same as in pandas
+    # TODO: exhaust https://mypy.readthedocs.io/en/stable/error_code_list2.html
+  "explicit-override"
+]
 # Miscellaneous strictness flags
 allow_untyped_globals = false
 allow_redefinition = false

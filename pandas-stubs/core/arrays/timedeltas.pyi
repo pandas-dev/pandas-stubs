@@ -133,7 +133,8 @@ class TimedeltaArray(TimelikeOps):
     def nanoseconds(self) -> np_1darray_int32: ...
     @property
     def components(self) -> DataFrame: ...
-    @property
+    # TODO: python/mypy#15900 we did use explicit override but mypy does not see it
+    @property  # type: ignore[explicit-override]
     @override
     def freq(self) -> DateOffset | None: ...  # pyrefly: ignore[bad-override]
     @freq.setter  # type: ignore[override]
