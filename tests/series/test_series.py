@@ -2976,7 +2976,13 @@ def test_prefix_summix_axis() -> None:
 
 def test_convert_dtypes_convert_floating() -> None:
     df = pd.Series([1, 2, 3, 4])
-    dfn = df.convert_dtypes(convert_floating=False)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        match="convert_floating keyword in Series.convert_dtypes is deprecated",
+        lower="3.0.99",
+    ):
+        dfn = df.convert_dtypes(convert_floating=False)
     check(assert_type(dfn, "pd.Series[int]"), pd.Series, np.integer)
 
 
