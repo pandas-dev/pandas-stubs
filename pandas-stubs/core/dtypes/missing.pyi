@@ -23,9 +23,6 @@ from pandas._typing import (
     np_ndarray_bool,
 )
 
-isposinf_scalar = ...
-isneginf_scalar = ...
-
 @overload
 def isna(obj: DataFrame) -> DataFrame: ...
 @overload

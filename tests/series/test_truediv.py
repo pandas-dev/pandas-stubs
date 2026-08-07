@@ -36,8 +36,8 @@ def test_truediv_py_scalar(left_i: pd.Series) -> None:
     check(assert_type(left_i / f, pd.Series), pd.Series)
     check(assert_type(left_i / c, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
-        _05 = left_i / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _05 = left_i / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(b / left_i, pd.Series), pd.Series)
     check(assert_type(i / left_i, pd.Series), pd.Series)
@@ -160,34 +160,29 @@ def test_truediv_numpy_array(left_i: pd.Series) -> None:
     # microsoft/pyright#10924
     # https://github.com/pandas-dev/pandas-stubs/issues/1781
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            b / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
-        ),
+        # pyrefly: ignore[assert-type]
+        assert_type(b / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            i / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
-        ),
+        # pyrefly: ignore[assert-type]
+        assert_type(i / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            f / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
-        ),
+        # pyrefly: ignore[assert-type]
+        assert_type(f / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            c / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
-        ),
+        # pyrefly: ignore[assert-type]
+        assert_type(c / left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
     )
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(s / left_i, Any)  # TODO: numpy/numpy#30173 numpy should reject this
-        assert_type(  # pyrefly: ignore[assert-type]
-            d / left_i, Any  # pyright: ignore[reportAssertTypeFailure]
-        )
+        # pyrefly: ignore[assert-type]
+        assert_type(d / left_i, Any)  # pyright: ignore[reportAssertTypeFailure]
 
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
     check(assert_type(left_i.truediv(i), pd.Series), pd.Series)
