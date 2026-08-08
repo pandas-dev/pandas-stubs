@@ -106,6 +106,12 @@ def test_aggregate() -> None:
         ),
         DataFrame,
     )
+    # GH 1844
+    resample_agg: dict[str, str] = {"col1": "sum", "col2": "mean"}
+    check(
+        assert_type(DF.resample("ME").aggregate(resample_agg), DataFrame),
+        DataFrame,
+    )
     check(
         assert_type(
             DF.resample("ME").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),

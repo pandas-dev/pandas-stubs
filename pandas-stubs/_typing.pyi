@@ -554,7 +554,7 @@ NumpyVoidDtypeArg: TypeAlias = type[np.void] | Literal["V", "void"]
 VoidDtypeArg: TypeAlias = NumpyVoidDtypeArg
 
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
-DtypeArg: TypeAlias = Dtype | Mapping[Hashable, Dtype]
+DtypeArg: TypeAlias = Dtype | Mapping[HashableT0, Dtype]
 DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 AstypeArg: TypeAlias = (
@@ -574,7 +574,7 @@ AstypeArg: TypeAlias = (
 )
 
 # converters
-ConvertersArg: TypeAlias = Mapping[Hashable, Callable[[Dtype], Dtype]]
+ConvertersArg: TypeAlias = Mapping[HashableT0, Callable[[Dtype], Dtype]]
 
 # parse_dates
 ParseDatesArg: TypeAlias = (
@@ -719,7 +719,7 @@ FormattersType: TypeAlias = (
 # ColspaceType = Mapping[Hashable, Union[str, int]] not used in stubs
 FloatFormatType: TypeAlias = str | Callable[[float], str] | EngFormatter
 ColspaceArgType: TypeAlias = (
-    str | int | Sequence[int | str] | Mapping[Hashable, str | int]
+    str | int | Sequence[int | str] | Mapping[HashableT0, str | int]
 )
 
 # Arguments for fillna()
