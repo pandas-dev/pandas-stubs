@@ -16,7 +16,10 @@ from pandas.core.groupby.generic import (
     DataFrameGroupBy,
     SeriesGroupBy,
 )
-from pandas.core.indexes.datetimes import date_range
+from pandas.core.indexes.datetimes import (
+    DatetimeIndex,
+    date_range,
+)
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 
@@ -25,10 +28,10 @@ from tests import (
     check,
 )
 
-DR = date_range("1999-1-1", periods=365, freq="D")
-DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
+DR: DatetimeIndex = date_range("1999-1-1", periods=365, freq="D")
+DF_: DataFrame = DataFrame(np.random.standard_normal((365, 1)), index=DR)
 S = DF_.iloc[:, 0]
-DF = DataFrame({"col1": S, "col2": S})
+DF: DataFrame = DataFrame({"col1": S, "col2": S})
 
 
 def test_iter() -> None:

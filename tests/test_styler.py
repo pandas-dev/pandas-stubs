@@ -34,9 +34,9 @@ else:
     StyleExportDict = object
 
 
-DF = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
+DF: DataFrame = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
 
-PWD = Path(__file__).parent.resolve()
+PWD: Path = Path(__file__).parent.resolve()
 
 
 @pytest.fixture(autouse=True)

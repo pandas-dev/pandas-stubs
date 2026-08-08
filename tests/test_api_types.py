@@ -11,13 +11,13 @@ from pandas.api.typing.aliases import DtypeObj
 
 from tests import check
 
-nparr = np.array([1, 2, 3])
-arr = pd.Series([1, 2, 3])
+nparr: np.ndarray = np.array([1, 2, 3])
+arr: "pd.Series[int]" = pd.Series([1, 2, 3])
 obj = "True"
 mapping = {"a": "a"}
-dframe = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
-dtylike = np.dtype(np.int32)
-ind = pd.Index([1, 2.0])
+dframe: pd.DataFrame = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+dtylike: "np.dtype[np.int32]" = np.dtype(np.int32)
+ind: "pd.Index[float]" = pd.Index([1, 2.0])
 
 
 def test_is_bool() -> None:

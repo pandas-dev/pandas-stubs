@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 _SRC_STEPS = [
     _step.ty_src,
     _step.pyrefly_src,
+    _step.pyrefly_coverage,
     _step.mypy_src,
     _step.pyright_src,
     _step.pytest,

@@ -18,7 +18,7 @@ from tests._typing import (
     np_ndarray_str,
 )
 
-left = pd.Series(["1", "23", "456"])  # left operand
+left: "pd.Series[str]" = pd.Series(["1", "23", "456"])  # left operand
 
 
 def test_add_py_scalar() -> None:

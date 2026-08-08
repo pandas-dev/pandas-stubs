@@ -11,7 +11,7 @@ from tests._typing import (
 )
 
 # left operand
-left = pd.Index([1, 2, 3])
+left: "pd.Index[int]" = pd.Index([1, 2, 3])
 
 
 def test_add_py_scalar() -> None:

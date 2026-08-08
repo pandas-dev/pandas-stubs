@@ -239,6 +239,18 @@ def pyrefly_src_all() -> None:
     subprocess.run(cmd, check=True)
 
 
+def pyrefly_coverage() -> None:
+    cmd = [
+        "pyrefly",
+        "coverage",
+        "check",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+    ]
+    subprocess.run(cmd, check=True)
+
+
 def type_completeness() -> None:
     cmd = ["python", "-m", "scripts.type_completeness"]
     subprocess.run(cmd, check=True)
