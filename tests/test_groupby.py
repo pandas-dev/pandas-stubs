@@ -16,6 +16,7 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
+    DatetimeIndex,
     Index,
     Series,
     Timedelta,
@@ -35,6 +36,7 @@ from pandas.core.window import (
     RollingGroupby,
 )
 
+from pandas._typing import Scalar
 from pandas.errors import Pandas4Warning
 
 from tests import (
@@ -46,13 +48,13 @@ from tests import (
 if TYPE_CHECKING:
     from pandas.core.groupby.groupby import ResamplerGroupBy  # noqa: F401
 
-DR = date_range("1999-1-1", periods=365, freq="D")
-DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
-BY = Series(np.random.choice([1, 2], 365), index=DR)
+DR: DatetimeIndex = date_range("1999-1-1", periods=365, freq="D")
+DF_: DataFrame = DataFrame(np.random.standard_normal((365, 1)), index=DR)
+BY: Series[float] = Series(np.random.choice([1, 2], 365), index=DR)
 S = DF_.iloc[:, 0]
-DF = DataFrame({"col1": S, "col2": S, "col3": BY})
-GB_DF = DF.groupby("col3")
-GB_S = cast("SeriesGroupBy[float, int]", GB_DF.col1)
+DF: DataFrame = DataFrame({"col1": S, "col2": S, "col3": BY})
+GB_DF: DataFrameGroupBy[Scalar, Literal[True]] = DF.groupby("col3")
+GB_S: SeriesGroupBy[float, int] = cast("SeriesGroupBy[float, int]", GB_DF.col1)
 
 
 def test_frame_groupby_resample() -> None:

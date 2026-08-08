@@ -3,6 +3,10 @@ from datetime import (
     datetime,
     timedelta,
 )
+from typing import (
+    Any,
+    Literal,
+)
 
 import numpy as np
 import pandas as pd
@@ -62,15 +66,23 @@ from tests._typing import (
     VoidDtypeArg,
 )
 
-PYTHON_BOOL_ARGS = dict.fromkeys((bool, "bool"), np.bool_)
-PANDAS_BOOL_ARGS = dict.fromkeys((pd.BooleanDtype(), "boolean"), np.bool_)
-NUMPY_BOOL_ARGS = dict.fromkeys((np.bool_, "?", "b1", "bool_"), np.bool_)
-PYARROW_BOOL_ARGS = dict.fromkeys(("bool[pyarrow]", "boolean[pyarrow]"), bool)
+PYTHON_BOOL_ARGS: dict[str | type[bool], type[np.bool_]] = dict.fromkeys(
+    (bool, "bool"), np.bool_
+)
+PANDAS_BOOL_ARGS: dict[str | pd.BooleanDtype, type[np.bool_]] = dict.fromkeys(
+    (pd.BooleanDtype(), "boolean"), np.bool_
+)
+NUMPY_BOOL_ARGS: dict[str | type[np.bool_], type[np.bool_]] = dict.fromkeys(
+    (np.bool_, "?", "b1", "bool_"), np.bool_
+)
+PYARROW_BOOL_ARGS: dict[str, type[bool]] = dict.fromkeys(
+    ("bool[pyarrow]", "boolean[pyarrow]"), bool
+)
 ASTYPE_BOOL_ARGS = (
     PYTHON_BOOL_ARGS | PANDAS_BOOL_ARGS | NUMPY_BOOL_ARGS | PYARROW_BOOL_ARGS
 )
 
-PYTHON_INT_ARGS = dict.fromkeys((int, "int"), np.integer)
+PYTHON_INT_ARGS: dict[str | type[int], Any] = dict.fromkeys((int, "int"), np.integer)
 PANDAS_INT_ARGS = {
     **dict.fromkeys((pd.Int8Dtype(), "Int8"), np.int8),  # pandas Int8
     **dict.fromkeys((pd.Int16Dtype(), "Int16"), np.int16),  # pandas Int16
@@ -97,7 +109,9 @@ NUMPY_INT_ARGS: dict[str | type[np.signedinteger], type[np.signedinteger]] = {
     # numpy signed pointer  (platform dependent one of int[8,16,32,64])
     **dict.fromkeys((np.intp, "intp", "p"), np.intp),
 }
-PYARROW_INT_ARGS = dict.fromkeys([f"int{b}[pyarrow]" for b in (8, 16, 32, 64)], int)
+PYARROW_INT_ARGS: dict[str, type[int]] = dict.fromkeys(
+    [f"int{b}[pyarrow]" for b in (8, 16, 32, 64)], int
+)
 ASTYPE_INT_ARGS = PYTHON_INT_ARGS | PANDAS_INT_ARGS | NUMPY_INT_ARGS | PYARROW_INT_ARGS
 
 PANDAS_UINT_ARGS = {
@@ -126,10 +140,14 @@ NUMPY_UINT_ARGS: dict[str | type[np.unsignedinteger], type[np.unsignedinteger]] 
     # numpy unsigned pointer  (platform dependent one of uint[8,16,32,64])
     **dict.fromkeys((np.uintp, "uintp", "P"), np.uintp),
 }
-PYARROW_UINT_ARGS = dict.fromkeys([f"uint{b}[pyarrow]" for b in (8, 16, 32, 64)], int)
+PYARROW_UINT_ARGS: dict[str, type[int]] = dict.fromkeys(
+    [f"uint{b}[pyarrow]" for b in (8, 16, 32, 64)], int
+)
 ASTYPE_UINT_ARGS = PANDAS_UINT_ARGS | NUMPY_UINT_ARGS | PYARROW_UINT_ARGS
 
-PYTHON_FLOAT_ARGS = dict.fromkeys((float, "float"), np.floating)
+PYTHON_FLOAT_ARGS: dict[str | type[float], type[np.floating]] = dict.fromkeys(
+    (float, "float"), np.floating
+)
 PANDAS_FLOAT_ARGS = {
     **dict.fromkeys((pd.Float32Dtype(), "Float32"), np.float32),  # pandas Float32
     **dict.fromkeys((pd.Float64Dtype(), "Float64"), np.float64),  # pandas Float64
@@ -164,7 +182,9 @@ ASTYPE_FLOAT_ARGS = (
     | PYARROW_FLOAT_ARGS
 )
 
-PYTHON_COMPLEX_ARGS = dict.fromkeys((complex, "complex"), np.complexfloating)
+PYTHON_COMPLEX_ARGS: dict[str | type[complex], type[np.complexfloating]] = (
+    dict.fromkeys((complex, "complex"), np.complexfloating)
+)
 NUMPY_COMPLEX_ARGS: dict[str | type[np.complexfloating], type[np.complexfloating]] = {
     # numpy complex64
     **dict.fromkeys((np.csingle, "csingle", "F"), np.csingle),
@@ -191,7 +211,7 @@ NUMPY_TIMESTAMP_ARGS = {  # type: ignore[misc]
     **dict.fromkeys([f"<M8[{u}]" for u in NUMPY_UNITS], datetime),
     np.dtype("datetime64[ms]"): datetime,
 }
-PANDAS_TIMESTAMP_ARGS = dict.fromkeys(
+PANDAS_TIMESTAMP_ARGS: dict[str, type[datetime]] = dict.fromkeys(
     [f"datetime64[{u}, UTC]" for u in NUMPY_UNITS], datetime
 )
 PANDAS_ASTYPE_TIMESTAMP_ARGS = {
@@ -231,17 +251,25 @@ PANDAS_ASTYPE_TIMEDELTA_ARGS = {
     **dict.fromkeys([f"<m8[{u}]" for u in PANDAS_UNITS], timedelta),
 }
 # pyarrow duration
-PYARROW_TIMEDELTA_ARGS = dict.fromkeys(
+PYARROW_TIMEDELTA_ARGS: dict[str, type[timedelta]] = dict.fromkeys(
     [f"duration[{u}][pyarrow]" for u in NUMPY_UNITS], timedelta
 )
 TYPE_TIMEDELTA_ARGS = NUMPY_TIMEDELTA_ARGS | PYARROW_TIMEDELTA_ARGS
 ASTYPE_TIMEDELTA_ARGS = TYPE_TIMEDELTA_ARGS | PANDAS_ASTYPE_TIMEDELTA_ARGS
 
-PYTHON_STRING_ARGS = dict.fromkeys((str, "str"), str)
-PANDAS_BASE_STRING_ARGS = dict.fromkeys((pd.StringDtype(), "string"), str)
-PANDAS_STRING_ARGS = dict.fromkeys((pd.StringDtype("python"), "string[python]"), str)
-NUMPY_STRING_ARGS = dict.fromkeys((np.str_, "str_", "unicode", "U"), str)
-PYARROW_STRING_ARGS = dict.fromkeys((pd.StringDtype("pyarrow"), "string[pyarrow]"), str)
+PYTHON_STRING_ARGS: dict[str | type[str], type[str]] = dict.fromkeys((str, "str"), str)
+PANDAS_BASE_STRING_ARGS: dict[str | pd.StringDtype, type[str]] = dict.fromkeys(
+    (pd.StringDtype(), "string"), str
+)
+PANDAS_STRING_ARGS: 'dict[str | pd.StringDtype[Literal["python"]], type[str]]' = (
+    dict.fromkeys((pd.StringDtype("python"), "string[python]"), str)
+)
+NUMPY_STRING_ARGS: dict[str | type[np.str_], type[str]] = dict.fromkeys(
+    (np.str_, "str_", "unicode", "U"), str
+)
+PYARROW_STRING_ARGS: 'dict[str | pd.StringDtype[Literal["pyarrow"]], type[str]]' = (
+    dict.fromkeys((pd.StringDtype("pyarrow"), "string[pyarrow]"), str)
+)
 ASTYPE_STRING_ARGS = (
     PYTHON_STRING_ARGS
     | PANDAS_BASE_STRING_ARGS
@@ -251,8 +279,12 @@ ASTYPE_STRING_ARGS = (
     | PYARROW_STRING_ARGS
 )
 
-PYTHON_BYTES_ARGS = dict.fromkeys((bytes, "bytes"), bytes)
-NUMPY_BYTES_ARGS = dict.fromkeys((np.bytes_, "S", "bytes_"), np.bytes_)
+PYTHON_BYTES_ARGS: dict[str | type[bytes], type[bytes]] = dict.fromkeys(
+    (bytes, "bytes"), bytes
+)
+NUMPY_BYTES_ARGS: dict[str | type[np.bytes_], type[np.bytes_]] = dict.fromkeys(
+    (np.bytes_, "S", "bytes_"), np.bytes_
+)
 PYARROW_BYTES_ARGS = {"binary[pyarrow]": bytes}
 ASTYPE_BYTES_ARGS = PYTHON_BYTES_ARGS | NUMPY_BYTES_ARGS | PYARROW_BYTES_ARGS
 
@@ -263,11 +295,17 @@ ASTYPE_CATEGORICAL_ARGS = {
     # ("dictionary[pyarrow]", "pd.Series[category]", Categorical),
 }
 
-PYTHON_OBJECT_ARGS = dict.fromkeys((object, "object"), object)
-NUMPY_OBJECT_ARGS = dict.fromkeys((np.object_, "object_", "O"), object)
+PYTHON_OBJECT_ARGS: dict[str | type[object], type[object]] = dict.fromkeys(
+    (object, "object"), object
+)
+NUMPY_OBJECT_ARGS: dict[str | type[np.object_], type[object]] = dict.fromkeys(
+    (np.object_, "object_", "O"), object
+)
 ASTYPE_OBJECT_ARGS = PYTHON_OBJECT_ARGS | NUMPY_OBJECT_ARGS
 
-NUMPY_VOID_ARGS = dict.fromkeys((np.void, "void", "V"), np.void)
+NUMPY_VOID_ARGS: dict[str | type[np.void], type[np.void]] = dict.fromkeys(
+    (np.void, "void", "V"), np.void
+)
 ASTYPE_VOID_ARGS = NUMPY_VOID_ARGS
 
 PYTHON_NOT_STR_OBJ_DTYPE_ARGS = (

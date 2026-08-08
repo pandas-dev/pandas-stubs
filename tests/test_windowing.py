@@ -16,6 +16,7 @@ from pandas.core.indexers.objects import (
     FixedForwardWindowIndexer,
     VariableOffsetWindowIndexer,
 )
+from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.window import (
     ExponentialMovingWindow,
     Rolling,
@@ -35,11 +36,11 @@ from tests._typing import (
 
 from pandas.tseries.frequencies import to_offset
 
-IDX = date_range("1/1/2000", periods=700, freq="D")
-S = Series(np.random.standard_normal(700))
-DF = DataFrame({"col1": S, "col2": S})
-S_DTI = Series(data=np.random.standard_normal(700), index=IDX)
-DF_DTI = DataFrame(data=np.random.standard_normal(700), index=IDX)
+IDX: DatetimeIndex = date_range("1/1/2000", periods=700, freq="D")
+S: "Series[float]" = Series(np.random.standard_normal(700))
+DF: DataFrame = DataFrame({"col1": S, "col2": S})
+S_DTI: "Series[float]" = Series(data=np.random.standard_normal(700), index=IDX)
+DF_DTI: DataFrame = DataFrame(data=np.random.standard_normal(700), index=IDX)
 
 
 def test_rolling_basic() -> None:

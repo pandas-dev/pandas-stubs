@@ -85,7 +85,7 @@ help = "Run all tests"
 script = "scripts.test:run_tests(src=True, dist=True)"
 
 [tool.poe.tasks.test]
-help = "Run local tests (includes 'mypy', 'pyright', 'pyrefly', 'ty', 'pytest', and 'style')"
+help = "Run local tests (includes 'mypy', 'pyright', 'pyrefly', 'pyrefly_coverage', 'ty', 'pytest', and 'style')"
 script = "scripts.test:run_tests(src=True)"
 
 [tool.poe.tasks.test_dist]
@@ -130,6 +130,10 @@ script = "scripts.test.run:pyrefly_src_strict"
 [tool.poe.tasks.pyrefly_all]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'all'"
 script = "scripts.test.run:pyrefly_src_all"
+
+[tool.poe.tasks.pyrefly_coverage]
+help = "Run pyrefly's type coverage check on 'tests'"
+script = "scripts.test.run:pyrefly_coverage"
 
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"

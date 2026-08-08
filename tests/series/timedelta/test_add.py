@@ -16,7 +16,7 @@ from tests._typing import (
     np_ndarray_td,
 )
 
-left = pd.Series([pd.Timedelta(1, "s")])  # left operand
+left: "pd.Series[pd.Timedelta]" = pd.Series([pd.Timedelta(1, "s")])  # left operand
 
 
 def test_add_py_scalar() -> None:

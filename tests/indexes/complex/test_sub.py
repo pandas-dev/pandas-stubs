@@ -11,7 +11,7 @@ from tests import check
 from tests._typing import np_ndarray_int64
 
 # left operand
-left = pd.Index([1j, 2j, 3j])
+left: "pd.Index[complex]" = pd.Index([1j, 2j, 3j])
 
 
 def test_sub_py_scalar() -> None:

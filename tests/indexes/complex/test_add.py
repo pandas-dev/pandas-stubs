@@ -11,7 +11,7 @@ from tests._typing import (
 )
 
 # left operand
-left = pd.Index([1j, 2j, 3j])
+left: "pd.Index[complex]" = pd.Index([1j, 2j, 3j])
 
 
 def test_add_py_scalar() -> None:

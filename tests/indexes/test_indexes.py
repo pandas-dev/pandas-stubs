@@ -887,8 +887,10 @@ def test_interval_index_tuples() -> None:
     )
 
 
-dt_l, dt_r = dt.datetime(2025, 12, 14), dt.datetime(2025, 12, 15)
-td_l, td_r = dt.timedelta(seconds=1), dt.timedelta(seconds=2)
+dt_l: dt.datetime = dt.datetime(2025, 12, 14)
+dt_r: dt.datetime = dt.datetime(2025, 12, 15)
+td_l: dt.timedelta = dt.timedelta(seconds=1)
+td_r: dt.timedelta = dt.timedelta(seconds=2)
 
 
 @pytest.mark.parametrize(

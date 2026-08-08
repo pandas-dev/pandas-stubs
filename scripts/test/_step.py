@@ -21,6 +21,10 @@ pyrefly_src_all = Step(
     name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'all'",
     run=run.pyrefly_src_all,
 )
+pyrefly_coverage = Step(
+    name="Run pyrefly coverage check on 'tests'",
+    run=run.pyrefly_coverage,
+)
 pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyright_src,
