@@ -230,7 +230,7 @@ def test_frame_isin() -> None:
     check(assert_type(df.isin(df), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.isin({"x": [1, 2]}), pd.DataFrame), pd.DataFrame)
     # GH 1844
-    isin_map: dict[str, list[int]] = {"x": [1, 2]}
+    isin_map = {"x": [1, 2]}
     check(assert_type(df.isin(isin_map), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.isin(UserDict({"x": iter([1, "2"])})), pd.DataFrame),
