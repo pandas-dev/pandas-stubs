@@ -1,6 +1,5 @@
 from collections.abc import (
     Callable,
-    Hashable,
     Mapping,
 )
 from typing import (
@@ -23,6 +22,7 @@ from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     Axis,
+    HashableT,
     InterpolateOptions,
     NDFrameT,
     Scalar,
@@ -45,7 +45,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def aggregate(
         self: Resampler[DataFrame],
         func: (
-            _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes] | None
+            _FrameGroupByFuncTypes | Mapping[HashableT, _FrameGroupByFuncTypes] | None
         ) = None,
         *args: Any,
         **kwargs: Any,
@@ -61,7 +61,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def aggregate(
         self: Resampler[Series],
         func: (
-            Mapping[Hashable, _SeriesGroupByFuncTypes] | list[_SeriesGroupByFuncTypes]
+            Mapping[HashableT, _SeriesGroupByFuncTypes] | list[_SeriesGroupByFuncTypes]
         ),
         *args: Any,
         **kwargs: Any,

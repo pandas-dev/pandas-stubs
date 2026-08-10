@@ -223,6 +223,12 @@ def test_clipboard() -> None:
         assert_type(read_clipboard(dtype={"first": "f8"}), DataFrame),
         DataFrame,
     )
+    # GH 1844
+    clipboard_dtypes = {"first": "f8"}
+    check(
+        assert_type(read_clipboard(dtype=clipboard_dtypes), DataFrame),
+        DataFrame,
+    )
     check(assert_type(read_clipboard(names=None), DataFrame), DataFrame)
     check(
         assert_type(read_clipboard(names=("first", "second"), header=0), DataFrame),
@@ -914,6 +920,12 @@ def test_read_table(tmp_path: Path) -> None:
         assert_type(read_table(path_str, dtype={"first": "f8"}), DataFrame),
         DataFrame,
     )
+    # GH 1844
+    table_col_types = {"a": int, "b": float}
+    check(
+        assert_type(read_table(path_str, dtype=table_col_types), DataFrame),
+        DataFrame,
+    )
     check(
         assert_type(
             read_table(path_str, names=("first", "second"), header=0), DataFrame
@@ -1410,6 +1422,9 @@ def test_to_string(tmp_path: Path) -> None:
         check(assert_type(DF.to_string(df_string), None), type(None))
     sio = io.StringIO()
     check(assert_type(DF.to_string(sio), None), type(None))
+    # GH 1844
+    string_formatters = {"a": str}
+    check(assert_type(DF.to_string(formatters=string_formatters), str), str)
 
 
 def test_read_sql(tmp_path: Path) -> None:
@@ -1483,6 +1498,14 @@ def test_to_sql_dtype_sqlalchemy_type(tmp_path: Path) -> None:
                 },
             ),
             int | None,
+        ),
+        int,
+    )
+    # GH 1844
+    sql_dtypes = {"a": sqlalchemy.types.INTEGER, "b": sqlalchemy.types.FLOAT}
+    check(
+        assert_type(
+            DF.to_sql("test_typed_map", con=engine, dtype=sql_dtypes), int | None
         ),
         int,
     )
@@ -1624,6 +1647,9 @@ def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params() -> None
 
 def test_read_html(tmp_path: Path) -> None:
     check(assert_type(DF.to_html(), str), str)
+    # GH 1844
+    html_formatters = {"a": str}
+    check(assert_type(DF.to_html(formatters=html_formatters), str), str)
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_html(path_str), None), type(None))
     check(assert_type(read_html(path_str), list[DataFrame]), list)
@@ -1752,6 +1778,9 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
     check(
         assert_type(read_json(path_str, dtype={"MatchID": str}), DataFrame), DataFrame
     )
+    # GH 1844
+    json_dtypes = {"MatchID": str}
+    check(assert_type(read_json(path_str, dtype=json_dtypes), DataFrame), DataFrame)
 
     path_str = str(tmp_path / str(uuid.uuid4()))
     con = sqlite3.connect(path_str)

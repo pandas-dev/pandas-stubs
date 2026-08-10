@@ -182,7 +182,7 @@ class NDFrame:
             Dtype
             | type[TypeEngineMixin]
             | TypeEngineMixin
-            | Mapping[Hashable, Dtype | type[TypeEngineMixin] | TypeEngineMixin]
+            | Mapping[HashableT1, Dtype | type[TypeEngineMixin] | TypeEngineMixin]
             | None
         ) = None,
         method: (

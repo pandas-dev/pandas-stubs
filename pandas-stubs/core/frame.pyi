@@ -642,7 +642,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         formatters: (
             list[Callable[[object], str]]
             | tuple[Callable[[object], str], ...]
-            | Mapping[Hashable, Callable[[object], str]]
+            | Mapping[HashableT, Callable[[object], str]]
             | None
         ) = ...,
         float_format: Callable[[float], str] | None = ...,
@@ -690,7 +690,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         formatters: (
             list[Callable[[object], str]]
             | tuple[Callable[[object], str], ...]
-            | Mapping[Hashable, Callable[[object], str]]
+            | Mapping[HashableT, Callable[[object], str]]
             | None
         ) = ...,
         float_format: Callable[[float], str] | None = ...,
@@ -1694,7 +1694,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = 0,
     ) -> Self: ...
     def isin(
-        self, values: Iterable[Any] | Mapping[Hashable, Iterable[Any]] | DataFrame
+        self, values: Iterable[Any] | Mapping[HashableT, Iterable[Any]] | DataFrame
     ) -> Self: ...
     @property
     def plot(self) -> PlotAccessor: ...
