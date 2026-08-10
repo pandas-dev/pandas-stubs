@@ -921,10 +921,7 @@ def test_read_table(tmp_path: Path) -> None:
         DataFrame,
     )
     # GH 1844
-    table_col_types = {
-        "a": int,
-        "b": float,
-    }
+    table_col_types = {"a": int, "b": float}
     check(
         assert_type(read_table(path_str, dtype=table_col_types), DataFrame),
         DataFrame,
@@ -1505,10 +1502,7 @@ def test_to_sql_dtype_sqlalchemy_type(tmp_path: Path) -> None:
         int,
     )
     # GH 1844
-    sql_dtypes = {
-        "a": sqlalchemy.types.INTEGER,
-        "b": sqlalchemy.types.FLOAT,
-    }
+    sql_dtypes = {"a": sqlalchemy.types.INTEGER, "b": sqlalchemy.types.FLOAT}
     check(
         assert_type(
             DF.to_sql("test_typed_map", con=engine, dtype=sql_dtypes), int | None
