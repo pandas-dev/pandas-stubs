@@ -252,5 +252,5 @@ def pyrefly_coverage() -> None:
 
 
 def type_completeness() -> None:
-    cmd = ["python", "-m", "scripts.type_completeness"]
+    cmd = ["pyrefly", "coverage", "check", "--public-only"]
     subprocess.run(cmd, check=True)
