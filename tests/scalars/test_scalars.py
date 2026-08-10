@@ -566,12 +566,7 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    if sys.version_info >= (3, 12):
-        # numpy >= 2.5 has eliminated the type checking errors
-        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
-    else:
-        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+    check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -613,12 +608,7 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    if sys.version_info >= (3, 12):
-        # numpy >= 2.5 has eliminated the type checking errors
-        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
-    else:
-        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+    check(assert_type(as_timedelta64 - td, dt.datetime), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
