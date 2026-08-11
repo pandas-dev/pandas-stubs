@@ -67,7 +67,10 @@ from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPriva
 from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
-from pandas.core.series import Series
+from pandas.core.series import (
+    Series,
+    SupportsSelfMul,
+)
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
@@ -416,9 +419,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Iterator[tuple[Any, ...]]: ...
     def __len__(self) -> int: ...
     @overload
-    def dot(self, other: DataFrame | ArrayLike | list[Any]) -> Self: ...
+    def dot(
+        self,
+        other: DataFrame | ArrayLike | Sequence[Sequence[SupportsSelfMul[Any]]],
+    ) -> Self: ...
     @overload
-    def dot(self, other: Series) -> Series: ...
+    def dot(self, other: Series | Sequence[SupportsSelfMul[Any]]) -> Series: ...
     @overload
     def __matmul__(self, other: DataFrame) -> Self: ...
     @overload
