@@ -280,7 +280,7 @@ class SupportsSelfSub(Protocol[T_co]):
     def __sub__(self, x: Self, /) -> T_co: ...
 
 @type_check_only
-class _SupportsMul(Protocol[T_co]):
+class SupportsSelfMul(Protocol[T_co]):
     def __mul__(self, value: Self, /) -> T_co: ...
 
 @type_check_only
@@ -4259,7 +4259,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[int]: ...
     @overload
     def cumprod(
-        self: Iterable[_SupportsMul[S1]],
+        self: Iterable[SupportsSelfMul[S1]],
         axis: AxisIndex = ...,
         skipna: _bool = ...,
         *args: Any,
