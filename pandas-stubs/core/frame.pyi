@@ -973,11 +973,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Index
             | np_ndarray
             | Iterator[Hashable]
-            | Sequence[Hashable]
+            | Sequence[Hashable | np_ndarray | Index | Series]
         ),
         *,
-        drop: _bool = ...,
-        append: _bool = ...,
+        drop: _bool = True,
+        append: _bool = False,
         inplace: Literal[True],
     ) -> None: ...
     @overload
@@ -989,11 +989,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Index
             | np_ndarray
             | Iterator[Hashable]
-            | Sequence[Hashable]
+            | Sequence[Hashable | np_ndarray | Index | Series]
         ),
         *,
-        drop: _bool = ...,
-        append: _bool = ...,
+        drop: _bool = True,
+        append: _bool = False,
         inplace: Literal[False] = False,
     ) -> Self: ...
     @overload
