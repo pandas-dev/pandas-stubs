@@ -300,13 +300,7 @@ def test_types_groupby_agg() -> None:
     def wrapped_min(x: pd.Series[S1]) -> S1:
         return x.min()
 
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.groupby("col1")["col3"].agg(min), pd.Series
-        ),
-        pd.Series,
-    )
+    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
     check(
         assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
         pd.DataFrame,
@@ -714,13 +708,7 @@ def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.groupby("col1").col3.agg(min), pd.Series
-        ),
-        pd.Series,
-    )
+    check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
     check(
         assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
         pd.DataFrame,

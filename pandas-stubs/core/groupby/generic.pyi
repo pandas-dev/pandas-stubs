@@ -69,11 +69,11 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
     def aggregate(
         self,
-        func: Callable[[Series], C2] | Callable[Concatenate[Series, ...], C2],
+        func: Callable[[Series], C2],
         /,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> Series[C2]: ...
     @overload
@@ -82,8 +82,8 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         func: list[AggFuncTypeBase[...]],
         /,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
@@ -92,8 +92,8 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         func: AggFuncTypeBase[...] | None = ...,
         /,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> Series: ...
     agg = aggregate
@@ -103,8 +103,8 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         func: Callable[Concatenate[Series[S2], P], Series[S3]],
         /,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> Series[S3]: ...
     @overload
@@ -245,8 +245,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self,
         func: Literal["size"],
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> Series: ...
     @overload
@@ -254,8 +254,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self,
         func: AggFuncTypeFrame[..., Any] | None = ...,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
@@ -271,8 +271,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self,
         func: Callable[Concatenate[DataFrame, P], DataFrame],
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
