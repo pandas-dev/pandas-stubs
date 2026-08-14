@@ -1,4 +1,3 @@
-# pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
 from collections.abc import (
@@ -158,7 +157,7 @@ def test_types_groupby() -> None:
     )
     check(
         assert_type(
-            df.groupby(lambda x: x),  # pyright: ignore[reportUnknownArgumentType]
+            df.groupby(lambda x: x),
             "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
         ),
         DataFrameGroupBy,

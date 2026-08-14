@@ -316,6 +316,7 @@ typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false    # use pyright-specific ignores
+reportUnknownArgumentType = false   # users will do the same
 reportUnknownLambdaType = false     # users will do the same
 # enable optional checks
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-settings-defaults

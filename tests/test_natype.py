@@ -94,8 +94,8 @@ def test_arithmetic() -> None:
     )
     # TODO: microsoft/pyright#10899 facebook/pyrefly#3822
     check(
-        assert_type(  # pyright: ignore[reportUnknownArgumentType] # pyrefly: ignore[assert-type]
-            divmod(  # pyright: ignore[reportCallIssue, reportAssertTypeFailure] # pyrefly: ignore[no-matching-overload]
+        assert_type(  # pyrefly: ignore[assert-type]
+            divmod(  # pyright: ignore[reportCallIssue,reportAssertTypeFailure] # pyrefly: ignore[no-matching-overload]
                 na, 1  # pyright: ignore[reportArgumentType]
             ),
             tuple[NAType, NAType],

@@ -2025,8 +2025,8 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
 
-    def g(x: pd.Series) -> int:
-        return int(np.round(x.sum()))  # pyright: ignore[reportUnknownArgumentType]
+    def g(x: pd.Series[float] | pd.Series[int]) -> int:
+        return int(np.round(x.sum()))
 
     check(
         assert_type(

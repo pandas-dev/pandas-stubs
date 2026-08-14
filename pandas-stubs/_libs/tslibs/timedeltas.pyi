@@ -20,9 +20,7 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 
-from pandas._libs.tslibs import (
-    NaTType,
-)
+from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (

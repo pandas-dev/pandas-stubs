@@ -22,9 +22,7 @@ from pandas.core.frame import DataFrame
 from pyxlsb.workbook import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as PyXlsbWorkbook,
 )
-from typing_extensions import (
-    TypeVar,
-)
+from typing_extensions import TypeVar
 from xlrd.book import Book
 from xlsxwriter import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as XlsxWorkbook,

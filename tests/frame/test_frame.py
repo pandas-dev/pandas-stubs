@@ -323,13 +323,7 @@ def test_assign() -> None:
     check(assert_type(df.assign(c=df["a"].index), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=df["a"].to_numpy()), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=2), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(
-            df.assign(c=my_unnamed_func),  # pyright: ignore[reportUnknownArgumentType]
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(df.assign(c=my_unnamed_func), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=None), pd.DataFrame), pd.DataFrame)
@@ -1339,13 +1333,7 @@ def test_types_apply() -> None:
 def test_types_map() -> None:
     # GH774
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(
-        assert_type(
-            df.map(lambda x: x**2),  # pyright: ignore[reportUnknownArgumentType]
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(df.map(lambda x: x**2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.map(np.exp), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.map(str), pd.DataFrame), pd.DataFrame)
     # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -2766,8 +2754,8 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
-                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
+                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
+                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
             ),
             pd.DataFrame,
         ),
@@ -3495,11 +3483,7 @@ def test_to_dict_into_ordered_dict() -> None:
     data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
 
     check(
-        assert_type(
-            # into is a generic class with no default type parameters, hence the pyright ignore
-            data.to_dict(into=OrderedDict),
-            OrderedDict[Any, Any],  # pyright: ignore[reportUnknownArgumentType]
-        ),
+        assert_type(data.to_dict(into=OrderedDict), OrderedDict[Any, Any]),
         OrderedDict,
         tuple,
     )
@@ -3519,9 +3503,7 @@ def test_to_dict_into_ordered_dict() -> None:
     )
     check(
         assert_type(
-            # into is a generic class with no default type parameters, hence the pyright ignore
-            data.to_dict("records", into=OrderedDict),
-            list[OrderedDict[Any, Any]],  # pyright: ignore[reportUnknownArgumentType]
+            data.to_dict("records", into=OrderedDict), list[OrderedDict[Any, Any]]
         ),
         list,
         OrderedDict,
@@ -4196,13 +4178,7 @@ def test_combine() -> None:
     )
     assert_type(
         check(
-            df1.combine(
-                df2,
-                take_smaller,  # pyright: ignore[reportUnknownArgumentType]
-                fill_value=0,
-                overwrite=False,
-            ),
-            pd.DataFrame,
+            df1.combine(df2, take_smaller, fill_value=0, overwrite=False), pd.DataFrame
         ),
         pd.DataFrame,
     )
