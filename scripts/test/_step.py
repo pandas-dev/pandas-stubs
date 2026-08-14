@@ -5,6 +5,10 @@ ty_src = Step(
     name="Run ty on 'tests' (using the local stubs) and on the local stubs",
     run=run.ty_src,
 )
+ty_src_all = Step(
+    name="Run ty on 'tests' (using the local stubs) and on the local stubs with all rules raising errors",
+    run=run.ty_src_all,
+)
 pyrefly_src = Step(
     name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyrefly_src,

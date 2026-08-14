@@ -181,6 +181,11 @@ def released_mypy() -> None:
 
 
 def ty_src() -> None:
+    cmd = ["ty", "check", "pandas-stubs", "tests", "--python-version", _PYTHON_VERSION]
+    subprocess.run(cmd, check=True)
+
+
+def ty_src_all() -> None:
     cmd = [
         "ty",
         "check",

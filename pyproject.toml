@@ -111,6 +111,10 @@ script = "scripts.test.run:ty_src"
 help = "Run ty on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='ty')"
 
+[tool.poe.tasks.ty_all]
+help = "Run ty on 'tests' (using the local stubs) and on the local stubs with all rules raising errors"
+script = "scripts.test.run:ty_src_all"
+
 [tool.poe.tasks.pyrefly]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyrefly_src"
