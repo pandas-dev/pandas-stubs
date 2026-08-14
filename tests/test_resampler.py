@@ -2,6 +2,8 @@
 # pyright: reportMissingTypeArgument=false
 # ty ignore missing-type-argument is unnecessary with dist, but necessary with src
 # ty: ignore[missing-type-argument,unused-ignore-comment,unused-ignore-comment]
+from __future__ import annotations
+
 from collections.abc import (
     Hashable,
     Iterator,
@@ -147,25 +149,25 @@ def test_interpolate() -> None:
 
 
 def test_pipe() -> None:
-    def f(val: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
+    def f(val: DatetimeIndexResampler[DataFrame]) -> DataFrame:
         assert isinstance(val, DatetimeIndexResampler)
         return DataFrame(val)
 
     check(assert_type(DF.resample("ME").pipe(f), DataFrame), DataFrame)
 
-    def g(val: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
+    def g(val: DatetimeIndexResampler[DataFrame]) -> DataFrame:
         assert isinstance(val, DatetimeIndexResampler)
         return val.mean()
 
     check(assert_type(DF.resample("ME").pipe(g), DataFrame), DataFrame)
 
-    def h(val: "DatetimeIndexResampler[DataFrame]") -> Series:
+    def h(val: DatetimeIndexResampler[DataFrame]) -> Series:
         assert isinstance(val, DatetimeIndexResampler)
         return val.mean().mean()
 
     check(assert_type(DF.resample("ME").pipe(h), Series), Series)
 
-    def i(val: "DatetimeIndexResampler[DataFrame]") -> float:
+    def i(val: DatetimeIndexResampler[DataFrame]) -> float:
         assert isinstance(val, DatetimeIndexResampler)
         # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean().mean())
@@ -173,7 +175,7 @@ def test_pipe() -> None:
     check(assert_type(DF.resample("ME").pipe(i), float), float)
 
     def j(
-        res: "DatetimeIndexResampler[DataFrame]",
+        res: DatetimeIndexResampler[DataFrame],
         pos: int,
         /,
         arg1: list[float],
@@ -198,7 +200,7 @@ def test_pipe() -> None:
         DF.resample("ME").pipe(j, 1, [1.0], 11, (1,))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         DF.resample("ME").pipe(j, pos=1, arg1=[1.0], arg2=11, kw=(1,))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
-    def k(x: int, t: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
+    def k(x: int, t: DatetimeIndexResampler[DataFrame]) -> DataFrame:
         assert isinstance(x, int)
         return DataFrame({"a": [1, 2, 3]})
 
@@ -304,20 +306,20 @@ def test_interpolate_series() -> None:
 
 
 def test_pipe_series() -> None:
-    def f(val: "DatetimeIndexResampler[Series]") -> Series:
+    def f(val: DatetimeIndexResampler[Series]) -> Series:
         assert isinstance(val, DatetimeIndexResampler)
         return Series(val)
 
     check(assert_type(S.resample("ME").pipe(f), Series), Series)
 
-    def g(val: "DatetimeIndexResampler[Series]") -> float:
+    def g(val: DatetimeIndexResampler[Series]) -> float:
         assert isinstance(val, DatetimeIndexResampler)
         # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(S.resample("ME").pipe(g), float), float)
 
-    def h(val: "DatetimeIndexResampler[Series]") -> DataFrame:
+    def h(val: DatetimeIndexResampler[Series]) -> DataFrame:
         assert isinstance(val, DatetimeIndexResampler)
         return DataFrame({0: val, 1: val})
 

@@ -1,4 +1,6 @@
 # pyright: reportMissingTypeArgument=false
+from __future__ import annotations
+
 import datetime as dt
 import sys
 from typing import assert_type
