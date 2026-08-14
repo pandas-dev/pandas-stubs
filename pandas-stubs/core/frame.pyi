@@ -1449,7 +1449,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        func: Callable[..., ListLikeExceptSeriesAndStr | Series],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
@@ -1460,7 +1460,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
-        f: Callable[..., S2 | NAType],
+        func: Callable[..., S2 | NAType],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
@@ -1472,7 +1472,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Mapping[Any, Any]],
+        func: Callable[..., Mapping[Any, Any]],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
@@ -1485,7 +1485,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
-        f: Callable[..., S2 | NAType],
+        func: Callable[..., S2 | NAType],
         axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
@@ -1496,7 +1496,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping[Any, Any]],
+        func: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping[Any, Any]],
         axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
@@ -1507,7 +1507,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
+        func: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
         axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
@@ -1518,7 +1518,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[
+        func: Callable[
             ..., ListLikeExceptSeriesAndStr | Series | Scalar | Mapping[Any, Any]
         ],
         axis: Axis = 0,
@@ -1533,7 +1533,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        func: Callable[..., Series],
         axis: AxisIndex = 0,
         raw: _bool = ...,
         args: Any = ...,
@@ -1547,7 +1547,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
-        f: Callable[..., S2 | NAType],
+        func: Callable[..., S2 | NAType],
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
@@ -1558,7 +1558,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
+        func: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
@@ -1569,7 +1569,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        func: Callable[..., Series],
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
@@ -1582,7 +1582,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        func: Callable[..., Series],
         raw: _bool = ...,
         args: Any = ...,
         *,
