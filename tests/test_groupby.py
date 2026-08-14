@@ -350,7 +350,7 @@ def test_series_groupby_resample() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> float:
+    def f(val: Series[int] | Series[float]) -> float:
         return val.mean()
 
     check(assert_type(GB_S.resample("ME").aggregate(f), Series), Series)
@@ -384,7 +384,7 @@ def test_series_groupby_resample() -> None:
     def s2series(val: Series) -> Series:
         return Series(val)
 
-    def s2scalar(val: Series) -> float:
+    def s2scalar(val: Series[int] | Series[float]) -> float:
         # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean())
 
@@ -577,12 +577,12 @@ def test_series_groupby_rolling() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> float:
+    def f(val: Series[int] | Series[float]) -> float:
         return val.mean()
 
     check(assert_type(GB_S.rolling(1).aggregate(f), Series), Series)
 
-    def s2scalar(val: Series) -> float:
+    def s2scalar(val: Series[int] | Series[float]) -> float:
         # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean())
 
@@ -758,12 +758,12 @@ def test_series_groupby_expanding() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> float:
+    def f(val: Series[int] | Series[float]) -> float:
         return val.mean()
 
     check(assert_type(GB_S.expanding(1).aggregate(f), Series), Series)
 
-    def s2scalar(val: Series) -> float:
+    def s2scalar(val: Series[int] | Series[float]) -> float:
         # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean())
 
@@ -868,8 +868,8 @@ def test_series_groupby_ewm() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         GB_DF.ewm(1).agg(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
-        def _func(x: Series) -> float:
-            return sum(x)  # type: ignore[no-any-return]
+        def _func(x: Series[int] | Series[float]) -> float:
+            return sum(x)
 
         GB_DF.ewm(1).agg(_func)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 

@@ -288,7 +288,7 @@ def test_aggregate_series() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> float:
+    def f(val: Series[int] | Series[float]) -> float:
         return val.mean()
 
     check(assert_type(S.resample("ME").aggregate(f), Series), Series)
@@ -335,7 +335,7 @@ def test_aggregate_series_combinations() -> None:
     def s2series(val: Series) -> Series:
         return Series(val)
 
-    def s2scalar(val: Series) -> float:
+    def s2scalar(val: Series[int] | Series[float]) -> float:
         # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean())
 

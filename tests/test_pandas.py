@@ -1700,8 +1700,8 @@ def test_crosstab_args() -> None:
         pd.DataFrame,
     )
 
-    def m(x: pd.Series) -> float:
-        return x.sum() / len(x)  # type: ignore[no-any-return]
+    def m(x: pd.Series[int] | pd.Series[float]) -> float:
+        return x.sum() / len(x)
 
     check(
         assert_type(pd.crosstab(a, b, values=values, aggfunc=m), pd.DataFrame),
@@ -2014,8 +2014,8 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
 
-    def f(x: pd.Series) -> float:
-        return x.sum()  # type: ignore[no-any-return]
+    def f(x: pd.Series[int] | pd.Series[float]) -> float:
+        return x.sum()
 
     check(
         assert_type(
