@@ -1,5 +1,5 @@
 # mypy: disable-error-code=type-arg
-# pyright: reportMissingTypeArgument=false,reportUnknownArgumentType=false,reportUnknownParameterType=false
+# pyright: reportMissingTypeArgument=false,reportUnknownParameterType=false
 # ty: ignore[missing-type-argument]
 """Test module for classes in pandas.api.typing."""
 

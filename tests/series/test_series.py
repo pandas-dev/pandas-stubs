@@ -841,14 +841,7 @@ def test_types_apply() -> None:
     ss = s.astype(str)
     check(assert_type(ss.apply(get_depth), pd.Series), pd.Series, np.integer)
 
-    check(
-        assert_type(
-            s.apply(lambda x: pd.NA),  # pyright: ignore[reportUnknownArgumentType]
-            pd.Series,
-        ),
-        pd.Series,
-        NAType,
-    )
+    check(assert_type(s.apply(lambda _: pd.NA), pd.Series), pd.Series, NAType)
 
 
 def test_types_element_wise_arithmetic() -> None:
@@ -932,7 +925,7 @@ def test_types_groupby() -> None:
     s.groupby(s > 2)
     # GH 284
     s.groupby([s > 2, s % 2 == 1])
-    s.groupby(lambda x: x)  # pyright: ignore[reportUnknownArgumentType]
+    s.groupby(lambda x: x)
     s.groupby(
         [
             lambda x: x,
@@ -1152,9 +1145,7 @@ def test_types_groupby_transform() -> None:
 
     check(
         assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
-            ).transform(transform_func, True, kw_arg="foo"),
+            s.groupby(lambda x: x).transform(transform_func, True, kw_arg="foo"),
             "pd.Series[float]",
         ),
         pd.Series,
@@ -1162,32 +1153,16 @@ def test_types_groupby_transform() -> None:
     )
     check(
         assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
-            ).transform(transform_func, True, engine="cython", kw_arg="foo"),
+            s.groupby(lambda x: x).transform(
+                transform_func, True, engine="cython", kw_arg="foo"
+            ),
             "pd.Series[float]",
         ),
         pd.Series,
         float,
     )
-    check(
-        assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
-            ).transform("mean"),
-            pd.Series,
-        ),
-        pd.Series,
-    )
-    check(
-        assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
-            ).transform("first"),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(s.groupby(lambda x: x).transform("mean"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(lambda x: x).transform("first"), pd.Series), pd.Series)
 
 
 def test_types_groupby_aggregate() -> None:
@@ -1433,7 +1408,7 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             s.rename_axis(
-                index=lambda name: name.upper()  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
+                index=lambda name: name.upper()  # pyright: ignore[reportUnknownMemberType]
             ),
             "pd.Series[int]",
         ),
@@ -2935,15 +2910,7 @@ def test_types_apply_set() -> None:
     series_of_lists: pd.Series = pd.Series(
         {"list1": [1, 2, 3], "list2": ["a", "b", "c"], "list3": [True, False, True]}
     )
-    check(
-        assert_type(
-            series_of_lists.apply(
-                lambda x: set(x)  # pyright: ignore[reportUnknownArgumentType]
-            ),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(series_of_lists.apply(set), pd.Series), pd.Series, set)
 
 
 def test_prefix_summix_axis() -> None:
@@ -2995,13 +2962,7 @@ def test_convert_dtypes_dtype_backend() -> None:
 def test_apply_returns_none() -> None:
     # GH 557
     s = pd.Series([1, 2, 3])
-    check(
-        assert_type(
-            s.apply(lambda x: None),  # pyright: ignore[reportUnknownArgumentType]
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(s.apply(lambda _: None), pd.Series), pd.Series)
 
 
 def test_to_json_mode() -> None:
@@ -3574,12 +3535,7 @@ def test_apply_dateoffset() -> None:
     s = pd.Series(months)
     check(
         assert_type(
-            s.apply(
-                lambda x: pd.DateOffset(  # pyright: ignore[reportUnknownArgumentType]
-                    months=x  # pyright: ignore[reportUnknownArgumentType]
-                )
-            ),
-            "pd.Series[BaseOffset]",
+            s.apply(lambda x: pd.DateOffset(months=x)), "pd.Series[BaseOffset]"
         ),
         pd.Series,
         pd.DateOffset,

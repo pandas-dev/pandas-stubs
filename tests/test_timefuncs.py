@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 import sys
-from typing import (
-    assert_never,
-    assert_type,
-)
+from typing import assert_type
 
 from dateutil.relativedelta import (
     FR,
@@ -1788,12 +1785,7 @@ def test_timedeltaseries_add_timestampseries() -> None:
 
 def test_timestamp_strptime_fails() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_never(
-            pd.Timestamp.strptime(  # pyright: ignore[reportUnknownArgumentType]
-                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-            )
-        )
+        pd.Timestamp.strptime("2023-02-16", "%Y-%M-%D")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_weekofmonth_init() -> None:

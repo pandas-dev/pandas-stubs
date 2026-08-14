@@ -11,9 +11,7 @@ from typing import (
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pyarrow as pa
-from typing_extensions import (
-    TypeVar,
-)
+from typing_extensions import TypeVar
 
 from pandas._libs.missing import NAType
 from pandas._typing import (

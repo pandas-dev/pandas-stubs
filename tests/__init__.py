@@ -109,9 +109,7 @@ def check(
 
     if not isinstance(value, dtype):
         # pyright ignore is by design microsoft/pyright#11191
-        raise RuntimeError(
-            f"Expected type '{dtype}' but got '{type(value)}'"  # pyright: ignore[reportUnknownArgumentType]
-        )
+        raise RuntimeError(f"Expected type '{dtype}' but got '{type(value)}'")
     # pyright ignore is by design microsoft/pyright#11190
     return actual  # pyright: ignore[reportUnknownVariableType]
 
