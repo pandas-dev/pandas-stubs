@@ -69,7 +69,6 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def aggregate(
         self,
         func: Callable[[Series], S3],
-        /,
         *args: Any,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
@@ -79,7 +78,6 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def aggregate(
         self,
         func: list[AggFuncTypeBase[...]],
-        /,
         *args: Any,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
@@ -89,7 +87,6 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def aggregate(
         self,
         func: AggFuncTypeBase[...] | None = ...,
-        /,
         *args: Any,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
@@ -100,7 +97,6 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def transform(
         self,
         func: Callable[Concatenate[Series[S2], P], Series[S3]],
-        /,
         *args: Any,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
