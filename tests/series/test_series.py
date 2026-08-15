@@ -3924,7 +3924,7 @@ def test_fill_value_matches_series_dtype() -> None:
     check(
         assert_type(s_str.eq(s_str, fill_value="x"), "pd.Series[bool]"),
         pd.Series,
-        np.bool_,
+        bool,
     )
     check(
         assert_type(s_str.add(s_str, fill_value="x"), "pd.Series[str]"), pd.Series, str
