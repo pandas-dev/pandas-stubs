@@ -3915,3 +3915,52 @@ def test_series_primitive_conversions() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         bytes(s_float)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         bytearray(s_float)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+
+
+def test_fill_value_matches_series_dtype() -> None:
+    """Test that fill_value in comparison/arithmetic methods must match the Series' own dtype (GH1797)."""
+    # string dtype - only str fill_value should be valid
+    s_str: pd.Series[str] = pd.Series(["a", "b", "c"], dtype="string")
+    check(
+        assert_type(s_str.eq(s_str, fill_value="x"), "pd.Series[bool]"),
+        pd.Series,
+        np.bool_,
+    )
+    check(
+        assert_type(s_str.add(s_str, fill_value="x"), "pd.Series[str]"), pd.Series, str
+    )
+
+    # float dtype - float fill_value should be valid
+    s_float = pd.Series([1.0, 2.0, np.nan])
+    check(
+        assert_type(s_float.eq(s_float, fill_value=0.0), "pd.Series[bool]"),
+        pd.Series,
+        np.bool_,
+    )
+    check(
+        assert_type(s_float.add(s_float, fill_value=0.0), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+
+    # bool dtype - bool fill_value should be valid
+    s_bool = pd.Series([True, False])
+    check(
+        assert_type(s_bool.eq(s_bool, fill_value=True), "pd.Series[bool]"),
+        pd.Series,
+        np.bool_,
+    )
+
+    # int dtype - int fill_value should be valid
+    s_int = pd.Series([1, 2, 3])
+    check(
+        assert_type(s_int.eq(s_int, fill_value=1), "pd.Series[bool]"),
+        pd.Series,
+        np.bool_,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # string dtype should reject int fill_value
+        s_str.eq(s_str, fill_value=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        # float dtype should reject str fill_value
+        s_float.add(s_float, fill_value="x")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]

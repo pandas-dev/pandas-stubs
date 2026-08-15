@@ -1841,7 +1841,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: complex | ListLike | DataFrame,
         axis: Axis | None = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def __radd__(self, other: Any) -> Self: ...
     def radd(
@@ -1849,7 +1849,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def __sub__(self, other: Any) -> Self: ...
     def sub(
@@ -1857,7 +1857,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     subtract = sub
     def __rsub__(self, other: Any) -> Self: ...
@@ -1866,7 +1866,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def __mul__(self, other: Any) -> Self: ...
     def __rmul__(self, other: Any) -> Self: ...
@@ -2040,7 +2040,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: complex | ListLike | DataFrame,
         axis: Axis | None = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     div = truediv
     divide = truediv
@@ -2095,7 +2095,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: float | ListLike | DataFrame,
         axis: Axis | None = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def ge(
         self,
@@ -2257,14 +2257,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: float | ListLike | DataFrame,
         axis: Axis | None = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def mul(
         self,
         other: complex | ListLike | DataFrame,
         axis: Axis | None = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     multiply = mul
     def ne(
@@ -2288,7 +2288,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: complex | ListLike | DataFrame,
         axis: Axis | None = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def prod(
         self,
@@ -2370,21 +2370,21 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def rmod(
         self,
         other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def rmul(
         self,
         other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     @overload
     def rolling(
@@ -2419,14 +2419,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     def rtruediv(
         self,
         other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: Scalar | None = None,
     ) -> Self: ...
     rdiv = rtruediv
     @final
