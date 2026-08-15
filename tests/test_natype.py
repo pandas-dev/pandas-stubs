@@ -8,15 +8,20 @@ import pandas as pd
 from pandas.api.typing import NAType
 from pandas.core.arrays.boolean import BooleanArray
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_dunder_methods() -> None:
     check(assert_type(pd.NA.__format__(""), str), str)
-    # Python native __format__ only supports one positional argument format_spec, no keyword argument is allowed. Override is necessary.
-    check(assert_type(pd.NA.__format__(format_spec=""), str), str)
     check(assert_type(pd.NA.__hash__(), int), int)
     assert assert_type(pd.NA.__reduce__(), Literal["NA"]) == "NA"
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # pandas may have implemented keyword arguments, which is incorrect
+        pd.NA.__format__(format_spec="")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[positional-only-parameter-as-kwarg]
 
 
 def test_arithmetic() -> None:
