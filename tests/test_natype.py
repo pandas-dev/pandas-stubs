@@ -1,3 +1,4 @@
+# TODO: It cannot be moved under scalars because of a pyright bug microsoft/pyright#11644 microsoft/pyright#10607
 from typing import (
     Literal,
     assert_type,
