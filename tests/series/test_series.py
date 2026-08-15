@@ -3963,4 +3963,4 @@ def test_fill_value_matches_series_dtype() -> None:
         # string dtype should reject int fill_value
         s_str.eq(s_str, fill_value=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
         # float dtype should reject str fill_value
-        s_float.add(s_float, fill_value="x")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        s_float.add(s_float, fill_value="x")  # type: ignore[call-overload] # pyright: ignore # pyrefly: ignore[no-matching-overload]
