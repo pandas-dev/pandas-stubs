@@ -130,6 +130,13 @@ def test_categorical_properties() -> None:
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray, np.integer)
 
 
+def test_categorical_dunder_methods() -> None:
+    """Test dunder methods for Categorical."""
+    cat = Categorical(["a", "b", "c", "a"])
+
+    check(assert_type(cat.__hash__, None), type(None))
+
+
 def test_categorical_tolist() -> None:
     """Test tolist method for Categorical."""
     cat = Categorical(["a", "b", "c", "a"])
@@ -375,3 +382,12 @@ def test_categorical_isin() -> None:
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
 
     check(assert_type(cat.isin(["b", 1]), np_1darray_bool), np_1darray_bool)
+
+
+def test_categorical_comparison() -> None:
+    """Test comparison for Categorical."""
+    cat = Categorical(["a", "b", "c"])
+
+    # TODO: make proper tests pandas-dev/pandas-stubs#1901
+    check(assert_type(cat == cat, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != cat, np_1darray_bool), np_1darray_bool, np.bool)

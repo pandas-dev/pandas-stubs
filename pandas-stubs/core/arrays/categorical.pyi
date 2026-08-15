@@ -5,6 +5,7 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    ClassVar,
     Generic,
     Literal,
     Never,
@@ -50,6 +51,7 @@ from pandas.core.dtypes.dtypes import (
 
 class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     __array_priority__: int = ...
+    __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload
     def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
@@ -192,15 +194,12 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     def remove_categories(
         self, removals: Hashable | SequenceNotStr[Hashable] | AnyArrayLike
     ) -> Self: ...
+    # TODO: make proper overloads pandas-dev/pandas-stubs#1901
+    @override
+    def __eq__(self, other: ExtensionArray) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
+    def __ne__(self, other: ExtensionArray) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     def remove_unused_categories(self) -> Self: ...
-    @override
-    def __eq__(self, other: object) -> bool: ...
-    @override
-    def __ne__(self, other: object) -> bool: ...
-    def __lt__(self, other: Any) -> bool: ...
-    def __gt__(self, other: Any) -> bool: ...
-    def __le__(self, other: Any) -> bool: ...
-    def __ge__(self, other: Any) -> bool: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...
