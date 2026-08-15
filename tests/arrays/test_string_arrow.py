@@ -106,14 +106,14 @@ def test_constructor(
         assert_type(ArrowStringArray(pa.chunked_array([["1"]])), ArrowStringArray)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list = ArrowStringArray([1])
-        _tuple = ArrowStringArray((1,))
-        _np_obj = ArrowStringArray(np.array(["1"], np.object_))
-        _pa_arr = ArrowStringArray(pa.array([["1"]]))
-        _pd_arr = ArrowStringArray(pd.array(["1"]))
-        _pd_str = ArrowStringArray(pd.array(["1"], "string[pyarrow]"))
-        _i = ArrowStringArray(pd.Index([1]))
-        _s = ArrowStringArray(pd.Series([1]))
+        _list = ArrowStringArray([1])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _tuple = ArrowStringArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _np_obj = ArrowStringArray(np.array(["1"], np.object_))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _pa_arr = ArrowStringArray(pa.array([["1"]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _pd_arr = ArrowStringArray(pd.array(["1"]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _pd_str = ArrowStringArray(pd.array(["1"], "string[pyarrow]"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _i = ArrowStringArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _s = ArrowStringArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
 
 
 def test_dtype() -> None:
