@@ -1704,7 +1704,7 @@ def test_read_sql_query_with_list_params(tmp_path: Path) -> None:
     con = sqlite3.connect(path_str)
     frame = DataFrame({"a": ["x", "y"], "b": [1, 2]})
     check(assert_type(frame.to_sql("test", con=con), int | None), int)
-    names: list[str] = ["x"]
+    names = ["x"]
     check(
         assert_type(
             read_sql_query("select * from test where a = ?", con=con, params=names),
