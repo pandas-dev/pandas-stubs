@@ -10,6 +10,14 @@ from pandas.core.arrays.boolean import BooleanArray
 from tests import check
 
 
+def test_dunder_methods() -> None:
+    check(assert_type(pd.NA.__format__(""), str), str)
+    # Python native __format__ only supports one positional argument format_spec, no keyword argument is allowed. Override is necessary.
+    check(assert_type(pd.NA.__format__(format_spec=""), str), str)
+    check(assert_type(pd.NA.__hash__(), int), int)
+    assert assert_type(pd.NA.__reduce__(), Literal["NA"]) == "NA"
+
+
 def test_arithmetic() -> None:
     na = pd.NA
 
