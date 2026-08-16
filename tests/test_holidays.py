@@ -189,6 +189,36 @@ def test_custom_business_month() -> None:
     )
 
 
+def test_custom_business_day() -> None:
+    custom_business_day = pd.offsets.CustomBusinessDay(
+        weekmask="Mon Tue Wed Thu Fri",
+        holidays=["2026-01-01"],
+        offset=timedelta(hours=1),
+    )
+
+    check(
+        assert_type(custom_business_day, pd.offsets.CustomBusinessDay),
+        pd.offsets.CustomBusinessDay,
+    )
+    check(assert_type(custom_business_day.weekmask, str), str)
+    check(
+        assert_type(custom_business_day.holidays, tuple[np.datetime64, ...]),
+        tuple,
+        np.datetime64,
+    )
+    check(
+        assert_type(custom_business_day.calendar, np.busdaycalendar),
+        np.busdaycalendar,
+    )
+    check(
+        assert_type(
+            pd.offsets.CustomBusinessDay(holidays=None, calendar=None),
+            pd.offsets.CustomBusinessDay,
+        ),
+        pd.offsets.CustomBusinessDay,
+    )
+
+
 def test_rollforward_rollback_return_type() -> None:
 
     bmb = pd.offsets.CustomBusinessMonthBegin()
