@@ -1,4 +1,3 @@
-from collections.abc import Iterator
 from typing import (
     Any,
     Literal,
@@ -29,8 +28,6 @@ class BaseMaskedArray(ExtensionArray):
     def __getitem__(self, item: ScalarIndexer) -> Any: ...
     @overload
     def __getitem__(self, item: SequenceIndexer) -> Self: ...
-    @override
-    def __iter__(self) -> Iterator[Any]: ...
     def __invert__(self) -> Self: ...
     @override
     def to_numpy(

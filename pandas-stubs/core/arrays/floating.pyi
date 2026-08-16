@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from typing import (
     Any,
     Literal,
@@ -27,6 +28,8 @@ class FloatingArray(NumericArray):
     def __init__(
         self, values: np_ndarray_float, mask: np_ndarray_bool, copy: bool = False
     ) -> None: ...
+    @override
+    def __iter__(self) -> Iterator[float]: ...
     @override
     def interpolate(
         self,

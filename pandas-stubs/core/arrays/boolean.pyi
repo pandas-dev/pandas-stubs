@@ -1,4 +1,7 @@
-from collections.abc import Sequence
+from collections.abc import (
+    Iterator,
+    Sequence,
+)
 from typing import Self
 
 import numpy as np
@@ -22,6 +25,8 @@ class BooleanArray(BaseMaskedArray):
     def __init__(
         self, values: np_ndarray_bool, mask: np_ndarray_bool, copy: bool = False
     ) -> None: ...
+    @override
+    def __iter__(self) -> Iterator[np.bool]: ...
     @property
     @override
     def dtype(self) -> BooleanDtype: ...

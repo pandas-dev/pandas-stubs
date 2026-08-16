@@ -1,5 +1,4 @@
 from collections.abc import (
-    Iterator,
     Sequence,
 )
 from typing import (
@@ -68,8 +67,6 @@ class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
     def ndim(self) -> int: ...
     @override
     def reshape(self, *args: Any, **kwargs: Any) -> Self: ...
-    @override
-    def __iter__(self) -> Iterator[Any]: ...
     @property
     @override
     def nbytes(self) -> int: ...
