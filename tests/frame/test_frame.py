@@ -1116,6 +1116,14 @@ def test_types_apply() -> None:
 
     check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
+    # GH 1896: first parameter is named func at runtime
+    check(assert_type(df.apply(func=np.exp), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.apply(func=returns_scalar), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+
     # Check various return types for default result_type (None) with default axis (0)
     check(
         assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, np.integer
