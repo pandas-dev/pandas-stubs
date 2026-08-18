@@ -39,6 +39,6 @@ def read_parquet(
     filesystem: Any = None,
     filters: Sequence[_Filter] | Sequence[Sequence[_Filter]] | None = None,
     *,
-    to_pandas_kwargs: dict[str, Any],
+    to_pandas_kwargs: dict[str, Any] | None = None,
     **kwargs: Any,
 ) -> DataFrame: ...
