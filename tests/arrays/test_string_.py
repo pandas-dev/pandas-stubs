@@ -110,3 +110,10 @@ def test_dtype() -> None:
     arr = pd.array(["a"], "string[python]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['python']]"), pd.StringDtype)
     assert assert_type(arr.dtype.storage, Literal["python"]) == "python"
+
+
+def test_assign() -> None:
+    arr = pd.array(["a", "a"])
+    arr[0] = "11"
+    arr[:1] = ["12"]
+    arr[np.array([True, False])] = ["333"]

@@ -1,5 +1,4 @@
 from typing import (
-    Any,
     Generic,
     Literal,
     Self,
@@ -64,5 +63,3 @@ class StringArray(BaseStringArray[Literal["python"]], NumpyExtensionArray):
         self, values: np_ndarray_object | Self, copy: bool = False
     ) -> None: ...
     def __arrow_array__(self, type: DtypeArg | None = None) -> pa.StringArray: ...
-    @override
-    def __setitem__(self, key: Any, value: Any) -> None: ...
