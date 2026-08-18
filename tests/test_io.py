@@ -614,13 +614,26 @@ def test_parquet(tmp_path: Path) -> None:
     check(assert_type(DF.to_parquet(path_str), None), type(None))
     check(assert_type(DF.to_parquet(), bytes), bytes)
     check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
+    check(assert_type(read_parquet(path_str, "pyarrow"), DataFrame), DataFrame)
+    check(
+        assert_type(
+            read_parquet(
+                path_str,
+                engine="pyarrow",
+                columns=["a"],
+                filesystem=None,
+            ),
+            DataFrame,
+        ),
+        DataFrame,
+    )
 
 
 def test_parquet_to_pandas() -> None:
     """Test passing `to_pandas_kwargs` in read_parquet."""
 
     if TYPE_CHECKING_INVALID_USAGE:
-        read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_parquet_options(tmp_path: Path) -> None:
@@ -1617,32 +1630,125 @@ def test_read_sql_query_via_sqlalchemy_engine_with_params(tmp_path: Path) -> Non
     engine.dispose()
 
 
-@pytest.mark.skip(
-    reason="Only works in Postgres (and MySQL, but with different query syntax)"
-)
-def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params() -> None:
-    db_uri = "postgresql+psycopg2://postgres@localhost:5432/postgres"
+def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params(
+    tmp_path: Path,
+) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
     engine = sqlalchemy.create_engine(db_uri)
 
-    check(
-        assert_type(
-            read_sql_query(
-                "select * from test where a in %(a)s", con=engine, params={"a": (1, 2)}
+    check(assert_type(DF.to_sql("test", con=engine), int | None), int)
+    statement = sqlalchemy.text("select * from test where a in :a").bindparams(
+        sqlalchemy.bindparam("a", expanding=True)
+    )
+    with engine.connect() as conn:
+        check(
+            assert_type(
+                read_sql_query(statement, con=conn, params={"a": (1, 2)}), DataFrame
             ),
             DataFrame,
-        ),
-        DataFrame,
-    )
-    check(
+        )
+    if TYPE_CHECKING:
+        # %s paramstyle needs psycopg2 or MySQLdb, so this is checked but not run
         assert_type(
             read_sql_query(
                 "select * from test where a in %s", con=engine, params=((1, 2),)
             ),
             DataFrame,
+        )
+    engine.dispose()
+
+
+def test_read_sql_query_with_mixed_params(tmp_path: Path) -> None:
+    # GH 1890
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
+    engine = sqlalchemy.create_engine(db_uri)
+
+    check(assert_type(DF.to_sql("test", con=engine), int | None), int)
+    statement = sqlalchemy.text(
+        "select * from test where b = :b and a in :a"
+    ).bindparams(sqlalchemy.bindparam("a", expanding=True))
+    with engine.connect() as conn:
+        check(
+            assert_type(
+                read_sql_query(statement, con=conn, params={"b": 0.0, "a": (1, 2)}),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+    if TYPE_CHECKING:
+        # %s paramstyle needs psycopg2 or MySQLdb, so this is checked but not run
+        assert_type(
+            read_sql_query(
+                "select * from test where b = %s and a in %s",
+                con=engine,
+                params=[0.0, (1, 2)],
+            ),
+            DataFrame,
+        )
+    engine.dispose()
+
+
+def test_read_sql_with_mixed_params(tmp_path: Path) -> None:
+    # GH 1890
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
+    engine = sqlalchemy.create_engine(db_uri)
+
+    check(assert_type(DF.to_sql("test", con=engine), int | None), int)
+    statement = sqlalchemy.text(
+        "select * from test where b = :b and a in :a"
+    ).bindparams(sqlalchemy.bindparam("a", expanding=True))
+    with engine.connect() as conn:
+        check(
+            assert_type(
+                read_sql(statement, con=conn, params={"b": 0.0, "a": (1, 2)}),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+    engine.dispose()
+
+
+def test_read_sql_query_with_list_params(tmp_path: Path) -> None:
+    # GH 1890
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
+    frame = DataFrame({"a": ["x", "y"], "b": [1, 2]})
+    check(assert_type(frame.to_sql("test", con=con), int | None), int)
+    names = ["x"]
+    check(
+        assert_type(
+            read_sql_query("select * from test where a = ?", con=con, params=names),
+            DataFrame,
         ),
         DataFrame,
     )
-    engine.dispose()
+    check(
+        assert_type(
+            read_sql_query("select * from test where a is ?", con=con, params=[None]),
+            DataFrame,
+        ),
+        DataFrame,
+    )
+    con.close()
+
+
+def test_read_sql_params_invalid_usage(tmp_path: Path) -> None:
+    # GH 1890
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
+    check(assert_type(DF.to_sql("test", con=con), int | None), int)
+    if TYPE_CHECKING_INVALID_USAGE:
+        values = {1, 2}
+        set_valued = {"a": {1, 2}}
+        nested = {"a": [[1, 2]]}
+        read_sql_query("select * from test where a in ?", con=con, params=values)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        read_sql_query("select * from test where a in :a", con=con, params=set_valued)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        read_sql_query("select * from test where a in :a", con=con, params=nested)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        read_sql_query("select * from test where a = ?", con=con, params=[{1, 2}])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+    con.close()
 
 
 def test_read_html(tmp_path: Path) -> None:

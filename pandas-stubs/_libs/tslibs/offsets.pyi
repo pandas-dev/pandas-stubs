@@ -244,9 +244,17 @@ class CustomBusinessDay(BusinessDay):
         self,
         n: int = ...,
         normalize: bool = ...,
-        holidays: list[Any] = ...,
-        calendar: AbstractHolidayCalendar | np.busdaycalendar = ...,
+        weekmask: str = ...,
+        holidays: list[Any] | None = ...,
+        calendar: AbstractHolidayCalendar | np.busdaycalendar | None = ...,
+        offset: timedelta = ...,
     ) -> None: ...
+    @property
+    def weekmask(self) -> str: ...
+    @property
+    def holidays(self) -> tuple[np.datetime64, ...]: ...
+    @property
+    def calendar(self) -> np.busdaycalendar: ...
 
 class CustomBusinessHour(BusinessHour):
     def __init__(
