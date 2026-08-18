@@ -10,6 +10,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 from pandas.core.indexes.base import Index
 
 from pandas._typing import (
@@ -29,7 +30,6 @@ from pandas._typing import (
     np_1darray_bool,
     np_1darray_intp,
     np_ndarray,
-    npt,
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype

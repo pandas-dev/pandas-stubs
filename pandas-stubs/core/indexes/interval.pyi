@@ -12,6 +12,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from pandas import Index
 from pandas._stubs_only import (
@@ -42,7 +43,6 @@ from pandas._typing import (
     np_ndarray_int64,
     np_ndarray_intp,
     np_ndarray_td,
-    npt,
 )
 
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype

@@ -5,6 +5,7 @@ from typing import (
     overload,
 )
 
+from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray as ExtensionArray
 from pandas.core.series import Series
 from typing_extensions import override
@@ -18,8 +19,6 @@ from pandas._typing import (
     ScalarIndexer,
     SequenceIndexer,
     np_1darray,
-    np_1darray_bool,
-    npt,
 )
 
 class BaseMaskedArray(ExtensionArray):
@@ -42,8 +41,6 @@ class BaseMaskedArray(ExtensionArray):
     ) -> np_1darray: ...
     def __arrow_array__(self, type: DtypeArg | None = None) -> Any: ...
     def value_counts(self, dropna: bool = True) -> Series[int]: ...
-    @override
-    def isna(self) -> np_1darray_bool: ...
     @property
     @override
     def nbytes(self) -> int: ...

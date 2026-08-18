@@ -10,6 +10,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -32,7 +33,6 @@ from pandas._typing import (
     Ordered,
     Scalar,
     TimeZones,
-    npt,
 )
 
 from pandas.core.dtypes.base import (
