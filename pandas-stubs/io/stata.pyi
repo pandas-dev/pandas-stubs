@@ -6,7 +6,6 @@ import datetime
 from io import BytesIO
 from types import TracebackType
 from typing import (
-    Any,
     Literal,
     Self,
     overload,
@@ -80,7 +79,7 @@ def read_stata(
 class StataParser:
     def __init__(self) -> None: ...
 
-class StataReader(StataParser, Iterator[Any]):
+class StataReader(StataParser, Iterator[DataFrame]):
     col_sizes: list[int] = ...
     path_or_buf: BytesIO = ...
     def __init__(
