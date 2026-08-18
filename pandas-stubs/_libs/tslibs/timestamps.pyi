@@ -102,9 +102,6 @@ class Timestamp(datetime, SupportsIndex):
     @property
     def nanosecond(self) -> int: ...
     @property
-    @override
-    def tzinfo(self) -> _tzinfo | None: ...
-    @property
     def tz(self) -> _tzinfo | None: ...
     @property
     @override

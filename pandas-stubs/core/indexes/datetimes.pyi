@@ -6,7 +6,6 @@ from datetime import (
     datetime,
     time,
     timedelta,
-    tzinfo as _tzinfo,
 )
 from typing import (
     Literal,
@@ -98,9 +97,6 @@ class DatetimeIndex(
     ) -> np_1darray_intp: ...
     def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
-    @property
-    @override
-    def tzinfo(self) -> _tzinfo | None: ...
     @property
     @override
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
