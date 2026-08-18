@@ -1842,9 +1842,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def loc(self) -> _LocIndexerFrame[Self]: ...
     @property
-    @override
-    def ndim(self) -> int: ...
-    @property
     def values(self) -> np_2darray: ...
     # methods
     @final

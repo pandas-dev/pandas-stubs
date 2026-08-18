@@ -62,9 +62,6 @@ class TimelikeOps(DatetimeLikeArrayMixin):
     ) -> Self: ...
 
 class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
-    @property
-    @override
-    def ndim(self) -> int: ...
     @override
     def reshape(self, *args: Any, **kwargs: Any) -> Self: ...
     def __array__(
