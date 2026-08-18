@@ -20,10 +20,7 @@ from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.period import PeriodArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
-from pandas.core.base import (
-    IndexOpsMixin,
-    NoNewAttributesMixin,
-)
+from pandas.core.base import IndexOpsMixin
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimes import DatetimeIndex
@@ -53,7 +50,7 @@ from pandas.core.dtypes.dtypes import (
     CategoricalValueT,
 )
 
-class Properties(PandasDelegate, NoNewAttributesMixin): ...
+class Properties(PandasDelegate): ...
 
 _DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", bound=Series[int] | Index[int])
 

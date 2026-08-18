@@ -16,7 +16,6 @@ from typing import (
 
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.arrays.string_ import BaseStringArray
-from pandas.core.base import NoNewAttributesMixin
 from pandas.core.col import Expression
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
@@ -35,7 +34,7 @@ from pandas._typing import (
     np_ndarray_str,
 )
 
-class StringMethods(NoNewAttributesMixin, Generic[S2]):
+class StringMethods(Generic[S2]):
     def __iter__(self) -> Never: ...
 
 @type_check_only

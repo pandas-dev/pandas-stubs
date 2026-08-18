@@ -17,7 +17,6 @@ import numpy as np
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -245,9 +244,7 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
         self, values: AnyArrayLike | SequenceNotStr[Hashable]
     ) -> np_1darray_bool: ...
 
-class CategoricalAccessor(
-    PandasDelegate, NoNewAttributesMixin, Generic[CategoricalValueT]
-):
+class CategoricalAccessor(PandasDelegate, Generic[CategoricalValueT]):
     @property
     def codes(self) -> Series[int]: ...
     @property
