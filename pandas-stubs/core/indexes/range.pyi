@@ -56,9 +56,6 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
     def is_monotonic_increasing(self) -> bool: ...
     @property
     @override
-    def is_monotonic_decreasing(self) -> bool: ...
-    @property
-    @override
     def has_duplicates(self) -> bool: ...
     @override
     def factorize(

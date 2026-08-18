@@ -142,9 +142,6 @@ class MultiIndex(Index):
     @property
     @override
     def is_monotonic_increasing(self) -> bool: ...
-    @property
-    @override
-    def is_monotonic_decreasing(self) -> bool: ...
     @override
     def dropna(self, how: AnyAll = "any") -> Self: ...
     @override
