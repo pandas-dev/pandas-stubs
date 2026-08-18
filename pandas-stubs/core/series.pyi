@@ -4607,8 +4607,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         min_count: int = ...,
         **kwargs: Any,
     ) -> _T: ...
-    @override
-    def to_list(self) -> list[S1]: ...
     @overload  # type: ignore[override]
     @override
     def to_numpy(
