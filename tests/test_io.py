@@ -614,13 +614,26 @@ def test_parquet(tmp_path: Path) -> None:
     check(assert_type(DF.to_parquet(path_str), None), type(None))
     check(assert_type(DF.to_parquet(), bytes), bytes)
     check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
+    check(assert_type(read_parquet(path_str, "pyarrow"), DataFrame), DataFrame)
+    check(
+        assert_type(
+            read_parquet(
+                path_str,
+                engine="pyarrow",
+                columns=["a"],
+                filesystem=None,
+            ),
+            DataFrame,
+        ),
+        DataFrame,
+    )
 
 
 def test_parquet_to_pandas() -> None:
     """Test passing `to_pandas_kwargs` in read_parquet."""
 
     if TYPE_CHECKING_INVALID_USAGE:
-        read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_parquet_options(tmp_path: Path) -> None:
