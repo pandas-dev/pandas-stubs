@@ -614,6 +614,7 @@ def test_parquet(tmp_path: Path) -> None:
     check(assert_type(DF.to_parquet(path_str), None), type(None))
     check(assert_type(DF.to_parquet(), bytes), bytes)
     check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
+    check(assert_type(read_parquet(path_str, "pyarrow"), DataFrame), DataFrame)
     check(
         assert_type(
             read_parquet(
