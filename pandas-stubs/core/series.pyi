@@ -4468,9 +4468,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
-    @final
-    @override
-    def nunique(self, dropna: _bool = True) -> int: ...
     def pow(
         self,
         other: complex | ListLike | Series[S1],
