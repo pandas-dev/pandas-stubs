@@ -34,7 +34,6 @@ from pandas._typing import (
     Frequency,
     IntervalClosedType,
     IntervalT,
-    Label,
     MaskType,
     np_1darray_bool,
     np_ndarray_anyint,

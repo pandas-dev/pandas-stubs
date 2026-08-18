@@ -19,7 +19,6 @@ from pandas.core.indexes.base import Index
 from typing_extensions import override
 
 from pandas._typing import (
-    AnyAll,
     Axes,
     Dtype,
     HashableT,

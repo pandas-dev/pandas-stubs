@@ -1848,9 +1848,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @override
     def ndim(self) -> int: ...
     @property
-    @override
-    def size(self) -> int: ...
-    @property
     def values(self) -> np_2darray: ...
     # methods
     @final

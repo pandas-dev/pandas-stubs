@@ -70,9 +70,6 @@ class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...
-    @property
-    @override
-    def size(self) -> int: ...
     @overload
     @override
     # pyrefly: ignore[bad-override]
