@@ -111,10 +111,6 @@ class TimedeltaArray(TimelikeOps):
     @overload
     def __rfloordiv__(self, other: Any) -> Self: ...
     @override
-    def __mod__(self, other: Any) -> Self: ...
-    @override
-    def __rmod__(self, other: Any) -> Self: ...
-    @override
     def __divmod__(self, other: Any) -> tuple[np_1darray_int64, TimedeltaArray]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def __rdivmod__(self, other: Any) -> tuple[np_1darray_int64, TimedeltaArray]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
