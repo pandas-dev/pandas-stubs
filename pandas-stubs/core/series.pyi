@@ -4832,8 +4832,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         na_value: Scalar = ...,
         **kwargs: Any,
     ) -> np_1darray: ...
-    @override
-    def tolist(self) -> list[S1]: ...
     @overload
     def var(
         self: Series[Never],
