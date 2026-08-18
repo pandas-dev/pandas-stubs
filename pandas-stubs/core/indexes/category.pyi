@@ -35,9 +35,6 @@ class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
     @property
     @override
     def inferred_type(self) -> str: ...
-    @property
-    @override
-    def is_monotonic_increasing(self) -> bool: ...
     # `item` might be `S1` but not one of the categories, thus changing
     # the return type from `CategoricalIndex` to `Index`.
     @override
