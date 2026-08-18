@@ -152,9 +152,6 @@ class TimedeltaIndex(
     def __rfloordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[int]: ...
-    @property
-    @override
-    def inferred_type(self) -> str: ...
     @final
     @override
     def to_series(

@@ -252,9 +252,6 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     ) -> Literal[False]: ...
     @override
     def astype(self, dtype: DtypeArg, copy: bool = True) -> IntervalIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-    @property
-    @override
-    def inferred_type(self) -> str: ...
     @override
     def memory_usage(self, deep: bool = False) -> int: ...
     @property

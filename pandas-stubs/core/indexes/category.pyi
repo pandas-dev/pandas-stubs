@@ -32,9 +32,6 @@ class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
         copy: bool = False,
         name: Hashable | None = None,
     ) -> Self: ...
-    @property
-    @override
-    def inferred_type(self) -> str: ...
     # `item` might be `S1` but not one of the categories, thus changing
     # the return type from `CategoricalIndex` to `Index`.
     @override
