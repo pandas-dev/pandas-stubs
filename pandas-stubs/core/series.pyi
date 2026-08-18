@@ -245,7 +245,6 @@ from pandas._typing import (
     np_1darray_dt,
     np_1darray_float,
     np_1darray_int64,
-    np_1darray_intp,
     np_1darray_object,
     np_1darray_str,
     np_1darray_td,
@@ -1114,21 +1113,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __rmatmul__(self, other: DataFrame) -> Series: ...
     @overload
     def __rmatmul__(self, other: np_ndarray_num) -> np_ndarray_num: ...
-    @overload
-    @override
-    def searchsorted(
-        self,
-        value: ListLike,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = None,
-    ) -> np_1darray_intp: ...
-    @overload
-    def searchsorted(
-        self,
-        value: Scalar,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = None,
-    ) -> np.intp: ...
     @overload
     def compare(
         self,

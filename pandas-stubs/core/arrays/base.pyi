@@ -80,15 +80,15 @@ class ExtensionArray:
     def searchsorted(
         self,
         value: ListLike,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = ...,
+        side: Literal["left", "right"] = "left",
+        sorter: ListLike | None = None,
     ) -> np_1darray_intp: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = ...,
+        side: Literal["left", "right"] = "left",
+        sorter: ListLike | None = None,
     ) -> np.intp: ...
     def factorize(self, use_na_sentinel: bool = True) -> tuple[np_1darray, Self]: ...
     def repeat(
