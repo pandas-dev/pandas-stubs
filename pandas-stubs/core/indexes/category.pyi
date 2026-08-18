@@ -37,9 +37,6 @@ class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
     def inferred_type(self) -> str: ...
     @property
     @override
-    def is_unique(self) -> bool: ...
-    @property
-    @override
     def is_monotonic_increasing(self) -> bool: ...
     @property
     @override
