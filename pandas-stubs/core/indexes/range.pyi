@@ -49,9 +49,6 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
     @property
     @override
     def dtype(self) -> np.dtype: ...
-    @property
-    @override
-    def has_duplicates(self) -> bool: ...
     @override
     def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
