@@ -195,14 +195,8 @@ class MultiIndex(Index):
     def truncate(
         self, before: IndexLabel | None = None, after: IndexLabel | None = None
     ) -> MultiIndex: ...
-    @overload  # type: ignore[override]
     @override
-    # pyrefly: ignore[bad-override]
-    def isin(self, values: Iterable[Any], level: Level) -> np_1darray_bool: ...
-    @overload
-    def isin(  # ty: ignore[invalid-method-override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, values: Collection[Iterable[Any]], level: None = None
-    ) -> np_1darray_bool: ...
+    def isin(self, values: Collection[Iterable[Any]], level: None = None) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def set_names(
         self,

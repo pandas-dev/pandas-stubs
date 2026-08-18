@@ -87,7 +87,7 @@ def test_index_isin() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        mi.isin(iter([[3]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_index_astype() -> None:
