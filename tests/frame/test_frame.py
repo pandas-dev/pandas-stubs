@@ -30,7 +30,6 @@ from typing import (
     TypeVar,
     assert_never,
     assert_type,
-    cast,
 )
 import uuid
 
@@ -302,7 +301,7 @@ def test_assign() -> None:
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
-        return cast("pd.Series[str]", df["a"])
+        return df["a"]
 
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
