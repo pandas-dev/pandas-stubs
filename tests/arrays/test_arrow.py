@@ -115,7 +115,9 @@ def test_pd_array_uint(dtype: PyArrowUIntDtypeArg, target_dtype: type) -> None:
     )
 
 
-@pytest.mark.parametrize(("dtype", "target_dtype"), PYARROW_FLOAT_ARGS.items(), ids=repr)
+@pytest.mark.parametrize(
+    ("dtype", "target_dtype"), PYARROW_FLOAT_ARGS.items(), ids=repr
+)
 def test_pd_array_float(dtype: PyArrowFloatDtypeArg, target_dtype: type) -> None:
     check(
         assert_type(pd.array([1.0, 2.0, 3.0], dtype), ArrowExtensionArray),
