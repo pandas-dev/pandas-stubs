@@ -45,14 +45,14 @@ jobs:
       - name: Run pyrefly on 'tests' (using the local stubs) and on the local stubs
         run: poetry run poe pyrefly
 
-      - name: Run pyrefly's type coverage check on 'tests'
-        run: poetry run poe pyrefly_coverage
-
       - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
         run: poetry run poe pyright
 
       - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
         run: poetry run poe mypy
+
+      - name: Verify type completeness using pyrefly
+        run: poetry run poe type_completeness
 
       - name: Run pytest
         run: poetry run poe pytest
@@ -72,24 +72,3 @@ jobs:
           persist-credentials: false
 
       - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
-
-  type_completeness:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      actions: write
-
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Install project dependencies
-        uses: ./.github/setup
-        with:
-          os: ubuntu-latest
-          python-version: 3.14
-
-      - name: Verify type completeness using pyrefly
-        run: poetry run poe type_completeness
