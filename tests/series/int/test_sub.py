@@ -10,7 +10,7 @@ import pandas as pd
 from tests import check
 from tests._typing import np_ndarray_int64
 
-left: "pd.Series[int]" = pd.Series([1, 2, 3])  # left operand
+left = pd.Series([1, 2, 3])  # left operand
 
 
 def test_sub_py_scalar() -> None:

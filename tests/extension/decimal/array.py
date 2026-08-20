@@ -77,7 +77,7 @@ class DecimalDtype(ExtensionDtype):
 
     def __init__(self, context: decimal.Context | None = None) -> None:
         super().__init__()
-        self.context: decimal.Context = context or decimal.getcontext()
+        self.context = context or decimal.getcontext()
 
     def __repr__(self) -> str:
         return f"DecimalDtype(context={self.context})"
@@ -122,8 +122,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         self._data = values_np
         # Some aliases for common attribute names to ensure pandas supports
         # these
-        self._items = self._data
-        self.data: np_ndarray = self._data
+        self._items = self.data = self._data
         # those aliases are currently not working due to assumptions
         # in internal code (GH-20735)
         # self._values = self.values = self.data

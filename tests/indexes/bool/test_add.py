@@ -11,7 +11,7 @@ from tests._typing import (
 )
 
 # left operand
-left: "pd.Index[bool]" = pd.Index([True, True, False])
+left = pd.Index([True, True, False])
 
 
 def test_add_py_scalar() -> None:

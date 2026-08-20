@@ -192,7 +192,7 @@ IRIS = """SepalLength,SepalWidth,PetalLength,PetalWidth,Name
 6.2,3.4,5.4,2.3,Iris-virginica
 5.9,3.0,5.1,1.8,Iris-virginica"""
 
-IRIS_DF: pd.DataFrame = pd.read_csv(io.StringIO(IRIS))
+IRIS_DF = pd.read_csv(io.StringIO(IRIS))
 
 
 def test_andrews_curves(close_figures: None) -> None:

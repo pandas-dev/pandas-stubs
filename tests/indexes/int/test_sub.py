@@ -11,7 +11,7 @@ from tests import check
 from tests._typing import np_ndarray_int64
 
 # left operand
-left: "pd.Index[int]" = pd.Index([1, 2, 3])
+left = pd.Index([1, 2, 3])
 
 
 def test_sub_py_scalar() -> None:

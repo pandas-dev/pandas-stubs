@@ -3551,9 +3551,7 @@ def where_cond2(x: pd.DataFrame) -> pd.DataFrame:
     return x > 1
 
 
-where_cond3: pd.DataFrame = pd.DataFrame(
-    {"a": [True, True, False], "b": [False, False, False]}
-)
+where_cond3 = pd.DataFrame({"a": [True, True, False], "b": [False, False, False]})
 
 
 @pytest.mark.parametrize("cond", [where_cond1, where_cond2, where_cond3])

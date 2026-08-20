@@ -15,7 +15,7 @@ from tests import (
     check,
 )
 
-anchor: datetime = datetime(2025, 8, 18)
+anchor = datetime(2025, 8, 18)
 
 # left operands
 left_i = pd.DataFrame({"a": [1, 2, 3]})["a"]

@@ -16,7 +16,7 @@ from tests._typing import (
     np_ndarray_td,
 )
 
-left: "pd.Series[pd.Timestamp]" = pd.Series([pd.Timestamp(2025, 8, 20)])  # left operand
+left = pd.Series([pd.Timestamp(2025, 8, 20)])  # left operand
 
 
 def test_sub_py_scalar() -> None:

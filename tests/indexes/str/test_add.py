@@ -18,7 +18,7 @@ from tests._typing import (
     np_ndarray_str,
 )
 
-left: "pd.Index[str]" = pd.Index(["1", "23", "456"])  # left operand
+left = pd.Index(["1", "23", "456"])  # left operand
 
 
 def test_add_py_scalar() -> None:

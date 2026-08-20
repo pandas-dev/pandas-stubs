@@ -81,8 +81,8 @@ from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
 
-DF: DataFrame = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
-CWD: Path = Path(__file__).parent.resolve()
+DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
+CWD = Path(__file__).parent.resolve()
 
 
 def test_orc(tmp_path: Path) -> None:
