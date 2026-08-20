@@ -11,6 +11,7 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.arrays.arrow import ArrowExtensionArray
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.categorical import Categorical
@@ -60,7 +61,11 @@ from pandas._typing import (
     PandasStrDtypeArg,
     PandasTimestampDtypeArg,
     PandasUIntDtypeArg,
+    PyArrowBooleanDtypeArg,
+    PyArrowFloatDtypeArg,
+    PyArrowIntDtypeArg,
     PyArrowStrDtypeArg,
+    PyArrowUIntDtypeArg,
     TimedeltaDtypeArg,
     np_1darray_td,
     np_ndarray,
@@ -190,10 +195,22 @@ def array(
 ) -> BooleanArray: ...
 @overload
 def array(
+    data: Sequence[bool | np.bool | Just[float] | NAType | None],
+    dtype: PyArrowBooleanDtypeArg,
+    copy: bool = True,
+) -> ArrowExtensionArray: ...
+@overload
+def array(
     data: Sequence[float | np.integer | NAType | None],
     dtype: PandasIntDtypeArg | PandasUIntDtypeArg,
     copy: bool = True,
 ) -> IntegerArray: ...
+@overload
+def array(
+    data: Sequence[float | np.integer | NAType | None],
+    dtype: PyArrowIntDtypeArg | PyArrowUIntDtypeArg,
+    copy: bool = True,
+) -> ArrowExtensionArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
     data: Sequence[int | np.integer | NAType | None],
@@ -214,6 +231,12 @@ def array(  # type: ignore[overload-overlap]
     dtype: PandasFloatDtypeArg | None = None,
     copy: bool = True,
 ) -> FloatingArray: ...
+@overload
+def array(
+    data: Sequence[float | np.floating | NAType | None] | np_ndarray_float,
+    dtype: PyArrowFloatDtypeArg,
+    copy: bool = True,
+) -> ArrowExtensionArray: ...
 @overload
 def array(
     data: Sequence[_NaTDatetimeElement] | np_ndarray | DatetimeArray,

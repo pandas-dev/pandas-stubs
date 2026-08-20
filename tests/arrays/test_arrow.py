@@ -10,11 +10,24 @@ from typing import (
     assert_type,
 )
 
+import pandas as pd
 from pandas.core.arrays.arrow.array import ArrowExtensionArray
 import pyarrow as pa
 import pytest
 
 from tests import check
+from tests._typing import (
+    PyArrowBooleanDtypeArg,
+    PyArrowFloatDtypeArg,
+    PyArrowIntDtypeArg,
+    PyArrowUIntDtypeArg,
+)
+from tests.dtypes import (
+    PYARROW_BOOL_ARGS,
+    PYARROW_FLOAT_ARGS,
+    PYARROW_INT_ARGS,
+    PYARROW_UINT_ARGS,
+)
 
 
 @pytest.mark.parametrize(
@@ -73,3 +86,39 @@ def test_constructor(data: Sequence[Any]) -> None:
             ArrowExtensionArray(pa.chunked_array([[timedelta(seconds=1)]])),
             ArrowExtensionArray,
         )
+
+
+@pytest.mark.parametrize(("dtype", "target_dtype"), PYARROW_BOOL_ARGS.items(), ids=repr)
+def test_pd_array_boolean(dtype: PyArrowBooleanDtypeArg, target_dtype: type) -> None:
+    check(
+        assert_type(pd.array([True, False], dtype), ArrowExtensionArray),
+        ArrowExtensionArray,
+        target_dtype,
+    )
+
+
+@pytest.mark.parametrize(("dtype", "target_dtype"), PYARROW_INT_ARGS.items(), ids=repr)
+def test_pd_array_int(dtype: PyArrowIntDtypeArg, target_dtype: type) -> None:
+    check(
+        assert_type(pd.array([1, 2, 3], dtype), ArrowExtensionArray),
+        ArrowExtensionArray,
+        target_dtype,
+    )
+
+
+@pytest.mark.parametrize(("dtype", "target_dtype"), PYARROW_UINT_ARGS.items(), ids=repr)
+def test_pd_array_uint(dtype: PyArrowUIntDtypeArg, target_dtype: type) -> None:
+    check(
+        assert_type(pd.array([1, 2, 3], dtype), ArrowExtensionArray),
+        ArrowExtensionArray,
+        target_dtype,
+    )
+
+
+@pytest.mark.parametrize(("dtype", "target_dtype"), PYARROW_FLOAT_ARGS.items(), ids=repr)
+def test_pd_array_float(dtype: PyArrowFloatDtypeArg, target_dtype: type) -> None:
+    check(
+        assert_type(pd.array([1.0, 2.0, 3.0], dtype), ArrowExtensionArray),
+        ArrowExtensionArray,
+        target_dtype,
+    )
