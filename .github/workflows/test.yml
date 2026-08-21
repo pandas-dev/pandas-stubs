@@ -51,6 +51,9 @@ jobs:
       - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
         run: poetry run poe mypy
 
+      - name: Verify type completeness using pyrefly
+        run: poetry run poe type_completeness
+
       - name: Run pytest
         run: poetry run poe pytest
 
@@ -69,25 +72,3 @@ jobs:
           persist-credentials: false
 
       - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
-
-  type_completeness:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      actions: write
-
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Install project dependencies
-        uses: ./.github/setup
-        with:
-          # This is quite slow (2-3 minutes) so we don't run it for all OSs / Python versions.
-          os: ubuntu-latest
-          python-version: 3.14
-
-      - name: Verify type completeness using Pyright
-        run: poetry run poe type_completeness
