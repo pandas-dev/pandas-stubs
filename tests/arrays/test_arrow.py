@@ -11,8 +11,8 @@ from typing import (
 )
 
 import pandas as pd
-from pandas.core.arrays.arrow.array import ArrowExtensionArray
-from pandas.core.arrays.string_arrow import ArrowStringArray
+from pandas.arrays import ArrowExtensionArray
+from pandas.arrays import ArrowStringArray
 import pyarrow as pa
 import pytest
 
