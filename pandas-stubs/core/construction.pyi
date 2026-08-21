@@ -11,6 +11,7 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.arrays.arrow import ArrowExtensionArray
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.categorical import Categorical
@@ -60,6 +61,7 @@ from pandas._typing import (
     PandasStrDtypeArg,
     PandasTimestampDtypeArg,
     PandasUIntDtypeArg,
+    PyArrowNotStrDtypeArg,
     PyArrowStrDtypeArg,
     TimedeltaDtypeArg,
     np_1darray_td,
@@ -283,6 +285,12 @@ def array(
     dtype: None = None,
     copy: bool = True,
 ) -> BaseStringArray: ...
+@overload
+def array(
+    data: Sequence[Any],
+    dtype: PyArrowNotStrDtypeArg | PyArrowStrDtypeArg,
+    copy: bool = True,
+) -> ArrowExtensionArray: ...
 @overload
 def array(
     data: Sequence[Any], dtype: BuiltinObjectDtypeArg | None = None, copy: bool = True
