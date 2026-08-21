@@ -2,6 +2,7 @@ from collections.abc import (
     Iterator,
     Sequence,
 )
+from datetime import timedelta
 from typing import (
     Any,
     Self,
@@ -44,19 +45,19 @@ class TimelikeOps(DatetimeLikeArrayMixin):
     def as_unit(self, unit: TimeUnit) -> Self: ...
     def round(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> Self: ...
     def floor(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> Self: ...
     def ceil(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> Self: ...
