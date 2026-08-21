@@ -338,19 +338,19 @@ class Timestamp(datetime, SupportsIndex):
     def normalize(self) -> Self: ...
     def round(
         self,
-        freq: str,
+        freq: str | timedelta,
         ambiguous: _Ambiguous = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def floor(
         self,
-        freq: str,
+        freq: str | timedelta,
         ambiguous: _Ambiguous = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def ceil(
         self,
-        freq: str,
+        freq: str | timedelta,
         ambiguous: _Ambiguous = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...

@@ -449,6 +449,7 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(weeks=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(milliseconds=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(nanoseconds=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(dt.timedelta(hours=1)), pd.Timedelta), pd.Timedelta)
     check(
         assert_type(
             pd.Timedelta(
@@ -491,8 +492,11 @@ def test_timedelta_properties_methods() -> None:
 
     check(assert_type(td.ceil("D"), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.floor(Day()), pd.Timedelta), pd.Timedelta)
-    check(assert_type(td.isoformat(), str), str)
     check(assert_type(td.round("s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.ceil(dt.timedelta(days=1)), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.floor(dt.timedelta(days=1)), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.round(dt.timedelta(seconds=1)), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.isoformat(), str), str)
     check(assert_type(td.to_numpy(), np.timedelta64), np.timedelta64)
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
@@ -1490,18 +1494,21 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.round("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.round("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.round("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round(dt.timedelta(seconds=1)), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts2.ceil("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil(dt.timedelta(seconds=1)), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts2.floor("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor(dt.timedelta(seconds=1)), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts2.as_unit("s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.as_unit("ms"), pd.Timestamp), pd.Timestamp)
@@ -1962,6 +1969,13 @@ def test_period_methods() -> None:
 def test_nattype_hashable() -> None:
     # GH 827
     check(assert_type(pd.NaT.__hash__(), int), int)
+
+
+def test_nat_round_floor_ceil_timedelta() -> None:
+    td = dt.timedelta(hours=1)
+    check(assert_type(pd.NaT.round(td), NaTType), NaTType)
+    check(assert_type(pd.NaT.floor(td), NaTType), NaTType)
+    check(assert_type(pd.NaT.ceil(td), NaTType), NaTType)
 
 
 def test_nat_comparison_with_date() -> None:
