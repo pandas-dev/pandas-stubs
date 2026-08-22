@@ -177,7 +177,7 @@ def test_pipe() -> None:
         arg1: list[float],
         arg2: str,
         *,
-        kw: tuple[int]
+        kw: tuple[int],
     ) -> DataFrame:
         return DataFrame({"a": [1, 2, 3]})
 
