@@ -191,4 +191,4 @@ Additional information on the communication channels can be found on the [contri
 
 ## Contributing to pandas-stubs
 
-All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.  See <https://github.com/pandas-dev/pandas-stubs/tree/main/docs/> for instructions.
+All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are many many welcome.  See <https://github.com/pandas-dev/pandas-stubs/tree/main/docs/> for instructions.
