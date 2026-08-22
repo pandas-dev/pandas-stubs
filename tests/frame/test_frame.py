@@ -30,6 +30,7 @@ from typing import (
     TypeVar,
     assert_never,
     assert_type,
+    cast,
 )
 import uuid
 from zoneinfo import ZoneInfo
@@ -302,7 +303,7 @@ def test_assign() -> None:
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
-        return df["a"]
+        return cast("pd.Series[str]", df["a"])
 
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
@@ -1829,14 +1830,10 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
 
 def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using list of strings."""
-    # TODO: https://github.com/facebook/pyrefly/issues/3268
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["sum", "mean"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["sum", "mean"]
             ),
             pd.DataFrame,
         ),
@@ -1845,10 +1842,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["min", "max", "count"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["min", "max", "count"]
             ),
             pd.DataFrame,
         ),
@@ -1857,10 +1851,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["std", "var", "median"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["std", "var", "median"]
             ),
             pd.DataFrame,
         ),
@@ -1869,14 +1860,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=[  # pyrefly: ignore[bad-argument-type]
-                    "first",
-                    "last",
-                    "nunique",
-                ],
+                values="C", index="A", columns="B", aggfunc=["first", "last", "nunique"]
             ),
             pd.DataFrame,
         ),
@@ -1903,10 +1887,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["sum", np.mean],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["sum", np.mean]
             ),
             pd.DataFrame,
         ),
@@ -1915,10 +1896,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=[np.sum, "mean", np.max],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=[np.sum, "mean", np.max]
             ),
             pd.DataFrame,
         ),
@@ -1928,14 +1906,13 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
 
 def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
     """Test dict of aggfuncs mapping columns to functions."""
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
     check(
         assert_type(
             sample_df.pivot_table(
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={"C": "sum", "D": "mean"},  # pyrefly: ignore[bad-argument-type]
+                aggfunc={"C": "sum", "D": "mean"},
             ),
             pd.DataFrame,
         ),
@@ -1947,7 +1924,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={"C": "min", "D": "max"},  # pyrefly: ignore[bad-argument-type]
+                aggfunc={"C": "min", "D": "max"},
             ),
             pd.DataFrame,
         ),
@@ -1959,10 +1936,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={  # pyrefly: ignore[bad-argument-type]
-                    "C": "nunique",
-                    "D": "count",
-                },
+                aggfunc={"C": "nunique", "D": "count"},
             ),
             pd.DataFrame,
         ),
@@ -1988,10 +1962,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={  # pyrefly: ignore[bad-argument-type]
-                    "C": "sum",
-                    "D": np.mean,
-                },
+                aggfunc={"C": "sum", "D": np.mean},
             ),
             pd.DataFrame,
         ),
@@ -3939,30 +3910,27 @@ def test_select_dtypes() -> None:
     check(assert_type(df.select_dtypes(np.number), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(object), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(include="bool"), pd.DataFrame), pd.DataFrame)
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
+    # TODO: facebook/pyrefly#3268
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                include=["float64"], exclude=None
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(include=["float64"], exclude=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                exclude=["int64"], include=None
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(exclude=["int64"], include=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                exclude=["int64", object]
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(exclude=["int64", object]),
             pd.DataFrame,
         ),
         pd.DataFrame,

@@ -31,6 +31,11 @@ def test_interval_init() -> None:
     )
 
 
+def test_interval_dunder_methods() -> None:
+    i1 = pd.Interval(1, 2, closed="both")
+    check(assert_type(i1.__hash__(), int), int)
+
+
 def test_interval_arithmetic() -> None:
     i1 = pd.Interval(1, 2, closed="both")
     check(assert_type(i1, "pd.Interval[int]"), pd.Interval, int)

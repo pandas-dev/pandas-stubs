@@ -159,8 +159,7 @@ def test_indexslice_getitem() -> None:
     )
     ind = pd.Index([2, 3])
     check(
-        # TODO: https://github.com/facebook/pyrefly/issues/3896
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
         ),
         tuple,

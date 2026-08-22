@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from typing import (
     Any,
     Literal,
@@ -8,6 +9,7 @@ from pandas.core.arrays.numeric import (
     NumericArray,
     NumericDtype,
 )
+from typing_extensions import override
 
 from pandas._typing import (
     InterpolateOptions,
@@ -16,14 +18,19 @@ from pandas._typing import (
 )
 
 class FloatingDtype(NumericDtype):
+    @override
     def construct_array_type(self) -> type[FloatingArray]: ...
 
 class FloatingArray(NumericArray):
     @property
+    @override
     def dtype(self) -> FloatingDtype: ...
     def __init__(
         self, values: np_ndarray_float, mask: np_ndarray_bool, copy: bool = False
     ) -> None: ...
+    @override
+    def __iter__(self) -> Iterator[float]: ...
+    @override
     def interpolate(
         self,
         *,

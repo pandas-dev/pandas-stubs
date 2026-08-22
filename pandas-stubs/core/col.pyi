@@ -6,6 +6,7 @@ from typing import (
 
 from pandas.core.series import Series
 from pandas.core.strings.accessor import StrDescriptor
+from typing_extensions import override
 
 from pandas._typing import Scalar
 
@@ -28,7 +29,9 @@ class Expression:
     def __gt__(self, other: Scalar | Series | Self) -> Expression: ...
     def __le__(self, other: Scalar | Series | Self) -> Expression: ...
     def __lt__(self, other: Scalar | Series | Self) -> Expression: ...
+    @override
     def __eq__(self, other: object) -> Expression: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]  # pyrefly: ignore[bad-override]
+    @override
     def __ne__(self, other: object) -> Expression: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]  # pyrefly: ignore[bad-override]
     def __mod__(self, other: Scalar | Series | Self) -> Expression: ...
     def __rmod__(self, other: Scalar | Series | Self) -> Expression: ...

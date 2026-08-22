@@ -15,6 +15,7 @@ from typing import (
 )
 
 from pandas.core.frame import DataFrame
+from typing_extensions import override
 
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
@@ -426,7 +427,7 @@ def read_fwf(
     **kwds: Any,
 ) -> DataFrame: ...
 
-class TextFileReader(Iterator[Any]):
+class TextFileReader(Iterator[DataFrame]):
     engine: CSVEngine
     orig_options: Mapping[str, Any]
     chunksize: int | None
@@ -441,6 +442,7 @@ class TextFileReader(Iterator[Any]):
     def close(self) -> None: ...
     def read(self, nrows: int | None = ...) -> DataFrame: ...
     def get_chunk(self, size: int | None = ...) -> DataFrame: ...
+    @override
     def __next__(self) -> DataFrame: ...
     def __enter__(self) -> Self: ...
     def __exit__(

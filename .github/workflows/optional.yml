@@ -51,22 +51,6 @@ jobs:
     - name: Run mypy tests with mypy nightly
       run: poetry run poe mypy --mypy_nightly
 
-  pyrefly_strict:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-    - uses: actions/checkout@v7
-
-    - name: Install project dependencies
-      uses: ./.github/setup
-      with:
-        os: ubuntu-latest
-        python-version: '3.14'
-
-    - name: Run pyrefly tests with preset 'strict'
-      run: poetry run poe pyrefly_strict
-
   pyrefly_all:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -82,7 +66,7 @@ jobs:
 
     - name: Run pyrefly tests with preset 'all'
       run: poetry run poe pyrefly_all
-  
+
   ty_all:
     runs-on: ubuntu-latest
     timeout-minutes: 10

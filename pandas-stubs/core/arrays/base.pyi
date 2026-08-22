@@ -10,6 +10,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 from pandas.core.indexes.base import Index
 
 from pandas._typing import (
@@ -29,7 +30,6 @@ from pandas._typing import (
     np_1darray_bool,
     np_1darray_intp,
     np_ndarray,
-    npt,
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
@@ -57,6 +57,8 @@ class ExtensionArray:
     @property
     def shape(self) -> tuple[int]: ...
     @property
+    def size(self) -> int: ...
+    @property
     def ndim(self) -> int: ...
     @property
     def nbytes(self) -> int: ...
@@ -80,15 +82,15 @@ class ExtensionArray:
     def searchsorted(
         self,
         value: ListLike,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = ...,
+        side: Literal["left", "right"] = "left",
+        sorter: ListLike | None = None,
     ) -> np_1darray_intp: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = ...,
+        side: Literal["left", "right"] = "left",
+        sorter: ListLike | None = None,
     ) -> np.intp: ...
     def factorize(self, use_na_sentinel: bool = True) -> tuple[np_1darray, Self]: ...
     def repeat(

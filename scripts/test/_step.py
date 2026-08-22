@@ -13,10 +13,6 @@ pyrefly_src = Step(
     name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyrefly_src,
 )
-pyrefly_src_strict = Step(
-    name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'strict'",
-    run=run.pyrefly_src_strict,
-)
 pyrefly_src_all = Step(
     name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'all'",
     run=run.pyrefly_src_all,

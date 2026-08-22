@@ -13,6 +13,7 @@ from pandas._stubs_only import IndexSubclassBase
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.base import IndexOpsMixin
 from pandas.core.indexes.base import Index
+from typing_extensions import override
 
 from pandas._typing import (
     AnyArrayLike,
@@ -46,26 +47,16 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
     @property
     def step(self) -> int: ...
     @property
-    def nbytes(self) -> int: ...
-    def memory_usage(self, deep: bool = ...) -> int: ...
-    @property
+    @override
     def dtype(self) -> np.dtype: ...
-    @property
-    def is_unique(self) -> bool: ...
-    @property
-    def is_monotonic_increasing(self) -> bool: ...
-    @property
-    def is_monotonic_decreasing(self) -> bool: ...
-    @property
-    def has_duplicates(self) -> bool: ...
+    @override
     def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
     ) -> tuple[np_1darray_intp, RangeIndex]: ...
-    @property
-    def size(self) -> int: ...
     def all(self, *args: Any, **kwargs: Any) -> bool: ...
     def any(self, *args: Any, **kwargs: Any) -> bool: ...
     @overload  # type: ignore[override]
+    @override
     def union(  # pyrefly: ignore[bad-override]
         self, other: Sequence[int] | Index[int] | Self, sort: bool | None = None
     ) -> Index[int] | Self: ...
@@ -74,14 +65,15 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
         self, other: Sequence[HashableT] | Index, sort: bool | None = None
     ) -> Index: ...
     @overload  # type: ignore[override]
+    @override
     def __getitem__(  # pyrefly: ignore[bad-override]
-        self,
-        idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
+        self, idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType
     ) -> Index: ...
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, idx: int
     ) -> int: ...
+    @override
     def where(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self,
         cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],

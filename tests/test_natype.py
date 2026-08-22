@@ -1,3 +1,4 @@
+# TODO: It cannot be moved under scalars because of a pyright bug microsoft/pyright#11644 microsoft/pyright#10607
 from typing import (
     Literal,
     assert_type,
@@ -7,7 +8,20 @@ import pandas as pd
 from pandas.api.typing import NAType
 from pandas.core.arrays.boolean import BooleanArray
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
+
+
+def test_dunder_methods() -> None:
+    check(assert_type(pd.NA.__format__(""), str), str)
+    check(assert_type(pd.NA.__hash__(), int), int)
+    assert assert_type(pd.NA.__reduce__(), Literal["NA"]) == "NA"
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # pandas may have implemented keyword arguments, which is incorrect
+        pd.NA.__format__(format_spec="")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[positional-only-parameter-as-kwarg]
 
 
 def test_arithmetic() -> None:
@@ -86,9 +100,8 @@ def test_arithmetic() -> None:
     check(assert_type(divmod(na, s_int), tuple[pd.Series, pd.Series]), tuple, pd.Series)
     # TODO: facebook/pyrefly#3822
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            divmod(na, idx_int), tuple[pd.Index, pd.Index]
-        ),
+        # pyrefly: ignore[assert-type]
+        assert_type(divmod(na, idx_int), tuple[pd.Index, pd.Index]),
         tuple,
         pd.Index,
     )
