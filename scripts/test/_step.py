@@ -1,17 +1,33 @@
 from scripts._job import Step
 from scripts.test import run
 
-mypy_src = Step(
-    name="Run mypy on 'tests' (using the local stubs) and on the local stubs",
-    run=run.mypy_src,
+ty_src = Step(
+    name="Run ty on 'tests' (using the local stubs) and on the local stubs",
+    run=run.ty_src,
+)
+ty_src_all = Step(
+    name="Run ty on 'tests' (using the local stubs) and on the local stubs with all rules raising errors",
+    run=run.ty_src_all,
+)
+pyrefly_src = Step(
+    name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs",
+    run=run.pyrefly_src,
+)
+pyrefly_src_strict = Step(
+    name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'strict'",
+    run=run.pyrefly_src_strict,
+)
+pyrefly_src_all = Step(
+    name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'all'",
+    run=run.pyrefly_src_all,
 )
 pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyright_src,
 )
-pyright_src_strict = Step(
-    name="Run pyright on 'tests' (using the local stubs) and on the local stubs in full strict mode",
-    run=run.pyright_src_strict,
+mypy_src = Step(
+    name="Run mypy on 'tests' (using the local stubs) and on the local stubs",
+    run=run.mypy_src,
 )
 pytest = Step(name="Run pytest", run=run.pytest)
 style = Step(name="Run pre-commit", run=run.style)
@@ -30,6 +46,10 @@ mypy_dist = Step(
 pyright_dist = Step(
     name="Run pyright on 'tests' using the installed stubs", run=run.pyright_dist
 )
+pyrefly_dist = Step(
+    name="Run pyrefly on 'tests' using the installed stubs", run=run.pyrefly_dist
+)
+ty_dist = Step(name="Run ty on 'tests' using the installed stubs", run=run.ty_dist)
 stubtest = Step(
     name="Run stubtest to compare the installed stubs against pandas", run=run.stubtest
 )

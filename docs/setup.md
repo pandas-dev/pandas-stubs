@@ -1,8 +1,8 @@
 ## Set Up Environment
 
-- Make sure you have `python >= 3.10` installed.
+- Make sure you have `python >= 3.11` installed.
 - If using macOS, you may need to install `hdf5` (e.g., via `brew install hdf5`).
-- Install poetry: `pip install 'poetry>=1.8'`
+- Install poetry: `pip install 'poetry>=2.0'`
 - Install the project dependencies: `poetry update`
 - Enter the virtual environment: `poetry shell`
 - Run all tests: `poe test_all`

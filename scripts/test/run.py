@@ -1,36 +1,35 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import subprocess
 import sys
+from typing import Final
+
+_PYTHON_VERSION: Final = "{}.{}".format(*sys.version_info[:2])
 
 
-def mypy_src():
-    cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
+def mypy_src() -> None:
+    cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental", "--strict"]
     subprocess.run(cmd, check=True)
 
 
-def pyright_src():
-    cmd = ["pyright"]
+def pyright_src() -> None:
+    cmd = ["pyright", "--warnings", "--pythonversion", _PYTHON_VERSION]
     subprocess.run(cmd, check=True)
 
 
-def pyright_src_strict():
-    cmd = ["pyright", "--project", "pyrightconfig-strict.json"]
-    subprocess.run(cmd, check=True)
-
-
-def pytest():
+def pytest() -> None:
     cmd = ["pytest", "--cache-clear"]
     subprocess.run(cmd, check=True)
 
 
-def style():
+def style() -> None:
     cmd = ["pre-commit", "run", "--all-files", "--verbose"]
     subprocess.run(cmd, check=True)
 
 
-def stubtest(allowlist: str = "", check_missing: bool = False):
+def stubtest(allowlist: str = "", check_missing: bool = False) -> None:
     cmd = [
         sys.executable,
         "-m",
@@ -47,54 +46,80 @@ def stubtest(allowlist: str = "", check_missing: bool = False):
     subprocess.run(cmd, check=True)
 
 
-def build_dist():
+def build_dist() -> None:
     cmd = ["poetry", "build", "-f", "wheel"]
     subprocess.run(cmd, check=True)
 
 
-def install_dist():
-    path = sorted(Path("dist/").glob("pandas_stubs-*.whl"))[-1]
-    cmd = [sys.executable, "-m", "pip", "install", "--force-reinstall", str(path)]
+def install_dist() -> None:
+    path = max(Path("dist/").glob("pandas_stubs-*.whl"))
+    cmd = [
+        sys.executable,
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "--force-reinstall",
+        str(path),
+        "numpy-typing-compat",
+    ]
     subprocess.run(cmd, check=True)
+    subprocess.run([sys.executable, "-m", "pip", "check"], check=True)
 
 
-def rename_src():
+def rename_src() -> None:
     if Path(r"pandas-stubs").exists():
         Path(r"pandas-stubs").rename("_pandas-stubs")
     else:
         raise FileNotFoundError("'pandas-stubs' folder does not exists.")
 
 
-def mypy_dist():
-    cmd = ["mypy", "tests", "--no-incremental"]
+def mypy_dist() -> None:
+    cmd = [
+        "mypy",
+        "tests",
+        "--no-incremental",
+        "--strict",
+        "--python-version",
+        _PYTHON_VERSION,
+    ]
     subprocess.run(cmd, check=True)
 
 
-def pyright_dist():
-    cmd = ["pyright", "tests"]
+def pyright_dist() -> None:
+    cmd = ["pyright", "tests", "--warnings", "--pythonversion", _PYTHON_VERSION]
     subprocess.run(cmd, check=True)
 
 
-def uninstall_dist():
+def pyrefly_dist() -> None:
+    cmd = ["pyrefly", "check", "tests", "--python-version", _PYTHON_VERSION]
+    subprocess.run(cmd, check=True)
+
+
+def ty_dist() -> None:
+    cmd = ["ty", "check", "tests", "--python-version", _PYTHON_VERSION]
+    subprocess.run(cmd, check=True)
+
+
+def uninstall_dist() -> None:
     cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd, check=True)
 
 
-def restore_src():
+def restore_src() -> None:
     if Path(r"_pandas-stubs").exists():
         Path(r"_pandas-stubs").rename("pandas-stubs")
     else:
         raise FileNotFoundError("'_pandas-stubs' folder does not exists.")
 
 
-def nightly_pandas():
+def nightly_pandas() -> None:
     cmd = [
         sys.executable,
         "-m",
         "pip",
         "install",
         "--pre",
-        "--use-deprecated=legacy-resolver",
         "--upgrade",
         "--extra-index-url",
         "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
@@ -104,20 +129,22 @@ def nightly_pandas():
 
 
 def _get_version_from_pyproject(program: str) -> str:
+    """Find version of a package from the pyproject.toml file."""
     text = Path("pyproject.toml").read_text()
-    version_line = next(
-        line for line in text.splitlines() if line.startswith(f"{program} = ")
-    )
-    return version_line.split('"')[1]
+    # handle <, >, ==, <=, >= cases
+    match = re.search(rf'"{re.escape(program)}[=<>~!]+([^"]+)"', text)
+    if match is None:
+        raise KeyError(f"Could not find {program} in pyproject.toml")
+    return match.group(1)
 
 
-def released_pandas():
+def released_pandas() -> None:
     version = _get_version_from_pyproject("pandas")
     cmd = [sys.executable, "-m", "pip", "install", f"pandas=={version}"]
     subprocess.run(cmd, check=True)
 
 
-def nightly_mypy():
+def nightly_mypy() -> None:
     cmd = [
         sys.executable,
         "-m",
@@ -139,7 +166,7 @@ def nightly_mypy():
     )
 
 
-def released_mypy():
+def released_mypy() -> None:
     version = _get_version_from_pyproject("mypy")
     cmd = [sys.executable, "-m", "pip", "install", f"mypy=={version}"]
     subprocess.run(cmd, check=True)
@@ -151,3 +178,67 @@ def released_mypy():
             "warn_unused_ignores = false", "warn_unused_ignores = true"
         )
     )
+
+
+def ty_src() -> None:
+    cmd = ["ty", "check", "pandas-stubs", "tests", "--python-version", _PYTHON_VERSION]
+    subprocess.run(cmd, check=True)
+
+
+def ty_src_all() -> None:
+    cmd = [
+        "ty",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--error",
+        "all",
+    ]
+    subprocess.run(cmd, check=True)
+
+
+def pyrefly_src() -> None:
+    cmd = [
+        "pyrefly",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+    ]
+    subprocess.run(cmd, check=True)
+
+
+def pyrefly_src_strict() -> None:
+    cmd = [
+        "pyrefly",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--preset",
+        "strict",
+    ]
+    subprocess.run(cmd, check=True)
+
+
+def pyrefly_src_all() -> None:
+    cmd = [
+        "pyrefly",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--preset",
+        "all",
+    ]
+    subprocess.run(cmd, check=True)
+
+
+def type_completeness() -> None:
+    cmd = ["python", "-m", "scripts.type_completeness"]
+    subprocess.run(cmd, check=True)

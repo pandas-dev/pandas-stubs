@@ -9,6 +9,7 @@
 [![Powered by NumFOCUS](https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://numfocus.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Typing: stubs](https://img.shields.io/pypi/types/pandas-stubs)](https://pypi.org/project/pandas-stubs/)
 
 ## What is it?
 
@@ -17,9 +18,11 @@ convention of providing stubs in a separate package, as specified in [PEP 561](h
 pandas.  In general, these stubs are narrower than what is possibly allowed by pandas,
 but follow a convention of suggesting best recommended practices for using pandas.
 
-The stubs are likely incomplete in terms of covering the published API of pandas.  NOTE: The current 2.0.x releases of pandas-stubs do not support all of the new features of pandas 2.0.  See this [tracker](https://github.com/pandas-dev/pandas-stubs/issues/624) to understand the current compatibility with version 2.0.
+The stubs are likely incomplete in terms of covering the published API of pandas.
 
-The stubs are tested with [mypy](http://mypy-lang.org/) and [pyright](https://github.com/microsoft/pyright#readme) and are currently shipped with the Visual Studio Code extension
+The stubs are tested with [mypy](http://mypy-lang.org/),
+[pyright](https://github.com/microsoft/pyright#readme) and
+[pyrefly](https://pyrefly.org/), and are currently shipped with the Visual Studio Code extension
 [pylance](https://github.com/microsoft/pylance-release#readme).
 
 ## Usage
@@ -44,7 +47,7 @@ mypy round.py
 we get the following error message:
 
 ```text
-round.py:6: error: Argument "decimals" to "round" of "DataFrame" has incompatible type "DataFrame"; expected "Union[int, Dict[Any, Any], Series[Any]]"  [arg-type]
+round.py:6: error: Argument "decimals" to "round" of "DataFrame" has incompatible type "DataFrame"; expected "Union[int, Dict[Any, Any], Series]"  [arg-type]
 Found 1 error in 1 file (checked 1 source file)
 ```
 
@@ -71,11 +74,32 @@ we can fix the code:
 decimals = pd.Series({'TSLA': 2, 'AMZN': 1})
 ```
 
-## Version Numbering Convention
+## Versioning
 
-The version number x.y.z.yymmdd corresponds to a test done with pandas version x.y.z, with the stubs released on the date mm/yy/dd.
+The version number of `pandas-stubs` follows the format **`x.y.z.yymmdd`**, where:
+
+- **`x.y.z`**: The version of pandas this release was **tested against** (e.g., `3.0.0` for pandas 3.0.0).
+- **`yymmdd`**: The release date of the stubs (year, month, day).
+
 It is anticipated that the stubs will be released more frequently than pandas as the stubs are expected to evolve due to more
 public visibility.
+
+### Compatibility with pandas
+
+- **No strict dependency**: `pandas-stubs` does **not** enforce a dependency on a specific pandas version. This allows you to use newer stubs with older pandas versions for forward compatibility.
+- **Recommended usage**:
+  - Use the **latest `pandas-stubs`** to catch deprecations and API changes early, even if your pandas version is older.
+  - If you **pin pandas**, pin `pandas-stubs` to the **same major/minor version** (e.g., `pandas==2.3.3` → `pandas-stubs==2.3.3.*`) to avoid inconsistencies.
+- **Why?**
+  The stubs help you write code compatible with future pandas versions. Type checkers will flag deprecated or removed APIs based on the pandas version the stubs were tested against.
+
+> [!NOTE]
+>
+> Using a newer version of the stubs in conjunction with an older version of pandas
+> - Will cause type checkers to allow you to see which APIs will be deprecated or removed in a future version
+> - Will cause type checkers to consider code to be acceptable that uses newer or changed API's in current versions of pandas, such that the code would fail at runtime with an older version of
+>   pandas
+
 
 ## Where to get it
 
@@ -97,11 +121,11 @@ pip install pandas-stubs
 ## Dependencies
 
 - [pandas: powerful Python data analysis toolkit](https://pandas.pydata.org/)
-- [typing-extensions >= 4.2.0 - supporting the latest typing extensions](https://github.com/python/typing_extensions#readme)
+- [typing-extensions >= 4.5.0 - supporting the latest typing extensions](https://github.com/python/typing_extensions#readme)
 
 ## Installation from sources
 
-- Make sure you have `python >= 3.10` installed.
+- Make sure you have `python >= 3.11` installed.
 - Install poetry
 
 ```sh
@@ -111,7 +135,7 @@ conda install poetry
 
 ```sh
 # or PyPI
-pip install 'poetry>=1.2'
+pip install 'poetry>=2.0'
 ```
 
 - Install the project dependencies
@@ -133,7 +157,7 @@ poetry run poe install_dist
 
 ## Documentation
 
-Documentation is a work-in-progress.  
+Documentation is a work-in-progress.
 
 ## Background
 
@@ -153,7 +177,7 @@ If issues are found with the public stubs, pull requests to correct those issues
 
 ## Getting help
 
-Ask questions and report issues on the [pandas-stubs repository](https://github.com/pandas-dev/pandas-stubs/issues).  
+Ask questions and report issues on the [pandas-stubs repository](https://github.com/pandas-dev/pandas-stubs/issues).
 
 ## Discussion and Development
 
@@ -164,7 +188,6 @@ Further, the [pandas-dev mailing list](https://mail.python.org/mailman/listinfo/
 There are also frequent [community meetings](https://pandas.pydata.org/docs/dev/development/community.html#community-meeting) for project maintainers open to the community as well as monthly [new contributor meetings](https://pandas.pydata.org/docs/dev/development/community.html#new-contributor-meeting) to help support new contributors.
 
 Additional information on the communication channels can be found on the [contributor community](https://pandas.pydata.org/docs/development/community.html) page.
-
 
 ## Contributing to pandas-stubs
 

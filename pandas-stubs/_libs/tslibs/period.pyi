@@ -1,54 +1,36 @@
 import datetime
 from typing import (
     Literal,
+    Self,
+    TypeAlias,
     overload,
 )
 
-import numpy as np
-from pandas import (
-    Index,
-    PeriodIndex,
-    Series,
-    Timedelta,
-    TimedeltaIndex,
-)
-from pandas.core.series import (
-    OffsetSeries,
-    PeriodSeries,
-    TimedeltaSeries,
-)
-from typing_extensions import TypeAlias
+from pandas._stubs_only import PeriodAddSub
+from pandas.core.indexes.base import Index
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import Series
 
 from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.offsets import BaseOffset
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
-from pandas._typing import npt
-
-class IncompatibleFrequency(ValueError): ...
-
-_PeriodAddSub: TypeAlias = (
-    Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | int | BaseOffset
+from pandas._typing import (
+    PeriodFrequency,
+    ShapeT,
+    np_1darray_bool,
+    np_ndarray_bool,
+    np_ndarray_object,
 )
 
-_PeriodFreqHow: TypeAlias = Literal[
-    "S",
-    "E",
-    "start",
-    "end",
-]
+class IncompatibleFrequency(TypeError): ...
+
+_PeriodFreqHow: TypeAlias = Literal["S", "E", "start", "end"]
 
 _PeriodToTimestampHow: TypeAlias = (
     _PeriodFreqHow
-    | Literal[
-        "Start",
-        "Finish",
-        "Begin",
-        "End",
-        "s",
-        "e",
-        "finish",
-        "begin",
-    ]
+    | Literal["Start", "Finish", "Begin", "End", "s", "e", "finish", "begin"]
 )
 
 class PeriodMixin:
@@ -62,95 +44,95 @@ class Period(PeriodMixin):
         self,
         value: (
             Period | str | datetime.datetime | datetime.date | Timestamp | None
-        ) = ...,
-        freq: str | BaseOffset | None = ...,
-        ordinal: int | None = ...,
-        year: int | None = ...,
-        month: int | None = ...,
-        quarter: int | None = ...,
-        day: int | None = ...,
-        hour: int | None = ...,
-        minute: int | None = ...,
-        second: int | None = ...,
+        ) = None,
+        freq: PeriodFrequency | None = None,
+        ordinal: int | None = None,
+        year: int | None = None,
+        month: int | None = None,
+        quarter: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
     ) -> None: ...
     @overload
-    def __sub__(self, other: _PeriodAddSub) -> Period: ...
+    def __sub__(self, other: PeriodAddSub) -> Period: ...
     @overload
-    def __sub__(self, other: Period) -> BaseOffset: ...
+    def __sub__(self, other: Self) -> BaseOffset: ...
     @overload
     def __sub__(self, other: NaTType) -> NaTType: ...
     @overload
     def __sub__(self, other: PeriodIndex) -> Index: ...
     @overload
-    def __sub__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    def __sub__(self, other: Series[Timedelta]) -> Series[Period]: ...
     @overload
     def __sub__(self, other: TimedeltaIndex) -> PeriodIndex: ...
     @overload
-    def __add__(self, other: _PeriodAddSub) -> Period: ...
+    def __add__(self, other: PeriodAddSub) -> Self: ...
     @overload
     def __add__(self, other: NaTType) -> NaTType: ...
-    @overload
-    def __add__(self, other: Index) -> PeriodIndex: ...
-    @overload
-    def __add__(self, other: OffsetSeries | TimedeltaSeries) -> PeriodSeries: ...
-    #  ignore[misc] here because we know all other comparisons
-    #  are False, so we use Literal[False]
-    @overload
-    def __eq__(self, other: Period) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    @overload
-    def __eq__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[overload-overlap]
-    @overload
-    def __eq__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
-    @overload
-    def __eq__(self, other: object) -> Literal[False]: ...
-    @overload
-    def __ge__(self, other: Period) -> bool: ...
-    @overload
-    def __ge__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
-    @overload
-    def __ge__(self, other: PeriodSeries) -> Series[bool]: ...
-    @overload
-    def __gt__(self, other: Period) -> bool: ...
-    @overload
-    def __gt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
-    @overload
-    def __gt__(self, other: PeriodSeries) -> Series[bool]: ...
-    @overload
-    def __le__(self, other: Period) -> bool: ...
-    @overload
-    def __le__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
-    @overload
-    def __le__(self, other: PeriodSeries) -> Series[bool]: ...
-    @overload
-    def __lt__(self, other: Period) -> bool: ...
-    @overload
-    def __lt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
-    @overload
-    def __lt__(self, other: PeriodSeries) -> Series[bool]: ...
-    #  ignore[misc] here because we know all other comparisons
-    #  are False, so we use Literal[False]
-    @overload
-    def __ne__(self, other: Period) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    @overload
-    def __ne__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[overload-overlap]
-    @overload
-    def __ne__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
-    @overload
-    def __ne__(self, other: object) -> Literal[True]: ...
     # Ignored due to indecipherable error from mypy:
     # Forward operator "__add__" is not callable  [misc]
     @overload
-    def __radd__(self, other: _PeriodAddSub) -> Period: ...  # type: ignore[misc]
-    # Real signature is -> PeriodIndex, but conflicts with Index.__add__
-    # Changing Index is very hard due to Index inheritance
-    #   Signatures of "__radd__" of "Period" and "__add__" of "Index"
-    #   are unsafely overlapping
-    @overload
-    def __radd__(self, other: Index) -> Index: ...
-    @overload
-    def __radd__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    def __radd__(self, other: PeriodAddSub) -> Self: ...
     @overload
     def __radd__(self, other: NaTType) -> NaTType: ...
+    #  ignore[misc] here because we know all other comparisons
+    #  are False, so we use Literal[False]
+    @overload
+    def __eq__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    @overload
+    def __eq__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
+    @overload
+    def __eq__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __eq__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __eq__(self, other: object) -> Literal[False]: ...
+    @overload
+    def __ge__(self, other: Self) -> bool: ...
+    @overload
+    def __ge__(self, other: PeriodIndex) -> np_1darray_bool: ...
+    @overload
+    def __ge__(self, other: Series[Period]) -> Series[bool]: ...
+    @overload
+    def __ge__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
+    @overload
+    def __gt__(self, other: Self) -> bool: ...
+    @overload
+    def __gt__(self, other: PeriodIndex) -> np_1darray_bool: ...
+    @overload
+    def __gt__(self, other: Series[Period]) -> Series[bool]: ...
+    @overload
+    def __gt__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
+    @overload
+    def __le__(self, other: Self) -> bool: ...
+    @overload
+    def __le__(self, other: PeriodIndex) -> np_1darray_bool: ...
+    @overload
+    def __le__(self, other: Series[Period]) -> Series[bool]: ...
+    @overload
+    def __le__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
+    @overload
+    def __lt__(self, other: Self) -> bool: ...
+    @overload
+    def __lt__(self, other: PeriodIndex) -> np_1darray_bool: ...
+    @overload
+    def __lt__(self, other: Series[Period]) -> Series[bool]: ...
+    @overload
+    def __lt__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
+    #  ignore[misc] here because we know all other comparisons
+    #  are False, so we use Literal[False]
+    @overload
+    def __ne__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    @overload
+    def __ne__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ne__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ne__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ne__(self, other: object) -> Literal[True]: ...
     @property
     def day(self) -> int: ...
     @property
@@ -197,12 +179,12 @@ class Period(PeriodMixin):
     def day_of_year(self) -> int: ...
     @property
     def day_of_week(self) -> int: ...
-    def asfreq(self, freq: str | BaseOffset, how: _PeriodFreqHow = ...) -> Period: ...
+    def asfreq(self, freq: PeriodFrequency, how: _PeriodFreqHow = "end") -> Period: ...
     @classmethod
-    def now(cls, freq: str | BaseOffset = ...) -> Period: ...
+    def now(cls, freq: PeriodFrequency | None = None) -> Period: ...
     def strftime(self, fmt: str) -> str: ...
     def to_timestamp(
         self,
-        freq: str | BaseOffset | None = ...,
-        how: _PeriodToTimestampHow = ...,
+        freq: PeriodFrequency | None = None,
+        how: _PeriodToTimestampHow = "S",
     ) -> Timestamp: ...

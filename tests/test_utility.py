@@ -1,16 +1,17 @@
+from typing import assert_type
+
 import pandas as pd
-from typing_extensions import assert_type
 
 from tests import check
 
 
-def test_show_version():
+def test_show_version() -> None:
     """Test show_versions method types with split case for pandas and python versions."""
     check(assert_type(pd.show_versions(True), None), type(None))
     check(assert_type(pd.show_versions(False), None), type(None))
 
 
-def test_dummies():
+def test_dummies() -> None:
     df = pd.DataFrame(
         pd.Series(["a", "b", "a", "b", "c", "a", "a"], dtype="category"), columns=["A"]
     )
@@ -28,7 +29,7 @@ def test_dummies():
     )
 
 
-def test_get_dummies_args():
+def test_get_dummies_args() -> None:
     df = pd.DataFrame(
         {
             "A": pd.Series(["a", "b", "a", "b", "c", "a", "a"], dtype="category"),
@@ -59,7 +60,7 @@ def test_get_dummies_args():
     )
 
 
-def test_from_dummies_args():
+def test_from_dummies_args() -> None:
     df = pd.DataFrame(
         {
             "A": pd.Series(["a", "b", "a", "b", "c", "a", "a"], dtype="category"),

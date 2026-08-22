@@ -2,7 +2,6 @@ from pandas._libs.lib import infer_dtype as infer_dtype
 
 from pandas.core.dtypes.api import (
     is_any_real_numeric_dtype as is_any_real_numeric_dtype,
-    is_array_like as is_array_like,
     is_bool as is_bool,
     is_bool_dtype as is_bool_dtype,
     is_complex as is_complex,

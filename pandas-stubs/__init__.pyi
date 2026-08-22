@@ -63,10 +63,9 @@ from pandas.core.api import (
     to_numeric as to_numeric,
     to_timedelta as to_timedelta,
     unique as unique,
-    value_counts as value_counts,
 )
-from pandas.core.arrays.sparse import SparseDtype as SparseDtype
-from pandas.core.computation.api import eval as eval
+from pandas.core.col import col as col
+from pandas.core.computation.api import eval as eval  # noqa: A004
 from pandas.core.reshape.api import (
     concat as concat,
     crosstab as crosstab,
@@ -94,7 +93,8 @@ from pandas._config import (
 )
 
 from pandas.util._print_versions import show_versions as show_versions
-from pandas.util._tester import test as test
+
+from pandas.core.dtypes.dtypes import SparseDtype as SparseDtype
 
 from pandas.io.api import (
     ExcelFile as ExcelFile,
@@ -105,9 +105,9 @@ from pandas.io.api import (
     read_excel as read_excel,
     read_feather as read_feather,
     read_fwf as read_fwf,
-    read_gbq as read_gbq,
     read_hdf as read_hdf,
     read_html as read_html,
+    read_iceberg as read_iceberg,
     read_json as read_json,
     read_orc as read_orc,
     read_parquet as read_parquet,
@@ -120,7 +120,6 @@ from pandas.io.api import (
     read_stata as read_stata,
     read_table as read_table,
     read_xml as read_xml,
-    to_pickle as to_pickle,
 )
 from pandas.io.json._normalize import json_normalize as json_normalize
 from pandas.tseries import offsets as offsets

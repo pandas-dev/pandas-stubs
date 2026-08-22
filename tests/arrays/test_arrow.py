@@ -1,0 +1,75 @@
+from collections.abc import Sequence
+from datetime import (
+    UTC,
+    datetime,
+    timedelta,
+)
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    assert_type,
+)
+
+from pandas.core.arrays.arrow.array import ArrowExtensionArray
+import pyarrow as pa
+import pytest
+
+from tests import check
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        [True],
+        [1],
+        [1.0],
+        ["1"],
+        [datetime(2026, 1, 1)],
+        [datetime(2026, 1, 1, tzinfo=UTC)],
+        [timedelta(seconds=1)],
+    ],
+)
+def test_constructor(data: Sequence[Any]) -> None:
+    check(
+        assert_type(ArrowExtensionArray(pa.array(data)), ArrowExtensionArray),
+        ArrowExtensionArray,
+    )
+    check(
+        assert_type(ArrowExtensionArray(pa.chunked_array([data])), ArrowExtensionArray),
+        ArrowExtensionArray,
+    )
+
+    if TYPE_CHECKING:
+        assert_type(ArrowExtensionArray(pa.array([True])), ArrowExtensionArray)
+        assert_type(ArrowExtensionArray(pa.array([1])), ArrowExtensionArray)
+        assert_type(ArrowExtensionArray(pa.array([1.0])), ArrowExtensionArray)
+        assert_type(ArrowExtensionArray(pa.array(["1"])), ArrowExtensionArray)
+        assert_type(
+            ArrowExtensionArray(pa.array([datetime(2026, 1, 1)])), ArrowExtensionArray
+        )
+        assert_type(
+            ArrowExtensionArray(pa.array([datetime(2026, 1, 1, tzinfo=UTC)])),
+            ArrowExtensionArray,
+        )
+        assert_type(
+            ArrowExtensionArray(pa.array([timedelta(seconds=1)])), ArrowExtensionArray
+        )
+
+        assert_type(
+            ArrowExtensionArray(pa.chunked_array([[True]])), ArrowExtensionArray
+        )
+        assert_type(ArrowExtensionArray(pa.chunked_array([[1]])), ArrowExtensionArray)
+        assert_type(ArrowExtensionArray(pa.chunked_array([[1.0]])), ArrowExtensionArray)
+        assert_type(ArrowExtensionArray(pa.chunked_array([["1"]])), ArrowExtensionArray)
+        assert_type(
+            ArrowExtensionArray(pa.chunked_array([[datetime(2026, 1, 1)]])),
+            ArrowExtensionArray,
+        )
+        assert_type(
+            ArrowExtensionArray(pa.chunked_array([[datetime(2026, 1, 1, tzinfo=UTC)]])),
+            ArrowExtensionArray,
+        )
+        assert_type(
+            ArrowExtensionArray(pa.chunked_array([[timedelta(seconds=1)]])),
+            ArrowExtensionArray,
+        )

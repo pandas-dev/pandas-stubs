@@ -1,34 +1,41 @@
 from __future__ import annotations
 
-import datetime as dt
 from datetime import (
     timedelta,
     timezone,
 )
 from typing import (
+    TYPE_CHECKING,
     Literal,
-    Optional,
-    Union,
+    Never,
+    assert_type,
+)
+from zoneinfo import (
+    ZoneInfo,
+    available_timezones,
 )
 
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_any_real_numeric_dtype
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
+from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
 )
+from pandas.core.arrays.datetimes import DatetimeArray
 import pyarrow as pa
-from typing_extensions import assert_type
-
-from pandas._libs import NaTType
-from pandas._libs.missing import NAType
-from pandas._typing import Scalar
+import pytest
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import TimeUnit
 
 from pandas.tseries.offsets import (
     BusinessDay,
@@ -47,10 +54,27 @@ def test_datetimetz_dtype() -> None:
         ),
         pd.DatetimeTZDtype,
     )
-    check(assert_type(dttz_dt.unit, Literal["ns"]), str)
-    check(assert_type(dttz_dt.tz, dt.tzinfo), dt.tzinfo)
-    check(assert_type(dttz_dt.name, str), str)
+    assert assert_type(dttz_dt.unit, TimeUnit) == "ns"
+    check(assert_type(dttz_dt.tz, timezone), timezone)
+    assert assert_type(dttz_dt.name, str) == "datetime64[ns, UTC]"
     check(assert_type(dttz_dt.na_value, NaTType), NaTType)
+
+    assert assert_type(pd.DatetimeTZDtype("s", "PRC").unit, TimeUnit) == "s"
+    assert assert_type(pd.DatetimeTZDtype("ms", "CST6CDT").unit, TimeUnit) == "ms"
+    assert assert_type(pd.DatetimeTZDtype("us", "HST").unit, TimeUnit) == "us"
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+    pa_arr = pa.array([1, 2, 3], type=pa.timestamp("ns", tz="UTC"))
+    check(assert_type(dttz_dt.__from_arrow__(pa_arr), DatetimeArray), DatetimeArray)
+
+
+@pytest.mark.parametrize("key", available_timezones())
+def test_datetimetz_dtype_tz(key: str) -> None:
+    tz = ZoneInfo(key)
+    assert assert_type(pd.DatetimeTZDtype(tz=tz).name, str) == f"datetime64[ns, {key}]"
 
 
 def test_period_dtype() -> None:
@@ -58,12 +82,8 @@ def test_period_dtype() -> None:
     check(assert_type(p_dt, pd.PeriodDtype), pd.PeriodDtype)
     check(assert_type(pd.PeriodDtype(freq=Day()), pd.PeriodDtype), pd.PeriodDtype)
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.PeriodDtype(
-            freq=CustomBusinessDay()  # type:ignore[arg-type] # pyright: ignore[reportArgumentType]
-        )
-        pd.PeriodDtype(
-            freq=BusinessDay()  # type:ignore[arg-type] # pyright: ignore[reportArgumentType]
-        )
+        pd.PeriodDtype(freq=CustomBusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.PeriodDtype(freq=BusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
     check(
         assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
         pd.tseries.offsets.DateOffset,
@@ -111,7 +131,7 @@ def test_categorical_dtype() -> None:
         pd.CategoricalDtype,
     )
     check(assert_type(cdt.categories, pd.Index), pd.Index)
-    assert check(assert_type(cdt.ordered, Optional[bool]), bool)
+    check(assert_type(cdt.ordered, bool | None), bool)
 
 
 def test_sparse_dtype() -> None:
@@ -123,19 +143,98 @@ def test_sparse_dtype() -> None:
     check(assert_type(pd.SparseDtype(np.int64), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(str), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(float), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype(np.datetime64), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype("datetime64"), pd.SparseDtype), pd.SparseDtype)
+    check(
+        assert_type(pd.SparseDtype(np.dtype("datetime64[s]")), pd.SparseDtype),
+        pd.SparseDtype,
+    )
+    check(
+        assert_type(pd.SparseDtype(np.dtype("timedelta64[s]")), pd.SparseDtype),
+        pd.SparseDtype,
+    )
+    check(assert_type(pd.SparseDtype("datetime64[ms]"), pd.SparseDtype), pd.SparseDtype)
+    check(
+        assert_type(pd.SparseDtype("timedelta64[us]"), pd.SparseDtype), pd.SparseDtype
+    )
     check(assert_type(pd.SparseDtype(), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(s_dt.fill_value, Union[Scalar, None]), int)
+    check(assert_type(s_dt.fill_value, Scalar | None), int)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _np_datetime64() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.SparseDtype(np.datetime64), Never)
+
+        def _np_timedelta64() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.SparseDtype(np.timedelta64), Never)
 
 
-def test_string_dtype() -> None:
-    s_dt = pd.StringDtype("pyarrow")
-    check(assert_type(pd.StringDtype(), pd.StringDtype), pd.StringDtype)
-    check(assert_type(pd.StringDtype("pyarrow"), pd.StringDtype), pd.StringDtype)
-    check(assert_type(pd.StringDtype("python"), pd.StringDtype), pd.StringDtype)
-    check(assert_type(s_dt.na_value, NAType), NAType)
+def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
+    # int subtype: default fill_value is 0
+    s_dt_int = pd.SparseDtype(int)
+    check(assert_type(s_dt_int.subtype, np.dtype), np.dtypes.Int64DType)
+    check(assert_type(s_dt_int.fill_value, Scalar | None), int)
+
+    # float subtype: default fill_value is np.nan
+    s_dt_float = pd.SparseDtype(float)
+    check(assert_type(s_dt_float.subtype, np.dtype), np.dtypes.Float64DType)
+    check(assert_type(s_dt_float.fill_value, Scalar | None), float)
+
+    # bool subtype: default fill_value is False
+    s_dt_bool = pd.SparseDtype(bool)
+    check(assert_type(s_dt_bool.subtype, np.dtype), np.dtypes.BoolDType)
+    check(assert_type(s_dt_bool.fill_value, Scalar | None), bool)
+
+    # datetime64 subtype: default fill_value is NaT
+    s_dt_dt = pd.SparseDtype(np.dtype("datetime64[us]"))
+    check(assert_type(s_dt_dt.subtype, np.dtype), np.dtypes.DateTime64DType)
+    check(assert_type(s_dt_dt.fill_value, Scalar | None), np.datetime64)
+
+    # passing a fill_value incompatible with the subtype is both a static type error
+    # and a runtime ValueError
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.SparseDtype(int, fill_value="hello")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+
+@pytest.mark.parametrize("storage", ["python", "pyarrow", None])
+@pytest.mark.parametrize("na_value", [pd.NA, float("nan")])
+def test_string_dtype(
+    storage: Literal["python", "pyarrow"] | None, na_value: NAType | float
+) -> None:
+    s_dts = [pd.StringDtype(storage, na_value)]
+    if storage is None:
+        s_dts.append(pd.StringDtype(na_value=na_value))
+        if na_value is pd.NA:
+            s_dts.append(pd.StringDtype())
+    if na_value is pd.NA:
+        s_dts.append(pd.StringDtype(storage))
+    for s_dt in s_dts:
+        check(s_dt, pd.StringDtype)
+        # TODO: facebook/pyrefly#3742
+        assert s_dt.storage in (  # pyrefly: ignore[no-matching-overload]
+            {storage} if storage else {"python", "pyarrow"}
+        )
+        check(assert_type(s_dt.na_value, NAType | float), type(na_value))
+
+    if TYPE_CHECKING:
+        assert_type(pd.StringDtype(), pd.StringDtype)
+        assert_type(pd.StringDtype(None), pd.StringDtype)
+        assert_type(pd.StringDtype("pyarrow"), pd.StringDtype[Literal["pyarrow"]])
+        assert_type(pd.StringDtype("python"), pd.StringDtype[Literal["python"]])
+
+        assert_type(pd.StringDtype().storage, Literal["python", "pyarrow"])
+        assert_type(pd.StringDtype(None).storage, Literal["python", "pyarrow"])
+        # TODO: facebook/pyrefly#3742
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.StringDtype("python").storage,  # pyrefly: ignore[no-matching-overload]
+            Literal["python"],
+        )
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.StringDtype("pyarrow").storage,  # pyrefly: ignore[no-matching-overload]
+            Literal["pyarrow"],
+        )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.StringDtype(na_value="invalid_na")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_boolean_dtype() -> None:

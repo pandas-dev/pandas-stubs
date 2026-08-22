@@ -1,4 +1,41 @@
-from pandas.core.arrays.numeric import NumericDtype
+from typing import (
+    Any,
+    Literal,
+)
 
-class Float32Dtype(NumericDtype): ...
-class Float64Dtype(NumericDtype): ...
+from pandas import Index
+from pandas.core.arrays.numeric import (
+    NumericArray,
+    NumericDtype,
+)
+
+from pandas._typing import (
+    InterpolateOptions,
+    np_ndarray_bool,
+    np_ndarray_float,
+)
+
+class FloatingDtype(NumericDtype):
+    def construct_array_type(self) -> type[FloatingArray]: ...
+
+class FloatingArray(NumericArray):
+    @property
+    def dtype(self) -> FloatingDtype: ...
+    def __init__(
+        self, values: np_ndarray_float, mask: np_ndarray_bool, copy: bool = False
+    ) -> None: ...
+    def interpolate(
+        self,
+        *,
+        method: InterpolateOptions,
+        axis: int,
+        index: Index,
+        limit: int | None,
+        limit_direction: Literal["forward", "backward", "both"],
+        limit_area: Literal["inside", "outside"] | None,
+        copy: bool,
+        **kwargs: Any,
+    ) -> FloatingArray: ...
+
+class Float32Dtype(FloatingDtype): ...
+class Float64Dtype(FloatingDtype): ...

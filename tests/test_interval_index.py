@@ -1,9 +1,14 @@
 from __future__ import annotations
 
-import pandas as pd
-from typing_extensions import assert_type
+from typing import (
+    TYPE_CHECKING,
+    assert_type,
+)
 
-from pandas._typing import IntervalClosedType
+import pandas as pd
+
+if TYPE_CHECKING:
+    from pandas.api.typing.aliases import IntervalClosedType  # noqa: F401
 
 from tests import check
 
@@ -88,4 +93,4 @@ def test_is_overlapping() -> None:
     ind = pd.IntervalIndex.from_tuples([(0, 2), (1, 3), (4, 5)])
     check(assert_type(ind.is_overlapping, bool), bool)
 
-    check(assert_type(ind.closed, IntervalClosedType), str)
+    check(assert_type(ind.closed, "IntervalClosedType"), str)

@@ -1,11 +1,8 @@
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass
 import sys
 import time
-from typing import (
-    Callable,
-    Optional,
-)
 
 from loguru import logger
 
@@ -13,11 +10,11 @@ from loguru import logger
 @dataclass
 class Step:
     name: str
-    run: Callable[[], None]
-    rollback: Optional[Callable[[], None]] = None
+    run: Callable[..., None]
+    rollback: Callable[[], None] | None = None
 
 
-def __rollback_job(steps: deque[Step]):
+def __rollback_job(steps: deque[Step]) -> None:
     """
     Responsible to run rollback of steps.
     """
@@ -28,7 +25,7 @@ def __rollback_job(steps: deque[Step]):
             logger.warning(f"Undoing: {step.name}")
             try:
                 step.rollback()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 logger.error(
                     f"Rollback of Step: '{step.name}' failed! The project could be in a unstable mode."
                 )
@@ -50,7 +47,7 @@ def run_job(steps: list[Step]) -> None:
             rollback_steps.append(step)
             step.run()
 
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.error(f"Step: '{step.name}' failed!")
             __rollback_job(rollback_steps)
             failed = True

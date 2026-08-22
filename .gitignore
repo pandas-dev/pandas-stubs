@@ -123,6 +123,9 @@ venv.bak/
 # VSCode project settings
 .vscode/
 
+# Claude Code settings
+.claude/
+
 # mkdocs documentation
 /site
 
@@ -135,3 +138,6 @@ dmypy.json
 .pyre/
 /poetry.lock
 .idea/**/*
+
+# duplication of stub specific objects upon testing
+tests/_typing.pyi

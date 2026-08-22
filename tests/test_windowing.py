@@ -1,4 +1,8 @@
+# pyright: reportMissingTypeArgument=false
+
 import datetime as dt
+import sys
+from typing import assert_type
 
 import numpy as np
 import pandas as pd
@@ -8,16 +12,25 @@ from pandas import (
     Timedelta,
     date_range,
 )
+from pandas.core.indexers.objects import (
+    FixedForwardWindowIndexer,
+    VariableOffsetWindowIndexer,
+)
 from pandas.core.window import (
+    ExponentialMovingWindow,
     Rolling,
     Window,
 )
-from typing_extensions import assert_type
+
+from pandas._libs.tslibs.offsets import BaseOffset
 
 from tests import (
-    PD_LTE_22,
+    TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
+)
+from tests._typing import (
+    np_1darray_intp,
+    np_ndarray,
 )
 
 from pandas.tseries.frequencies import to_offset
@@ -32,6 +45,9 @@ DF_DTI = DataFrame(data=np.random.standard_normal(700), index=IDX)
 def test_rolling_basic() -> None:
     check(assert_type(DF.rolling(10, win_type="gaussian"), "Window[DataFrame]"), Window)
     check(assert_type(DF.rolling(10, min_periods=10), "Rolling[DataFrame]"), Rolling)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.rolling(10, axis=0)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_rolling_basic_math() -> None:
@@ -56,7 +72,7 @@ def test_rolling_basic_math() -> None:
 
 def test_rolling_datetime_index() -> None:
     offset_1d = to_offset("1D")
-    assert offset_1d is not None
+    check(assert_type(offset_1d, BaseOffset), BaseOffset)
 
     check(assert_type(DF_DTI.rolling("1D"), "Rolling[DataFrame]"), Rolling, DataFrame)
     check(
@@ -86,8 +102,12 @@ def test_rolling_apply() -> None:
 
     check(assert_type(DF.rolling(10).apply(_mean), DataFrame), DataFrame)
 
-    def _mean2(df: DataFrame) -> np.ndarray:
-        return np.mean(df, axis=0)
+    def _mean2(df: DataFrame) -> np_ndarray:
+        # numpy >= 2.5 has eliminated the type checking errors
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        else:  # noqa: RET505
+            return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(DF.rolling(10).apply(_mean2, raw=True), DataFrame), DataFrame)
 
@@ -98,22 +118,17 @@ def test_rolling_apply() -> None:
 
 
 def test_rolling_aggregate() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
-    ):
-        check(assert_type(DF.rolling(10).aggregate(np.mean), DataFrame), DataFrame)
-        check(
-            assert_type(DF.rolling(10).aggregate(["mean", np.mean]), DataFrame),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                DF.rolling(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
-            ),
-            DataFrame,
-        )
+    check(assert_type(DF.rolling(10).aggregate(np.mean), DataFrame), DataFrame)
+    check(
+        assert_type(DF.rolling(10).aggregate(["mean", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.rolling(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
     check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
 
     check(assert_type(DF.rolling(10).aggregate("mean"), DataFrame), DataFrame)
@@ -123,31 +138,26 @@ def test_rolling_aggregate() -> None:
 
     check(assert_type(DF.rolling(10).aggregate(_mean), DataFrame), DataFrame)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
-    ):
-        check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
-        check(
-            assert_type(DF.rolling(10).aggregate([np.mean, "mean"]), DataFrame),
+    check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(DF.rolling(10).aggregate([np.mean, "mean"]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.rolling(10).aggregate({"col1": np.mean, "col2": "mean"}), DataFrame
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.rolling(10).aggregate({"col1": [np.mean, "mean"], "col2": "mean"}),
             DataFrame,
-        )
-        check(
-            assert_type(
-                DF.rolling(10).aggregate({"col1": np.mean, "col2": "mean"}), DataFrame
-            ),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                DF.rolling(10).aggregate({"col1": [np.mean, "mean"], "col2": "mean"}),
-                DataFrame,
-            ),
-            DataFrame,
-        )
+        ),
+        DataFrame,
+    )
 
-    # func: np.ufunc | Callable | str | list[Callable | str, np.ufunc] | dict[Hashable, Callable | str | np.ufunc| list[Callable | str]]
+    # func: np.ufunc | Callable[..., Any] | str | list[Callable[..., Any] | str, np.ufunc] | dict[Hashable, Callable[..., Any] | str | np.ufunc | list[Callable[..., Any] | str]]
     check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
 
 
@@ -179,8 +189,12 @@ def test_rolling_apply_series() -> None:
 
     check(assert_type(S.rolling(10).apply(_mean), Series), Series)
 
-    def _mean2(df: Series) -> np.ndarray:
-        return np.mean(df, axis=0)
+    def _mean2(df: Series) -> np_ndarray:
+        # numpy >= 2.5 has eliminated the type checking errors
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        else:  # noqa: RET505
+            return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(S.rolling(10).apply(_mean2, raw=True), Series), Series)
 
@@ -193,27 +207,20 @@ def test_rolling_aggregate_series() -> None:
 
     check(assert_type(S.rolling(10).aggregate(_mean), Series), Series)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function mean .*> is currently using ",
-        upper="2.2.99",
-    ):
-        check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
+    check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
 
-        check(assert_type(S.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
-        check(
-            assert_type(S.rolling(10).aggregate([np.mean, "mean"]), DataFrame),
+    check(assert_type(S.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
+    check(
+        assert_type(S.rolling(10).aggregate([np.mean, "mean"]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            S.rolling(10).aggregate({"col1": np.mean, "col2": "mean", "col3": _mean}),
             DataFrame,
-        )
-        check(
-            assert_type(
-                S.rolling(10).aggregate(
-                    {"col1": np.mean, "col2": "mean", "col3": _mean}
-                ),
-                DataFrame,
-            ),
-            DataFrame,
-        )
+        ),
+        DataFrame,
+    )
     check(assert_type(S.rolling(10).agg("sum"), Series), Series)
 
 
@@ -236,6 +243,9 @@ def test_expanding_basic_math() -> None:
     check(assert_type(DF.expanding(10).rank("min"), DataFrame), DataFrame)
     check(assert_type(DF.expanding(10).rank("max"), DataFrame), DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.expanding(10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
 
 def test_expanding_apply() -> None:
     check(assert_type(DF.expanding(10).apply(np.mean), DataFrame), DataFrame)
@@ -245,8 +255,12 @@ def test_expanding_apply() -> None:
 
     check(assert_type(DF.expanding(10).apply(_mean), DataFrame), DataFrame)
 
-    def _mean2(df: DataFrame) -> np.ndarray:
-        return np.mean(df, axis=0)
+    def _mean2(df: DataFrame) -> np_ndarray:
+        # numpy >= 2.5 has eliminated the type checking errors
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        else:  # noqa: RET505
+            return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(DF.expanding(10).apply(_mean2, raw=True), DataFrame), DataFrame)
 
@@ -257,22 +271,17 @@ def test_expanding_apply() -> None:
 
 
 def test_expanding_aggregate() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
-    ):
-        check(assert_type(DF.expanding(10).aggregate(np.mean), DataFrame), DataFrame)
-        check(
-            assert_type(DF.expanding(10).aggregate(["mean", np.mean]), DataFrame),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                DF.expanding(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
-            ),
-            DataFrame,
-        )
+    check(assert_type(DF.expanding(10).aggregate(np.mean), DataFrame), DataFrame)
+    check(
+        assert_type(DF.expanding(10).aggregate(["mean", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.expanding(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
     check(assert_type(DF.expanding(10).agg("sum"), DataFrame), DataFrame)
 
 
@@ -304,29 +313,28 @@ def test_expanding_apply_series() -> None:
 
     check(assert_type(S.expanding(10).apply(_mean), Series), Series)
 
-    def _mean2(df: Series) -> np.ndarray:
-        return np.mean(df, axis=0)
+    def _mean2(df: Series) -> np_ndarray:
+        # numpy >= 2.5 has eliminated the type checking errors
+        if sys.version_info >= (3, 12):
+            return np.mean(df, axis=0)
+        else:  # noqa: RET505
+            return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
     check(assert_type(S.expanding(10).apply(_mean2, raw=True), Series), Series)
 
 
 def test_expanding_aggregate_series() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
-    ):
-        check(assert_type(S.expanding(10).aggregate(np.mean), Series), Series)
-        check(
-            assert_type(S.expanding(10).aggregate(["mean", np.mean]), DataFrame),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                S.expanding(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
-            ),
-            DataFrame,
-        )
+    check(assert_type(S.expanding(10).aggregate(np.mean), Series), Series)
+    check(
+        assert_type(S.expanding(10).aggregate(["mean", np.mean]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            S.expanding(10).aggregate({"col1": "mean", "col2": np.mean}), DataFrame
+        ),
+        DataFrame,
+    )
     check(assert_type(S.expanding(10).agg("sum"), Series), Series)
 
 
@@ -338,27 +346,49 @@ def test_ewm_basic_math() -> None:
     check(assert_type(DF.ewm(span=10).corr(), DataFrame), DataFrame)
     check(assert_type(DF.ewm(span=10).cov(), DataFrame), DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.ewm(span=10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
+
+def test_ewm_times_method() -> None:
+    times = Series(IDX)
+    check(
+        assert_type(
+            DF.ewm(halflife="4D", times=times), "ExponentialMovingWindow[DataFrame]"
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(halflife="4D", times=IDX.values),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(span=10, method="table"),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(span=10, method="single"),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+
 
 def test_ewm_aggregate() -> None:
-    if PD_LTE_22:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
-        ):
-            check(assert_type(DF.ewm(span=10).aggregate(np.mean), DataFrame), DataFrame)
-            check(
-                assert_type(DF.ewm(span=10).aggregate(["mean", np.mean]), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean}),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
     check(assert_type(DF.ewm(span=10).agg("sum"), DataFrame), DataFrame)
+
+    # TODO: pandas-dev/pandas#63855, see if ewm.aggregate(any callable) is implemented
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_ewm_basic_math_series() -> None:
@@ -371,24 +401,12 @@ def test_ewm_basic_math_series() -> None:
 
 
 def test_ewm_aggregate_series() -> None:
-    if PD_LTE_22:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
-        ):
-            check(assert_type(S.ewm(span=10).aggregate(np.mean), Series), Series)
-            check(
-                assert_type(S.ewm(span=10).aggregate(["mean", np.mean]), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean}),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
+    # TODO: pandas-dev/pandas#63855, only str function names are possible, not callable, add tests
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = S.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _2 = S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
 
 
@@ -412,7 +430,7 @@ def test_rolling_window() -> None:
         ],
     )
 
-    indexer = pd.api.indexers.FixedForwardWindowIndexer(window_size=2)
+    indexer = FixedForwardWindowIndexer(window_size=2)
     check(
         assert_type(df_time.rolling(window=indexer, min_periods=1).sum(), DataFrame),
         DataFrame,
@@ -420,5 +438,49 @@ def test_rolling_window() -> None:
     s = df_time.iloc[:, 0]
     check(
         assert_type(s.rolling(window=indexer, min_periods=1).sum(), Series),
+        Series,
+    )
+
+
+def test_indexer_variable_offset() -> None:
+    indexer = VariableOffsetWindowIndexer(index=IDX, offset=pd.offsets.BDay(1))
+    check(
+        assert_type(
+            indexer.get_window_bounds(2, None, None),
+            tuple[np_1darray_intp, np_1darray_intp],
+        ),
+        tuple,
+        np.ndarray,
+    )
+
+
+def test_indexer_fixed_forward() -> None:
+    indexer = FixedForwardWindowIndexer([1, float("nan")], 2)
+    check(
+        assert_type(
+            indexer.get_window_bounds(2, None, None),
+            tuple[np_1darray_intp, np_1darray_intp],
+        ),
+        tuple,
+        np.ndarray,
+    )
+
+
+def test_groupby_kurt() -> None:
+    """Test groupby.transform/agg with `kurt`."""
+    check(
+        assert_type(DF.groupby("col1").transform("kurt"), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.groupby(S).transform("kurt"), Series),
+        Series,
+    )
+    check(
+        assert_type(DF.groupby("col1").agg("kurt"), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(S.groupby(S).agg("kurt"), Series),
         Series,
     )

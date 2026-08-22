@@ -1,14 +1,16 @@
 from __future__ import annotations
 
+from typing import assert_type
+
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
-from typing_extensions import assert_type
+from pandas.core.arrays.interval import IntervalArray
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import np_1darray_bool
 
 
 def test_interval_init() -> None:
@@ -78,17 +80,17 @@ def test_interval_length() -> None:
     check(assert_type(i1.left, pd.Timestamp), pd.Timestamp)
     check(assert_type(i1.right, pd.Timestamp), pd.Timestamp)
     check(assert_type(i1.mid, pd.Timestamp), pd.Timestamp)
-    i1.length.total_seconds()
+    check(assert_type(i1.length.total_seconds(), float), float)
     inres = pd.Timestamp("2001-01-02") in i1
     check(assert_type(inres, bool), bool)
     idres = i1 + pd.Timedelta(seconds=20)
 
     check(assert_type(idres, "pd.Interval[pd.Timestamp]"), pd.Interval, pd.Timestamp)
     if TYPE_CHECKING_INVALID_USAGE:
-        20 in i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        i1 * 3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        i1 * pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = 20 in i1  # type: ignore[operator] # pyright: ignore[reportOperatorIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _01 = i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _02 = i1 * 3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _03 = i1 * pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
     i2 = pd.Interval(10, 20)
     check(assert_type(i2.length, int), int)
@@ -104,8 +106,8 @@ def test_interval_length() -> None:
     check(assert_type(i2 * 4.2, "pd.Interval[float]"), pd.Interval, float)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.Timestamp("2001-01-02") in i2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        i2 + pd.Timedelta(seconds=20)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue]
+        _10 = pd.Timestamp("2001-01-02") in i2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _11 = i2 + pd.Timedelta(seconds=20)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
     i3 = pd.Interval(13.2, 19.5)
     check(assert_type(i3.length, float), float)
     check(assert_type(i3.left, float), float)
@@ -117,14 +119,14 @@ def test_interval_length() -> None:
     check(assert_type(i3 + 3, "pd.Interval[float]"), pd.Interval, float)
     check(assert_type(i3 * 3, "pd.Interval[float]"), pd.Interval, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.Timestamp("2001-01-02") in i3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        i3 + pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _20 = pd.Timestamp("2001-01-02") in i3  # type: ignore[operator] # pyright: ignore[reportOperatorIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _21 = i3 + pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
-def test_interval_array_contains():
+def test_interval_array_contains() -> None:
     df = pd.DataFrame({"A": range(1, 10)})
     obj = pd.Interval(1, 4)
     ser = pd.Series(obj, index=df.index)
-    arr = ser.array
+    arr = check(assert_type(ser.array, IntervalArray), IntervalArray)
     check(assert_type(arr.contains(df["A"]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(arr.contains(3), npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(arr.contains(3), np_1darray_bool), np_1darray_bool)

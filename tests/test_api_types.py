@@ -1,11 +1,13 @@
+# ty: ignore[assert-type-unspellable-subtype]
+# assert-type-unspellable-subtype is ty-specific astral-sh/ty#4005
+from typing import assert_type
+
 import numpy as np
 import pandas as pd
 from pandas.api.extensions import ExtensionDtype
 from pandas.api.interchange import from_dataframe
 import pandas.api.types as api
-from typing_extensions import assert_type
-
-from pandas._typing import DtypeObj
+from pandas.api.typing.aliases import DtypeObj
 
 from tests import check
 
@@ -16,17 +18,6 @@ mapping = {"a": "a"}
 dframe = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
 dtylike = np.dtype(np.int32)
 ind = pd.Index([1, 2.0])
-
-
-def test_is_array_like() -> None:
-    check(assert_type(api.is_array_like(arr), bool), bool)
-    check(assert_type(api.is_array_like(nparr), bool), bool)
-    check(assert_type(api.is_array_like(dtylike), bool), bool)
-    check(
-        assert_type(api.is_array_like(dframe), bool),
-        bool,
-    )
-    check(assert_type(api.is_array_like(ind), bool), bool)
 
 
 def test_is_bool() -> None:
@@ -181,6 +172,9 @@ def test_is_hashable() -> None:
         bool,
     )
     check(assert_type(api.is_hashable(ind), bool), bool)
+
+    check(assert_type(api.is_hashable(obj, allow_slice=True), bool), bool)
+    check(assert_type(api.is_hashable(obj, allow_slice=False), bool), bool)
 
 
 def test_is_integer() -> None:
@@ -379,12 +373,18 @@ def test_infer_dtype() -> None:
 
 def test_union_categoricals() -> None:
     to_union = [pd.Categorical([1, 2, 3]), pd.Categorical([3, 4, 5])]
-    check(assert_type(api.union_categoricals(to_union), pd.Categorical), pd.Categorical)
+    # TODO: facebook/pyrefly#3891 astral-sh/ty#4150
+    check(
+        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+            api.union_categoricals(to_union), "pd.Categorical[int]"
+        ),
+        pd.Categorical,
+    )
 
 
 def test_check_extension_dtypes() -> None:
     # GH 315
-    def check_ext_dtype(etype: type[ExtensionDtype]):
+    def check_ext_dtype(etype: type[ExtensionDtype]) -> None:
         assert issubclass(etype, ExtensionDtype)
 
     check_ext_dtype(pd.Int64Dtype)

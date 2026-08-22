@@ -1,2 +1,3 @@
 - [ ] Closes #xxxx (Replace xxxx with the Github issue number)
-- [ ] Tests added: Please use `assert_type()` to assert the type of any return value
+- [ ] Tests added (Please use `assert_type()` to assert the type of any return value)
+- [ ] If I used AI to develop this pull request, I prompted it to follow `AGENTS.md`.

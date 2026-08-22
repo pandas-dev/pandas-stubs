@@ -10,6 +10,8 @@ on:
 env:
   MPLBACKEND: "Agg"
 
+permissions: {}
+
 jobs:
   released:
     runs-on: ${{ matrix.os }}
@@ -19,12 +21,17 @@ jobs:
       matrix:
         # macos-latest is arm
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    permissions:
+      contents: read
+      actions: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Install project dependencies
         uses: ./.github/setup
@@ -32,11 +39,17 @@ jobs:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
 
-      - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
-        run: poetry run poe mypy
+      - name: Run ty on 'tests' (using the local stubs) and on the local stubs
+        run: poetry run poe ty
+
+      - name: Run pyrefly on 'tests' (using the local stubs) and on the local stubs
+        run: poetry run poe pyrefly
 
       - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
         run: poetry run poe pyright
+
+      - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
+        run: poetry run poe mypy
 
       - name: Run pytest
         run: poetry run poe pytest
@@ -47,8 +60,34 @@ jobs:
   precommit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
-      - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+
+  type_completeness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install project dependencies
+        uses: ./.github/setup
+        with:
+          # This is quite slow (2-3 minutes) so we don't run it for all OSs / Python versions.
+          os: ubuntu-latest
+          python-version: 3.14
+
+      - name: Verify type completeness using Pyright
+        run: poetry run poe type_completeness
