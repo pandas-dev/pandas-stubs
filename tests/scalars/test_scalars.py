@@ -23,7 +23,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
-    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray_bool,
@@ -498,17 +497,24 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
     # TODO: pandas-dev/pandas#66608 remove the conditional warning
-    with pytest_warns_conditioned(
-        DeprecationWarning,
-        r"The 'generic' unit for NumPy timedelta is deprecated",
-        NP_GTE_25,
-    ):
+    if NP_GTE_25:
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            r"The 'generic' unit for NumPy timedelta is deprecated",
+            lower="3.0.0",
+            upper="3.0.99",
+        ):
+            check(assert_type(td.view(np.int64), object), np.int64)
+
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            r"The 'generic' unit for NumPy timedelta is deprecated",
+            lower="3.0.0",
+            upper="3.0.99",
+        ):
+            check(assert_type(td.view("i8"), object), np.int64)
+    else:
         check(assert_type(td.view(np.int64), object), np.int64)
-    with pytest_warns_conditioned(
-        DeprecationWarning,
-        r"The 'generic' unit for NumPy timedelta is deprecated",
-        NP_GTE_25,
-    ):
         check(assert_type(td.view("i8"), object), np.int64)
 
     check(assert_type(td.as_unit("s"), pd.Timedelta), pd.Timedelta)

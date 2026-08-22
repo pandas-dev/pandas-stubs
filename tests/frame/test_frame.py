@@ -4,6 +4,7 @@ from collections import (
     OrderedDict,
     defaultdict,
 )
+from zoneinfo import ZoneInfo
 from collections.abc import (
     Callable,
     Hashable,
@@ -3971,7 +3972,12 @@ def test_select_dtypes() -> None:
         ),
         pd.DataFrame,
     )
-    check(
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"Passing 'datetimetz' to select_dtypes is deprecated and will raise",
+        "3.0.99",
+    ):
+        check(
         assert_type(  # pyrefly: ignore[assert-type]
             df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
                 exclude=[
@@ -3983,6 +3989,25 @@ def test_select_dtypes() -> None:
                     "timedelta64",
                     "category",
                     "datetimetz",
+                    "datetime64[ns]",
+                ]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
+                exclude=[
+                    np.datetime64,
+                    "datetime64",
+                    "datetime",
+                    np.timedelta64,
+                    "timedelta",
+                    "timedelta64",
+                    "category",
+                    pd.DatetimeTZDtype(tz=ZoneInfo("UTC")),
                     "datetime64[ns]",
                 ]
             ),
