@@ -3980,17 +3980,7 @@ def test_select_dtypes() -> None:
         check(
             assert_type(  # pyrefly: ignore[assert-type]
                 df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                    exclude=[
-                        np.datetime64,
-                        "datetime64",
-                        "datetime",
-                        np.timedelta64,
-                        "timedelta",
-                        "timedelta64",
-                        "category",
-                        "datetimetz",
-                        "datetime64[ns]",
-                    ]
+                    exclude=["datetimetz"]
                 ),
                 pd.DataFrame,
             ),
