@@ -31,9 +31,12 @@ from pandas.core.arrays.datetimes import DatetimeArray
 import pyarrow as pa
 import pytest
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 from tests._typing import TimeUnit
 
@@ -84,9 +87,21 @@ def test_period_dtype() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         pd.PeriodDtype(freq=CustomBusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         pd.PeriodDtype(freq=BusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated for offsets that are not DateOffse",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(
+            assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
+            pd.tseries.offsets.DateOffset,
+        )
+
     check(
-        assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
-        pd.tseries.offsets.DateOffset,
+        assert_type(p_dt.freq, pd.offsets.BaseOffset),
+        pd.offsets.BaseOffset,
     )
     check(assert_type(p_dt.na_value, NaTType), NaTType)
     check(assert_type(p_dt.name, str), str)

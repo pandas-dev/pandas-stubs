@@ -32,6 +32,7 @@ from typing import (
     assert_type,
 )
 import uuid
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -3966,6 +3967,20 @@ def test_select_dtypes() -> None:
         ),
         pd.DataFrame,
     )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"Passing 'datetimetz' to select_dtypes is deprecated and will raise",
+        "3.0.99",
+    ):
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
+                    exclude=["datetimetz"]
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
@@ -3977,7 +3992,7 @@ def test_select_dtypes() -> None:
                     "timedelta",
                     "timedelta64",
                     "category",
-                    "datetimetz",
+                    pd.DatetimeTZDtype(tz=ZoneInfo("UTC")),
                     "datetime64[ns]",
                 ]
             ),
