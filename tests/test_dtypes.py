@@ -31,6 +31,8 @@ from pandas.core.arrays.datetimes import DatetimeArray
 import pyarrow as pa
 import pytest
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -43,8 +45,6 @@ from pandas.tseries.offsets import (
     CustomBusinessDay,
     Day,
 )
-
-from pandas.errors import Pandas4Warning
 
 
 def test_datetimetz_dtype() -> None:

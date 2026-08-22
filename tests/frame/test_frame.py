@@ -4,7 +4,6 @@ from collections import (
     OrderedDict,
     defaultdict,
 )
-from zoneinfo import ZoneInfo
 from collections.abc import (
     Callable,
     Hashable,
@@ -33,6 +32,7 @@ from typing import (
     assert_type,
 )
 import uuid
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -3978,24 +3978,24 @@ def test_select_dtypes() -> None:
         "3.0.99",
     ):
         check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                exclude=[
-                    np.datetime64,
-                    "datetime64",
-                    "datetime",
-                    np.timedelta64,
-                    "timedelta",
-                    "timedelta64",
-                    "category",
-                    "datetimetz",
-                    "datetime64[ns]",
-                ]
+            assert_type(  # pyrefly: ignore[assert-type]
+                df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
+                    exclude=[
+                        np.datetime64,
+                        "datetime64",
+                        "datetime",
+                        np.timedelta64,
+                        "timedelta",
+                        "timedelta64",
+                        "category",
+                        "datetimetz",
+                        "datetime64[ns]",
+                    ]
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             df.select_dtypes(  # pyrefly: ignore[no-matching-overload]

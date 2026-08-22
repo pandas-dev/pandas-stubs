@@ -6,13 +6,16 @@ from typing import assert_type
 import numpy as np
 import pandas as pd
 
-from tests import check, pytest_warns_bounded
+from pandas.errors import Pandas4Warning
+
+from tests import (
+    check,
+    pytest_warns_bounded,
+)
 from tests._typing import (
     np_1darray_bool,
     np_1darray_intp,
 )
-
-from pandas.errors import Pandas4Warning
 
 
 def test_index_relops() -> None:
