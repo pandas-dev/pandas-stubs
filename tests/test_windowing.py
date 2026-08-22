@@ -185,6 +185,7 @@ def test_rolling_basic_math_series() -> None:
 def test_rolling_apply_series() -> None:
     check(assert_type(S.rolling(10).apply(np.mean), Series), Series)
 
+    # TODO: use `df: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
     def _mean(df: Series[int] | Series[float]) -> float:
         return df.mean()
 
@@ -203,6 +204,7 @@ def test_rolling_apply_series() -> None:
 def test_rolling_aggregate_series() -> None:
     check(assert_type(S.rolling(10).aggregate("mean"), Series), Series)
 
+    # TODO: use `s: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
     def _mean(s: Series[int] | Series[float]) -> float:
         return s.mean()
 
@@ -309,6 +311,7 @@ def test_expanding_basic_math_series() -> None:
 def test_expanding_apply_series() -> None:
     check(assert_type(S.expanding(10).apply(np.mean), Series), Series)
 
+    # TODO: use `df: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
     def _mean(df: Series[int] | Series[float]) -> float:
         return df.mean()
 

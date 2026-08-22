@@ -334,10 +334,7 @@ def test_concat_args() -> None:
 
     df_dict = {"df1": df, "df2": df2}
     check(
-        assert_type(
-            pd.concat(df_dict.values(), keys=df_dict.keys()),
-            pd.DataFrame,
-        ),
+        assert_type(pd.concat(df_dict.values(), keys=df_dict.keys()), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -1700,6 +1697,7 @@ def test_crosstab_args() -> None:
         pd.DataFrame,
     )
 
+    # TODO: use `x: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
     def m(x: pd.Series[int] | pd.Series[float]) -> float:
         return x.sum() / len(x)
 
@@ -2014,6 +2012,7 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
 
+    # TODO: use `x: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
     def f(x: pd.Series[int] | pd.Series[float]) -> float:
         return x.sum()
 

@@ -290,6 +290,7 @@ def test_aggregate_series() -> None:
         DataFrame,
     )
 
+    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
     def f(val: Series[int] | Series[float]) -> float:
         return val.mean()
 
@@ -337,9 +338,9 @@ def test_aggregate_series_combinations() -> None:
     def s2series(val: Series) -> Series:
         return Series(val)
 
+    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
     def s2scalar(val: Series[int] | Series[float]) -> float:
-        # pyrefly: ignore[unnecessary-type-conversion]
-        return float(val.mean())
+        return val.mean()
 
     check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
     check(
