@@ -30,8 +30,10 @@ from typing import (
     TypeVar,
     assert_never,
     assert_type,
+    cast,
 )
 import uuid
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -301,7 +303,7 @@ def test_assign() -> None:
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
-        return df["a"]
+        return cast("pd.Series[str]", df["a"])
 
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
@@ -3933,6 +3935,20 @@ def test_select_dtypes() -> None:
         ),
         pd.DataFrame,
     )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"Passing 'datetimetz' to select_dtypes is deprecated and will raise",
+        "3.0.99",
+    ):
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
+                    exclude=["datetimetz"]
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
@@ -3944,7 +3960,7 @@ def test_select_dtypes() -> None:
                     "timedelta",
                     "timedelta64",
                     "category",
-                    "datetimetz",
+                    pd.DatetimeTZDtype(tz=ZoneInfo("UTC")),
                     "datetime64[ns]",
                 ]
             ),

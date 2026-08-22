@@ -37,8 +37,8 @@ dev = [
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright>=1.1.410",
-  "ty>=0.0.71",
-  "pyrefly>=1.1.0",
+  "ty>=0.0.74",
+  "pyrefly>=1.2.0",
   "poethepoet>=0.16.5",
   "loguru>=0.6.0",
   "typing-extensions>=4.5.0",
@@ -156,7 +156,7 @@ args = [
 ]
 
 [tool.poe.tasks.type_completeness]
-help = "Check type completeness"
+help = "Check type completeness using pyrefly"
 script = "scripts.test.run:type_completeness"
 
 [tool.isort]
@@ -351,6 +351,58 @@ project-includes = ["pandas-stubs", "tests"]
 enabled-ignores = ["pyrefly"]
 python-version = "3.11"
 min-severity = "warn"
+
+[tool.pyrefly.coverage]
+includes = ["pandas-stubs"]
+excludes = [
+    # NOTE: pyrefly's coverage check maps each `pandas-stubs/**/*.pyi` handle to
+    # its corresponding real `pandas/**/*.py` file to measure coverage, but
+    # `project-excludes` is only matched against the `.pyi` paths that are
+    # actually walked (i.e. paths under `pandas-stubs`), not the real `pandas`
+    # source paths that show up in the resulting warnings.
+    #
+    # pandas distributes (untyped) tests with the package. `pandas-stubs`
+    # doesn't currently ship a `tests` dir or `conftest.pyi`, so these are
+    # no-ops today; kept in case that ever changes.
+    "**/pandas-stubs/tests/**",
+    "**/pandas-stubs/conftest.pyi",
+    # pandas.core is technically private, and anything considered public
+    # is re-exported in other places. For example, `DataFrameGroupBy` is
+    # re-exported in `pandas.api.typing`.
+    "**/pandas-stubs/core/**",
+    # Not considered public
+    # https://github.com/pandas-dev/pandas/blob/e87248e1a5d6d78a138039f2856a3aec6b9fef54/doc/source/reference/index.rst#L34
+    # `pandas-stubs` doesn't currently stub `compat`, so this is a no-op today.
+    "**/pandas-stubs/compat/**",
+    # The only parts of `pandas.io` which appears in the API reference are:
+    # - `pandas.io.json`
+    # - `pandas.io.formats.style`
+    # https://github.com/pandas-dev/pandas/blob/b8371f5e6f329bfe1b5f1e099e221c8219fc6bbd/doc/source/reference/io.rst
+    # See also: https://github.com/pandas-dev/pandas/issues/27522#issuecomment-516360201
+    # `pandas-stubs` doesn't currently stub `io/common.pyi` or any of the
+    # `io/formats/*` modules below, so those entries are no-ops today.
+    "**/pandas-stubs/io/common.pyi",
+    "**/pandas-stubs/io/parsers/**",
+    "**/pandas-stubs/io/excel/**",
+    "**/pandas-stubs/io/pytables.pyi",
+    "**/pandas-stubs/io/sas/**",
+    "**/pandas-stubs/io/sql.pyi",
+    "**/pandas-stubs/io/stata.pyi",
+    "**/pandas-stubs/io/formats/csvs.pyi",
+    "**/pandas-stubs/io/formats/style_render.pyi",
+    "**/pandas-stubs/io/formats/excel.pyi",
+    "**/pandas-stubs/io/formats/html.pyi",
+    "**/pandas-stubs/io/formats/info.pyi",
+    "**/pandas-stubs/io/formats/printing.pyi",
+    "**/pandas-stubs/io/formats/string.pyi",
+    "**/pandas-stubs/io/formats/xml.pyi",
+    # Not documented, not really part of public API. `pandas-stubs` doesn't
+    # currently stub `api/executors.pyi`, so this is a no-op today. If it ever
+    # is stubbed: pyrefly excludes whole files, not individual symbols, so this
+    # would hide the whole module, not just `BaseExecutionEngine` (which is
+    # the only symbol defined there upstream today).
+    "**/pandas-stubs/api/executors.pyi",
+]
 
 [tool.pyrefly.errors]
 explicit-any = false  # We do use implicit Any

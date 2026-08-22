@@ -1,6 +1,7 @@
 from datetime import (
     date,
     time,
+    timedelta,
     tzinfo as _tzinfo,
 )
 from typing import (
@@ -178,19 +179,19 @@ _DTTimestampTimedeltaReturnType = TypeVar(
 class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     def round(
         self,
-        freq: Frequency | None,
+        freq: Frequency | timedelta | None,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...
     def floor(
         self,
-        freq: Frequency | None,
+        freq: Frequency | timedelta | None,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...
     def ceil(
         self,
-        freq: Frequency | None,
+        freq: Frequency | timedelta | None,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...

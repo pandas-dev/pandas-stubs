@@ -276,6 +276,12 @@ def test_timedelta_array_round() -> None:
     result = arr.round("D")
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
+    result = arr.round(timedelta(hours=1))
+    check(assert_type(result, TimedeltaArray), TimedeltaArray)
+
+    result = arr.round(timedelta(days=1))
+    check(assert_type(result, TimedeltaArray), TimedeltaArray)
+
 
 def test_timedelta_array_floor() -> None:
     """Test floor method for TimedeltaArray."""
@@ -288,6 +294,12 @@ def test_timedelta_array_floor() -> None:
     result = arr.floor("D")
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
+    result = arr.floor(timedelta(hours=1))
+    check(assert_type(result, TimedeltaArray), TimedeltaArray)
+
+    result = arr.floor(timedelta(days=1))
+    check(assert_type(result, TimedeltaArray), TimedeltaArray)
+
 
 def test_timedelta_array_ceil() -> None:
     """Test ceil method for TimedeltaArray."""
@@ -298,6 +310,12 @@ def test_timedelta_array_ceil() -> None:
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
     result = arr.ceil("D")
+    check(assert_type(result, TimedeltaArray), TimedeltaArray)
+
+    result = arr.ceil(timedelta(hours=1))
+    check(assert_type(result, TimedeltaArray), TimedeltaArray)
+
+    result = arr.ceil(timedelta(days=1))
     check(assert_type(result, TimedeltaArray), TimedeltaArray)
 
 
