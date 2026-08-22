@@ -1998,7 +1998,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: _str,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload
@@ -2006,7 +2006,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: complex | ListLike,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -2014,7 +2014,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Index[Never] | Series[Never],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -2030,7 +2030,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | BaseOffset
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timestamp]: ...
     @overload
@@ -2045,7 +2045,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timestamp]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timestamp]: ...
     @overload
@@ -2060,7 +2060,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -2068,7 +2068,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ProtoAdd[S2_contra, S2],
         other: S2_contra | Sequence[S2_contra],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[S2]: ...
     @overload
@@ -2076,7 +2076,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[S2_contra],
         other: SupportsRAdd[S2_contra, S2] | Sequence[SupportsRAdd[S2_contra, S2]],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[S2]: ...
     @overload
@@ -2084,7 +2084,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -2092,7 +2092,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[int]: ...
     @overload
@@ -2100,14 +2100,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
     def add(
         self: Series[bool] | Series[int],
         other: np_ndarray_float | Index[float] | Series[float],
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -2115,7 +2115,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_float | Index[float] | Series[float],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -2123,7 +2123,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_complex | Index[complex] | Series[complex],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
@@ -2131,7 +2131,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[_str],
         other: np_ndarray_str | Index[_str] | Series[_str],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload
@@ -2241,7 +2241,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: _str,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload
@@ -2249,7 +2249,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: complex | ListLike,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -2257,7 +2257,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Index[Never] | Series[Never],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -2273,7 +2273,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | BaseOffset
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timestamp]: ...
     @overload
@@ -2288,7 +2288,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timestamp]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timestamp]: ...
     @overload
@@ -2303,7 +2303,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -2311,7 +2311,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ProtoRAdd[S2_contra, S2],
         other: S2_contra | Sequence[S2_contra],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[S2]: ...
     @overload
@@ -2319,7 +2319,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[S2_contra],
         other: SupportsAdd[S2_contra, S2] | Sequence[SupportsAdd[S2_contra, S2]],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[S2]: ...
     @overload
@@ -2327,7 +2327,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -2335,7 +2335,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[int]: ...
     @overload
@@ -2343,14 +2343,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
     def radd(
         self: Series[bool] | Series[int],
         other: np_ndarray_float | Index[float] | Series[float],
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -2358,7 +2358,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_float | Index[float] | Series[float],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -2366,7 +2366,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_complex | Index[complex] | Series[complex],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
@@ -2374,7 +2374,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[_str],
         other: np_ndarray_str | Index[_str] | Series[_str],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[_str]: ...
     # ignore needed for mypy as we want different results based on the arguments
@@ -2452,8 +2452,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def floordiv(
         self: Series[Never],
         other: np_ndarray_td | TimedeltaIndex,
-        level: Level | None = None,
-        fill_value: float | None = None,
+        level: Level | None = ...,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Never: ...
     @overload
@@ -2461,7 +2461,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: ScalarArrayIndexSeriesReal,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series: ...
     @overload
@@ -2469,7 +2469,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: SeriesReal | Series[Timedelta],
         other: Index[Never] | Series[Never],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series: ...
     @overload
@@ -2477,7 +2477,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ProtoFloorDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[S2]: ...
     @overload
@@ -2485,7 +2485,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[int],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[int]: ...
     @overload
@@ -2493,7 +2493,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[float],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[float]: ...
     @overload
@@ -2501,7 +2501,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool] | Series[int],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[int]: ...
     @overload
@@ -2509,7 +2509,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[float],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[float]: ...
     @overload
@@ -2519,7 +2519,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             float | Sequence[float] | np_ndarray_float | Index[float] | Series[float]
         ),
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[float]: ...
     @overload
@@ -2527,7 +2527,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: ScalarArrayIndexSeriesJustInt | ScalarArrayIndexSeriesJustFloat,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -2535,7 +2535,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: ArrayIndexSeriesTimedeltaNoSeq,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[int]: ...
     @overload
@@ -2606,7 +2606,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: ScalarArrayIndexSeriesReal,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series: ...
     @overload
@@ -2614,7 +2614,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: SeriesReal | Series[Timedelta],
         other: Index[Never] | Series[Never],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series: ...
     @overload
@@ -2622,7 +2622,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ProtoRFloorDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[S2]: ...
     @overload
@@ -2630,7 +2630,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[int],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[int]: ...
     @overload
@@ -2638,7 +2638,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[float],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[float]: ...
     @overload
@@ -2646,7 +2646,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool] | Series[int],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[int]: ...
     @overload
@@ -2654,7 +2654,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[float],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[float]: ...
     @overload
@@ -2664,7 +2664,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             float | Sequence[float] | np_ndarray_float | Index[float] | Series[float]
         ),
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[float]: ...
     @overload
@@ -2672,7 +2672,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[int] | Series[float],
         other: ScalarArrayIndexSeriesTimedelta,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[Timedelta]: ...
     @overload
@@ -2680,7 +2680,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: timedelta | np.timedelta64 | ArrayIndexSeriesTimedeltaNoSeq,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[int]: ...
     def __ge__(  # type: ignore[override] # pyrefly: ignore[bad-override]
@@ -2795,7 +2795,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: complex | ListLike,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -2803,7 +2803,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Index[Never] | Series[Never],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -2818,7 +2818,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -2833,7 +2833,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[float]
         ),
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -2841,7 +2841,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[_str],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload
@@ -2849,7 +2849,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ProtoMul[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[S2]: ...
     @overload
@@ -2860,7 +2860,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Sequence[SupportsRMul[S2_contra, S2_NSDT]]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[S2_NSDT]: ...
     @overload
@@ -2868,7 +2868,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -2876,7 +2876,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[int]: ...
     @overload
@@ -2884,7 +2884,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -2892,7 +2892,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool] | Series[int],
         other: np_ndarray_float | Index[float] | Series[float],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -2900,7 +2900,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_float | Index[float] | Series[float],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -2908,7 +2908,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_complex | Index[complex] | Series[complex],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
@@ -3010,7 +3010,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: complex | ListLike,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -3018,7 +3018,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Index[Never] | Series[Never],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -3033,7 +3033,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -3048,7 +3048,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[float]
         ),
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -3056,7 +3056,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[_str],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload
@@ -3064,7 +3064,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ProtoRMul[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[S2]: ...
     @overload
@@ -3074,7 +3074,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             SupportsMul[S2_contra, S2_NSDT] | Sequence[SupportsMul[S2_contra, S2_NSDT]]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[S2_NSDT]: ...
     @overload
@@ -3082,7 +3082,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -3090,7 +3090,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[int]: ...
     @overload
@@ -3098,7 +3098,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_anyint | Index[int] | Series[int],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -3106,7 +3106,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool] | Series[int],
         other: np_ndarray_float | Index[float] | Series[float],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -3114,7 +3114,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_float | Index[float] | Series[float],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -3122,7 +3122,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: np_ndarray_complex | Index[complex] | Series[complex],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
     def __mod__(self, other: float | ListLike | Series[S1]) -> Series[S1]: ...
@@ -3295,7 +3295,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: complex | NumListLike | Index[T_COMPLEX] | Series[T_COMPLEX],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -3303,7 +3303,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Index[Never] | Series[Never],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -3317,7 +3317,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[int]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[int]: ...
     @overload
@@ -3331,7 +3331,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[float]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -3348,7 +3348,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[int]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[int]: ...
     @overload
@@ -3362,7 +3362,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[float]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -3382,7 +3382,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[float]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -3398,7 +3398,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[T_COMPLEX]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
@@ -3412,7 +3412,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[complex]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
@@ -3427,7 +3427,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timestamp]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -3443,7 +3443,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | BaseOffset
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timestamp]: ...
     @overload
@@ -3458,7 +3458,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -3466,7 +3466,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Period],
         other: Period | Sequence[Period] | PeriodIndex | Series[Period],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[BaseOffset]: ...
     @overload
@@ -3618,7 +3618,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timestamp]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -3626,7 +3626,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Index[Never] | Series[Never],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series: ...
     @overload
@@ -3640,7 +3640,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[int]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[int]: ...
     @overload
@@ -3654,7 +3654,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[float]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -3671,7 +3671,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[int]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[int]: ...
     @overload
@@ -3685,7 +3685,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[float]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -3705,7 +3705,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[float]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[float]: ...
     @overload
@@ -3721,7 +3721,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[T_COMPLEX]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
@@ -3735,7 +3735,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[complex]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
@@ -3750,7 +3750,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timestamp]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -3765,7 +3765,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timestamp]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timestamp]: ...
     @overload
@@ -3780,7 +3780,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -3788,7 +3788,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Period],
         other: Period | Sequence[Period] | PeriodIndex | Series[Period],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: int = 0,
     ) -> Series[BaseOffset]: ...
     @overload
@@ -3878,7 +3878,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: ScalarArrayIndexSeriesComplex,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series: ...
     @overload
@@ -3886,7 +3886,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: ArrayIndexTimedeltaNoSeq,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Never: ...
     @overload
@@ -3894,7 +3894,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: SeriesComplex | Series[Timedelta],
         other: Index[Never] | Series[Never],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series: ...
     @overload
@@ -3902,7 +3902,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ProtoTrueDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[S2]: ...
     @overload
@@ -3910,7 +3910,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[int],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -3918,7 +3918,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool] | Series[int],
         other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -3933,7 +3933,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[int]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -3948,7 +3948,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[int]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
@@ -3956,7 +3956,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool] | Series[int],
         other: ScalarArrayIndexSeriesJustFloat,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -3964,7 +3964,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: ScalarArrayIndexSeriesJustFloat,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -3972,7 +3972,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: SeriesComplex,
         other: ScalarArrayIndexSeriesJustComplex,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
@@ -3980,7 +3980,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: ScalarArrayIndexSeriesJustInt | ScalarArrayIndexSeriesJustFloat,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -3988,7 +3988,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: ArrayIndexSeriesTimedeltaNoSeq,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -3996,7 +3996,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[_str],
         other: Path,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series: ...
     div = truediv
@@ -4079,7 +4079,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Never],
         other: ScalarArrayIndexSeriesComplex | ScalarArrayIndexSeriesTimedelta,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series: ...
     @overload
@@ -4087,7 +4087,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: SeriesComplex,
         other: Index[Never] | Series[Never],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series: ...
     @overload
@@ -4095,7 +4095,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ProtoRTrueDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[S2]: ...
     @overload
@@ -4103,7 +4103,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[int],
         other: np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -4111,7 +4111,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool] | Series[int],
         other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -4126,7 +4126,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[int]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -4141,7 +4141,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Series[int]
         ),
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
@@ -4149,7 +4149,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[bool] | Series[int],
         other: ScalarArrayIndexSeriesJustFloat,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -4157,7 +4157,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[T_COMPLEX],
         other: ScalarArrayIndexSeriesJustFloat,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[T_COMPLEX]: ...
     @overload
@@ -4165,7 +4165,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: SeriesComplex,
         other: ScalarArrayIndexSeriesJustComplex,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
@@ -4173,7 +4173,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: ArrayIndexSeriesTimedeltaNoSeq,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
@@ -4181,7 +4181,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: SeriesReal,
         other: ScalarArrayIndexSeriesTimedelta,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series[Timedelta]: ...
     @overload
@@ -4189,7 +4189,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[_str],
         other: Path,
         level: Level | None = None,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = 0,
     ) -> Series: ...
     rdiv = rtruediv
@@ -4276,14 +4276,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: float | ListLike | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[S1]: ...
     def eq(
         self,
         other: Scalar | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     @final
@@ -4311,14 +4311,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Scalar | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     def gt(
         self,
         other: Scalar | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     @final
@@ -4342,14 +4342,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Scalar | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     def lt(
         self,
         other: Scalar | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     def max(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-override]
@@ -4444,14 +4444,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: float | ListLike | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     def ne(
         self,
         other: Scalar | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     @final
@@ -4460,7 +4460,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: complex | ListLike | Series[S1],
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     def prod(
@@ -4484,14 +4484,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Series[S1] | Scalar,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[S1]: ...
     def rmod(
         self,
         other: Series[S1] | Scalar,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[S1]: ...
     @overload
@@ -4524,7 +4524,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         other: Series[S1] | Scalar,
         level: Level | None = ...,
-        fill_value: float | None = None,
+        fill_value: S1 | None = None,
         axis: AxisIndex = ...,
     ) -> Series[S1]: ...
     def sem(

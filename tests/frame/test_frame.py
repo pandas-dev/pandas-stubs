@@ -4576,3 +4576,11 @@ def test_frame_pipe() -> None:
         pd.DataFrame,
     )
     check(assert_type(df.expanding().pipe(func_e, k=2), pd.DataFrame), pd.DataFrame)
+
+
+def test_fill_value_scalar_dataframe() -> None:
+    """Test that fill_value accepts any Scalar on DataFrame arithmetic methods (GH1797)."""
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    check(assert_type(df.add(df, fill_value=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add(df, fill_value="x"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add(df, fill_value=True), pd.DataFrame), pd.DataFrame)
