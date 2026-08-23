@@ -11,7 +11,10 @@ from typing import (
 import dateutil.tz
 import numpy as np
 import pandas as pd
-from pandas.api.typing import NaTType
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
 from pandas.api.typing.aliases import TimeUnit
 import pytz
 
@@ -1993,3 +1996,14 @@ def test_nat_comparison_with_date() -> None:
         _rgt = date_obj > pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _rle = date_obj <= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _rge = date_obj >= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+
+
+def test_nat_comparison_with_na() -> None:
+    # GH 1907
+    check(assert_type(pd.NaT == pd.NaT, bool), bool)
+    check(assert_type(pd.NaT != pd.NaT, bool), bool)
+    check(assert_type(pd.NaT == 1, bool), bool)
+    check(assert_type(pd.NaT != 1, bool), bool)
+
+    check(assert_type(pd.NaT == pd.NA, NAType), NAType)
+    check(assert_type(pd.NaT != pd.NA, NAType), NAType)

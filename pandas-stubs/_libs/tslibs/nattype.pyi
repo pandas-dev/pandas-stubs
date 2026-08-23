@@ -8,10 +8,12 @@ from typing import (
     Self,
     TypeAlias,
     final,
+    overload,
 )
 
 import numpy as np
 
+from pandas._libs.missing import NAType
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
     Frequency,
@@ -147,7 +149,17 @@ class NaTType:
     # inject Period properties
     @property
     def qyear(self) -> float: ...
+    @overload
+    def __eq__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, other: NAType
+    ) -> NAType: ...
+    @overload
     def __eq__(self, other: object) -> bool: ...
+    @overload
+    def __ne__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, other: NAType
+    ) -> NAType: ...
+    @overload
     def __ne__(self, other: object) -> bool: ...
     __lt__: _NatComparison
     __le__: _NatComparison
