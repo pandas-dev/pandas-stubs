@@ -77,17 +77,30 @@ def test_index_isin() -> None:
     check(assert_type(ind.isin(pd.Series([2, 4])), np_1darray_bool), np_1darray_bool)
     check(assert_type(ind.isin(pd.Index([2, 4])), np_1darray_bool), np_1darray_bool)
     check(assert_type(ind.isin(iter([2, "4"])), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin([[[1]]]), np_1darray_bool), np_1darray_bool)
 
-    mi = pd.MultiIndex.from_arrays([[1, 2, 3]])
-    check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
+    mi = pd.MultiIndex.from_arrays(
+        [[1, 2, 3], ["red", "blue", "green"]], names=["number", "color"]
+    )
+    check(assert_type(mi.isin([[1, "red"]]), np_1darray_bool), np_1darray_bool)
+    check(
+        assert_type(
+            mi.isin(["red", "orange", "yellow"], level="color"), np_1darray_bool
+        ),
+        np_1darray_bool,
+    )
+    check(
+        assert_type(mi.isin([(1, "red"), (3, "red")]), np_1darray_bool), np_1darray_bool
+    )
 
     if PD_LTE_31:
         # TODO: pandas-dev/pandas#66514 pandas bug on nightly
         check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        mi.isin(iter([[3]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        mi.isin(iter([[3]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        mi.isin([[[1, "red"]]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_index_astype() -> None:

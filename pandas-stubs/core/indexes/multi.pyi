@@ -196,7 +196,7 @@ class MultiIndex(Index):
         self, before: IndexLabel | None = None, after: IndexLabel | None = None
     ) -> MultiIndex: ...
     @override
-    def isin(self, values: Collection[Iterable[Any]], level: None = None) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def isin(self, values: Collection[Iterable[Hashable]], level: Level | None = None) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def set_names(
         self,
