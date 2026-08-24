@@ -79,6 +79,12 @@ def test_index_isin() -> None:
     check(assert_type(ind.isin(iter([2, "4"])), np_1darray_bool), np_1darray_bool)
     check(assert_type(ind.isin([[[1]]]), np_1darray_bool), np_1darray_bool)
 
+    check(assert_type(ind.isin([2], 0), np_1darray_bool), np_1darray_bool)
+    check(
+        assert_type(pd.Index([1], name="a").isin([2], "a"), np_1darray_bool),
+        np_1darray_bool,
+    )
+
     mi = pd.MultiIndex.from_arrays(
         [[1, 2, 3], ["red", "blue", "green"]], names=["number", "color"]
     )
@@ -89,9 +95,19 @@ def test_index_isin() -> None:
         ),
         np_1darray_bool,
     )
+    check(assert_type(mi.isin([1, 2, 3], "number"), np_1darray_bool), np_1darray_bool)
+    check(assert_type(mi.isin([1, 2, 3], 0), np_1darray_bool), np_1darray_bool)
+    check(assert_type(mi.isin(ind, 0), np_1darray_bool), np_1darray_bool)
+    check(assert_type(mi.isin(ind.to_series(), 0), np_1darray_bool), np_1darray_bool)
     check(
         assert_type(mi.isin([(1, "red"), (3, "red")]), np_1darray_bool), np_1darray_bool
     )
+    check(
+        assert_type(mi.isin({(1, "red"), (3, "red")}), np_1darray_bool), np_1darray_bool
+    )
+    check(assert_type(mi.isin(mi), np_1darray_bool), np_1darray_bool)
+
+    check(assert_type(pd.Index([(1,)]).isin(["1"]), np_1darray_bool), np_1darray_bool)
 
     if PD_LTE_31:
         # TODO: pandas-dev/pandas#66514 pandas bug on nightly
@@ -99,8 +115,9 @@ def test_index_isin() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        mi.isin(iter([[3]]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         mi.isin([[[1, "red"]]])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        mi.isin([1, 2, 3])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_index_astype() -> None:
