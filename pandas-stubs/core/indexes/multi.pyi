@@ -1,5 +1,4 @@
 from collections.abc import (
-    Collection,
     Hashable,
     Iterable,
     Mapping,
@@ -12,6 +11,7 @@ from typing import (
     overload,
 )
 
+from _typeshed import Viewable
 import numpy as np
 import pandas as pd
 from pandas.api.typing import FrozenList
@@ -198,10 +198,10 @@ class MultiIndex(Index):
     @override  # type: ignore[override]
     @overload
     # pyrefly: ignore[bad-override]
-    def isin(self, values: Collection[Hashable], level: Level) -> np_1darray_bool: ...
+    def isin(self, values: Iterable[Any], level: Level) -> np_1darray_bool: ...
     @overload
     def isin(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, values: Collection[Iterable[Hashable]], level: None = None
+        self, values: Viewable[Iterable[Hashable]], level: None = None
     ) -> np_1darray_bool: ...
     @override
     def set_names(
