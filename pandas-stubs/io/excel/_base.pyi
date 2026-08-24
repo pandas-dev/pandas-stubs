@@ -291,6 +291,7 @@ class ExcelWriter(Generic[_WorkbookT]):
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
+        /,
     ) -> None: ...
     def close(self) -> None: ...
 
@@ -370,5 +371,6 @@ class ExcelFile:
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
+        /,
     ) -> None: ...
     def __del__(self) -> None: ...

@@ -439,47 +439,48 @@ class TimedeltaIndexProperties(
 class DtDescriptor:
     @overload
     def __get__(
-        self, instance: Series[Never], owner: type[Series]
+        self, instance: Series[Never], owner: type[Series], /
     ) -> CombinedDatetimelikeProperties: ...
     @overload
     def __get__(
-        self, instance: Series[Timestamp], owner: type[Series]
+        self, instance: Series[Timestamp], owner: type[Series], /
     ) -> TimestampProperties: ...
     @overload
     def __get__(
-        self, instance: Series[Timedelta], owner: type[Series]
+        self, instance: Series[Timedelta], owner: type[Series], /
     ) -> TimedeltaProperties: ...
     @overload
     def __get__(
-        self, instance: Series[Period], owner: type[Series]
+        self, instance: Series[Period], owner: type[Series], /
     ) -> PeriodProperties[Any]: ...
 
 @type_check_only
 class ArrayDescriptor:
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[Never], owner: type[IndexOpsMixin]
+        self, instance: IndexOpsMixin[Never], owner: type[IndexOpsMixin], /
     ) -> ExtensionArray: ...
     @overload
     def __get__(
         self,
         instance: IndexOpsMixin[CategoricalDtype[CategoricalValueT]],
         owner: type[IndexOpsMixin],
+        /,
     ) -> Categorical[CategoricalValueT]: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[Interval], owner: type[IndexOpsMixin]
+        self, instance: IndexOpsMixin[Interval], owner: type[IndexOpsMixin], /
     ) -> IntervalArray: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[Timestamp], owner: type[IndexOpsMixin]
+        self, instance: IndexOpsMixin[Timestamp], owner: type[IndexOpsMixin], /
     ) -> DatetimeArray: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[Timedelta], owner: type[IndexOpsMixin]
+        self, instance: IndexOpsMixin[Timedelta], owner: type[IndexOpsMixin], /
     ) -> TimedeltaArray: ...
     # should be NumpyExtensionArray
     @overload
     def __get__(
-        self, instance: IndexOpsMixin, owner: type[IndexOpsMixin]
+        self, instance: IndexOpsMixin, owner: type[IndexOpsMixin], /
     ) -> ExtensionArray: ...

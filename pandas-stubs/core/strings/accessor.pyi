@@ -39,7 +39,7 @@ class StringMethods(Generic[S2]):
 
 @type_check_only
 class IndexStringMethods(StringMethods[S2]):
-    def __getitem__(self, key: _slice | int) -> Index[str]: ...
+    def __getitem__(self, key: _slice | int, /) -> Index[str]: ...
     @overload
     def cat(
         self: IndexStringMethods[str],
@@ -305,7 +305,7 @@ class IndexStringMethods(StringMethods[S2]):
 
 @type_check_only
 class SeriesStringMethods(StringMethods[S2]):
-    def __getitem__(self, key: _slice | int) -> Series[str]: ...
+    def __getitem__(self, key: _slice | int, /) -> Series[str]: ...
     @overload
     def cat(
         self: SeriesStringMethods[str],
@@ -574,13 +574,13 @@ class SeriesStringMethods(StringMethods[S2]):
 class StrDescriptor:
     @overload
     def __get__(
-        self, instance: Series[S2], owner: type[Series]
+        self, instance: Series[S2], owner: type[Series], /
     ) -> SeriesStringMethods[S2]: ...
     @overload
     def __get__(
-        self, instance: Index[S2], owner: type[Index]
+        self, instance: Index[S2], owner: type[Index], /
     ) -> IndexStringMethods[S2]: ...
     @overload
     def __get__(
-        self, instance: Expression, owner: type[Expression]
+        self, instance: Expression, owner: type[Expression], /
     ) -> SeriesStringMethods[str]: ...

@@ -41,7 +41,7 @@ _SeriesGroupByFunc: TypeAlias = Callable[[Series], Scalar | Series]
 _SeriesGroupByFuncTypes: TypeAlias = _SeriesGroupByFunc | str
 
 class Resampler(BaseGroupBy[NDFrameT]):
-    def __getattr__(self, attr: str) -> SeriesGroupBy[Any, Any]: ...
+    def __getattr__(self, attr: str, /) -> SeriesGroupBy[Any, Any]: ...
     @overload
     def aggregate(
         self: Resampler[DataFrame],
@@ -170,7 +170,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
 class _GroupByMixin(Resampler[NDFrameT]):
     key: str | list[str] | None
     @override
-    def __getitem__(self, key: str | list[str] | None) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(self, key: str | list[str] | None, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class DatetimeIndexResampler(Resampler[NDFrameT]): ...
 
@@ -191,7 +191,7 @@ class DatetimeIndexResamplerGroupby(
 ):
     @final
     @override
-    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getattr__(self, attr: str, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
 
 class PeriodIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
@@ -200,7 +200,7 @@ class PeriodIndexResamplerGroupby(
 ):
     @final
     @override
-    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getattr__(self, attr: str, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
 
 class TimedeltaIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
@@ -209,7 +209,7 @@ class TimedeltaIndexResamplerGroupby(
 ):
     @final
     @override
-    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getattr__(self, attr: str, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
 
 class TimeGrouper(Grouper):
     closed: Literal["left", "right"]

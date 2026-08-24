@@ -41,33 +41,33 @@ class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps
     def values(self) -> np_1darray_object: ...
     @override
     def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: datetime.timedelta
+        self, other: datetime.timedelta, /
     ) -> Self: ...
     @override
     def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: datetime.timedelta
+        self, other: datetime.timedelta, /
     ) -> Self: ...
     @overload  # type: ignore[override]
     @override
-    def __sub__(self, other: Period) -> Index: ...  # pyrefly: ignore[bad-override]
+    def __sub__(self, other: Period, /) -> Index: ...  # pyrefly: ignore[bad-override]
     @overload
-    def __sub__(self, other: Self) -> Index: ...
+    def __sub__(self, other: Self, /) -> Index: ...
     @overload
-    def __sub__(self, other: PeriodAddSub) -> Self: ...
+    def __sub__(self, other: PeriodAddSub, /) -> Self: ...
     @overload
-    def __sub__(self, other: NaTType) -> NaTType: ...
+    def __sub__(self, other: NaTType, /) -> NaTType: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: TimedeltaIndex | pd.Timedelta
+        self, other: TimedeltaIndex | pd.Timedelta, /
     ) -> Self: ...
     @overload  # type: ignore[override]
     @override
-    def __rsub__(self, other: Period) -> Index: ...  # pyrefly: ignore[bad-override]
+    def __rsub__(self, other: Period, /) -> Index: ...  # pyrefly: ignore[bad-override]
     @overload
-    def __rsub__(self, other: Self) -> Index: ...
+    def __rsub__(self, other: Self, /) -> Index: ...
     @overload
     def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: NaTType
+        self, other: NaTType, /
     ) -> NaTType: ...
     @override
     def asof_locs(
