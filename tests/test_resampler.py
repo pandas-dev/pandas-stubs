@@ -285,11 +285,7 @@ def test_aggregate_series() -> None:
         DataFrame,
     )
 
-    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def f(val: Series[int] | Series[float]) -> float:
-        return val.mean()
-
-    check(assert_type(S.resample("ME").aggregate(f), Series), Series)
+    check(assert_type(S.resample("ME").aggregate(s2scalar), Series), Series)
 
 
 def test_asfreq_series() -> None:
@@ -329,10 +325,6 @@ def test_transform_series() -> None:
 def test_aggregate_series_combinations() -> None:
     def s2series(val: Series) -> Series:
         return Series(val)
-
-    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def s2scalar(val: Series[int] | Series[float]) -> float:
-        return val.mean()
 
     check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
     check(
@@ -416,3 +408,8 @@ def test_getitem() -> None:
         assert_type(DF.resample("ME")[["col1", "col2"]], DataFrameGroupBy),
         DataFrameGroupBy,
     )
+
+
+def s2scalar(val: Series) -> float:
+    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+    return val.mean()  # ty: ignore[unsound-return-statement]

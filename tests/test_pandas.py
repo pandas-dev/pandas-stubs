@@ -1697,9 +1697,9 @@ def test_crosstab_args() -> None:
         pd.DataFrame,
     )
 
-    # TODO: use `x: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def m(x: pd.Series[int] | pd.Series[float]) -> float:
-        return x.sum() / len(x)
+    def m(x: pd.Series) -> float:
+        # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+        return x.sum() / len(x)  # ty: ignore[unsound-return-statement]
 
     check(
         assert_type(pd.crosstab(a, b, values=values, aggfunc=m), pd.DataFrame),
@@ -2012,9 +2012,9 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
 
-    # TODO: use `x: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def f(x: pd.Series[int] | pd.Series[float]) -> float:
-        return x.sum()
+    def f(x: pd.Series) -> float:
+        # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+        return x.sum()  # ty: ignore[unsound-return-statement]
 
     check(
         assert_type(
@@ -2024,7 +2024,7 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
 
-    def g(x: pd.Series[float] | pd.Series[int]) -> int:
+    def g(x: pd.Series) -> int:
         return int(np.round(x.sum()))
 
     check(

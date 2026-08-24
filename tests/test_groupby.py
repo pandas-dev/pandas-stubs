@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import (
     Callable,
+    Iterable,
     Iterator,
 )
 import datetime as dt
@@ -350,11 +351,7 @@ def test_series_groupby_resample() -> None:
         DataFrame,
     )
 
-    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def f(val: Series[int] | Series[float]) -> float:
-        return val.mean()
-
-    check(assert_type(GB_S.resample("ME").aggregate(f), Series), Series)
+    check(assert_type(GB_S.resample("ME").aggregate(s2scalar), Series), Series)
 
     # asfreq
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
@@ -384,10 +381,6 @@ def test_series_groupby_resample() -> None:
     # aggregate combinations
     def s2series(val: Series) -> Series:
         return Series(val)
-
-    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def s2scalar(val: Series[int] | Series[float]) -> float:
-        return val.mean()
 
     check(assert_type(GB_S.resample("ME").aggregate(np.sum), Series), Series)
     check(
@@ -578,16 +571,6 @@ def test_series_groupby_rolling() -> None:
         DataFrame,
     )
 
-    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def f(val: Series[int] | Series[float]) -> float:
-        return val.mean()
-
-    check(assert_type(GB_S.rolling(1).aggregate(f), Series), Series)
-
-    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def s2scalar(val: Series[int] | Series[float]) -> float:
-        return val.mean()
-
     check(assert_type(GB_S.rolling(1).aggregate(s2scalar), Series), Series)
 
     # iter
@@ -760,16 +743,6 @@ def test_series_groupby_expanding() -> None:
         DataFrame,
     )
 
-    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def f(val: Series[int] | Series[float]) -> float:
-        return val.mean()
-
-    check(assert_type(GB_S.expanding(1).aggregate(f), Series), Series)
-
-    # TODO: use `val: Series` instead astral-sh/ty#4360 astral-sh/ty#4135
-    def s2scalar(val: Series[int] | Series[float]) -> float:
-        return val.mean()
-
     check(assert_type(GB_S.expanding(1).aggregate(s2scalar), Series), Series)
 
     # iter
@@ -871,7 +844,7 @@ def test_series_groupby_ewm() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         GB_DF.ewm(1).agg(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
-        def _func(x: Series[int] | Series[float]) -> float:
+        def _func(x: Iterable[float]) -> float:
             return sum(x)
 
         GB_DF.ewm(1).agg(_func)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
@@ -1155,3 +1128,8 @@ def test_dataframe_groupby_dtypes() -> None:
 
         def _0() -> None:  # pyright: ignore[reportUnusedFunction]
             assert_type(GB_DF.dtypes, Never)
+
+
+def s2scalar(val: Series) -> float:
+    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+    return val.mean()  # ty: ignore[unsound-return-statement]

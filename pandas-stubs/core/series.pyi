@@ -4598,6 +4598,17 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> S2: ...
+    @overload
+    def sum(
+        self: Series[Never],
+        *,
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = ...,
+        numeric_only: _bool = ...,
+        min_count: int = ...,
+        **kwargs: Any,
+    ) -> float: ...
+    @overload
     def sum(
         self: Iterable[_SupportsAdd[_T]],
         *,

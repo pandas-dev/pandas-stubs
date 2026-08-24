@@ -426,6 +426,7 @@ missing-super-call = false
 python-platform = "all"
 
 [tool.ty.rules]
+unsound-return-statement = "error"
 
 [tool.ty.analysis]
 respect-type-ignore-comments = false
