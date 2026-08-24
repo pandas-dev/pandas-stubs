@@ -302,7 +302,8 @@ def test_assign() -> None:
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
-        return df["a"]
+        # ty thinks Series[str] is not a subtype of Series[Any]
+        return df["a"]  # ty: ignore[unsound-return-statement]
 
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
