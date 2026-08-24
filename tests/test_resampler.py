@@ -34,6 +34,11 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S})
 
 
+def s2scalar(val: Series) -> float:
+    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+    return val.mean()  # ty: ignore[unsound-return-statement]
+
+
 def test_iter() -> None:
     assert_type(iter(DF.resample("ME")), Iterator[tuple[Hashable, DataFrame]])
     for v in DF.resample("ME"):
@@ -408,8 +413,3 @@ def test_getitem() -> None:
         assert_type(DF.resample("ME")[["col1", "col2"]], DataFrameGroupBy),
         DataFrameGroupBy,
     )
-
-
-def s2scalar(val: Series) -> float:
-    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
-    return val.mean()  # ty: ignore[unsound-return-statement]

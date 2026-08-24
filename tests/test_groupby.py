@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from collections.abc import (
     Callable,
-    Iterable,
     Iterator,
 )
 import datetime as dt
@@ -54,6 +53,11 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S, "col3": BY})
 GB_DF = DF.groupby("col3")
 GB_S = cast("SeriesGroupBy[float, int]", GB_DF.col1)
+
+
+def s2scalar(val: Series) -> float:
+    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+    return val.mean()  # ty: ignore[unsound-return-statement]
 
 
 def test_frame_groupby_resample() -> None:
@@ -843,11 +847,7 @@ def test_series_groupby_ewm() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         GB_DF.ewm(1).agg(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-
-        def _func(x: Iterable[float]) -> float:
-            return sum(x)
-
-        GB_DF.ewm(1).agg(_func)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).agg(s2scalar)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_engine() -> None:
@@ -1128,8 +1128,3 @@ def test_dataframe_groupby_dtypes() -> None:
 
         def _0() -> None:  # pyright: ignore[reportUnusedFunction]
             assert_type(GB_DF.dtypes, Never)
-
-
-def s2scalar(val: Series) -> float:
-    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
-    return val.mean()  # ty: ignore[unsound-return-statement]
