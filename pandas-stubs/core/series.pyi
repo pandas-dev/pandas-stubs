@@ -245,7 +245,6 @@ from pandas._typing import (
     np_1darray_dt,
     np_1darray_float,
     np_1darray_int64,
-    np_1darray_intp,
     np_1darray_object,
     np_1darray_str,
     np_1darray_td,
@@ -662,8 +661,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool | None = None,
     ) -> Series: ...
     @property
-    def hasnans(self) -> bool: ...
-    @property
     def dtype(self) -> DtypeObj: ...
     @property
     def dtypes(self) -> DtypeObj: ...
@@ -678,6 +675,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __array_ufunc__(
         self, ufunc: Callable[..., Any], method: _str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
+    @override
     def __array__(
         self, dtype: _str | np.dtype = ..., copy: bool | None = ...
     ) -> np_1darray: ...
@@ -1028,6 +1026,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def unique(self) -> np_1darray: ...
     @overload
+    @override
     def drop_duplicates(
         self,
         *,
@@ -1114,20 +1113,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __rmatmul__(self, other: DataFrame) -> Series: ...
     @overload
     def __rmatmul__(self, other: np_ndarray_num) -> np_ndarray_num: ...
-    @overload
-    def searchsorted(
-        self,
-        value: ListLike,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = None,
-    ) -> np_1darray_intp: ...
-    @overload
-    def searchsorted(
-        self,
-        value: Scalar,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = None,
-    ) -> np.intp: ...
     @overload
     def compare(
         self,
@@ -1530,6 +1515,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @final
     def squeeze(self, axis: None = None) -> Series[S1] | Scalar: ...
     @final
+    @override
     def __abs__(self) -> Series[S1]: ...
     @final
     def add_prefix(self, prefix: _str, axis: AxisIndex | None = None) -> Series[S1]: ...
@@ -1895,6 +1881,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @final
     @property
+    @override
     def T(self) -> Self: ...
     # The rest of these were left over from the old
     # stubs we shipped in preview. They may belong in
@@ -2379,11 +2366,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_str]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __and__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | Series[bool] | np_ndarray_bool
-    ) -> Series[bool]: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __and__(self, other: bool | Series[bool] | np_ndarray_bool) -> Series[bool]: ...
     @overload
-    def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __and__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: int | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
+    @override
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     @overload
     def __floordiv__(self, other: np_ndarray_dt) -> Never: ...
@@ -2683,15 +2673,19 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[int]: ...
+    @override
     def __ge__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
+    @override
     def __gt__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
+    @override
     def __le__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
+    @override
     def __lt__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
@@ -3125,40 +3119,55 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
+    @override
     def __mod__(self, other: float | ListLike | Series[S1]) -> Series[S1]: ...
+    @override
     def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    @override
     def __pow__(self, other: complex | ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __or__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | Series[bool] | np_1darray_bool
-    ) -> Series[bool]: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __or__(self, other: bool | Series[bool] | np_1darray_bool) -> Series[bool]: ...
     @overload
-    def __or__(self, other: int | Series[int] | np_ndarray_anyint) -> Series[int]: ...
+    def __or__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: int | Series[int] | np_ndarray_anyint
+    ) -> Series[int]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __rand__(  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | Series[bool] | np_ndarray_bool
-    ) -> Series[bool]: ...
+    @override
+    def __rand__(self, other: bool | Series[bool] | np_ndarray_bool) -> Series[bool]: ...  # type: ignore[misc] # pyrefly: ignore[bad-override]
     @overload
-    def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __rand__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: int | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
+    @override
     def __rdivmod__(self, other: float | ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
     def __rmod__(self, other: float | ListLike | Series[S1]) -> Series[S1]: ...
+    @override
     def __rpow__(self, other: complex | ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __ror__(  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
+    @override
+    def __ror__(  # type: ignore[misc] # pyrefly: ignore[bad-override]
         self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
-    def __ror__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __ror__(
+        self, other: Just[int] | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __rxor__(  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload]  # pyrefly: ignore[bad-override]
+    @override
+    def __rxor__(  # type: ignore[misc] # pyrefly: ignore[bad-override]
         self, other: bool | Series[bool] | np_ndarray_bool
     ) -> Series[bool]: ...
     @overload
-    def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __rxor__(
+        self, other: Just[int] | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
     @overload
     def __sub__(
         self: Series[Never],
@@ -4195,11 +4204,13 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     rdiv = rtruediv
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __xor__(  # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
-        self, other: bool | Series[bool] | np_1darray_bool
-    ) -> Series[bool]: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __xor__(self, other: bool | Series[bool] | np_1darray_bool) -> Series[bool]: ...
     @overload
-    def __xor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __xor__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: int | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
     @final
     def __invert__(self) -> Series[bool]: ...
     @property
@@ -4322,6 +4333,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     @final
+    @override
     def item(self) -> S1: ...
     def kurt(
         self,
@@ -4352,6 +4364,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
+    @override
     def max(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-override]
         self,
         *,
@@ -4431,6 +4444,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Timestamp: ...
+    @override
     def min(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-override]
         self,
         *,
@@ -4454,8 +4468,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
-    @final
-    def nunique(self, dropna: _bool = True) -> int: ...
     def pow(
         self,
         other: complex | ListLike | Series[S1],
@@ -4586,6 +4598,17 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> S2: ...
+    @overload
+    def sum(
+        self: Series[Never],
+        *,
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = ...,
+        numeric_only: _bool = ...,
+        min_count: int = ...,
+        **kwargs: Any,
+    ) -> float: ...
+    @overload
     def sum(
         self: Iterable[_SupportsAdd[_T]],
         *,
@@ -4595,8 +4618,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         min_count: int = ...,
         **kwargs: Any,
     ) -> _T: ...
-    def to_list(self) -> list[S1]: ...
     @overload  # type: ignore[override]
+    @override
     def to_numpy(
         self: Series[Never],
         dtype: DTypeLike | None = None,
@@ -4820,7 +4843,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         na_value: Scalar = ...,
         **kwargs: Any,
     ) -> np_1darray: ...
-    def tolist(self) -> list[S1]: ...
     @overload
     def var(
         self: Series[Never],
@@ -4906,6 +4928,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: Axis = 0,
     ) -> Self: ...
     @final
+    @override
     def xs(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self,
         key: Hashable,

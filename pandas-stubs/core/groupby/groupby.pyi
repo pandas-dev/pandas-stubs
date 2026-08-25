@@ -41,6 +41,7 @@ from pandas.core.window import (
     ExponentialMovingWindowGroupby,
     RollingGroupby,
 )
+from typing_extensions import override
 
 from pandas._libs.lib import NoDefault
 from pandas._libs.tslibs import BaseOffset
@@ -384,6 +385,7 @@ class BaseGroupBy(GroupByIndexingMixin, Generic[NDFrameT]):
     @final
     def __len__(self) -> int: ...
     @final
+    @override
     def __repr__(self) -> str: ...  # noqa: PYI029 __repr__ here is final
     @final
     @property

@@ -11,6 +11,7 @@ from typing import (
 )
 
 import numpy as np
+from typing_extensions import override
 
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
@@ -34,6 +35,7 @@ class _NatComparison:
 @final
 class NaTType:
     value: np.int64
+    @override
     def __hash__(self) -> int: ...
     def asm8(self) -> np.datetime64: ...
     def to_datetime64(self) -> np.datetime64: ...
@@ -147,7 +149,9 @@ class NaTType:
     # inject Period properties
     @property
     def qyear(self) -> float: ...
+    @override
     def __eq__(self, other: object) -> bool: ...
+    @override
     def __ne__(self, other: object) -> bool: ...
     __lt__: _NatComparison
     __le__: _NatComparison

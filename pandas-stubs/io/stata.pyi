@@ -6,13 +6,13 @@ import datetime
 from io import BytesIO
 from types import TracebackType
 from typing import (
-    Any,
     Literal,
     Self,
     overload,
 )
 
 from pandas.core.frame import DataFrame
+from typing_extensions import override
 
 from pandas._typing import (
     CompressionOptions,
@@ -79,7 +79,7 @@ def read_stata(
 class StataParser:
     def __init__(self) -> None: ...
 
-class StataReader(StataParser, Iterator[Any]):
+class StataReader(StataParser, Iterator[DataFrame]):
     col_sizes: list[int] = ...
     path_or_buf: BytesIO = ...
     def __init__(
@@ -103,6 +103,7 @@ class StataReader(StataParser, Iterator[Any]):
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None: ...
+    @override
     def __next__(self) -> DataFrame: ...
     @property
     def data_label(self) -> str: ...

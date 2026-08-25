@@ -6,6 +6,7 @@ from typing import (
 
 import numpy as np
 from pandas.core.indexes.extension import ExtensionIndex
+from typing_extensions import override
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
@@ -23,6 +24,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
     def freqstr(self) -> str | None: ...
     @property
     def is_all_dates(self) -> bool: ...
+    @override
     def min(
         self,
         axis: AxisIndex | None = None,
@@ -30,6 +32,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
         *args: Any,
         **kwargs: Any,
     ) -> S1: ...
+    @override
     def argmin(
         self,
         axis: AxisIndex | None = None,
@@ -37,6 +40,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
         *args: Any,
         **kwargs: Any,
     ) -> np.int64: ...
+    @override
     def max(
         self,
         axis: AxisIndex | None = None,
@@ -44,6 +48,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
         *args: Any,
         **kwargs: Any,
     ) -> S1: ...
+    @override
     def argmax(
         self,
         axis: AxisIndex | None = None,
@@ -51,12 +56,10 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
         *args: Any,
         **kwargs: Any,
     ) -> np.int64: ...
-    def __mul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: np_ndarray_complex
-    ) -> Never: ...
-    def __rmul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: np_ndarray_complex
-    ) -> Never: ...
+    @override
+    def __mul__(self, other: np_ndarray_complex) -> Never: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
+    def __rmul__(self, other: np_ndarray_complex) -> Never: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
 
 class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1, GenericT_co]):
     @property

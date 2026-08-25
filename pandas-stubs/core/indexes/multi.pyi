@@ -16,9 +16,9 @@ import numpy as np
 import pandas as pd
 from pandas.api.typing import FrozenList
 from pandas.core.indexes.base import Index
+from typing_extensions import override
 
 from pandas._typing import (
-    AnyAll,
     Axes,
     Dtype,
     HashableT,
@@ -123,33 +123,30 @@ class MultiIndex(Index):
         level: Level,
         verify_integrity: bool = True,
     ) -> MultiIndex: ...
-    def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore # ty: ignore[invalid-method-override]
+    @override
+    def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, names: SequenceNotStr[Hashable] | None = None, deep: bool = False
     ) -> Self: ...
-    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    @override
+    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @property
+    @override
     def dtype(self) -> np.dtype: ...
     @property
     def dtypes(self) -> pd.Series[Dtype]: ...
-    def memory_usage(self, deep: bool = False) -> int: ...
-    @property
-    def nbytes(self) -> int: ...
-    def __len__(self) -> int: ...
-    @property
-    def is_monotonic_increasing(self) -> bool: ...
-    @property
-    def is_monotonic_decreasing(self) -> bool: ...
-    def dropna(self, how: AnyAll = "any") -> Self: ...
+    @override
     def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
+    @override
     def get_level_values(self, level: str | int) -> Index: ...
     @overload  # type: ignore[override]
-    def unique(  # pyrefly: ignore[bad-override]
-        self, level: None = None
-    ) -> MultiIndex: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def unique(self, level: None = None) -> MultiIndex: ...
     @overload
     def unique(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, level: Level
     ) -> Index: ...
+    @override
     def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self,
         index: bool = True,
@@ -159,10 +156,9 @@ class MultiIndex(Index):
     def to_flat_index(self) -> Index: ...
     def remove_unused_levels(self) -> MultiIndex: ...
     @property
-    def nlevels(self) -> int: ...
-    @property
     def levshape(self) -> Shape: ...
     @overload  # type: ignore[override]
+    @override
     def __getitem__(  # pyrefly: ignore[bad-override]
         self,
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
@@ -172,11 +168,13 @@ class MultiIndex(Index):
         self, key: int
     ) -> tuple[Hashable, ...]: ...
     @overload  # type: ignore[override]
+    @override
     def append(self, other: MultiIndex | Sequence[MultiIndex]) -> MultiIndex: ...
     @overload
     def append(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: Index | Sequence[Index]
     ) -> Index: ...
+    @override
     def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     def swaplevel(self, i: int = -2, j: int = -1) -> Self: ...
     def reorder_levels(self, order: Sequence[Level]) -> MultiIndex: ...
@@ -197,14 +195,15 @@ class MultiIndex(Index):
     def truncate(
         self, before: IndexLabel | None = None, after: IndexLabel | None = None
     ) -> MultiIndex: ...
-    @overload  # type: ignore[override]
-    def isin(  # pyrefly: ignore[bad-override]
-        self, values: Iterable[Any], level: Level
-    ) -> np_1darray_bool: ...
+    @override  # type: ignore[override]
     @overload
-    def isin(  # ty: ignore[invalid-method-override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, values: Collection[Iterable[Any]], level: None = None
+    # pyrefly: ignore[bad-override]
+    def isin(self, values: Iterable[Any], level: Level) -> np_1darray_bool: ...
+    @overload
+    def isin(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+        self, values: Collection[Iterable[Hashable]], level: None = None
     ) -> np_1darray_bool: ...
+    @override
     def set_names(
         self,
         names: Hashable | Sequence[Hashable] | Mapping[Any, Hashable],

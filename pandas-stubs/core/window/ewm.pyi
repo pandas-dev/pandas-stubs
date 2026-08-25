@@ -11,6 +11,7 @@ from pandas.core.window.rolling import (
     BaseWindow,
     BaseWindowGroupby,
 )
+from typing_extensions import override
 
 from pandas._typing import (
     NDFrameT,
@@ -47,6 +48,7 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
         numeric_only: bool = False,
     ) -> NDFrameT: ...
     @overload  # type: ignore[override]
+    @override
     def aggregate(
         self: BaseWindow[Series],
         func: str,

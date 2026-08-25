@@ -55,9 +55,6 @@ from pandas._typing import (
 
 T_INTERVAL_NP = TypeVar("T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 
-class NoNewAttributesMixin:
-    def __setattr__(self, key: str, value: Any) -> None: ...
-
 class PandasObject(DirNamesMixin): ...
 
 class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
@@ -157,14 +154,14 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     def searchsorted(
         self,
         value: ListLike,
-        side: Literal["left", "right"] = ...,
+        side: Literal["left", "right"] = "left",
         sorter: ListLike | None = None,
     ) -> np_1darray_intp: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
-        side: Literal["left", "right"] = ...,
+        side: Literal["left", "right"] = "left",
         sorter: ListLike | None = None,
     ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...

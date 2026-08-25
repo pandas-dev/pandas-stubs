@@ -20,14 +20,7 @@ from tests._typing import (
 
 
 def test_construction_array_like() -> None:
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.array(pd.Categorical([1])),
-            "Categorical[int]",
-        ),
-        Categorical,
-    )
+    check(assert_type(pd.array(pd.Categorical([1])), "Categorical[int]"), Categorical)
     check(assert_type(pd.array(pd.CategoricalIndex([1])), Categorical), Categorical)
 
 
@@ -98,10 +91,7 @@ def test_constructor() -> None:
     check(assert_type(cat_int, "Categorical[int]"), Categorical, int)
 
     cat_mixed = Categorical(["a", 1, "b", 2])
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(cat_mixed, Categorical), Categorical  # pyrefly: ignore[assert-type]
-    )
+    check(assert_type(cat_mixed, Categorical), Categorical)
 
     cat_empty = Categorical([])
     check(assert_type(cat_empty, Categorical), Categorical)
@@ -138,6 +128,13 @@ def test_categorical_properties() -> None:
     check(assert_type(cat.dtype, "CategoricalDtype[str]"), CategoricalDtype)
     check(assert_type(cat.nbytes, int), int)
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray, np.integer)
+
+
+def test_categorical_dunder_methods() -> None:
+    """Test dunder methods for Categorical."""
+    cat = Categorical(["a", "b", "c", "a"])
+
+    check(assert_type(cat.__hash__, None), type(None))
 
 
 def test_categorical_tolist() -> None:
@@ -385,3 +382,12 @@ def test_categorical_isin() -> None:
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
 
     check(assert_type(cat.isin(["b", 1]), np_1darray_bool), np_1darray_bool)
+
+
+def test_categorical_comparison() -> None:
+    """Test comparison for Categorical."""
+    cat = Categorical(["a", "b", "c"])
+
+    # TODO: make proper tests pandas-dev/pandas-stubs#1901
+    check(assert_type(cat == cat, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != cat, np_1darray_bool), np_1darray_bool, np.bool)

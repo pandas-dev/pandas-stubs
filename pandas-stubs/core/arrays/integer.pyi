@@ -2,6 +2,7 @@ from pandas.core.arrays.numeric import (
     NumericArray,
     NumericDtype,
 )
+from typing_extensions import override
 
 from pandas._typing import (
     np_ndarray_anyint,
@@ -12,10 +13,12 @@ class IntegerDtype(NumericDtype):
     base: None
     @property
     def itemsize(self) -> int: ...
+    @override
     def construct_array_type(self) -> type[IntegerArray]: ...
 
 class IntegerArray(NumericArray):
     @property
+    @override
     def dtype(self) -> IntegerDtype: ...
     def __init__(
         self, values: np_ndarray_anyint, mask: np_ndarray_bool, copy: bool = False

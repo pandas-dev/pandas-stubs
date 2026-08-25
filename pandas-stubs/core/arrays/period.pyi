@@ -7,6 +7,7 @@ from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
 import pyarrow as pa
+from typing_extensions import override
 
 from pandas._libs.tslibs.period import (
     Period,
@@ -37,7 +38,9 @@ class PeriodArray(DatelikeOps, PeriodMixin):
         copy: bool = False,
     ) -> None: ...
     @property
+    @override
     def dtype(self) -> PeriodDtype: ...
+    @override
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray_object: ...
@@ -78,8 +81,10 @@ class PeriodArray(DatelikeOps, PeriodMixin):
     @property
     def is_leap_year(self) -> np_1darray_bool: ...
     @property
+    @override
     def start_time(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     @property
+    @override
     def end_time(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     def to_timestamp(
         self, freq: PeriodFrequency | None = None, how: str = ...

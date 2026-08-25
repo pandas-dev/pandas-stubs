@@ -628,7 +628,8 @@ def test_groupby_apply() -> None:
     df_gb = df.groupby("col1")
 
     def sum_mean(x: pd.DataFrame) -> float:
-        return x.sum().mean()
+        # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+        return x.sum().mean()  # ty: ignore[unsound-return-statement]
 
     check(assert_type(df_gb.apply(sum_mean), pd.Series), pd.Series)
 
@@ -709,8 +710,7 @@ def test_getattr_and_dataframe_groupby() -> None:
     )
     check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
     check(
-        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame), pd.DataFrame
     )
 
 

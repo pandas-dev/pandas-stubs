@@ -17,6 +17,7 @@ from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -168,6 +169,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
 # attributes via setattr
 class _GroupByMixin(Resampler[NDFrameT]):
     key: str | list[str] | None
+    @override
     def __getitem__(self, key: str | list[str] | None) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class DatetimeIndexResampler(Resampler[NDFrameT]): ...
@@ -188,6 +190,7 @@ class DatetimeIndexResamplerGroupby(
     _InterpolateMixin, _GroupByMixin[NDFrameT], DatetimeIndexResampler[NDFrameT]
 ):
     @final
+    @override
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
 
 class PeriodIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
@@ -196,6 +199,7 @@ class PeriodIndexResamplerGroupby(
     _InterpolateMixin, _GroupByMixin[NDFrameT], PeriodIndexResampler[NDFrameT]
 ):
     @final
+    @override
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
 
 class TimedeltaIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
@@ -204,6 +208,7 @@ class TimedeltaIndexResamplerGroupby(
     _InterpolateMixin, _GroupByMixin[NDFrameT], TimedeltaIndexResampler[NDFrameT]
 ):
     @final
+    @override
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
 
 class TimeGrouper(Grouper):

@@ -8,6 +8,7 @@ from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
+from typing_extensions import override
 
 from pandas._typing import (
     S1,
@@ -20,6 +21,7 @@ class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
     codes: np_1darray_intp = ...
     categories: Index[S1] = ...
     @property
+    @override
     def array(self) -> Categorical: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
     def __new__(
         cls,
@@ -30,14 +32,7 @@ class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
         copy: bool = False,
         name: Hashable | None = None,
     ) -> Self: ...
-    @property
-    def inferred_type(self) -> str: ...
-    @property
-    def is_unique(self) -> bool: ...
-    @property
-    def is_monotonic_increasing(self) -> bool: ...
-    @property
-    def is_monotonic_decreasing(self) -> bool: ...
     # `item` might be `S1` but not one of the categories, thus changing
     # the return type from `CategoricalIndex` to `Index`.
+    @override
     def insert(self, loc: int, item: object) -> Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override]

@@ -934,7 +934,7 @@ def test_types_groupby() -> None:
     )
     s.groupby(np.array([1, 0, 1, 0]))
     s.groupby([np.array([1, 0, 0, 0]), np.array([0, 0, 1, 0])])
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
+    # TODO: facebook/pyrefly#3268
     s.groupby({"a": 1, "b": 2})  # pyrefly: ignore[no-matching-overload]
     s.groupby([{"a": 1, "b": 3}, {"a": 1, "b": 1}])
     s.groupby(s.index)
@@ -963,7 +963,7 @@ def test_types_groupby_methods() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.sum(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.sum(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
         s.prod(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
         s.std(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
         s.var(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
@@ -1772,11 +1772,8 @@ def test_cat_ctor_values() -> None:
     s = ["a", "b", "a"]
     check(assert_type(pd.Categorical(s), "pd.Categorical[str]"), pd.Categorical)
     # GH 107
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"
-        ),
+        assert_type(pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"),
         pd.Categorical,
     )
 
@@ -3410,10 +3407,9 @@ def test_map() -> None:
 
     unknown_series = pd.Series([1, 0, None])
     check(
-        # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
-        assert_type(  # pyrefly: ignore[assert-type]
-            unknown_series.map({1: True, 0: False, None: None}), pd.Series
-        ),
+        # TODO: facebook/pyrefly#3268
+        # pyrefly: ignore[assert-type]
+        assert_type(unknown_series.map({1: True, 0: False, None: None}), pd.Series),
         pd.Series,
     )
 

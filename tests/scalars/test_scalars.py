@@ -475,6 +475,12 @@ def test_timedelta_construction() -> None:
         pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
+def test_timedelta_dunder_methods() -> None:
+    td = pd.Timedelta(seconds=1)
+
+    check(assert_type(td.__hash__(), int), int)
+
+
 def test_timedelta_properties_methods() -> None:
     td = pd.Timedelta("1 day")
     check(assert_type(td.value, int), int)
@@ -1019,6 +1025,16 @@ def test_timestamp_construction() -> None:
         ),
         pd.Timestamp,
     )
+
+
+def test_timestamp_dunder_methods() -> None:
+    ts = pd.Timestamp(year=2026, month=8, day=15, hour=7, tz="Europe/Berlin")
+
+    check(assert_type(ts.__format__(""), str), str)
+    check(assert_type(ts.__hash__(), int), int)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        ts.__format__(fmt="")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[positional-only-parameter-as-kwarg]
 
 
 def test_timestamp_properties() -> None:
@@ -1972,7 +1988,12 @@ def test_period_methods() -> None:
     check(assert_type(hash(p3), int), int)
 
 
-def test_nattype_hashable() -> None:
+def test_offset_dunder_methods() -> None:
+    do = pd.DateOffset()
+    check(assert_type(do.__hash__(), int), int)
+
+
+def test_nattype_dunder_methods() -> None:
     # GH 827
     check(assert_type(pd.NaT.__hash__(), int), int)
 
@@ -1997,11 +2018,11 @@ def test_nat_comparison_with_date() -> None:
 
     # Inequality comparisons should raise TypeError
     if TYPE_CHECKING_INVALID_USAGE:
-        _llt = pd.NaT < date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lgt = pd.NaT > date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lle = pd.NaT <= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lge = pd.NaT >= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _rlt = date_obj < pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _rgt = date_obj > pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _rle = date_obj <= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _rge = date_obj >= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _llt = pd.NaT < date_obj  # type: ignore[arg-type] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lgt = pd.NaT > date_obj  # type: ignore[arg-type] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lle = pd.NaT <= date_obj  # type: ignore[arg-type] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lge = pd.NaT >= date_obj  # type: ignore[arg-type] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rlt = date_obj < pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rgt = date_obj > pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rle = date_obj <= pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rge = date_obj >= pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]

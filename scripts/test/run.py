@@ -207,18 +207,6 @@ def pyrefly_src() -> None:
         "tests",
         "--python-version",
         _PYTHON_VERSION,
-    ]
-    subprocess.run(cmd, check=True)
-
-
-def pyrefly_src_strict() -> None:
-    cmd = [
-        "pyrefly",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
         "--preset",
         "strict",
     ]
