@@ -385,7 +385,13 @@ def test_types_sort_index() -> None:
         pd.Series,
         np.integer,
     )
-    assert assert_type(s.sort_index(ascending=False, inplace=True), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.sort_index(ascending=False, inplace=True), None) is None
     check(
         assert_type(s.sort_index(kind="mergesort"), "pd.Series[int]"),
         pd.Series,
@@ -414,7 +420,13 @@ def test_types_sort_values() -> None:
         pd.Series,
         np.integer,
     )
-    assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
     check(
         assert_type(s.sort_values(na_position="last"), "pd.Series[int]"),
         pd.Series,
