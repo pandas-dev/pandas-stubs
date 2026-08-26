@@ -2003,10 +2003,10 @@ def test_nattype_dunder_methods() -> None:
 
 def test_nat_comparison() -> None:
     # GH 1907
-    check(assert_type(pd.NaT == pd.NaT, Literal[False]), bool)
-    check(assert_type(pd.NaT != pd.NaT, Literal[True]), bool)
-    check(assert_type(pd.NaT == 1, Literal[False]), bool)
-    check(assert_type(pd.NaT != 1, Literal[True]), bool)
+    assert assert_type(pd.NaT == pd.NaT, Literal[False]) is False
+    assert assert_type(pd.NaT != pd.NaT, Literal[True]) is True
+    assert assert_type(pd.NaT == 1, Literal[False]) is False
+    assert assert_type(pd.NaT != 1, Literal[True]) is True
 
     check(assert_type(pd.NaT == pd.NA, NAType), NAType)
     check(assert_type(pd.NaT != pd.NA, NAType), NAType)
@@ -2025,8 +2025,8 @@ def test_nat_comparison_with_date() -> None:
     date_obj = dt.date(2023, 1, 1)
 
     # Equality comparisons should still work
-    check(assert_type(pd.NaT == date_obj, Literal[False]), bool)
-    check(assert_type(pd.NaT != date_obj, Literal[True]), bool)
+    assert assert_type(pd.NaT == date_obj, Literal[False]) is False
+    assert assert_type(pd.NaT != date_obj, Literal[True]) is True
     check(assert_type(date_obj == pd.NaT, bool), bool)
     check(assert_type(date_obj != pd.NaT, bool), bool)
 
