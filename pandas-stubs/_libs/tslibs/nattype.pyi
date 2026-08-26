@@ -151,18 +151,20 @@ class NaTType:
     # inject Period properties
     @property
     def qyear(self) -> float: ...
+    @override
     @overload
-    def __eq__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-        self, other: NAType, /
-    ) -> NAType: ...
+    def __eq__(self, other: NAType, /) -> NAType: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: object, /) -> Literal[False]: ...
+    def __eq__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: object, /
+    ) -> Literal[False]: ...
+    @override
     @overload
-    def __ne__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-        self, other: NAType, /
-    ) -> NAType: ...
+    def __ne__(self, other: NAType, /) -> NAType: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: object, /) -> Literal[True]: ...
+    def __ne__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: object, /
+    ) -> Literal[True]: ...
     __lt__: _NatComparison
     __le__: _NatComparison
     __gt__: _NatComparison
