@@ -306,17 +306,36 @@ def test_types_drop_multilevel() -> None:
 def test_types_drop_duplicates() -> None:
     s = pd.Series([1.0, 2.0, 2.0])
     check(assert_type(s.drop_duplicates(), "pd.Series[float]"), pd.Series, float)
-    assert assert_type(s.drop_duplicates(inplace=True), None) is None
-    assert (
-        assert_type(s.drop_duplicates(inplace=True, ignore_index=False), None) is None
-    )
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in Series", lower="3.0.99"
+    ):
+        assert assert_type(s.drop_duplicates(inplace=True), None) is None
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in Series", lower="3.0.99"
+    ):
+        assert (
+            assert_type(s.drop_duplicates(inplace=True, ignore_index=False), None)
+            is None
+        )
 
 
 def test_types_dropna() -> None:
     s = pd.Series([1.0, np.nan, np.nan])
     check(assert_type(s.dropna(), "pd.Series[float]"), pd.Series, float)
-    assert assert_type(s.dropna(axis=0, inplace=True), None) is None
-    assert assert_type(s.dropna(axis=0, inplace=True, ignore_index=True), None) is None
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in Series", lower="3.0.99"
+    ):
+        assert assert_type(s.dropna(axis=0, inplace=True), None) is None
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in Series", lower="3.0.99"
+    ):
+        assert (
+            assert_type(s.dropna(axis=0, inplace=True, ignore_index=True), None) is None
+        )
 
 
 def test_pop() -> None:

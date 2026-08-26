@@ -11,7 +11,10 @@ from typing import (
 import dateutil.tz
 import numpy as np
 import pandas as pd
-from pandas.api.typing import NaTType
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
 from pandas.api.typing.aliases import TimeUnit
 import pytz
 
@@ -1998,6 +2001,17 @@ def test_nattype_dunder_methods() -> None:
     check(assert_type(pd.NaT.__hash__(), int), int)
 
 
+def test_nat_comparison() -> None:
+    # GH 1907
+    assert not assert_type(pd.NaT == pd.NaT, Literal[False])
+    assert assert_type(pd.NaT != pd.NaT, Literal[True])
+    assert not assert_type(pd.NaT == 1, Literal[False])
+    assert assert_type(pd.NaT != 1, Literal[True])
+
+    check(assert_type(pd.NaT == pd.NA, NAType), NAType)
+    check(assert_type(pd.NaT != pd.NA, NAType), NAType)
+
+
 def test_nat_round_floor_ceil_timedelta() -> None:
     td = dt.timedelta(hours=1)
     check(assert_type(pd.NaT.round(td), NaTType), NaTType)
@@ -2011,8 +2025,8 @@ def test_nat_comparison_with_date() -> None:
     date_obj = dt.date(2023, 1, 1)
 
     # Equality comparisons should still work
-    check(assert_type(pd.NaT == date_obj, bool), bool)
-    check(assert_type(pd.NaT != date_obj, bool), bool)
+    assert not assert_type(pd.NaT == date_obj, Literal[False])
+    assert assert_type(pd.NaT != date_obj, Literal[True])
     check(assert_type(date_obj == pd.NaT, bool), bool)
     check(assert_type(date_obj != pd.NaT, bool), bool)
 

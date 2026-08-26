@@ -424,19 +424,29 @@ def test_types_dropna() -> None:
     check(assert_type(df.dropna(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.dropna(ignore_index=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.dropna(axis=1, thresh=1), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(df.dropna(axis=0, how="all", subset=["col1"], inplace=True), None),
-        type(None),
-    )
-    check(
-        assert_type(
-            df.dropna(
-                axis=0, how="all", subset=["col1"], inplace=True, ignore_index=False
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(
+            assert_type(
+                df.dropna(axis=0, how="all", subset=["col1"], inplace=True), None
             ),
-            None,
-        ),
-        type(None),
-    )
+            type(None),
+        )
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(
+            assert_type(
+                df.dropna(
+                    axis=0, how="all", subset=["col1"], inplace=True, ignore_index=False
+                ),
+                None,
+            ),
+            type(None),
+        )
 
 
 def test_types_drop_duplicates() -> None:
@@ -453,13 +463,22 @@ def test_types_drop_duplicates() -> None:
     check(assert_type(df.drop_duplicates(["AAA"]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.drop_duplicates("AAA", inplace=True), None), type(None))
-    check(
-        assert_type(
-            df.drop_duplicates("AAA", inplace=False, ignore_index=True), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(assert_type(df.drop_duplicates("AAA", inplace=True), None), type(None))
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(
+            assert_type(
+                df.drop_duplicates("AAA", inplace=False, ignore_index=True),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
 
     check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame)
