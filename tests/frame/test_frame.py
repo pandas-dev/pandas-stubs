@@ -504,7 +504,16 @@ def test_types_sort_index() -> None:
     check(
         assert_type(df.sort_index(ascending=False, level=3), pd.DataFrame), pd.DataFrame
     )
-    check(assert_type(df.sort_index(kind="mergesort", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(df.sort_index(kind="mergesort", inplace=True), None),
+            type(None),
+        )
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -573,10 +582,16 @@ def test_types_eval() -> None:
 def test_types_sort_values() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.sort_values("col1"), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(df.sort_values("col1", ascending=False, inplace=True), None),
-        type(None),
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(df.sort_values("col1", ascending=False, inplace=True), None),
+            type(None),
+        )
     check(
         assert_type(
             df.sort_values(by=["col1", "col2"], ascending=[True, False]), pd.DataFrame
