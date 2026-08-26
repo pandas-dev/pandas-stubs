@@ -1,6 +1,7 @@
 from collections import UserList
 from collections.abc import (
     Callable,
+    Iterator,
     Sequence,
 )
 from typing import (
@@ -116,6 +117,12 @@ def test_dtype() -> None:
 
     check(assert_type(pd.array([1.0], "Float32").dtype, FloatingDtype), pd.Float32Dtype)
     check(assert_type(pd.array([1.0], "Float64").dtype, FloatingDtype), pd.Float64Dtype)
+
+
+def test_dunder_methods() -> None:
+    arr = pd.array([1.1])
+    check(assert_type(arr.__iter__(), Iterator[float]), Iterator)
+    check(assert_type(next(iter(arr)), float), float)
 
 
 def test_construct_array_type() -> None:

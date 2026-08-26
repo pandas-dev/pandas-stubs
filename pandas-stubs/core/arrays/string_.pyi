@@ -1,5 +1,4 @@
 from typing import (
-    Any,
     Generic,
     Literal,
     Self,
@@ -13,6 +12,7 @@ from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pyarrow as pa
 from typing_extensions import (
     TypeVar,
+    override,
 )
 
 from pandas._libs.missing import NAType
@@ -50,10 +50,12 @@ class StringDtype(ExtensionDtype, Generic[_StorageT]):
     ) -> StringDtype: ...
     storage = _StringDtypeStorageDescriptor()
     @property
+    @override
     def na_value(self) -> NAType | float: ...
 
 class BaseStringArray(ExtensionArray, Generic[_StorageT]):
     @property
+    @override
     def dtype(self) -> StringDtype[_StorageT]: ...
 
 class StringArray(BaseStringArray[Literal["python"]], NumpyExtensionArray):
@@ -61,4 +63,3 @@ class StringArray(BaseStringArray[Literal["python"]], NumpyExtensionArray):
         self, values: np_ndarray_object | Self, copy: bool = False
     ) -> None: ...
     def __arrow_array__(self, type: DtypeArg | None = None) -> pa.StringArray: ...
-    def __setitem__(self, key: Any, value: Any) -> None: ...

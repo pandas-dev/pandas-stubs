@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 import sys
-from typing import (
-    assert_never,
-    assert_type,
-)
+from typing import assert_type
 
 from dateutil.relativedelta import (
     FR,
@@ -487,6 +484,11 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
+        assert_type(s0.dt.round(dt.timedelta(days=1)), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
         assert_type(s0.dt.round("D", ambiguous="infer"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
@@ -499,6 +501,11 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
+        assert_type(s0.dt.floor(dt.timedelta(days=1)), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
         assert_type(s0.dt.floor("D", ambiguous="raise"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
@@ -507,6 +514,11 @@ def test_series_dt_accessors() -> None:
         assert_type(
             s0.dt.ceil("D", nonexistent=dt.timedelta(1)), "pd.Series[pd.Timestamp]"
         ),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(s0.dt.ceil(dt.timedelta(days=1)), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
@@ -593,6 +605,21 @@ def test_series_dt_accessors() -> None:
             dt.timedelta,
         )
     check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
+    check(
+        assert_type(s2.dt.round(dt.timedelta(days=1)), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(s2.dt.floor(dt.timedelta(days=1)), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(s2.dt.ceil(dt.timedelta(days=1)), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
     check(assert_type(s2.dt.unit, TimeUnit), str)
     check(
         assert_type(s2.dt.as_unit("s"), "pd.Series[pd.Timedelta]"),
@@ -760,6 +787,21 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.round("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     check(assert_type(i0.floor("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     check(assert_type(i0.ceil("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(
+        assert_type(i0.round(dt.timedelta(days=1)), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(i0.floor(dt.timedelta(days=1)), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(i0.ceil(dt.timedelta(days=1)), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+        pd.Timestamp,
+    )
     check(assert_type(i0.month_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.day_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.is_normalized, bool), bool)
@@ -792,6 +834,21 @@ def test_timedeltaindex_accessors() -> None:
         assert_type(i0.floor("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
     )
     check(assert_type(i0.ceil("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    check(
+        assert_type(i0.round(dt.timedelta(days=1)), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(i0.floor(dt.timedelta(days=1)), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(i0.ceil(dt.timedelta(days=1)), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
     check(assert_type(i0.unit, TimeUnit), str)
     check(assert_type(i0.as_unit("s"), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(i0.as_unit("ms"), pd.TimedeltaIndex), pd.TimedeltaIndex)
@@ -1788,12 +1845,7 @@ def test_timedeltaseries_add_timestampseries() -> None:
 
 def test_timestamp_strptime_fails() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_never(
-            pd.Timestamp.strptime(  # pyright: ignore[reportUnknownArgumentType]
-                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-            )
-        )
+        pd.Timestamp.strptime("2023-02-16", "%Y-%M-%D")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_weekofmonth_init() -> None:

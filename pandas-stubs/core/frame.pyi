@@ -67,7 +67,10 @@ from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPriva
 from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
-from pandas.core.series import Series
+from pandas.core.series import (
+    Series,
+    SupportsSelfMul,
+)
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
@@ -76,6 +79,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+from typing_extensions import override
 import xarray as xr
 
 from pandas._libs.lib import NoDefault
@@ -321,15 +325,19 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
+    @override
     def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[int, int], value: ScalarOrNA
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
+    @override
     def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable]
     ) -> Scalar: ...
+    @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA
     ) -> None: ...
@@ -401,6 +409,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def axes(self) -> list[Index]: ...
     @property
+    @override
     def shape(self) -> tuple[int, int]: ...
     @property
     def style(self) -> Styler: ...
@@ -416,9 +425,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Iterator[tuple[Any, ...]]: ...
     def __len__(self) -> int: ...
     @overload
-    def dot(self, other: DataFrame | ArrayLike) -> Self: ...
+    def dot(
+        self,
+        other: DataFrame | ArrayLike | Sequence[Sequence[SupportsSelfMul[Any]]],
+    ) -> Self: ...
     @overload
-    def dot(self, other: Series) -> Series: ...
+    def dot(self, other: Series | Sequence[SupportsSelfMul[Any]]) -> Series: ...
     @overload
     def __matmul__(self, other: DataFrame) -> Self: ...
     @overload
@@ -642,7 +654,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         formatters: (
             list[Callable[[object], str]]
             | tuple[Callable[[object], str], ...]
-            | Mapping[Hashable, Callable[[object], str]]
+            | Mapping[HashableT, Callable[[object], str]]
             | None
         ) = ...,
         float_format: Callable[[float], str] | None = ...,
@@ -690,7 +702,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         formatters: (
             list[Callable[[object], str]]
             | tuple[Callable[[object], str], ...]
-            | Mapping[Hashable, Callable[[object], str]]
+            | Mapping[HashableT, Callable[[object], str]]
             | None
         ) = ...,
         float_format: Callable[[float], str] | None = ...,
@@ -973,11 +985,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Index
             | np_ndarray
             | Iterator[Hashable]
-            | Sequence[Hashable]
+            | Sequence[Hashable | np_ndarray | Index | Series]
         ),
         *,
-        drop: _bool = ...,
-        append: _bool = ...,
+        drop: _bool = True,
+        append: _bool = False,
         inplace: Literal[True],
     ) -> None: ...
     @overload
@@ -989,11 +1001,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Index
             | np_ndarray
             | Iterator[Hashable]
-            | Sequence[Hashable]
+            | Sequence[Hashable | np_ndarray | Index | Series]
         ),
         *,
-        drop: _bool = ...,
-        append: _bool = ...,
+        drop: _bool = True,
+        append: _bool = False,
         inplace: Literal[False] = False,
     ) -> Self: ...
     @overload
@@ -1180,7 +1192,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         errors: IgnoreRaise = "ignore",
     ) -> None: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: Scalar,
         level: IndexLabel | None = ...,
@@ -1204,7 +1216,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: DatetimeIndex,
         level: IndexLabel | None = ...,
@@ -1216,7 +1228,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[True]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: DatetimeIndex,
         level: IndexLabel | None = ...,
@@ -1228,7 +1240,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: TimedeltaIndex,
         level: IndexLabel | None = ...,
@@ -1252,7 +1264,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timedelta, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: PeriodIndex,
         level: IndexLabel | None = ...,
@@ -1276,7 +1288,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: IntervalIndex[IntervalT],
         level: IndexLabel | None = ...,
@@ -1324,7 +1336,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(  # pyright: ignore[reportOverlappingOverload]
         self,
         by: Series[SeriesByT],
         level: IndexLabel | None = ...,
@@ -1443,7 +1455,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        func: Callable[..., ListLikeExceptSeriesAndStr | Series],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
@@ -1454,7 +1466,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
-        f: Callable[..., S2 | NAType],
+        func: Callable[..., S2 | NAType],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
@@ -1466,7 +1478,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Mapping[Any, Any]],
+        func: Callable[..., Mapping[Any, Any]],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
@@ -1479,7 +1491,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
-        f: Callable[..., S2 | NAType],
+        func: Callable[..., S2 | NAType],
         axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
@@ -1490,7 +1502,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping[Any, Any]],
+        func: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping[Any, Any]],
         axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
@@ -1501,7 +1513,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
+        func: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
         axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
@@ -1512,7 +1524,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[
+        func: Callable[
             ..., ListLikeExceptSeriesAndStr | Series | Scalar | Mapping[Any, Any]
         ],
         axis: Axis = 0,
@@ -1527,7 +1539,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        func: Callable[..., Series],
         axis: AxisIndex = 0,
         raw: _bool = ...,
         args: Any = ...,
@@ -1541,7 +1553,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
-        f: Callable[..., S2 | NAType],
+        func: Callable[..., S2 | NAType],
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
@@ -1552,7 +1564,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
+        func: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
@@ -1563,7 +1575,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        func: Callable[..., Series],
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
@@ -1576,7 +1588,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        func: Callable[..., Series],
         raw: _bool = ...,
         args: Any = ...,
         *,
@@ -1694,7 +1706,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = 0,
     ) -> Self: ...
     def isin(
-        self, values: Iterable[Any] | Mapping[Hashable, Iterable[Any]] | DataFrame
+        self, values: Iterable[Any] | Mapping[HashableT, Iterable[Any]] | DataFrame
     ) -> Self: ...
     @property
     def plot(self) -> PlotAccessor: ...
@@ -1818,8 +1830,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def dtypes(self) -> Series: ...
     @property
-    def empty(self) -> _bool: ...
-    @property
     def iat(self) -> _iAtIndexerFrame: ...
     @property
     def iloc(self) -> _iLocIndexerFrame[Self]: ...
@@ -1831,10 +1841,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> None: ...
     @property
     def loc(self) -> _LocIndexerFrame[Self]: ...
-    @property
-    def ndim(self) -> int: ...
-    @property
-    def size(self) -> int: ...
     @property
     def values(self) -> np_2darray: ...
     # methods
@@ -2058,6 +2064,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
     ) -> Self: ...
     @final
+    @override
     def equals(self, other: Series | DataFrame) -> _bool: ...
     @final
     def ewm(

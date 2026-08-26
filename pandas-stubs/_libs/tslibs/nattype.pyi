@@ -12,6 +12,7 @@ from typing import (
 )
 
 import numpy as np
+from typing_extensions import override
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs.period import Period
@@ -36,6 +37,7 @@ class _NatComparison:
 @final
 class NaTType:
     value: np.int64
+    @override
     def __hash__(self) -> int: ...
     def asm8(self) -> np.datetime64: ...
     def to_datetime64(self) -> np.datetime64: ...
@@ -83,19 +85,19 @@ class NaTType:
     def date(self) -> NaTType: ...
     def round(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: bool | Literal["raise"] | NaTType = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> NaTType: ...
     def floor(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: bool | Literal["raise"] | NaTType = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> NaTType: ...
     def ceil(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: bool | Literal["raise"] | NaTType = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> NaTType: ...

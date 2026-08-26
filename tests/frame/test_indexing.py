@@ -159,8 +159,7 @@ def test_indexslice_getitem() -> None:
     )
     ind = pd.Index([2, 3])
     check(
-        # TODO: https://github.com/facebook/pyrefly/issues/3896
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
         ),
         tuple,
@@ -229,6 +228,9 @@ def test_frame_isin() -> None:
     check(assert_type(df.isin(pd.Index([1, 3, 5])), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.isin(df), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.isin({"x": [1, 2]}), pd.DataFrame), pd.DataFrame)
+    # GH 1844
+    isin_map = {"x": [1, 2]}
+    check(assert_type(df.isin(isin_map), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.isin(UserDict({"x": iter([1, "2"])})), pd.DataFrame),
         pd.DataFrame,
@@ -333,11 +335,11 @@ def test_boolean_loc() -> None:
 
 def test_setitem_list() -> None:
     # GH 153
-    lst1: list[str] = ["a", "b", "c"]
-    lst2: list[int] = [1, 2, 3]
-    lst3: list[float] = [4.0, 5.0, 6.0]
-    lst4: list[tuple[str, int]] = [("a", 1), ("b", 2), ("c", 3)]
-    lst5: list[complex] = [0 + 1j, 0 + 2j, 0 + 3j]
+    lst1 = ["a", "b", "c"]
+    lst2 = [1, 2, 3]
+    lst3 = [4.0, 5.0, 6.0]
+    lst4 = [("a", 1), ("b", 2), ("c", 3)]
+    lst5 = [0 + 1j, 0 + 2j, 0 + 3j]
 
     columns: list[Hashable] = [
         "a",
@@ -364,6 +366,13 @@ def test_setitem_list() -> None:
     check(assert_type(df.set_index(lst3), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(lst4), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(lst5), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            df.set_index([df.index, df.index.to_numpy(), df.index.to_series()]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
     iter1: Iterator[str] = (v for v in lst1)
     iter2: Iterator[tuple[str, int]] = (v for v in lst4)

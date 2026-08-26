@@ -8,6 +8,7 @@ from typing import (
 import numpy as np
 from pandas.core.arrays.datetimelike import TimelikeOps
 from pandas.core.frame import DataFrame
+from typing_extensions import override
 
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.offsets import DateOffset
@@ -28,7 +29,8 @@ from pandas._typing import (
 class TimedeltaArray(TimelikeOps):
     __array_priority__: int = ...
     @property
-    def dtype(self) -> np.dtypes.TimeDelta64DType: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
+    @override
+    def dtype(self) -> np.dtypes.TimeDelta64DType: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     def __init__(
         self,
         values: AnyArrayLike,
@@ -108,14 +110,10 @@ class TimedeltaArray(TimelikeOps):
     ) -> np_1darray_int64: ...
     @overload
     def __rfloordiv__(self, other: Any) -> Self: ...
-    def __mod__(self, other: Any) -> Self: ...
-    def __rmod__(self, other: Any) -> Self: ...
-    def __divmod__(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
-        self, other: Any
-    ) -> tuple[np_1darray_int64, TimedeltaArray]: ...
-    def __rdivmod__(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
-        self, other: Any
-    ) -> tuple[np_1darray_int64, TimedeltaArray]: ...
+    @override
+    def __divmod__(self, other: Any) -> tuple[np_1darray_int64, TimedeltaArray]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
+    def __rdivmod__(self, other: Any) -> tuple[np_1darray_int64, TimedeltaArray]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     def __neg__(self) -> Self: ...
     def __pos__(self) -> Self: ...
     def __abs__(self) -> Self: ...
@@ -131,16 +129,23 @@ class TimedeltaArray(TimelikeOps):
     def nanoseconds(self) -> np_1darray_int32: ...
     @property
     def components(self) -> DataFrame: ...
-    @property
+    # TODO: python/mypy#15900 we did use explicit override but mypy does not see it
+    @property  # type: ignore[explicit-override]
+    @override
     def freq(self) -> DateOffset | None: ...  # pyrefly: ignore[bad-override]
     @freq.setter  # type: ignore[override]
+    @override
     def freq(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, value: DateOffset
     ) -> None: ...
+    @override
     def min(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...
+    @override
     def max(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...
+    @override
     def mean(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...
     def median(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta: ...
+    @override
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray_td: ...

@@ -1,6 +1,7 @@
 from collections import UserList
 from collections.abc import (
     Callable,
+    Iterator,
     Sequence,
 )
 from datetime import (
@@ -324,6 +325,12 @@ def test_properties() -> None:
         np_1darray,
         np.float64,
     )
+
+
+def test_dunder_methods() -> None:
+    arr = pd.array([datetime(1748, 12, 24)])
+    check(assert_type(arr.__iter__(), Iterator[pd.Timestamp]), Iterator)
+    check(assert_type(next(iter(arr)), pd.Timestamp), pd.Timestamp)
 
 
 def test_constructor() -> None:

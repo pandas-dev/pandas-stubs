@@ -102,9 +102,6 @@ class Timestamp(datetime, SupportsIndex):
     @property
     def nanosecond(self) -> int: ...
     @property
-    @override
-    def tzinfo(self) -> _tzinfo | None: ...
-    @property
     def tz(self) -> _tzinfo | None: ...
     @property
     @override
@@ -143,8 +140,6 @@ class Timestamp(datetime, SupportsIndex):
     def fromisoformat(cls, date_string: str) -> Self: ...
     @override
     def strftime(self, format: str) -> str: ...
-    @override
-    def __format__(self, fmt: str) -> str: ...
     @override
     def toordinal(self) -> int: ...
     @override
@@ -338,19 +333,19 @@ class Timestamp(datetime, SupportsIndex):
     def normalize(self) -> Self: ...
     def round(
         self,
-        freq: str,
+        freq: str | timedelta,
         ambiguous: _Ambiguous = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def floor(
         self,
-        freq: str,
+        freq: str | timedelta,
         ambiguous: _Ambiguous = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def ceil(
         self,
-        freq: str,
+        freq: str | timedelta,
         ambiguous: _Ambiguous = "raise",
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...

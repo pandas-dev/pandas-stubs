@@ -207,18 +207,6 @@ def pyrefly_src() -> None:
         "tests",
         "--python-version",
         _PYTHON_VERSION,
-    ]
-    subprocess.run(cmd, check=True)
-
-
-def pyrefly_src_strict() -> None:
-    cmd = [
-        "pyrefly",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
         "--preset",
         "strict",
     ]
@@ -240,5 +228,5 @@ def pyrefly_src_all() -> None:
 
 
 def type_completeness() -> None:
-    cmd = ["python", "-m", "scripts.type_completeness"]
+    cmd = ["pyrefly", "coverage", "check", "--public-only"]
     subprocess.run(cmd, check=True)

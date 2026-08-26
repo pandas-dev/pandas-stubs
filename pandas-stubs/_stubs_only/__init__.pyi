@@ -22,7 +22,10 @@ from pandas.core.groupby.base import ReductionKernelType
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
-from typing_extensions import TypeVar
+from typing_extensions import (
+    TypeVar,
+    override,
+)
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs.offsets import BaseOffset
@@ -87,6 +90,7 @@ OrderableT = TypeVar("OrderableT", bound=Orderables, default=Any)
 @type_check_only
 class IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
     @overload
+    @override
     def to_numpy(
         self: IndexSubclassBase[Interval],
         dtype: type[T_INTERVAL_NP],

@@ -26,7 +26,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
-    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray_bool,
@@ -452,6 +451,7 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(weeks=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(milliseconds=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(nanoseconds=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(dt.timedelta(hours=1)), pd.Timedelta), pd.Timedelta)
     check(
         assert_type(
             pd.Timedelta(
@@ -478,6 +478,12 @@ def test_timedelta_construction() -> None:
         pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
+def test_timedelta_dunder_methods() -> None:
+    td = pd.Timedelta(seconds=1)
+
+    check(assert_type(td.__hash__(), int), int)
+
+
 def test_timedelta_properties_methods() -> None:
     td = pd.Timedelta("1 day")
     check(assert_type(td.value, int), int)
@@ -494,24 +500,34 @@ def test_timedelta_properties_methods() -> None:
 
     check(assert_type(td.ceil("D"), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.floor(Day()), pd.Timedelta), pd.Timedelta)
-    check(assert_type(td.isoformat(), str), str)
     check(assert_type(td.round("s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.ceil(dt.timedelta(days=1)), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.floor(dt.timedelta(days=1)), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.round(dt.timedelta(seconds=1)), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.isoformat(), str), str)
     check(assert_type(td.to_numpy(), np.timedelta64), np.timedelta64)
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
     # TODO: pandas-dev/pandas#66608 remove the conditional warning
-    with pytest_warns_conditioned(
-        DeprecationWarning,
-        r"The 'generic' unit for NumPy timedelta is deprecated",
-        NP_GTE_25,
-    ):
+    if NP_GTE_25:
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            r"The 'generic' unit for NumPy timedelta is deprecated",
+            lower="3.0.0",
+            upper="3.0.99",
+        ):
+            check(assert_type(td.view(np.int64), object), np.int64)
+
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            r"The 'generic' unit for NumPy timedelta is deprecated",
+            lower="3.0.0",
+            upper="3.0.99",
+        ):
+            check(assert_type(td.view("i8"), object), np.int64)
+    else:
         check(assert_type(td.view(np.int64), object), np.int64)
-    with pytest_warns_conditioned(
-        DeprecationWarning,
-        r"The 'generic' unit for NumPy timedelta is deprecated",
-        NP_GTE_25,
-    ):
         check(assert_type(td.view("i8"), object), np.int64)
 
     check(assert_type(td.as_unit("s"), pd.Timedelta), pd.Timedelta)
@@ -569,12 +585,8 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    if sys.version_info >= (3, 12):
-        # numpy >= 2.5 has eliminated the type checking errors
-        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
-    else:
-        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-        check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+    # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+    check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -616,12 +628,8 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    if sys.version_info >= (3, 12):
-        # numpy >= 2.5 has eliminated the type checking errors
-        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
-    else:
-        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-        check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+    # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+    check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
@@ -1020,6 +1028,16 @@ def test_timestamp_construction() -> None:
         ),
         pd.Timestamp,
     )
+
+
+def test_timestamp_dunder_methods() -> None:
+    ts = pd.Timestamp(year=2026, month=8, day=15, hour=7, tz="Europe/Berlin")
+
+    check(assert_type(ts.__format__(""), str), str)
+    check(assert_type(ts.__hash__(), int), int)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        ts.__format__(fmt="")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[positional-only-parameter-as-kwarg]
 
 
 def test_timestamp_properties() -> None:
@@ -1501,18 +1519,21 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.round("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.round("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.round("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round(dt.timedelta(seconds=1)), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts2.ceil("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil(dt.timedelta(seconds=1)), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts2.floor("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor(dt.timedelta(seconds=1)), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts2.as_unit("s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.as_unit("ms"), pd.Timestamp), pd.Timestamp)
@@ -1970,7 +1991,12 @@ def test_period_methods() -> None:
     check(assert_type(hash(p3), int), int)
 
 
-def test_nattype_hashable() -> None:
+def test_offset_dunder_methods() -> None:
+    do = pd.DateOffset()
+    check(assert_type(do.__hash__(), int), int)
+
+
+def test_nattype_dunder_methods() -> None:
     # GH 827
     check(assert_type(pd.NaT.__hash__(), int), int)
 
@@ -1986,6 +2012,13 @@ def test_nat_comparison() -> None:
     check(assert_type(pd.NaT != pd.NA, NAType), NAType)
 
 
+def test_nat_round_floor_ceil_timedelta() -> None:
+    td = dt.timedelta(hours=1)
+    check(assert_type(pd.NaT.round(td), NaTType), NaTType)
+    check(assert_type(pd.NaT.floor(td), NaTType), NaTType)
+    check(assert_type(pd.NaT.ceil(td), NaTType), NaTType)
+
+
 def test_nat_comparison_with_date() -> None:
     # 2.0.0: inequality comparisons of NaT with dt.date now raise TypeError
     # pandas-dev/pandas#39196
@@ -1999,11 +2032,11 @@ def test_nat_comparison_with_date() -> None:
 
     # Inequality comparisons should raise TypeError
     if TYPE_CHECKING_INVALID_USAGE:
-        _llt = pd.NaT < date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lgt = pd.NaT > date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lle = pd.NaT <= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lge = pd.NaT >= date_obj  # type: ignore[arg-type]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _rlt = date_obj < pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _rgt = date_obj > pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _rle = date_obj <= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _rge = date_obj >= pd.NaT  # type: ignore[operator]  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _llt = pd.NaT < date_obj  # type: ignore[arg-type] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lgt = pd.NaT > date_obj  # type: ignore[arg-type] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lle = pd.NaT <= date_obj  # type: ignore[arg-type] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lge = pd.NaT >= date_obj  # type: ignore[arg-type] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rlt = date_obj < pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rgt = date_obj > pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rle = date_obj <= pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _rge = date_obj >= pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]

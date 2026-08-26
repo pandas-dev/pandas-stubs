@@ -15,8 +15,9 @@ from typing import (
 
 from dateutil.relativedelta import weekday as WeekdayClass
 import numpy as np
-from pandas import Timestamp
+from typing_extensions import override
 
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     Frequency,
     ShapeT,
@@ -33,8 +34,11 @@ class ApplyTypeError(TypeError): ...
 class BaseOffset:
     n: int
     def __init__(self, n: int = ..., normalize: bool = ...) -> None: ...
+    @override
     def __eq__(self, other: object) -> bool: ...
+    @override
     def __ne__(self, other: object) -> bool: ...
+    @override
     def __hash__(self) -> int: ...
     @property
     def kwds(self) -> dict[str, Any]: ...
@@ -113,6 +117,7 @@ def to_offset(freq: Frequency | timedelta, is_period: bool = False) -> BaseOffse
 class Tick(SingleConstructorOffset):
     def __init__(self, n: int = ..., normalize: bool = ...) -> None: ...
     @property
+    @override
     def nanos(self) -> int: ...
 
 class Day(Tick): ...
@@ -239,9 +244,17 @@ class CustomBusinessDay(BusinessDay):
         self,
         n: int = ...,
         normalize: bool = ...,
-        holidays: list[Any] = ...,
-        calendar: AbstractHolidayCalendar | np.busdaycalendar = ...,
+        weekmask: str = ...,
+        holidays: list[Any] | None = ...,
+        calendar: AbstractHolidayCalendar | np.busdaycalendar | None = ...,
+        offset: timedelta = ...,
     ) -> None: ...
+    @property
+    def weekmask(self) -> str: ...
+    @property
+    def holidays(self) -> tuple[np.datetime64, ...]: ...
+    @property
+    def calendar(self) -> np.busdaycalendar: ...
 
 class CustomBusinessHour(BusinessHour):
     def __init__(

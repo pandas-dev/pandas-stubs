@@ -32,6 +32,7 @@ from typing import (
     assert_type,
 )
 import uuid
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -301,7 +302,8 @@ def test_assign() -> None:
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
-        return df["a"]
+        # ty thinks Series[str] is not a subtype of Series[Any]
+        return df["a"]  # ty: ignore[unsound-return-statement]
 
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
@@ -323,13 +325,7 @@ def test_assign() -> None:
     check(assert_type(df.assign(c=df["a"].index), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=df["a"].to_numpy()), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=2), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(
-            df.assign(c=my_unnamed_func),  # pyright: ignore[reportUnknownArgumentType]
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(df.assign(c=my_unnamed_func), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=None), pd.DataFrame), pd.DataFrame)
@@ -1122,6 +1118,14 @@ def test_types_apply() -> None:
 
     check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
+    # GH 1896: first parameter is named func at runtime
+    check(assert_type(df.apply(func=np.exp), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.apply(func=returns_scalar), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+
     # Check various return types for default result_type (None) with default axis (0)
     check(
         assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, np.integer
@@ -1339,13 +1343,7 @@ def test_types_apply() -> None:
 def test_types_map() -> None:
     # GH774
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(
-        assert_type(
-            df.map(lambda x: x**2),  # pyright: ignore[reportUnknownArgumentType]
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(df.map(lambda x: x**2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.map(np.exp), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.map(str), pd.DataFrame), pd.DataFrame)
     # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -1832,14 +1830,10 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
 
 def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using list of strings."""
-    # TODO: https://github.com/facebook/pyrefly/issues/3268
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["sum", "mean"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["sum", "mean"]
             ),
             pd.DataFrame,
         ),
@@ -1848,10 +1842,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["min", "max", "count"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["min", "max", "count"]
             ),
             pd.DataFrame,
         ),
@@ -1860,10 +1851,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["std", "var", "median"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["std", "var", "median"]
             ),
             pd.DataFrame,
         ),
@@ -1872,14 +1860,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=[  # pyrefly: ignore[bad-argument-type]
-                    "first",
-                    "last",
-                    "nunique",
-                ],
+                values="C", index="A", columns="B", aggfunc=["first", "last", "nunique"]
             ),
             pd.DataFrame,
         ),
@@ -1906,10 +1887,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["sum", np.mean],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["sum", np.mean]
             ),
             pd.DataFrame,
         ),
@@ -1918,10 +1896,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=[np.sum, "mean", np.max],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=[np.sum, "mean", np.max]
             ),
             pd.DataFrame,
         ),
@@ -1931,14 +1906,13 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
 
 def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
     """Test dict of aggfuncs mapping columns to functions."""
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
     check(
         assert_type(
             sample_df.pivot_table(
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={"C": "sum", "D": "mean"},  # pyrefly: ignore[bad-argument-type]
+                aggfunc={"C": "sum", "D": "mean"},
             ),
             pd.DataFrame,
         ),
@@ -1950,7 +1924,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={"C": "min", "D": "max"},  # pyrefly: ignore[bad-argument-type]
+                aggfunc={"C": "min", "D": "max"},
             ),
             pd.DataFrame,
         ),
@@ -1962,10 +1936,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={  # pyrefly: ignore[bad-argument-type]
-                    "C": "nunique",
-                    "D": "count",
-                },
+                aggfunc={"C": "nunique", "D": "count"},
             ),
             pd.DataFrame,
         ),
@@ -1991,10 +1962,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={  # pyrefly: ignore[bad-argument-type]
-                    "C": "sum",
-                    "D": np.mean,
-                },
+                aggfunc={"C": "sum", "D": np.mean},
             ),
             pd.DataFrame,
         ),
@@ -2766,8 +2734,8 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
-                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
+                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
+                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
             ),
             pd.DataFrame,
         ),
@@ -2802,6 +2770,11 @@ def test_types_dot() -> None:
     check(assert_type(df1.dot(np_array), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1 @ s1, pd.Series), pd.Series)
     check(assert_type(df1.dot(s1), pd.Series), pd.Series)
+    list_like = [[0, 1], [1, 2], [-1, -1], [2, 0]]
+    check(assert_type(df1.dot(list_like), pd.DataFrame), pd.DataFrame)
+    time = pd.DataFrame({"HH": [1, 2, 3], "MM": [4, 5, 6]})
+    seconds = time.dot([3600, 60])
+    check(assert_type(seconds, pd.Series), pd.Series)
 
 
 def test_read_csv(tmp_path: Path) -> None:
@@ -3490,11 +3463,7 @@ def test_to_dict_into_ordered_dict() -> None:
     data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
 
     check(
-        assert_type(
-            # into is a generic class with no default type parameters, hence the pyright ignore
-            data.to_dict(into=OrderedDict),
-            OrderedDict[Any, Any],  # pyright: ignore[reportUnknownArgumentType]
-        ),
+        assert_type(data.to_dict(into=OrderedDict), OrderedDict[Any, Any]),
         OrderedDict,
         tuple,
     )
@@ -3514,9 +3483,7 @@ def test_to_dict_into_ordered_dict() -> None:
     )
     check(
         assert_type(
-            # into is a generic class with no default type parameters, hence the pyright ignore
-            data.to_dict("records", into=OrderedDict),
-            list[OrderedDict[Any, Any]],  # pyright: ignore[reportUnknownArgumentType]
+            data.to_dict("records", into=OrderedDict), list[OrderedDict[Any, Any]]
         ),
         list,
         OrderedDict,
@@ -3943,34 +3910,45 @@ def test_select_dtypes() -> None:
     check(assert_type(df.select_dtypes(np.number), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(object), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(include="bool"), pd.DataFrame), pd.DataFrame)
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
+    # TODO: facebook/pyrefly#3268
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                include=["float64"], exclude=None
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(include=["float64"], exclude=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                exclude=["int64"], include=None
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(exclude=["int64"], include=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                exclude=["int64", object]
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(exclude=["int64", object]),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"Passing 'datetimetz' to select_dtypes is deprecated and will raise",
+        "3.0.99",
+    ):
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
+                    exclude=["datetimetz"]
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
@@ -3982,7 +3960,7 @@ def test_select_dtypes() -> None:
                     "timedelta",
                     "timedelta64",
                     "category",
-                    "datetimetz",
+                    pd.DatetimeTZDtype(tz=ZoneInfo("UTC")),
                     "datetime64[ns]",
                 ]
             ),
@@ -4191,13 +4169,7 @@ def test_combine() -> None:
     )
     assert_type(
         check(
-            df1.combine(
-                df2,
-                take_smaller,  # pyright: ignore[reportUnknownArgumentType]
-                fill_value=0,
-                overwrite=False,
-            ),
-            pd.DataFrame,
+            df1.combine(df2, take_smaller, fill_value=0, overwrite=False), pd.DataFrame
         ),
         pd.DataFrame,
     )

@@ -841,14 +841,7 @@ def test_types_apply() -> None:
     ss = s.astype(str)
     check(assert_type(ss.apply(get_depth), pd.Series), pd.Series, np.integer)
 
-    check(
-        assert_type(
-            s.apply(lambda x: pd.NA),  # pyright: ignore[reportUnknownArgumentType]
-            pd.Series,
-        ),
-        pd.Series,
-        NAType,
-    )
+    check(assert_type(s.apply(lambda _: pd.NA), pd.Series), pd.Series, NAType)
 
 
 def test_types_element_wise_arithmetic() -> None:
@@ -932,7 +925,7 @@ def test_types_groupby() -> None:
     s.groupby(s > 2)
     # GH 284
     s.groupby([s > 2, s % 2 == 1])
-    s.groupby(lambda x: x)  # pyright: ignore[reportUnknownArgumentType]
+    s.groupby(lambda x: x)
     s.groupby(
         [
             lambda x: x,
@@ -941,7 +934,7 @@ def test_types_groupby() -> None:
     )
     s.groupby(np.array([1, 0, 1, 0]))
     s.groupby([np.array([1, 0, 0, 0]), np.array([0, 0, 1, 0])])
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
+    # TODO: facebook/pyrefly#3268
     s.groupby({"a": 1, "b": 2})  # pyrefly: ignore[no-matching-overload]
     s.groupby([{"a": 1, "b": 3}, {"a": 1, "b": 1}])
     s.groupby(s.index)
@@ -970,7 +963,7 @@ def test_types_groupby_methods() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.sum(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.sum(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
         s.prod(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
         s.std(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
         s.var(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
@@ -1152,9 +1145,7 @@ def test_types_groupby_transform() -> None:
 
     check(
         assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
-            ).transform(transform_func, True, kw_arg="foo"),
+            s.groupby(lambda x: x).transform(transform_func, True, kw_arg="foo"),
             "pd.Series[float]",
         ),
         pd.Series,
@@ -1162,32 +1153,16 @@ def test_types_groupby_transform() -> None:
     )
     check(
         assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
-            ).transform(transform_func, True, engine="cython", kw_arg="foo"),
+            s.groupby(lambda x: x).transform(
+                transform_func, True, engine="cython", kw_arg="foo"
+            ),
             "pd.Series[float]",
         ),
         pd.Series,
         float,
     )
-    check(
-        assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
-            ).transform("mean"),
-            pd.Series,
-        ),
-        pd.Series,
-    )
-    check(
-        assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType]
-            ).transform("first"),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(s.groupby(lambda x: x).transform("mean"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(lambda x: x).transform("first"), pd.Series), pd.Series)
 
 
 def test_types_groupby_aggregate() -> None:
@@ -1433,7 +1408,7 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             s.rename_axis(
-                index=lambda name: name.upper()  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
+                index=lambda name: name.upper()  # pyright: ignore[reportUnknownMemberType]
             ),
             "pd.Series[int]",
         ),
@@ -1797,11 +1772,8 @@ def test_cat_ctor_values() -> None:
     s = ["a", "b", "a"]
     check(assert_type(pd.Categorical(s), "pd.Categorical[str]"), pd.Categorical)
     # GH 107
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"
-        ),
+        assert_type(pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"),
         pd.Categorical,
     )
 
@@ -2935,15 +2907,7 @@ def test_types_apply_set() -> None:
     series_of_lists: pd.Series = pd.Series(
         {"list1": [1, 2, 3], "list2": ["a", "b", "c"], "list3": [True, False, True]}
     )
-    check(
-        assert_type(
-            series_of_lists.apply(
-                lambda x: set(x)  # pyright: ignore[reportUnknownArgumentType]
-            ),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(series_of_lists.apply(set), pd.Series), pd.Series, set)
 
 
 def test_prefix_summix_axis() -> None:
@@ -2995,13 +2959,7 @@ def test_convert_dtypes_dtype_backend() -> None:
 def test_apply_returns_none() -> None:
     # GH 557
     s = pd.Series([1, 2, 3])
-    check(
-        assert_type(
-            s.apply(lambda x: None),  # pyright: ignore[reportUnknownArgumentType]
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(s.apply(lambda _: None), pd.Series), pd.Series)
 
 
 def test_to_json_mode() -> None:
@@ -3449,10 +3407,9 @@ def test_map() -> None:
 
     unknown_series = pd.Series([1, 0, None])
     check(
-        # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
-        assert_type(  # pyrefly: ignore[assert-type]
-            unknown_series.map({1: True, 0: False, None: None}), pd.Series
-        ),
+        # TODO: facebook/pyrefly#3268
+        # pyrefly: ignore[assert-type]
+        assert_type(unknown_series.map({1: True, 0: False, None: None}), pd.Series),
         pd.Series,
     )
 
@@ -3574,12 +3531,7 @@ def test_apply_dateoffset() -> None:
     s = pd.Series(months)
     check(
         assert_type(
-            s.apply(
-                lambda x: pd.DateOffset(  # pyright: ignore[reportUnknownArgumentType]
-                    months=x  # pyright: ignore[reportUnknownArgumentType]
-                )
-            ),
-            "pd.Series[BaseOffset]",
+            s.apply(lambda x: pd.DateOffset(months=x)), "pd.Series[BaseOffset]"
         ),
         pd.Series,
         pd.DateOffset,

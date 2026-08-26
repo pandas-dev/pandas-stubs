@@ -1,4 +1,3 @@
-# pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
 from collections.abc import (
@@ -7,6 +6,7 @@ from collections.abc import (
     Iterator,
 )
 from typing import (
+    TYPE_CHECKING,
     Any,
     assert_type,
 )
@@ -25,6 +25,9 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+
+if TYPE_CHECKING:
+    from pandas._typing import S1
 
 
 def test_types_groupby_as_index() -> None:
@@ -158,7 +161,7 @@ def test_types_groupby() -> None:
     )
     check(
         assert_type(
-            df.groupby(lambda x: x),  # pyright: ignore[reportUnknownArgumentType]
+            df.groupby(lambda x: x),
             "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
         ),
         DataFrameGroupBy,
@@ -293,16 +296,10 @@ def test_types_groupby_agg() -> None:
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
-    def wrapped_min(x: pd.Series) -> Scalar:
-        return x.min()  # type: ignore[no-any-return]
+    def wrapped_min(x: pd.Series[S1]) -> S1:
+        return x.min()
 
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.groupby("col1")["col3"].agg(min), pd.Series
-        ),
-        pd.Series,
-    )
+    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
     check(
         assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
         pd.DataFrame,
@@ -631,7 +628,8 @@ def test_groupby_apply() -> None:
     df_gb = df.groupby("col1")
 
     def sum_mean(x: pd.DataFrame) -> float:
-        return x.sum().mean()
+        # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+        return x.sum().mean()  # ty: ignore[unsound-return-statement]
 
     check(assert_type(df_gb.apply(sum_mean), pd.Series), pd.Series)
 
@@ -710,16 +708,9 @@ def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
+    check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.groupby("col1").col3.agg(min), pd.Series
-        ),
-        pd.Series,
-    )
-    check(
-        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame), pd.DataFrame
     )
 
 

@@ -12,6 +12,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from pandas import Index
 from pandas._stubs_only import (
@@ -20,6 +21,7 @@ from pandas._stubs_only import (
     OrderableTimesT,
 )
 from pandas.core.indexes.extension import ExtensionIndex
+from typing_extensions import override
 
 from pandas._libs.interval import (
     Interval as Interval,
@@ -32,7 +34,6 @@ from pandas._typing import (
     Frequency,
     IntervalClosedType,
     IntervalT,
-    Label,
     MaskType,
     np_1darray_bool,
     np_ndarray_anyint,
@@ -41,7 +42,6 @@ from pandas._typing import (
     np_ndarray_int64,
     np_ndarray_intp,
     np_ndarray_td,
-    npt,
 )
 
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
@@ -243,16 +243,16 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     ) -> IntervalIndex[pd.Interval[pd.Timedelta]]: ...
     def to_tuples(self, na_tuple: bool = True) -> pd.Index: ...
     @overload
-    def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    @override
+    def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[overload-overlap]
     @overload
-    def __contains__(self, key: object) -> Literal[False]: ...
-    def astype(self, dtype: DtypeArg, copy: bool = True) -> IntervalIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
-    @property
-    def inferred_type(self) -> str: ...
-    def memory_usage(self, deep: bool = False) -> int: ...
+    def __contains__(  # pyright: ignore[reportOverlappingOverload]
+        self, key: object
+    ) -> Literal[False]: ...
+    @override
+    def astype(self, dtype: DtypeArg, copy: bool = True) -> IntervalIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @property
     def is_overlapping(self) -> bool: ...
-    def get_loc(self, key: Label) -> int | slice | np_1darray_bool: ...
     @property
     def left(self: IntervalIndex[Interval[OrderableT]]) -> Index[OrderableT]: ...
     @property
@@ -260,6 +260,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     mid = _MidDescriptor()
     length = _LengthDescriptor()
     @overload  # type: ignore[override]
+    @override
     def __getitem__(  # pyrefly: ignore[bad-override]
         self,
         idx: (
@@ -276,6 +277,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, idx: int
     ) -> IntervalT: ...
     @overload  # type: ignore[override]
+    @override
     def __gt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_1darray_bool: ...
@@ -284,6 +286,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
+    @override
     def __ge__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_1darray_bool: ...
@@ -292,6 +295,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
+    @override
     def __le__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_1darray_bool: ...
@@ -300,6 +304,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
+    @override
     def __lt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_1darray_bool: ...
@@ -308,21 +313,24 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
-    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
+    @override
+    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
         self, other: object
     ) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
+    @override
+    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
     @overload
     def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
         self, other: object
     ) -> Literal[True]: ...
+    @override
     def diff(self, periods: int = 1) -> Never: ...
 
 # misc here because int and float overlap but interval has distinct types

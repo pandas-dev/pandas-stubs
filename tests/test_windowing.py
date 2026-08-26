@@ -1,4 +1,5 @@
 # pyright: reportMissingTypeArgument=false
+from __future__ import annotations
 
 import datetime as dt
 import sys
@@ -40,6 +41,35 @@ S = Series(np.random.standard_normal(700))
 DF = DataFrame({"col1": S, "col2": S})
 S_DTI = Series(data=np.random.standard_normal(700), index=IDX)
 DF_DTI = DataFrame(data=np.random.standard_normal(700), index=IDX)
+
+
+def _s_mean(s: Series) -> float:
+    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+    return s.mean()  # ty: ignore[unsound-return-statement]
+
+
+def _np_mean_s_0(s: Series) -> np_ndarray:
+    # numpy >= 2.5 has eliminated the type checking errors
+    if sys.version_info >= (3, 12):
+        return np.mean(s, axis=0)
+    else:  # noqa: RET505
+        return np.mean(s, axis=0)  # type: ignore[no-any-return]
+
+
+def _df_mean(df: DataFrame) -> Series:
+    return df.mean()
+
+
+def _np_mean_df(df: DataFrame) -> float:
+    return float(np.mean(df))
+
+
+def _np_mean_df_0(df: DataFrame) -> np_ndarray:
+    # numpy >= 2.5 has eliminated the type checking errors
+    if sys.version_info >= (3, 12):
+        return np.mean(df, axis=0)
+    else:  # noqa: RET505
+        return np.mean(df, axis=0)  # type: ignore[no-any-return]
 
 
 def test_rolling_basic() -> None:
@@ -96,25 +126,13 @@ def test_rolling_datetime_index() -> None:
 
 def test_rolling_apply() -> None:
     check(assert_type(DF.rolling(10).apply(np.mean), DataFrame), DataFrame)
-
-    def _mean(df: DataFrame) -> Series:
-        return df.mean()
-
-    check(assert_type(DF.rolling(10).apply(_mean), DataFrame), DataFrame)
-
-    def _mean2(df: DataFrame) -> np_ndarray:
-        # numpy >= 2.5 has eliminated the type checking errors
-        if sys.version_info >= (3, 12):
-            return np.mean(df, axis=0)
-        else:  # noqa: RET505
-            return np.mean(df, axis=0)  # type: ignore[no-any-return]
-
-    check(assert_type(DF.rolling(10).apply(_mean2, raw=True), DataFrame), DataFrame)
-
-    def _mean4(df: DataFrame) -> float:
-        return float(np.mean(df))
-
-    check(assert_type(DF.rolling(10).apply(_mean4, raw=True), DataFrame), DataFrame)
+    check(assert_type(DF.rolling(10).apply(_df_mean), DataFrame), DataFrame)
+    check(
+        assert_type(DF.rolling(10).apply(_np_mean_df_0, raw=True), DataFrame), DataFrame
+    )
+    check(
+        assert_type(DF.rolling(10).apply(_np_mean_df, raw=True), DataFrame), DataFrame
+    )
 
 
 def test_rolling_aggregate() -> None:
@@ -133,10 +151,7 @@ def test_rolling_aggregate() -> None:
 
     check(assert_type(DF.rolling(10).aggregate("mean"), DataFrame), DataFrame)
 
-    def _mean(df: DataFrame) -> Series:
-        return df.mean()
-
-    check(assert_type(DF.rolling(10).aggregate(_mean), DataFrame), DataFrame)
+    check(assert_type(DF.rolling(10).aggregate(_df_mean), DataFrame), DataFrame)
 
     check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
     check(
@@ -183,29 +198,14 @@ def test_rolling_basic_math_series() -> None:
 
 def test_rolling_apply_series() -> None:
     check(assert_type(S.rolling(10).apply(np.mean), Series), Series)
-
-    def _mean(df: Series) -> float:
-        return df.mean()
-
-    check(assert_type(S.rolling(10).apply(_mean), Series), Series)
-
-    def _mean2(df: Series) -> np_ndarray:
-        # numpy >= 2.5 has eliminated the type checking errors
-        if sys.version_info >= (3, 12):
-            return np.mean(df, axis=0)
-        else:  # noqa: RET505
-            return np.mean(df, axis=0)  # type: ignore[no-any-return]
-
-    check(assert_type(S.rolling(10).apply(_mean2, raw=True), Series), Series)
+    check(assert_type(S.rolling(10).apply(_s_mean), Series), Series)
+    check(assert_type(S.rolling(10).apply(_np_mean_s_0, raw=True), Series), Series)
 
 
 def test_rolling_aggregate_series() -> None:
     check(assert_type(S.rolling(10).aggregate("mean"), Series), Series)
 
-    def _mean(s: Series) -> float:
-        return s.mean()
-
-    check(assert_type(S.rolling(10).aggregate(_mean), Series), Series)
+    check(assert_type(S.rolling(10).aggregate(_s_mean), Series), Series)
 
     check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
 
@@ -216,7 +216,7 @@ def test_rolling_aggregate_series() -> None:
     )
     check(
         assert_type(
-            S.rolling(10).aggregate({"col1": np.mean, "col2": "mean", "col3": _mean}),
+            S.rolling(10).aggregate({"col1": np.mean, "col2": "mean", "col3": _s_mean}),
             DataFrame,
         ),
         DataFrame,
@@ -249,25 +249,14 @@ def test_expanding_basic_math() -> None:
 
 def test_expanding_apply() -> None:
     check(assert_type(DF.expanding(10).apply(np.mean), DataFrame), DataFrame)
-
-    def _mean(df: DataFrame) -> Series:
-        return df.mean()
-
-    check(assert_type(DF.expanding(10).apply(_mean), DataFrame), DataFrame)
-
-    def _mean2(df: DataFrame) -> np_ndarray:
-        # numpy >= 2.5 has eliminated the type checking errors
-        if sys.version_info >= (3, 12):
-            return np.mean(df, axis=0)
-        else:  # noqa: RET505
-            return np.mean(df, axis=0)  # type: ignore[no-any-return]
-
-    check(assert_type(DF.expanding(10).apply(_mean2, raw=True), DataFrame), DataFrame)
-
-    def _mean4(df: DataFrame) -> float:
-        return float(np.mean(df))
-
-    check(assert_type(DF.expanding(10).apply(_mean4, raw=True), DataFrame), DataFrame)
+    check(assert_type(DF.expanding(10).apply(_df_mean), DataFrame), DataFrame)
+    check(
+        assert_type(DF.expanding(10).apply(_np_mean_df_0, raw=True), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(DF.expanding(10).apply(_np_mean_df, raw=True), DataFrame), DataFrame
+    )
 
 
 def test_expanding_aggregate() -> None:
@@ -307,20 +296,8 @@ def test_expanding_basic_math_series() -> None:
 
 def test_expanding_apply_series() -> None:
     check(assert_type(S.expanding(10).apply(np.mean), Series), Series)
-
-    def _mean(df: Series) -> float:
-        return df.mean()
-
-    check(assert_type(S.expanding(10).apply(_mean), Series), Series)
-
-    def _mean2(df: Series) -> np_ndarray:
-        # numpy >= 2.5 has eliminated the type checking errors
-        if sys.version_info >= (3, 12):
-            return np.mean(df, axis=0)
-        else:  # noqa: RET505
-            return np.mean(df, axis=0)  # type: ignore[no-any-return]
-
-    check(assert_type(S.expanding(10).apply(_mean2, raw=True), Series), Series)
+    check(assert_type(S.expanding(10).apply(_s_mean), Series), Series)
+    check(assert_type(S.expanding(10).apply(_np_mean_s_0, raw=True), Series), Series)
 
 
 def test_expanding_aggregate_series() -> None:

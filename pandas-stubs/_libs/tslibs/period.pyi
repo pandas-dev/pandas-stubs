@@ -11,6 +11,7 @@ from pandas.core.indexes.base import Index
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.offsets import BaseOffset
@@ -80,7 +81,8 @@ class Period(PeriodMixin):
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __eq__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    @override
+    def __eq__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
@@ -88,7 +90,9 @@ class Period(PeriodMixin):
     @overload
     def __eq__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: object) -> Literal[False]: ...
+    def __eq__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: object
+    ) -> Literal[False]: ...
     @overload
     def __ge__(self, other: Self) -> bool: ...
     @overload
@@ -124,7 +128,8 @@ class Period(PeriodMixin):
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __ne__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    @override
+    def __ne__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
@@ -132,7 +137,9 @@ class Period(PeriodMixin):
     @overload
     def __ne__(self, other: np_ndarray_object[ShapeT]) -> np_ndarray_bool[ShapeT]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: object) -> Literal[True]: ...
+    def __ne__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: object
+    ) -> Literal[True]: ...
     @property
     def day(self) -> int: ...
     @property
@@ -144,6 +151,7 @@ class Period(PeriodMixin):
     @property
     def days_in_month(self) -> int: ...
     @property
+    @override
     def end_time(self) -> Timestamp: ...
     @property
     def freq(self) -> BaseOffset: ...
@@ -166,6 +174,7 @@ class Period(PeriodMixin):
     @property
     def is_leap_year(self) -> bool: ...
     @property
+    @override
     def start_time(self) -> Timestamp: ...
     @property
     def week(self) -> int: ...

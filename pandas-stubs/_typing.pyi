@@ -554,7 +554,7 @@ NumpyVoidDtypeArg: TypeAlias = type[np.void] | Literal["V", "void"]
 VoidDtypeArg: TypeAlias = NumpyVoidDtypeArg
 
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
-DtypeArg: TypeAlias = Dtype | Mapping[Hashable, Dtype]
+DtypeArg: TypeAlias = Dtype | Mapping[HashableT0, Dtype]
 DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 AstypeArg: TypeAlias = (
@@ -574,7 +574,7 @@ AstypeArg: TypeAlias = (
 )
 
 # converters
-ConvertersArg: TypeAlias = Mapping[Hashable, Callable[[Dtype], Dtype]]
+ConvertersArg: TypeAlias = Mapping[HashableT0, Callable[[Dtype], Dtype]]
 
 # parse_dates
 ParseDatesArg: TypeAlias = (
@@ -719,7 +719,7 @@ FormattersType: TypeAlias = (
 # ColspaceType = Mapping[Hashable, Union[str, int]] not used in stubs
 FloatFormatType: TypeAlias = str | Callable[[float], str] | EngFormatter
 ColspaceArgType: TypeAlias = (
-    str | int | Sequence[int | str] | Mapping[Hashable, str | int]
+    str | int | Sequence[int | str] | Mapping[HashableT0, str | int]
 )
 
 # Arguments for fillna()
@@ -1225,7 +1225,8 @@ Incomplete: TypeAlias = Any
 # differentiating between bool and int/float/complex
 # https://github.com/pandas-dev/pandas-stubs/pull/1312#pullrequestreview-3126128971
 class Just(Protocol, Generic[T]):
-    @property  # type: ignore[override]
+    # TODO: python/mypy#15900 we did use explicit override but mypy does not see it
+    @property  # type: ignore[override,explicit-override]
     @override
     def __class__(self, /) -> type[T]: ...  # pyrefly: ignore[bad-override]
     @__class__.setter
@@ -1236,9 +1237,12 @@ class Just(Protocol, Generic[T]):
 # TODO: caveats astral-sh/ty#4150 python/mypy#21795
 class CovariantList(Protocol[_T_co]):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
-    @property  # type: ignore[override]
+    # TODO: python/mypy#15900 we did use explicit override but mypy does not see it
+    @property  # type: ignore[override,explicit-override]
+    @override
     def __class__(self) -> type[list[Any]]: ...  # pyrefly: ignore[bad-override]
     @__class__.setter
+    @override
     def __class__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, value: type[list[Any]], /
     ) -> None: ...

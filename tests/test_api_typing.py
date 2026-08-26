@@ -1,6 +1,7 @@
 # mypy: disable-error-code=type-arg
-# pyright: reportMissingTypeArgument=false,reportUnknownArgumentType=false,reportUnknownParameterType=false
-# ty: ignore[missing-type-argument]
+# pyright: reportMissingTypeArgument=false,reportUnknownParameterType=false
+# ty ignore missing-type-argument is unnecessary with dist, but necessary with src
+# ty: ignore[missing-type-argument,unused-ignore-comment,unused-ignore-comment]
 """Test module for classes in pandas.api.typing."""
 
 from pathlib import Path
