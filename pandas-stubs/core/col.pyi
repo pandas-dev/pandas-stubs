@@ -12,7 +12,7 @@ from pandas._typing import Scalar
 
 class Expression:
     # `__eq__` returns an `Expression`, so instances are unhashable at runtime
-    __hash__: ClassVar[None]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleMethodOverride]
+    __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
 
     # binary ops
     def __add__(self, other: Scalar | Series | Self) -> Expression: ...
@@ -30,9 +30,9 @@ class Expression:
     def __le__(self, other: Scalar | Series | Self) -> Expression: ...
     def __lt__(self, other: Scalar | Series | Self) -> Expression: ...
     @override
-    def __eq__(self, other: object) -> Expression: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]  # pyrefly: ignore[bad-override]
+    def __eq__(self, other: object) -> Expression: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-override]
     @override
-    def __ne__(self, other: object) -> Expression: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]  # pyrefly: ignore[bad-override]
+    def __ne__(self, other: object) -> Expression: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-override]
     def __mod__(self, other: Scalar | Series | Self) -> Expression: ...
     def __rmod__(self, other: Scalar | Series | Self) -> Expression: ...
 

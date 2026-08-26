@@ -143,7 +143,7 @@ class MultiIndex(Index):
     # pyrefly: ignore[bad-override]
     def unique(self, level: None = None) -> MultiIndex: ...
     @overload
-    def unique(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def unique(  # ty: ignore[invalid-method-override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, level: Level
     ) -> Index: ...
     @override

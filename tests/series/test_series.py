@@ -3708,7 +3708,7 @@ def test_align() -> None:
     check(assert_type(aligned_s1, pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _0 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
 
 
 def test_unknown() -> None:
@@ -3874,29 +3874,29 @@ def test_series_primitive_conversions() -> None:
     check(assert_type(bytes(s_int), bytes), bytes)
     check(assert_type(bytearray(s_int), bytearray), bytearray)
     if TYPE_CHECKING_INVALID_USAGE:
-        int(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        float(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        complex(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        math.trunc(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        math.ceil(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        math.floor(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        memoryview(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        int(s_int)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        float(s_int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        complex(s_int)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        math.trunc(s_int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        math.ceil(s_int)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        math.floor(s_int)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        memoryview(s_int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
     s_any: pd.Series[Any] = pd.Series([1, 2, 3])
     check(assert_type(str(s_any), str), str)
     check(assert_type(bytes(s_any), bytes), bytes)
     check(assert_type(bytearray(s_any), bytearray), bytearray)
     if TYPE_CHECKING_INVALID_USAGE:
-        int(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        float(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        complex(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        math.trunc(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        math.ceil(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        math.floor(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        memoryview(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        int(s_any)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        float(s_any)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        complex(s_any)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        math.trunc(s_any)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        math.ceil(s_any)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        math.floor(s_any)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        memoryview(s_any)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
     s_float = pd.Series([1.5, 2.5, 3.5])
     check(assert_type(str(s_float), str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        bytes(s_float)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        bytearray(s_float)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        bytes(s_float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        bytearray(s_float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
