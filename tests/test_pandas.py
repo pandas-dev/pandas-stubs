@@ -347,7 +347,7 @@ def test_concat_args() -> None:
     )
     check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.concat([df, df2], copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)

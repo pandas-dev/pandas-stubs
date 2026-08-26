@@ -20,3 +20,11 @@ repos:
     rev: 26.5.1
     hooks:
     -   id: black
+-   repo: local
+    hooks:
+    -   id: check-ignore-spacing
+        name: check typing ignore spacing
+        entry: '#.*\]\s{2,}#'
+        language: pygrep
+        types_or: [python, pyi]
+

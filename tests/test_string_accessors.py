@@ -112,9 +112,9 @@ def test_string_accessors_boolean_series() -> None:
     _check(assert_type(sr.str.contains("kapow", na=False), "pd.Series[bool]"))
 
     if TYPE_CHECKING_INVALID_USAGE:
-        sr.str.startswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        sr.str.endswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        sr.str.contains("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        sr.str.startswith("kapow", na="baz")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        sr.str.endswith("kapow", na="baz")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        sr.str.contains("kapow", na="baz")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
         sr_i = pd.Series([1])
 
@@ -192,9 +192,9 @@ def test_string_accessors_boolean_index() -> None:
     _check(assert_type(idx.str.contains("kapow", na=False), np_1darray_bool))
 
     if TYPE_CHECKING_INVALID_USAGE:
-        idx.str.startswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        idx.str.endswith("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        idx.str.contains("kapow", na="baz")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        idx.str.startswith("kapow", na="baz")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        idx.str.endswith("kapow", na="baz")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        idx.str.contains("kapow", na="baz")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
         idx_i = pd.Index([1])
 
@@ -869,7 +869,7 @@ def test_series_str_replace() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        sr.str.replace(pat={"A": "a", "B": "b"}, repl="A")  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        sr.str.replace(pat={"A": "a", "B": "b"}, repl="A")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         sr_i = pd.Series([1], name="my_messy_col")
 
