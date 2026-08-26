@@ -247,17 +247,17 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
 
 class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
-    def __getitem__(self, idx: Expression, /) -> _T: ...
+    def __getitem__(self, key: Expression, /) -> _T: ...
     @overload
-    def __getitem__(self, idx: tuple[Expression, Scalar], /) -> Series: ...
+    def __getitem__(self, key: tuple[Expression, Scalar], /) -> Series: ...
     @overload
     def __getitem__(
-        self, idx: tuple[Expression, list[HashableT] | Index | slice], /
+        self, key: tuple[Expression, list[HashableT] | Index | slice], /
     ) -> _T: ...
     @overload
     def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
-        idx: tuple[
+        key: tuple[
             int | str | Timestamp | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
             int | str | tuple[Scalar, ...],
         ],
@@ -266,7 +266,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __getitem__(
         self,
-        idx: (
+        key: (
             Callable[[DataFrame], ScalarT]
             | tuple[
                 IndexType
@@ -283,11 +283,11 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         /,
     ) -> Series: ...
     @overload
-    def __getitem__(self, idx: Scalar, /) -> Series | _T: ...
+    def __getitem__(self, key: Scalar, /) -> Series | _T: ...
     @overload
     def __getitem__(
         self,
-        idx: (
+        key: (
             tuple[Scalar, slice]
             | tuple[slice, tuple[Scalar, ...]]
             | tuple[Scalar, SequenceNotStr[Scalar]]
