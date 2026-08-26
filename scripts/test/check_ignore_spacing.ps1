@@ -3,9 +3,10 @@
     Regulate intra-comment typing ignore spacing in Python files.
 #>
 param(
+    [Parameter(Position=0, ValueFromRemainingArguments=$true)]
+    [string[]]$Files,
     [switch]$Check,
-    [switch]$Fix,
-    [string[]]$Files
+    [switch]$Fix
 )
 
 if (-not $Files -or $Files.Length -eq 0) {
@@ -33,8 +34,7 @@ foreach ($file in $Files) {
             $codePart = $line.Substring(0, $firstHash)
             $commentPart = $line.Substring($firstHash)
 
-            $newComment = [regex]::Replace($commentPart, "\]\s{2,}#", "] #")
-            $newComment = [regex]::Replace($newComment, "\]#(?!#)", "] #")
+            $newComment = [regex]::Replace($commentPart, "\]\s*#(?!#)", "] #")
 
             if ($newComment -ne $commentPart) {
                 $fileChanged = $true
@@ -50,10 +50,13 @@ foreach ($file in $Files) {
             Write-Host "Spacing violation in: $file"
             $Violations++
         } else {
+            $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
             $ending = if ($content -match "`r`n") { "`r`n" } else { "`n" }
             $newContent = ($newLines -join $ending)
-            if ($content.EndsWith("`n")) { $newContent += $ending }
-            [System.IO.File]::WriteAllText((Convert-Path $file), $newContent, [System.Text.Encoding]::UTF8)
+            if ($content.EndsWith("`n") -and -not $newContent.EndsWith($ending)) {
+                $newContent += $ending
+            }
+            [System.IO.File]::WriteAllText((Convert-Path $file), $newContent, $utf8NoBom)
             Write-Host "Formatted: $file"
             $ModifiedFiles++
         }

@@ -44,9 +44,7 @@ for file in "${FILES[@]}"; do
     if (first_hash > 0) {
       code_part = substr(line, 1, first_hash - 1)
       comment_part = substr(line, first_hash)
-      gsub(/\][ \t]{2,}#/, "] #", comment_part)
-      gsub(/\]#[^#]/, "] #&", comment_part)
-      gsub(/\] ##/, "] #", comment_part)
+      gsub(/\][ \t]*#/, "] #", comment_part)
       print code_part comment_part
     } else {
       print line
