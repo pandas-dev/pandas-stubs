@@ -95,7 +95,7 @@ def test_index_isin() -> None:
         ),
         np_1darray_bool,
     )
-    check(assert_type(mi.isin(["1"]), np_1darray_bool), np_1darray_bool)
+    check(assert_type(mi.isin(["1"], level=0), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin([1, 2, 3], "number"), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin([1, 2, 3], 0), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin(ind, 0), np_1darray_bool), np_1darray_bool)
@@ -110,12 +110,14 @@ def test_index_isin() -> None:
         assert_type(mi.isin({(1, "red"): 0, (3, "red"): 0}), np_1darray_bool),
         np_1darray_bool,
     )
-    check(
-        assert_type(
-            mi.isin({iter((1, "red")): 0, (3, "red"): 0}.keys()), np_1darray_bool
-        ),
-        np_1darray_bool,
-    )
+    if PD_LTE_31:
+        # TODO: pandas-dev/pandas#66540 pandas bug on nightly
+        check(
+            assert_type(
+                mi.isin({iter((1, "red")): 0, (3, "red"): 0}.keys()), np_1darray_bool
+            ),
+            np_1darray_bool,
+        )
     check(assert_type(mi.isin(mi), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin(iter(["1"]), 1), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin(iter([["1"]]), 1), np_1darray_bool), np_1darray_bool)
