@@ -5,17 +5,22 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
 
-# left operand
-left_i = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
+
+@pytest.fixture
+def left_i() -> pd.Index:
+    """Left operand"""
+    lo = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
+    return check(assert_type(lo, pd.Index), pd.Index)
 
 
-def test_sub_i_py_scalar() -> None:
+def test_sub_i_py_scalar(left_i: pd.Index) -> None:
     """Test pd.Index[Any] (int) - Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
@@ -30,7 +35,7 @@ def test_sub_i_py_scalar() -> None:
     check(assert_type(c - left_i, pd.Index), pd.Index)
 
 
-def test_sub_i_py_sequence() -> None:
+def test_sub_i_py_sequence(left_i: pd.Index) -> None:
     """Test pd.Index[Any] (int) - Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
@@ -45,7 +50,7 @@ def test_sub_i_py_sequence() -> None:
     check(assert_type(c - left_i, pd.Index), pd.Index)
 
 
-def test_sub_i_numpy_array() -> None:
+def test_sub_i_numpy_array(left_i: pd.Index) -> None:
     """Test pd.Index[Any] (int) - numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -88,7 +93,7 @@ def test_sub_i_numpy_array() -> None:
     )
 
 
-def test_sub_i_pd_index() -> None:
+def test_sub_i_pd_index(left_i: pd.Index) -> None:
     """Test pd.Index[Any] (int) - pandas Indexes"""
     a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
     b = pd.Index([True, False, True])
@@ -109,7 +114,7 @@ def test_sub_i_pd_index() -> None:
     check(assert_type(c - left_i, pd.Index), pd.Index)
 
 
-def test_sub_str_py_str() -> None:
+def test_sub_str_py_str(left_i: pd.Index) -> None:
     """Test pd.Series[Any] (int) - Python str"""
     s = "abc"
 
