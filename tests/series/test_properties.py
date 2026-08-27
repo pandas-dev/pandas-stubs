@@ -1,5 +1,6 @@
 # mypy: disable-error-code=type-arg
 # pyright: reportMissingTypeArgument=false
+# ty: ignore[missing-type-argument,unused-ignore-comment,unused-ignore-comment]
 from typing import (
     TYPE_CHECKING,
     assert_type,

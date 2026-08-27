@@ -6,7 +6,6 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
-    Sequence,
 )
 import datetime
 from decimal import Decimal
@@ -3571,7 +3570,7 @@ def test_map() -> None:
 
 
 def test_map_na() -> None:
-    s: pd.Series[int] = pd.Series([1, pd.NA, 3])
+    s = pd.Series([1, pd.NA, 3])
 
     mapping = {1: "a", 2: "b", 3: "c"}
     check(assert_type(s.map(mapping, na_action=None), "pd.Series[str]"), pd.Series, str)
@@ -3708,7 +3707,7 @@ def test_series_typed_dict() -> None:
 
 def test_series_empty_dtype() -> None:
     """Test for the creation of a Series from an empty list GH571 to map to a Series."""
-    new_tab: Sequence[Never] = []  # need to be typehinted to please mypy
+    new_tab = []  # type: ignore[var-annotated]
     check(assert_type(pd.Series(new_tab), pd.Series), pd.Series)
     check(assert_type(pd.Series([]), pd.Series), pd.Series)
     # ensure that an empty string does not get matched to Sequence[Never]
