@@ -48,6 +48,7 @@ from pandas.core.base import (
     ScalarArrayIndexJustComplex,
     ScalarArrayIndexJustFloat,
     ScalarArrayIndexJustInt,
+    ScalarArrayIndexPeriod,
     ScalarArrayIndexReal,
     ScalarArrayIndexTimedelta,
     Supports_ProtoAdd,
@@ -75,6 +76,7 @@ from pandas.core.strings.accessor import StrDescriptor
 from typing_extensions import override
 
 from pandas._libs.interval import Interval
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -641,110 +643,150 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @override
     def __gt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @overload
-    def __add__(self: Index[Never], other: _str) -> Index[_str]: ...
+    def __add__(self: Index[Never], other: _str, /) -> Index[_str]: ...
     @overload
     def __add__(
         self: Index[Never],
         other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
+        /,
     ) -> Index: ...
     @overload
-    def __add__(self, other: Index[Never]) -> Index: ...
-    @overload
-    def __add__(
-        self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra]
-    ) -> Index[S2]: ...
-    @overload
-    def __add__(
-        self: Index[S2_contra],
-        other: SupportsRAdd[S2_contra, S2] | Sequence[SupportsRAdd[S2_contra, S2]],
-    ) -> Index[S2]: ...
-    @overload
-    def __add__(
-        self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
-    ) -> Index[T_COMPLEX]: ...
-    @overload
-    def __add__(
-        self: Index[bool], other: np_ndarray_anyint | Index[int]
-    ) -> Index[int]: ...
-    @overload
-    def __add__(
-        self: Index[T_COMPLEX], other: np_ndarray_anyint | Index[int]
-    ) -> Index[T_COMPLEX]: ...
-    @overload
-    def __add__(
-        self: Index[bool] | Index[int], other: np_ndarray_float | Index[float]
-    ) -> Index[float]: ...
-    @overload
-    def __add__(
-        self: Index[T_COMPLEX], other: np_ndarray_float | Index[float]
-    ) -> Index[T_COMPLEX]: ...
-    @overload
-    def __add__(
-        self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex]
-    ) -> Index[complex]: ...
+    def __add__(self, other: Index[Never], /) -> Index: ...
     @overload
     def __add__(
         self: Index[_str],
         other: (
             np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
         ),
+        /,
     ) -> Never: ...
     @overload
     def __add__(
-        self: Index[_str], other: np_ndarray_str | Index[_str]
+        self: Index[_str],
+        other: _str | SequenceNotStr[_str] | np_ndarray_str | Index[_str],
+        /,
     ) -> Index[_str]: ...
     @overload
-    def __radd__(self: Index[Never], other: _str) -> Index[_str]: ...
+    def __add__(
+        self: Index[Period], other: ScalarArrayIndexPeriod, /
+    ) -> Index[Period]: ...
+    @overload
+    def __add__(
+        self: Index[BaseOffset], other: Period | Index[Period], /
+    ) -> Index[Period]: ...
+    @overload
+    def __add__(
+        self: Index[BaseOffset], other: BaseOffset | Index[BaseOffset], /
+    ) -> Index[BaseOffset]: ...
+    @overload
+    def __add__(
+        self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
+    @overload
+    def __add__(
+        self: Index[S2_contra],
+        other: (
+            SupportsRAdd[S2_contra, S2_NSDT]
+            | Sequence[SupportsRAdd[S2_contra, S2_NSDT]]
+        ),
+        /,
+    ) -> Index[S2_NSDT]: ...
+    @overload
+    def __add__(
+        self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __add__(
+        self: Index[bool], other: np_ndarray_anyint | Index[int], /
+    ) -> Index[int]: ...
+    @overload
+    def __add__(
+        self: Index[T_COMPLEX], other: np_ndarray_anyint | Index[int], /
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __add__(
+        self: Index[bool] | Index[int], other: np_ndarray_float | Index[float], /
+    ) -> Index[float]: ...
+    @overload
+    def __add__(
+        self: Index[T_COMPLEX], other: np_ndarray_float | Index[float], /
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __add__(
+        self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
+    ) -> Index[complex]: ...
+    @overload
+    def __radd__(self: Index[Never], other: _str, /) -> Index[_str]: ...
     @overload
     def __radd__(
         self: Index[Never],
         other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
+        /,
     ) -> Index: ...
     @overload
-    def __radd__(
-        self: Supports_ProtoRAdd[T_contra, S2],
-        other: T_contra | Sequence[T_contra],
-    ) -> Index[S2]: ...
-    @overload
-    def __radd__(
-        self: Index[S2_contra],
-        other: SupportsAdd[S2_contra, S2] | Sequence[SupportsAdd[S2_contra, S2]],
-    ) -> Index[S2]: ...
-    @overload
-    def __radd__(
-        self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
-    ) -> Index[T_COMPLEX]: ...
-    @overload
-    def __radd__(
-        self: Index[bool], other: np_ndarray_anyint | Index[int]
-    ) -> Index[int]: ...
-    @overload
-    def __radd__(
-        self: Index[T_COMPLEX], other: np_ndarray_anyint | Index[int]
-    ) -> Index[T_COMPLEX]: ...
-    @overload
-    def __radd__(
-        self: Index[bool] | Index[int], other: np_ndarray_float | Index[float]
-    ) -> Index[float]: ...
-    @overload
-    def __radd__(
-        self: Index[T_COMPLEX], other: np_ndarray_float | Index[float]
-    ) -> Index[T_COMPLEX]: ...
-    @overload
-    def __radd__(
-        self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex]
-    ) -> Index[complex]: ...
+    def __radd__(self, other: Index[Never], /) -> Index: ...
     @overload
     def __radd__(
         self: Index[_str],
         other: (
             np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
         ),
+        /,
     ) -> Never: ...
     @overload
     def __radd__(
-        self: Index[_str], other: np_ndarray_str | Index[_str]
+        self: Index[_str],
+        other: _str | SequenceNotStr[_str] | np_ndarray_str | Index[_str],
+        /,
     ) -> Index[_str]: ...
+    @overload
+    def __radd__(
+        self: Index[Period], other: ScalarArrayIndexPeriod, /
+    ) -> Index[Period]: ...
+    @overload
+    def __radd__(
+        self: Index[BaseOffset], other: Period | Index[Period], /
+    ) -> Index[Period]: ...
+    @overload
+    def __radd__(
+        self: Index[BaseOffset], other: BaseOffset | Index[BaseOffset], /
+    ) -> Index[BaseOffset]: ...
+    @overload
+    def __radd__(
+        self: Supports_ProtoRAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
+    @overload
+    def __radd__(
+        self: Index[S2_contra],
+        other: (
+            SupportsAdd[S2_contra, S2_NSDT] | Sequence[SupportsAdd[S2_contra, S2_NSDT]]
+        ),
+        /,
+    ) -> Index[S2_NSDT]: ...
+    @overload
+    def __radd__(
+        self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __radd__(
+        self: Index[bool], other: np_ndarray_anyint | Index[int], /
+    ) -> Index[int]: ...
+    @overload
+    def __radd__(
+        self: Index[T_COMPLEX], other: np_ndarray_anyint | Index[int], /
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __radd__(
+        self: Index[bool] | Index[int], other: np_ndarray_float | Index[float], /
+    ) -> Index[float]: ...
+    @overload
+    def __radd__(
+        self: Index[T_COMPLEX], other: np_ndarray_float | Index[float], /
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __radd__(
+        self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
+    ) -> Index[complex]: ...
     @overload
     def __sub__(self: Index[Never], other: DatetimeIndex) -> Never: ...
     @overload

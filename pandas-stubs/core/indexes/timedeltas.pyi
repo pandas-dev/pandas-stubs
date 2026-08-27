@@ -16,6 +16,10 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.base import (
+    ScalarArrayIndexDateTime,
+    ScalarArrayIndexTimedelta,
+)
 from pandas.core.indexes.accessors import TimedeltaIndexProperties
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
@@ -72,21 +76,22 @@ class TimedeltaIndex(
     @overload  # type: ignore[override]
     @override
     # pyrefly: ignore[bad-override]
-    def __add__(self, other: Period) -> PeriodIndex: ...
+    def __add__(self, other: Period, /) -> PeriodIndex: ...
     @overload
-    def __add__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
+    def __add__(self, other: ScalarArrayIndexDateTime, /) -> DatetimeIndex: ...
     @overload
     def __add__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | Self
+        self, other: ScalarArrayIndexTimedelta, /
     ) -> Self: ...
     @overload  # type: ignore[override]
     @override
-    def __radd__(self, other: Period) -> PeriodIndex: ...
+    # pyrefly: ignore[bad-override]
+    def __radd__(self, other: Period, /) -> PeriodIndex: ...
     @overload
-    def __radd__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
+    def __radd__(self, other: ScalarArrayIndexDateTime, /) -> DatetimeIndex: ...
     @overload
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | Self
+        self, other: ScalarArrayIndexTimedelta, /
     ) -> Self: ...
     @override
     def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]

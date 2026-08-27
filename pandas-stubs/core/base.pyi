@@ -2,7 +2,10 @@ from collections.abc import (
     Iterator,
     Sequence,
 )
-from datetime import timedelta
+from datetime import (
+    datetime,
+    timedelta,
+)
 from typing import (
     Any,
     Generic,
@@ -17,20 +20,27 @@ from typing import (
 
 import numpy as np
 import numpy.typing as npt
-from pandas._stubs_only import T_contra
+from pandas._stubs_only import (
+    PeriodAddSub,
+    T_contra,
+)
 from pandas.core.accessor import DirNamesMixin
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.accessors import ArrayDescriptor
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timedeltas import Timedelta
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     S1,
     S2,
@@ -49,6 +59,7 @@ from pandas._typing import (
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
+    np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_td,
 )
@@ -221,16 +232,45 @@ ScalarArrayIndexComplex: TypeAlias = (
 SeriesComplex: TypeAlias = SeriesReal | Series[complex]
 ScalarArrayIndexSeriesComplex: TypeAlias = ScalarArrayIndexComplex | SeriesComplex
 
+ArrayIndexDateTimeNoSeq: TypeAlias = np_ndarray_dt | DatetimeArray | DatetimeIndex
+ScalarArrayIndexDateTime: TypeAlias = (
+    datetime
+    | np.datetime64
+    | Sequence[datetime | np.datetime64]
+    | ArrayIndexDateTimeNoSeq
+)
+ArrayIndexSeriesDateTimeNoSeq: TypeAlias = ArrayIndexDateTimeNoSeq | Series[Timestamp]
+ScalarArrayIndexSeriesDateTime: TypeAlias = ScalarArrayIndexDateTime | Series[Timestamp]
+
 ArrayIndexTimedeltaNoSeq: TypeAlias = np_ndarray_td | TimedeltaArray | TimedeltaIndex
 ScalarArrayIndexTimedelta: TypeAlias = (
     timedelta
     | np.timedelta64
-    | Sequence[timedelta | np.timedelta64]
+    | Timedelta
+    | Sequence[timedelta | np.timedelta64 | Timedelta]
     | ArrayIndexTimedeltaNoSeq
 )
 ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = ArrayIndexTimedeltaNoSeq | Series[Timedelta]
 ScalarArrayIndexSeriesTimedelta: TypeAlias = (
     ScalarArrayIndexTimedelta | Series[Timedelta]
+)
+
+ArrayIndexPeriodNoSeq: TypeAlias = (
+    np_ndarray_td
+    | np_ndarray_anyint
+    | TimedeltaArray
+    | TimedeltaIndex
+    | Index[int]
+    | Index[BaseOffset]
+)
+ScalarArrayIndexPeriod: TypeAlias = (
+    PeriodAddSub | Sequence[PeriodAddSub] | ArrayIndexPeriodNoSeq
+)
+ArrayIndexSeriesPeriodNoSeq: TypeAlias = (
+    ArrayIndexPeriodNoSeq | Series[Timedelta] | Series[int] | Series[BaseOffset]
+)
+ScalarArrayIndexSeriesPeriod: TypeAlias = (
+    ScalarArrayIndexPeriod | Series[Timedelta] | Series[int] | Series[BaseOffset]
 )
 
 NumListLike: TypeAlias = (  # TODO: pandas-dev/pandas-stubs#1474 deprecated, do not use
