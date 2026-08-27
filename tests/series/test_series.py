@@ -2244,10 +2244,11 @@ def test_types_to_numpy() -> None:
             np.integer,
         )
     else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
         check(
             assert_type(
                 s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]
-            ),  # ty: ignore[type-assertion-failure]
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
             np_1darray,
             np.integer,
         )
@@ -2503,10 +2504,11 @@ def test_types_to_numpy() -> None:
             pd.Period,
         )
     else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
         check(
             assert_type(
                 s_period.to_numpy(dtype=np.dtype("O")), np_1darray_object
-            ),  # ty: ignore[type-assertion-failure]
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
             np_1darray_object,
             pd.Period,
         )
@@ -2721,10 +2723,11 @@ def test_types_to_numpy() -> None:
             np.datetime64,
         )
     else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
         check(
             assert_type(
                 s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
-            ),  # ty: ignore[type-assertion-failure]
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
             np_1darray,
             np.datetime64,
         )
@@ -2743,10 +2746,11 @@ def test_types_to_numpy() -> None:
             np.timedelta64,
         )
     else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
         check(
             assert_type(
                 s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-            ),  # ty: ignore[type-assertion-failure]
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
             np_1darray,
             np.timedelta64,
         )
@@ -2767,11 +2771,12 @@ def test_types_to_numpy() -> None:
             np.void,
         )
     else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
         check(
             assert_type(
                 s_td_small.to_numpy(dtype=np.dtype([("x", np.float64)])),
                 np_1darray[np.void],
-            ),  # ty: ignore[type-assertion-failure]
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
             np_1darray,
             np.void,
         )
