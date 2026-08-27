@@ -879,8 +879,7 @@ def test_types_element_wise_arithmetic() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
 
-    # TODO: pandas-dev/pandas-stubs#1799 investigate why ty infers
-    # Series[Unknown] instead of Series[int] for add and mul.
+    # TODO: remove the ignore astral-sh/ty#4401
     check(
         assert_type(
             s.add(s2, fill_value=0), "pd.Series[int]"
@@ -891,8 +890,7 @@ def test_types_element_wise_arithmetic() -> None:
 
     check(assert_type(s.sub(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    # TODO: pandas-dev/pandas-stubs#1799 investigate why ty infers
-    # Series[Unknown] instead of Series[int] for add and mul.
+    # TODO: remove the ignore astral-sh/ty#4401
     check(
         assert_type(
             s.mul(s2, fill_value=0), "pd.Series[int]"
