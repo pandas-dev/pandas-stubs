@@ -1,6 +1,5 @@
 # mypy: disable-error-code=type-arg
 # pyright: reportMissingTypeArgument=false
-# ty: ignore[missing-type-argument]
 from typing import (
     TYPE_CHECKING,
     assert_type,
@@ -56,29 +55,33 @@ def test_property_dt() -> None:
 
     df = DataFrame({"ts": [Timestamp(2025, 12, 6)], "td": [Timedelta(1, "s")]})
     # python/mypy#19952: mypy gives Any
+    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(df["ts"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type]
+        assert_type(df["ts"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # ty: ignore[type-assertion-failure]
         DatetimeProperties,
     )
+    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(df["td"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type]
+        assert_type(df["td"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # ty: ignore[type-assertion-failure]
         TimedeltaProperties,
     )
 
+    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type]
+        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type] # ty: ignore[type-assertion-failure]
         Series,
         np.integer,
     )
+    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(df["td"].dt.total_seconds(), "Series[float]"),  # type: ignore[assert-type]
+        assert_type(df["td"].dt.total_seconds(), "Series[float]"),  # type: ignore[assert-type] # ty: ignore[type-assertion-failure]
         Series,
         np.floating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
-        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-attribute-access]
+        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-attribute-access]
 
 
 def test_property_array() -> None:

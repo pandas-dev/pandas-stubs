@@ -391,6 +391,26 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     __hash__: ClassVar[None]  # pyright: ignore[reportIncompatibleMethodOverride]
 
     @overload
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        cls,
+        data: _str,
+        index: AxesData | None = None,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[CategoricalDtype[_str]]: ...
+    # ty intentionally treats "" as an empty sequence: astral-sh/ty#4365
+    @overload
+    def __new__(
+        cls,
+        data: _str,
+        index: AxesData | None = None,
+        dtype: StrDtypeArg | None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[_str]: ...
+    @overload
     def __new__(
         cls,
         data: Sequence[Never],

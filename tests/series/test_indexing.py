@@ -30,7 +30,7 @@ def test_types_iloc_iat() -> None:
     s2.iat[0] = None
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.iat[0, 0]  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-index]
+        s.iat[0, 0]  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
 
 
 def test_types_loc_at() -> None:
