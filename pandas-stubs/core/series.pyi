@@ -1049,27 +1049,58 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         skipna: _bool = True,
         *args: Any,
         **kwargs: Any,
-    ) -> int | _str: ...
+    ) -> Hashable: ...
     def idxmin(
         self,
         axis: AxisIndex = 0,
         skipna: _bool = True,
         *args: Any,
         **kwargs: Any,
-    ) -> int | _str: ...
+    ) -> Hashable: ...
     def round(self, decimals: int = 0, *args: Any, **kwargs: Any) -> Series[S1]: ...
     @overload
     def quantile(
-        self,
-        q: float = ...,
-        interpolation: QuantileInterpolation = ...,
-    ) -> float: ...
+        self: Series[int],
+        q: float = 0.5,
+        *,
+        interpolation: Literal["lower", "higher", "nearest"],
+    ) -> np.integer: ...
     @overload
     def quantile(
-        self,
+        self: Series[int],
+        q: float,
+        interpolation: Literal["lower", "higher", "nearest"],
+    ) -> np.integer: ...
+    @overload
+    def quantile(
+        self: Series[int],
+        q: float = 0.5,
+        interpolation: Literal["linear", "midpoint"] = "linear",
+    ) -> np.floating: ...
+    @overload
+    def quantile(
+        self: Series[float],
+        q: float = 0.5,
+        interpolation: QuantileInterpolation = "linear",
+    ) -> np.floating: ...
+    @overload
+    def quantile(
+        self: Series[int],
         q: ListLike,
-        interpolation: QuantileInterpolation = ...,
-    ) -> Series[S1]: ...
+        interpolation: Literal["lower", "higher", "nearest"],
+    ) -> Series[int]: ...
+    @overload
+    def quantile(
+        self: Series[int],
+        q: ListLike,
+        interpolation: Literal["linear", "midpoint"] = "linear",
+    ) -> Series[float]: ...
+    @overload
+    def quantile(
+        self: Series[float],
+        q: ListLike,
+        interpolation: QuantileInterpolation = "linear",
+    ) -> Series[float]: ...
     def corr(
         self,
         other: Series[S1],
@@ -1538,9 +1569,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = None,
     ) -> Series[S1]: ...
     @final
-    def head(self, n: int = 5) -> Series[S1]: ...
+    def head(self, n: int = 5) -> Self: ...
     @final
-    def tail(self, n: int = 5) -> Series[S1]: ...
+    def tail(self, n: int = 5) -> Self: ...
     @final
     def sample(
         self,
@@ -1619,7 +1650,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         errors: IgnoreRaise = ...,
     ) -> Series: ...
     @final
-    def copy(self, deep: _bool = True) -> Series[S1]: ...
+    def copy(self, deep: _bool = True) -> Self: ...
     @final
     def infer_objects(self) -> Series[S1]: ...
     def ffill(
