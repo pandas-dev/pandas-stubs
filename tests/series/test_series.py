@@ -15,6 +15,7 @@ import io
 import math
 from pathlib import Path
 import re
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -2234,11 +2235,22 @@ def test_types_to_numpy() -> None:
         np_1darray,
         np.integer,
     )
-    check(
-        assert_type(s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]),
-        np_1darray,
-        np.integer,
-    )
+    # Python 3.11 resolves NumPy 2.4, where ty incorrectly infers these
+    # np.dtype(...) expressions as np.dtype[np.float64]. NumPy 2.5 fixes this.
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]),
+            np_1darray,
+            np.integer,
+        )
+    else:
+        check(
+            assert_type(
+                s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]
+            ),  # ty: ignore[type-assertion-failure]
+            np_1darray,
+            np.integer,
+        )
 
     # --- Unsigned integers ---
     check(
@@ -2484,11 +2496,20 @@ def test_types_to_numpy() -> None:
         np_1darray_object,
         pd.Interval,
     )
-    check(
-        assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray_object),
-        np_1darray_object,
-        pd.Period,
-    )
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray_object),
+            np_1darray_object,
+            pd.Period,
+        )
+    else:
+        check(
+            assert_type(
+                s_period.to_numpy(dtype=np.dtype("O")), np_1darray_object
+            ),  # ty: ignore[type-assertion-failure]
+            np_1darray_object,
+            pd.Period,
+        )
 
     # np.dtypes signed int instances
     # TODO: remove the ignore astral-sh/ty#4364
@@ -2691,24 +2712,44 @@ def test_types_to_numpy() -> None:
         np.str_,
     )
     # DateTime64DType — parametric
-    check(
-        assert_type(s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt),
-        np_1darray,
-        np.datetime64,
-    )
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(
+                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
+            ),
+            np_1darray,
+            np.datetime64,
+        )
+    else:
+        check(
+            assert_type(
+                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
+            ),  # ty: ignore[type-assertion-failure]
+            np_1darray,
+            np.datetime64,
+        )
     check(
         assert_type(s_date.to_numpy(dtype="datetime64[ns]"), np_1darray_dt),
         np_1darray,
         np.datetime64,
     )
     # TimeDelta64DType — parametric
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-        ),
-        np_1darray,
-        np.timedelta64,
-    )
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+    else:
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+            ),  # ty: ignore[type-assertion-failure]
+            np_1darray,
+            np.timedelta64,
+        )
     check(
         assert_type(s_td_small.to_numpy(dtype="timedelta64[ns]"), np_1darray_td),
         np_1darray,
@@ -2716,14 +2757,24 @@ def test_types_to_numpy() -> None:
     )
 
     # VoidDType — parametric, use np.dtype(...)
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype([("x", np.float64)])),
-            np_1darray[np.void],
-        ),
-        np_1darray,
-        np.void,
-    )
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype([("x", np.float64)])),
+                np_1darray[np.void],
+            ),
+            np_1darray,
+            np.void,
+        )
+    else:
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype([("x", np.float64)])),
+                np_1darray[np.void],
+            ),  # ty: ignore[type-assertion-failure]
+            np_1darray,
+            np.void,
+        )
 
 
 def test_where() -> None:
