@@ -221,29 +221,29 @@ def test_types_df_to_df_comparison() -> None:
 
 def test_types_head_tail() -> None:
     s = pd.Series([0, 1, 2])
-    s.head(1)
-    s.tail(1)
+    check(assert_type(s.head(1), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.tail(1), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_sample() -> None:
     s = pd.Series([0, 1, 2])
-    s.sample(frac=0.5)
-    s.sample(n=1)
+    check(assert_type(s.sample(frac=0.5), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.sample(n=1), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_nlargest_nsmallest() -> None:
     s = pd.Series([0, 1, 2])
-    s.nlargest(1)
-    s.nlargest(1, "first")
-    s.nsmallest(1, "last")
-    s.nsmallest(1, "all")
+    check(assert_type(s.nlargest(1), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.nlargest(1, "first"), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.nsmallest(1, "last"), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.nsmallest(1, "all"), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_filter() -> None:
     s = pd.Series(data=[1, 2, 3, 4], index=["cow", "coal", "coalesce", ""])
-    s.filter(items=["cow"])
-    s.filter(regex="co.*")
-    s.filter(like="al")
+    check(assert_type(s.filter(items=["cow"]), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.filter(regex="co.*"), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.filter(like="al"), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_setting() -> None:
@@ -488,13 +488,33 @@ def test_series_pct_change() -> None:
 
 def test_types_rank() -> None:
     s = pd.Series([1, 1, 2, 5, 6, np.nan])
-    s.rank()
-    s.rank(axis=0, na_option="bottom")
-    s.rank(method="min", pct=True)
-    s.rank(method="dense", ascending=True)
-    s.rank(method="first", numeric_only=True)
+    check(assert_type(s.rank(), "pd.Series[float]"), pd.Series, np.float64)
+    check(
+        assert_type(s.rank(axis=0, na_option="bottom"), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
+    check(
+        assert_type(s.rank(method="min", pct=True), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
+    check(
+        assert_type(s.rank(method="dense", ascending=True), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
+    check(
+        assert_type(s.rank(method="first", numeric_only=True), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
     s2 = pd.Series([1, 1, 2, 5, 6, np.nan])
-    s2.rank(method="first", numeric_only=True)
+    check(
+        assert_type(s2.rank(method="first", numeric_only=True), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
 
 
 def test_types_mean() -> None:
@@ -563,9 +583,11 @@ def test_types_sum() -> None:
 
 def test_types_cumsum() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    s.cumsum()
-    s.cumsum(axis=0)
-    s.cumsum(skipna=False)
+    check(assert_type(s.cumsum(), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(s.cumsum(axis=0), "pd.Series[float]"), pd.Series, np.floating)
+    check(
+        assert_type(s.cumsum(skipna=False), "pd.Series[float]"), pd.Series, np.floating
+    )
 
 
 def test_types_min() -> None:
@@ -612,11 +634,38 @@ def test_types_groupby_level() -> None:
 
 
 def test_types_quantile() -> None:
-    s = pd.Series([1, 2, 3, 10])
-    s.quantile([0.25, 0.5])
-    s.quantile(0.75)
-    s.quantile()
-    s.quantile(interpolation="nearest")
+    i = pd.Series([1, 2, 3, 10])
+    check(
+        assert_type(i.quantile([0.25, 0.5]), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(
+        assert_type(i.quantile([0.25, 0.5], "lower"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(i.quantile(0.75), np.floating), np.floating)
+    check(assert_type(i.quantile(0.25, "higher"), np.integer), np.integer)
+    check(
+        assert_type(i.quantile(0.25, interpolation="nearest"), np.integer), np.integer
+    )
+    check(assert_type(i.quantile(), np.floating), np.floating)
+    check(assert_type(i.quantile(interpolation="nearest"), np.integer), np.integer)
+
+    f = pd.Series([1.0, 2, 3, 10])
+    check(
+        assert_type(f.quantile([0.25, 0.5]), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(assert_type(f.quantile(0.75), np.floating), np.floating)
+    check(assert_type(f.quantile(), np.floating), np.floating)
+    check(assert_type(f.quantile(interpolation="nearest"), np.floating), np.floating)
+
+    a = pd.DataFrame({0: f})[0]
+    check(
+        assert_type(a.quantile([0.25, 0.5]), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(assert_type(a.quantile(0.75), np.floating), np.floating)
+    check(assert_type(a.quantile(), np.floating), np.floating)
+    check(assert_type(a.quantile(interpolation="nearest"), np.floating), np.floating)
 
 
 def test_types_clip() -> None:
@@ -796,7 +845,7 @@ def test_types_clip() -> None:
 
 def test_types_abs() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.abs()
+    check(assert_type(s.abs(), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_var() -> None:
@@ -808,20 +857,22 @@ def test_types_var() -> None:
 
 def test_types_std() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.std(axis=0, ddof=1)
-    s.std(skipna=True, numeric_only=False)
+    check(assert_type(s.std(axis=0, ddof=1), float), float)
+    check(assert_type(s.std(skipna=True, numeric_only=False), float), float)
 
 
 def test_types_idxmin() -> None:
-    s = pd.Series([-10, 2, 3, 10])
-    s.idxmin()
-    s.idxmin(axis=0)
+    s = pd.Series([-10, 2, 3, 10], [(), None, "a", 1])
+    check(assert_type(s.idxmin(), Hashable), tuple)
+    check(assert_type(s.idxmin(axis=0), Hashable), tuple)
+    check(assert_type(s.idxmin(axis="index"), Hashable), tuple)
 
 
 def test_types_idxmax() -> None:
-    s = pd.Series([-10, 2, 3, 10])
-    s.idxmax()
-    s.idxmax(axis=0)
+    s = pd.Series([-10, 2, 3, 10], [(), None, "a", 1])
+    check(assert_type(s.idxmax(), Hashable), int)
+    check(assert_type(s.idxmax(axis=0), Hashable), int)
+    check(assert_type(s.idxmax(axis="index"), Hashable), int)
 
 
 def test_types_value_counts() -> None:
@@ -1296,10 +1347,10 @@ def test_types_window() -> None:
 def test_types_cov() -> None:
     s1 = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s2 = pd.Series([0, 2, 12, -4, 7, 9, 2])
-    s1.cov(s2)
-    s1.cov(s2, min_periods=1)
+    check(assert_type(s1.cov(s2), float), float)
+    check(assert_type(s1.cov(s2, min_periods=1), float), float)
     # ddof param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    s1.cov(s2, ddof=2)
+    check(assert_type(s1.cov(s2, ddof=2), float), float)
 
 
 def test_update() -> None:
@@ -1315,18 +1366,24 @@ def test_update() -> None:
 def test_to_markdown() -> None:
     pytest.importorskip("tabulate")
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
-    s.to_markdown()
-    s.to_markdown(buf=None, mode="wt")
+    check(assert_type(s.to_markdown(), str), str)
+    check(assert_type(s.to_markdown(buf=None, mode="wt"), str), str)
     # index param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    s.to_markdown(index=False)
+    check(assert_type(s.to_markdown(index=False), str), str)
 
 
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_compare() -> None:
     s1 = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s2 = pd.Series([0, 2, 12, -4, 7, 9, 2])
-    s1.compare(s2)
-    s2.compare(s1, align_axis="columns", keep_shape=True, keep_equal=True)
+    check(assert_type(s1.compare(s2), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            s2.compare(s1, align_axis="columns", keep_shape=True, keep_equal=True),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_types_between() -> None:
@@ -1384,7 +1441,7 @@ def test_types_transform() -> None:
 
 def test_types_describe() -> None:
     s = pd.Series([1, 2, 3, np.datetime64("2000-01-01")])
-    s.describe()
+    check(assert_type(s.describe(), "pd.Series"), pd.Series)
 
     with pytest_warns_bounded(
         Pandas4Warning,
@@ -1403,7 +1460,9 @@ def test_types_describe() -> None:
 
 def test_types_resample() -> None:
     s = pd.Series(range(9), index=pd.date_range("1/1/2000", periods=9, freq="min"))
-    s.resample("3min").sum()
+    check(
+        assert_type(s.resample("3min").sum(), "pd.Series[int]"), pd.Series, np.integer
+    )
     # origin and offset params added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     s.resample("20min", origin="epoch", offset=pd.Timedelta(value=2, unit="minutes"))
     s.resample("20min", origin=datetime.datetime.now(), offset=datetime.timedelta(1))
@@ -1411,8 +1470,24 @@ def test_types_resample() -> None:
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
 def test_types_set_flags() -> None:
-    pd.Series([1, 2], index=["a", "b"]).set_flags(allows_duplicate_labels=False)
-    pd.Series([3, 4], index=["a", "a"]).set_flags(allows_duplicate_labels=True)
+    check(
+        assert_type(
+            pd.Series([1, 2], index=["a", "b"]).set_flags(
+                allows_duplicate_labels=False
+            ),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(
+            pd.Series([3, 4], index=["a", "a"]).set_flags(allows_duplicate_labels=True),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
     pd.Series([5, 2], index=["a", "a"])
 
 
@@ -2985,6 +3060,8 @@ def test_convert_dtypes_dtype_backend() -> None:
     s = pd.Series([1, 2, 3, 4])
     s1 = s.convert_dtypes(dtype_backend="numpy_nullable")
     check(assert_type(s1, "pd.Series[int]"), pd.Series, np.integer)
+    s2 = s.convert_dtypes(dtype_backend="pyarrow")
+    check(assert_type(s2, "pd.Series[int]"), pd.Series, int)
 
 
 def test_apply_returns_none() -> None:

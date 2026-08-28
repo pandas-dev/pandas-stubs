@@ -803,9 +803,9 @@ NaPosition: TypeAlias = Literal["first", "last"]
 NsmallestNlargestKeep: TypeAlias = Literal["first", "last", "all"]
 
 # quantile interpolation
-QuantileInterpolation: TypeAlias = Literal[
-    "linear", "lower", "higher", "midpoint", "nearest"
-]
+QuantileIntInterpolation: TypeAlias = Literal["lower", "higher", "nearest"]
+QuantileFloatInterpolation: TypeAlias = Literal["linear", "midpoint"]
+QuantileInterpolation: TypeAlias = QuantileIntInterpolation | QuantileFloatInterpolation
 
 # plotting
 # PlottingOrientation = Literal["horizontal", "vertical"] not used in stubs
