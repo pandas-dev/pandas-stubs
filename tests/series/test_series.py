@@ -659,6 +659,14 @@ def test_types_quantile() -> None:
     check(assert_type(f.quantile(), np.floating), np.floating)
     check(assert_type(f.quantile(interpolation="nearest"), np.floating), np.floating)
 
+    a = pd.DataFrame({0: f})[0]
+    check(
+        assert_type(a.quantile([0.25, 0.5]), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(assert_type(a.quantile(0.75), np.floating), np.floating)
+    check(assert_type(a.quantile(), np.floating), np.floating)
+    check(assert_type(a.quantile(interpolation="nearest"), np.floating), np.floating)
+
 
 def test_types_clip() -> None:
     """Test different overloads of Series.clip GH984."""

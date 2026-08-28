@@ -212,7 +212,9 @@ from pandas._typing import (
     PandasAstypeTimedeltaDtypeArg,
     PandasAstypeTimestampDtypeArg,
     PeriodFrequency,
+    QuantileFloatInterpolation,
     QuantileInterpolation,
+    QuantileIntInterpolation,
     RandomState,
     ReindexMethod,
     Renamer,
@@ -1059,23 +1061,24 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Hashable: ...
     def round(self, decimals: int = 0, *args: Any, **kwargs: Any) -> Series[S1]: ...
     @overload
-    def quantile(
-        self: Series[int],
+    def quantile(  # type: ignore[overload-overlap]
+        self: Series[Never],
         q: float = 0.5,
-        *,
-        interpolation: Literal["lower", "higher", "nearest"],
+        interpolation: QuantileInterpolation = "linear",
+    ) -> np.floating: ...
+    @overload
+    def quantile(
+        self: Series[int], q: float = 0.5, *, interpolation: QuantileIntInterpolation
+    ) -> np.integer: ...
+    @overload
+    def quantile(
+        self: Series[int], q: float, interpolation: QuantileIntInterpolation
     ) -> np.integer: ...
     @overload
     def quantile(
         self: Series[int],
-        q: float,
-        interpolation: Literal["lower", "higher", "nearest"],
-    ) -> np.integer: ...
-    @overload
-    def quantile(
-        self: Series[int],
         q: float = 0.5,
-        interpolation: Literal["linear", "midpoint"] = "linear",
+        interpolation: QuantileFloatInterpolation = "linear",
     ) -> np.floating: ...
     @overload
     def quantile(
@@ -1084,16 +1087,20 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         interpolation: QuantileInterpolation = "linear",
     ) -> np.floating: ...
     @overload
-    def quantile(
-        self: Series[int],
+    def quantile(  # type: ignore[overload-overlap]
+        self: Series[Never],
         q: ListLike,
-        interpolation: Literal["lower", "higher", "nearest"],
+        interpolation: QuantileInterpolation = "linear",
+    ) -> Series[float]: ...
+    @overload
+    def quantile(
+        self: Series[int], q: ListLike, interpolation: QuantileIntInterpolation
     ) -> Series[int]: ...
     @overload
     def quantile(
         self: Series[int],
         q: ListLike,
-        interpolation: Literal["linear", "midpoint"] = "linear",
+        interpolation: QuantileFloatInterpolation = "linear",
     ) -> Series[float]: ...
     @overload
     def quantile(
