@@ -665,7 +665,13 @@ def test_types_quantile() -> None:
     )
     check(assert_type(a.quantile(0.75), np.floating), np.floating)
     check(assert_type(a.quantile(), np.floating), np.floating)
-    check(assert_type(a.quantile(interpolation="nearest"), np.floating), np.floating)
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            a.quantile(interpolation="nearest"), np.floating
+        ),
+        np.floating,
+    )
 
 
 def test_types_clip() -> None:
