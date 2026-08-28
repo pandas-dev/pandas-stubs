@@ -440,6 +440,9 @@ exclude = [
   "tests/arrays/test_integer.py",
   "tests/arrays/test_string_.py",
   "tests/arrays/test_string_arrow.py",
-  "tests/indexes/**/*",
-  "tests/series/**/*",
+  "tests/**/*add.py",
+  "tests/**/*sub.py",
+  "tests/**/*truediv.py",
+  "tests/**/*mul.py",
+  "tests/**/*floordiv.py",
 ]
