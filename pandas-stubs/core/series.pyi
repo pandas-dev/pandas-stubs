@@ -209,6 +209,7 @@ from pandas._typing import (
     NumpyTimestampDtypeArg,
     NumpyUIntDtypeArg,
     ObjectDtypeArg,
+    OffsetT,
     PandasAstypeTimedeltaDtypeArg,
     PandasAstypeTimestampDtypeArg,
     PeriodFrequency,
@@ -1969,12 +1970,18 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __add__(
-        self: Series[BaseOffset], other: Period | Index[Period] | Series[Period], /
+        self: Series[OffsetT], other: Period | Index[Period] | Series[Period], /
     ) -> Series[Period]: ...
     @overload
     def __add__(
+        self: Series[OffsetT],
+        other: BaseOffset | Index[OffsetT] | Series[OffsetT],
+        /,
+    ) -> Series[OffsetT]: ...
+    @overload
+    def __add__(
         self: Series[BaseOffset],
-        other: BaseOffset | Index[BaseOffset] | Series[BaseOffset],
+        other: BaseOffset | Index[OffsetT] | Series[OffsetT],
         /,
     ) -> Series[BaseOffset]: ...
     @overload
@@ -2038,7 +2045,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __add__(
-        self: Series[Period], other: ScalarArrayIndexSeriesPeriod, /
+        self: Series[Period],
+        other: ScalarArrayIndexSeriesPeriod | Series[OffsetT] | Index[OffsetT],
+        /,
     ) -> Series[Period]: ...
     @overload
     def add(self: Series[Never], other: _str) -> Series[_str]: ...
@@ -2085,14 +2094,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def add(
         self: Series[Period],
-        other: ScalarArrayIndexSeriesPeriod,
+        other: ScalarArrayIndexSeriesPeriod | Series[OffsetT] | Index[OffsetT],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[Period]: ...
     @overload
     def add(
-        self: Series[BaseOffset],
+        self: Series[OffsetT],
         other: Period | Index[Period] | Series[Period],
         level: Level | None = None,
         fill_value: float | None = None,
@@ -2100,8 +2109,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Period]: ...
     @overload
     def add(
+        self: Series[OffsetT],
+        other: BaseOffset | Index[OffsetT] | Series[OffsetT],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[OffsetT]: ...
+    @overload
+    def add(
         self: Series[BaseOffset],
-        other: BaseOffset | Index[BaseOffset] | Series[BaseOffset],
+        other: BaseOffset | Index[OffsetT] | Series[OffsetT],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2207,16 +2224,24 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __radd__(
-        self: Series[Period], other: ScalarArrayIndexSeriesPeriod, /
+        self: Series[Period],
+        other: ScalarArrayIndexSeriesPeriod | Series[OffsetT] | Index[OffsetT],
+        /,
     ) -> Series[Period]: ...
     @overload
     def __radd__(
-        self: Series[BaseOffset], other: Period | Index[Period] | Series[Period], /
+        self: Series[OffsetT], other: Period | Index[Period] | Series[Period], /
     ) -> Series[Period]: ...
+    @overload
+    def __radd__(  # type: ignore[misc]
+        self: Series[OffsetT],
+        other: BaseOffset | Index[OffsetT] | Series[OffsetT],
+        /,
+    ) -> Series[OffsetT]: ...
     @overload
     def __radd__(
         self: Series[BaseOffset],
-        other: BaseOffset | Index[BaseOffset] | Series[BaseOffset],
+        other: BaseOffset | Index[OffsetT] | Series[OffsetT],
         /,
     ) -> Series[BaseOffset]: ...
     # TODO: pyright is unhappy without the 3 overloads below, could be related to microsoft/pyright#11644
@@ -2344,14 +2369,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def radd(
         self: Series[Period],
-        other: ScalarArrayIndexSeriesPeriod,
+        other: ScalarArrayIndexSeriesPeriod | Series[OffsetT] | Index[OffsetT],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[Period]: ...
     @overload
     def radd(
-        self: Series[BaseOffset],
+        self: Series[OffsetT],
         other: Period | Index[Period] | Series[Period],
         level: Level | None = None,
         fill_value: float | None = None,
@@ -2359,8 +2384,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Period]: ...
     @overload
     def radd(
+        self: Series[OffsetT],
+        other: BaseOffset | Index[OffsetT] | Series[OffsetT],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[OffsetT]: ...
+    @overload
+    def radd(
         self: Series[BaseOffset],
-        other: BaseOffset | Index[BaseOffset] | Series[BaseOffset],
+        other: BaseOffset | Index[OffsetT] | Series[OffsetT],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,

@@ -335,7 +335,7 @@ reportUnusedCallResult = "none"
 
 
 [tool.codespell]
-ignore-words-list = "indext, mose, sav, ser, ttest"
+ignore-words-list = "indext, mose, offsett, sav, ser, ttest"
 
 [tool.pytest.ini_options]
 filterwarnings = [

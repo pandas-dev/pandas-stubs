@@ -111,6 +111,7 @@ from pandas._typing import (
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
     NumpyTimestampDtypeArg,
+    OffsetT,
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
     ReindexMethod,
@@ -670,11 +671,15 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[Period]: ...
     @overload
     def __add__(
-        self: Index[BaseOffset], other: Period | Index[Period], /
+        self: Index[OffsetT], other: Period | Index[Period], /
     ) -> Index[Period]: ...
     @overload
     def __add__(
-        self: Index[BaseOffset], other: BaseOffset | Index[BaseOffset], /
+        self: Index[OffsetT], other: BaseOffset | Index[OffsetT], /
+    ) -> Index[OffsetT]: ...
+    @overload
+    def __add__(
+        self: Index[BaseOffset], other: BaseOffset | Index[OffsetT], /
     ) -> Index[BaseOffset]: ...
     @overload
     def __add__(
@@ -743,11 +748,15 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[Period]: ...
     @overload
     def __radd__(
-        self: Index[BaseOffset], other: Period | Index[Period], /
+        self: Index[OffsetT], other: Period | Index[Period], /
     ) -> Index[Period]: ...
     @overload
+    def __radd__(  # type: ignore[misc]
+        self: Index[OffsetT], other: BaseOffset | Index[OffsetT], /
+    ) -> Index[OffsetT]: ...
+    @overload
     def __radd__(
-        self: Index[BaseOffset], other: BaseOffset | Index[BaseOffset], /
+        self: Index[BaseOffset], other: BaseOffset | Index[OffsetT], /
     ) -> Index[BaseOffset]: ...
     @overload
     def __radd__(

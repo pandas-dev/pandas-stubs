@@ -5,8 +5,6 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas._libs.tslibs.offsets import BaseOffset
-
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -116,7 +114,7 @@ def test_add_pd_series(left: "pd.Series[pd.Period]") -> None:
     """Test pd.Series[pd.Period] + pandas Series"""
     d = pd.Series([pd.Timedelta(days=1)])
     i = pd.Series([1])
-    off: pd.Series[BaseOffset] = pd.Series([pd.offsets.Day(1)])
+    off = pd.Series([pd.offsets.Day(1)])
     p = pd.Series([pd.Period("2025-08-20", freq="D")])
 
     check(assert_type(left + d, "pd.Series[pd.Period]"), pd.Series, pd.Period)
@@ -145,7 +143,7 @@ def test_add_pd_index(left: "pd.Series[pd.Period]") -> None:
     """Test pd.Series[pd.Period] + pandas Index"""
     d = pd.TimedeltaIndex([pd.Timedelta(days=1)])
     i = pd.Index([1])
-    off: pd.Index[BaseOffset] = pd.Index([pd.offsets.Day(1)])
+    off = pd.Index([pd.offsets.Day(1)])
     p = pd.PeriodIndex(["2025-08-20"], freq="D")
 
     check(assert_type(left + d, "pd.Series[pd.Period]"), pd.Series, pd.Period)

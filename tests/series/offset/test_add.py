@@ -17,7 +17,7 @@ from pandas.tseries.offsets import (
 @pytest.fixture
 def left() -> "pd.Series[BaseOffset]":
     """Left operand"""
-    lo: pd.Series[BaseOffset] = pd.Series([Day(1)])  # left operand
+    lo = pd.Series([Day(1)])  # left operand
     return check(assert_type(lo, "pd.Series[BaseOffset]"), pd.Series, Day)
 
 
@@ -46,8 +46,8 @@ def test_add_period(left: "pd.Series[BaseOffset]") -> None:
 def test_add_offset(left: "pd.Series[BaseOffset]") -> None:
     """Test pd.Series[BaseOffset] + BaseOffset, Index[BaseOffset], Series[BaseOffset]"""
     off = Day(1)
-    off_idx: pd.Index[BaseOffset] = pd.Index([Day(1)])
-    off_sr: pd.Series[BaseOffset] = pd.Series([Day(1)])
+    off_idx = pd.Index([Day(1)])
+    off_sr = pd.Series([Day(1)])
 
     check(assert_type(left + off, "pd.Series[BaseOffset]"), pd.Series, Day)
     check(assert_type(off + left, "pd.Series[BaseOffset]"), pd.Series, Day)
