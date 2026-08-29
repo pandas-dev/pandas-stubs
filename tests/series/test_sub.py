@@ -9,6 +9,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -17,13 +18,29 @@ from tests import (
 
 anchor = datetime(2025, 8, 18)
 
-# left operands
-left_i = pd.DataFrame({"a": [1, 2, 3]})["a"]
-left_ts = pd.DataFrame({"a": [anchor + timedelta(hours=h + 1) for h in range(3)]})["a"]
-left_td = pd.DataFrame({"a": [timedelta(hours=h, minutes=1) for h in range(3)]})["a"]
+
+@pytest.fixture
+def left_i() -> pd.Series:
+    """Left operand"""
+    lo = pd.DataFrame({"a": [1, 2, 3]})["a"]
+    return check(assert_type(lo, pd.Series), pd.Series)
 
 
-def test_sub_i_py_scalar() -> None:
+@pytest.fixture
+def left_ts() -> pd.Series:
+    """Left operand"""
+    lo = pd.DataFrame({"a": [anchor + timedelta(hours=h + 1) for h in range(3)]})["a"]
+    return check(assert_type(lo, pd.Series), pd.Series)
+
+
+@pytest.fixture
+def left_td() -> pd.Series:
+    """Left operand"""
+    lo = pd.DataFrame({"a": [timedelta(hours=h, minutes=1) for h in range(3)]})["a"]
+    return check(assert_type(lo, pd.Series), pd.Series)
+
+
+def test_sub_i_py_scalar(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) - Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
@@ -48,7 +65,7 @@ def test_sub_i_py_scalar() -> None:
     check(assert_type(left_i.rsub(c), pd.Series), pd.Series)
 
 
-def test_sub_i_py_sequence() -> None:
+def test_sub_i_py_sequence(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) - Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
@@ -73,7 +90,7 @@ def test_sub_i_py_sequence() -> None:
     check(assert_type(left_i.rsub(c), pd.Series), pd.Series)
 
 
-def test_sub_i_numpy_array() -> None:
+def test_sub_i_numpy_array(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) - numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -126,7 +143,7 @@ def test_sub_i_numpy_array() -> None:
     check(assert_type(left_i.rsub(c), pd.Series), pd.Series)
 
 
-def test_sub_i_pd_index() -> None:
+def test_sub_i_pd_index(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) - pandas Indexes"""
     a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
     b = pd.Index([True, False, True])
@@ -159,7 +176,7 @@ def test_sub_i_pd_index() -> None:
     check(assert_type(left_i.rsub(c), pd.Series), pd.Series)
 
 
-def test_sub_i_pd_series() -> None:
+def test_sub_i_pd_series(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) - pandas Series"""
     a = pd.DataFrame({"a": [1, 2, 3]})["a"]
     b = pd.Series([True, False, True])
@@ -192,7 +209,7 @@ def test_sub_i_pd_series() -> None:
     check(assert_type(left_i.rsub(c), pd.Series), pd.Series)
 
 
-def test_sub_ts_py_datetime() -> None:
+def test_sub_ts_py_datetime(left_ts: pd.Series, left_td: pd.Series) -> None:
     """Test pd.Series[Any] (Timestamp | Timedelta) - Python native datetime"""
     s = anchor
     a = [s + timedelta(minutes=m) for m in range(3)]
@@ -237,7 +254,7 @@ def test_sub_ts_py_datetime() -> None:
     check(assert_type(left_td.rsub(a), pd.Series), pd.Series, pd.Timestamp)
 
 
-def test_sub_ts_numpy_datetime() -> None:
+def test_sub_ts_numpy_datetime(left_ts: pd.Series, left_td: pd.Series) -> None:
     """Test pd.Series[Any] (Timestamp) - numpy datetime(s)"""
     s = np.datetime64(anchor)
     a = np.array([s + np.timedelta64(m, "m") for m in range(3)], np.datetime64)
@@ -290,7 +307,7 @@ def test_sub_ts_numpy_datetime() -> None:
     check(assert_type(left_td.rsub(a), pd.Series), pd.Series, pd.Timestamp)
 
 
-def test_sub_ts_pd_datetime() -> None:
+def test_sub_ts_pd_datetime(left_ts: pd.Series, left_td: pd.Series) -> None:
     """Test pd.Series[Any] (Timestamp) - Pandas datetime(s)"""
     s = pd.Timestamp(anchor)
     a = pd.Series([s + pd.Timedelta(minutes=m) for m in range(3)])
@@ -326,7 +343,7 @@ def test_sub_ts_pd_datetime() -> None:
     check(assert_type(left_td.rsub(a), pd.Series), pd.Series, pd.Timestamp)
 
 
-def test_sub_str_py_str() -> None:
+def test_sub_str_py_str(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) - Python str"""
     s = "abc"
 
