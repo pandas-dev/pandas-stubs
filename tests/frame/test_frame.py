@@ -547,7 +547,16 @@ def test_types_set_index() -> None:
 def test_types_query() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
     check(assert_type(df.query("col1 > col2"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.query("col1 % col2 == 0", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(df.query("col1 % col2 == 0", inplace=True), None),
+            type(None),
+        )
 
 
 def test_types_query_kwargs() -> None:
@@ -558,19 +567,42 @@ def test_types_query_kwargs() -> None:
         ),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            df.query("col1 > col2", parser="pandas", engine="numexpr", inplace=True),
-            None,
-        ),
-        type(None),
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(
+                df.query(
+                    "col1 > col2", parser="pandas", engine="numexpr", inplace=True
+                ),
+                None,
+            ),
+            type(None),
+        )
 
 
 def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
-    check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
-    check(assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None),
+            type(None),
+        )
     check(
         assert_type(
             df.eval("E = col1 > col2"), Scalar | np_ndarray | pd.DataFrame | pd.Series
