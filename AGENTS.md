@@ -25,12 +25,17 @@ When generating documentation or writing PR descriptions, format all GitHub refe
 
 ## PR and Commit Conventions
 
-- **Splitting large PRs**: A large PR must be split into small, individually reviewable sub-PRs. Each sub-PR body starts with `- [x] Towards pandas-dev/pandas-stubs#<parent>` (precedent: pandas-dev/pandas-stubs#1917, pandas-dev/pandas-stubs#1921).
-- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool and its provider no-reply email, e.g. `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`.
-- **PR body — visible and invisible text**:
+- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Finding official emails can be tricky, so use these standard templates for popular agents:
+  - `Co-authored-by: Antigravity AI <bot@antigravity.dev>`
+  - `Co-authored-by: DeepCode <bot@deepcode.ai>`
+  - `Co-authored-by: GitHub Copilot <noreply@github.com>`
+  - `Co-authored-by: OpenAI Codex <noreply@openai.com>`
+- **Emojis in PR Titles**: Consider adding an emoji to the PR title (e.g., 🤖 or 🪄) as a fun, immediate signal to maintainers that AI assisted with the PR.
+- **PR body — visible and collapsible text**:
   - *Visible text* (for human reviewers): concise summary, checklist, links. Humans read the rendered page.
-  - *Invisible text* (for AI agents): a comprehensive implementation plan inside an HTML comment block (`<!-- ... -->`) at the bottom of the body. GitHub hides it in the rendered view; agents read it via the raw body (API or `gh pr view --json body`).
-  - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs; the invisible block must be complete enough for a later agent to resume without re-deriving context.
+  - *Collapsible text* (for AI agents): place comprehensive implementation plans or technical notes inside a `<details><summary>AI Implementation Plan</summary>` block at the bottom of the body. This keeps the PR clean for humans but accessible if they want to read it, while agents can read it via the raw body.
+  - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs.
+- **Splitting exceptionally large PRs**: If a PR is massive, split it into small, individually reviewable sub-PRs. Each sub-PR body should start with `- [x] Towards pandas-dev/pandas-stubs#<parent>`.
 
 ## Decision Heuristics
 
@@ -51,16 +56,26 @@ When an error is expected to raise (invalid operations):
 
 1. **Design stubs** to return `Never` or cause type checker errors for invalid usage.
 2. **In tests**, protect invalid operations with `if TYPE_CHECKING_INVALID_USAGE:` instead of `with pytest.raises(...)`.
-3. Add the canonical multi-checker ignore comment sequence (ADR-0008).
+3. Add the canonical multi-checker ignore comment sequence.
 
-**Example** (tested in `tests/scalars/timedelta/test_arithmetic.py`):
+**Example 1: Standard invalid operations** (tested in `tests/scalars/timedelta/test_arithmetic.py`):
 
 ```python
 if TYPE_CHECKING_INVALID_USAGE:
     _0 = a * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 ```
 
-**Why:** The goal is to catch errors at **type-check time**, not runtime. The `TYPE_CHECKING_INVALID_USAGE` guard (which is `False` at runtime) prevents runtime execution while the ignore comments verify `mypy`, `pyright`, `pyrefly`, and `ty` properly reject the invalid code.
+**Example 2: Guarding `Never` assertions**
+When a stub returns `Never`, attempting to assign it or use it will trigger a type error. Because `Never` represents an operation that shouldn't happen, placing it in standard execution flow can cause runtime crashes. Guard these inside an uncalled function:
+
+```python
+if TYPE_CHECKING_INVALID_USAGE:
+    def _test_never():
+        # This function is never called at runtime, safely allowing type checkers to evaluate the Never return
+        _0 = s.dt.tz_convert("UTC")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[missing-overload]
+```
+
+**Why:** The goal is to catch errors at **type-check time**, not runtime. The `TYPE_CHECKING_INVALID_USAGE` guard (which is `False` at runtime) and uncalled functions prevent runtime execution while the ignore comments verify `mypy`, `pyright`, `pyrefly`, and `ty` properly reject the invalid code.
 
 **Note on `ty`**: `ty` is being gradually integrated into `pandas-stubs`, fully parallel with the other three type checkers. It is currently in beta; we actively report bugs to `astral-sh/ty` (and similarly to `mypy`, `pyright`, and `pyrefly`).
 
