@@ -15,37 +15,54 @@ The `pandas-stubs` project is introduced in `README.md`.
 - Follow `docs/philosophy.md`.
 - Also follow all guidelines for contributing to the codebase specified at [Contributing to the code base](https://pandas.pydata.org/docs/development/contributing_codebase.html).
 
-## Decision heuristics
+## Citation & Reference Formatting Rules (Important)
+
+When generating documentation or writing PR descriptions, format all GitHub references as plain text so that GitHub renders them as native autolinks.
+- Avoid wrapping PRs, Issues, or Commits in backticks.
+- **Pull Requests / Issues**: pandas-dev/pandas-stubs#1911 (not `` `pandas-dev/pandas-stubs#1911` ``).
+- **Commits**: pandas-dev/pandas-stubs@cebd954 (not `` `cebd954` ``).
+- **External issues**: pandas-dev/pandas#39196 (not a full URL).
+
+## PR and Commit Conventions
+
+- **Splitting large PRs**: A large PR must be split into small, individually reviewable sub-PRs. Each sub-PR body starts with `- [x] Towards pandas-dev/pandas-stubs#<parent>` (precedent: pandas-dev/pandas-stubs#1917, pandas-dev/pandas-stubs#1921).
+- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool and its provider no-reply email, e.g. `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`.
+- **PR body — visible and invisible text**:
+  - *Visible text* (for human reviewers): concise summary, checklist, links. Humans read the rendered page.
+  - *Invisible text* (for AI agents): a comprehensive implementation plan inside an HTML comment block (`<!-- ... -->`) at the bottom of the body. GitHub hides it in the rendered view; agents read it via the raw body (API or `gh pr view --json body`).
+  - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs; the invisible block must be complete enough for a later agent to resume without re-deriving context.
+
+## Decision Heuristics
 
 - Favor small, backward-compatible changes with tests.
 - Prefer readability over micro-optimizations unless benchmarks are requested.
 - Add tests for behavioral changes.
-- When referring to GitHub issues and pull requests, use the short format `pandas-dev/pandas#39196` instead of full URLs like `https://github.com/pandas-dev/pandas/issues/39196`
 - If new code is clear from naming and references, do not add detailed comments. Keep code self-documenting.
 
-## Testing Philosophy: Static Type Checking Focus
+## Testing Philosophy: Static Type Checking Focus (The 4-Checker Paradigm)
 
-**CRITICAL:** This project prioritizes **static type checking** over runtime error testing. When designing stubs and tests:
+This project prioritizes **static type checking** over runtime error testing and enforces a 4-checker CI pipeline: `mypy`, `pyright`, `pyrefly`, and `ty`.
+
+When designing stubs and tests:
 
 ### Invalid Usage Testing Pattern
 
 When an error is expected to raise (invalid operations):
 
-1. **Design stubs** to return `Never` or cause type checker errors for invalid usage
-2. **In tests**, protect invalid operations with `if TYPE_CHECKING_INVALID_USAGE:` instead of `with pytest.raises(...)`
-3. Add `# type: ignore[<error-code>]` and/or `# pyright: ignore[<error-code>]` comments to verify type checkers catch the error
+1. **Design stubs** to return `Never` or cause type checker errors for invalid usage.
+2. **In tests**, protect invalid operations with `if TYPE_CHECKING_INVALID_USAGE:` instead of `with pytest.raises(...)`.
+3. Add the canonical multi-checker ignore comment sequence (ADR-0008).
 
-**Example** (from `docs/philosophy.md`):
+**Example** (tested in `tests/scalars/timedelta/test_arithmetic.py`):
 
 ```python
-i1 = pd.Interval(
-    pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-03"), closed="both"
-)
 if TYPE_CHECKING_INVALID_USAGE:
-    _0 = i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+    _0 = a * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 ```
 
-**Why:** The goal is to catch errors at **type-check time**, not runtime. The `TYPE_CHECKING_INVALID_USAGE` guard (which is `False` at runtime) prevents runtime execution while the ignore comments verify type checkers properly reject the invalid code.
+**Why:** The goal is to catch errors at **type-check time**, not runtime. The `TYPE_CHECKING_INVALID_USAGE` guard (which is `False` at runtime) prevents runtime execution while the ignore comments verify `mypy`, `pyright`, `pyrefly`, and `ty` properly reject the invalid code.
+
+**Note on `ty`**: `ty` is being gradually integrated into `pandas-stubs`, fully parallel with the other three type checkers. It is currently in beta; we actively report bugs to `astral-sh/ty` (and similarly to `mypy`, `pyright`, and `pyrefly`).
 
 ### Do NOT use pytest.raises for type checking
 
@@ -60,7 +77,7 @@ with pytest.raises(TypeError):
 
 ```python
 if TYPE_CHECKING_INVALID_USAGE:
-    _0 = s1 + s2  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+    _0 = s1 + s2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 ```
 
 ### Avoiding ruff useless-comparison warnings
@@ -69,7 +86,7 @@ When testing operations, assign the result to a dummy variable (e.g., `_0`, `_1`
 
 ```python
 if TYPE_CHECKING_INVALID_USAGE:
-    _0 = a > b  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+    _0 = a > b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 ```
 
 This applies to any expression that would trigger warnings about unused results (comparisons, arithmetic operations, etc.).
@@ -86,9 +103,8 @@ poetry run poe test_all
 
 All checks must pass before submitting changes. These commands verify:
 
-- Type stubs are correctly annotated (`mypy`, `pyright`, `pyrefly`)
-- Invalid usage is properly rejected by type checkers (ty)
-- Tests execute successfully at runtime (test)
+- Type stubs are correctly annotated (`mypy`, `pyright`, `pyrefly`, `ty`)
+- Tests execute successfully at runtime (`pytest`)
 
 ## Pull Requests (summary)
 
