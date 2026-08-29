@@ -39,7 +39,6 @@ from pandas._stubs_only import (
     ScalarArrayIndexJustComplex,
     ScalarArrayIndexJustFloat,
     ScalarArrayIndexJustInt,
-    ScalarArrayIndexPeriod,
     ScalarArrayIndexReal,
     ScalarArrayIndexTimedelta,
     Supports_ProtoAdd,
@@ -644,13 +643,13 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __add__(self: Index[Never], other: _str, /) -> Index[_str]: ...
     @overload
-    def __add__(
+    def __add__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self: Index[Never],
         other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
         /,
     ) -> Index: ...
     @overload
-    def __add__(self, other: Index[Never], /) -> Index: ...
+    def __add__(self, other: Index[Never], /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __add__(
         self: Index[_str],
@@ -667,12 +666,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __add__(
-        self: Index[Period], other: ScalarArrayIndexPeriod, /
-    ) -> Index[Period]: ...
-    @overload
-    def __add__(
-        self: Index[OffsetT], other: Period | Index[Period], /
-    ) -> Index[Period]: ...
+        self: Index[OffsetT], other: Period | PeriodIndex, /
+    ) -> PeriodIndex: ...
     @overload
     def __add__(
         self: Index[OffsetT], other: BaseOffset | Index[OffsetT], /
@@ -721,13 +716,13 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __radd__(self: Index[Never], other: _str, /) -> Index[_str]: ...
     @overload
-    def __radd__(
+    def __radd__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self: Index[Never],
         other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
         /,
     ) -> Index: ...
     @overload
-    def __radd__(self, other: Index[Never], /) -> Index: ...
+    def __radd__(self, other: Index[Never], /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __radd__(
         self: Index[_str],
@@ -744,12 +739,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __radd__(
-        self: Index[Period], other: ScalarArrayIndexPeriod, /
-    ) -> Index[Period]: ...
-    @overload
-    def __radd__(
-        self: Index[OffsetT], other: Period | Index[Period], /
-    ) -> Index[Period]: ...
+        self: Index[OffsetT], other: Period | PeriodIndex, /
+    ) -> PeriodIndex: ...
     @overload
     def __radd__(  # type: ignore[misc]
         self: Index[OffsetT], other: BaseOffset | Index[OffsetT], /

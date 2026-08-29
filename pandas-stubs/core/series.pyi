@@ -1970,7 +1970,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __add__(
-        self: Series[OffsetT], other: Period | Index[Period] | Series[Period], /
+        self: Series[OffsetT], other: Period | PeriodIndex | Series[Period], /
     ) -> Series[Period]: ...
     @overload
     def __add__(
@@ -2102,7 +2102,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def add(
         self: Series[OffsetT],
-        other: Period | Index[Period] | Series[Period],
+        other: Period | PeriodIndex | Series[Period],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2230,7 +2230,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Period]: ...
     @overload
     def __radd__(
-        self: Series[OffsetT], other: Period | Index[Period] | Series[Period], /
+        self: Series[OffsetT], other: Period | PeriodIndex | Series[Period], /
     ) -> Series[Period]: ...
     @overload
     def __radd__(  # type: ignore[misc]
@@ -2377,7 +2377,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def radd(
         self: Series[OffsetT],
-        other: Period | Index[Period] | Series[Period],
+        other: Period | PeriodIndex | Series[Period],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,

@@ -22,7 +22,7 @@ def left() -> "pd.Series[BaseOffset]":
 
 
 def test_add_period(left: "pd.Series[BaseOffset]") -> None:
-    """Test pd.Series[BaseOffset] + Period, Index[Period], Series[Period]"""
+    """Test pd.Series[BaseOffset] + Period, PeriodIndex, Series[Period]"""
     p = pd.Period("2025-08-20", freq="D")
     pi = pd.PeriodIndex(["2025-08-20"], freq="D")
     ps = pd.Series([pd.Period("2025-08-20", freq="D")])
