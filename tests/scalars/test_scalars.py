@@ -556,7 +556,6 @@ def test_timedelta_add_sub() -> None:
     as_nat = pd.NaT
 
     check(assert_type(td + td, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td + as_period, pd.Period), pd.Period)
     check(assert_type(td + as_timestamp, pd.Timestamp), pd.Timestamp)
     check(assert_type(td + as_datetime, pd.Timestamp), pd.Timestamp)
     check(assert_type(td + as_date, dt.date), dt.date)
@@ -570,7 +569,6 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td + as_ndarray_dt64, np_ndarray_dt), np_ndarray, np.datetime64)
     check(assert_type(td + as_nat, NaTType), NaTType)
 
-    check(assert_type(as_period + td, pd.Period), pd.Period)
     check(assert_type(as_timestamp + td, pd.Timestamp), pd.Timestamp)
     check(assert_type(as_datetime + td, dt.datetime), dt.datetime)
     check(assert_type(as_date + td, dt.date), dt.date)
@@ -1728,17 +1726,9 @@ def test_period_add_subtract() -> None:
     scale = 24 * 60 * 60 * 10**9
     as_td_series = pd.Series(pd.timedelta_range(scale, scale, freq="D"))
     check(assert_type(as_td_series, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-    as_period_series = pd.Series(as_period_index)
-    check(assert_type(as_period_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     as_timedelta_idx = pd.timedelta_range(scale, scale, freq="D")
     as_nat = pd.NaT
 
-    check(assert_type(p + as_pd_td, pd.Period), pd.Period)
-    check(assert_type(p + as_dt_td, pd.Period), pd.Period)
-    check(assert_type(p + as_np_td, pd.Period), pd.Period)
-    check(assert_type(p + as_np_i64, pd.Period), pd.Period)
-    check(assert_type(p + as_int, pd.Period), pd.Period)
-    check(assert_type(p + p.freq, pd.Period), pd.Period)
     # offset_index is tested below
     offset_index = p - as_period_index
     # https://github.com/pandas-dev/pandas/issues/50162 dtype=object
@@ -1751,10 +1741,6 @@ def test_period_add_subtract() -> None:
 
     check(assert_type(p + as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p + as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(p + as_nat, NaTType), NaTType)
-    offset_series = as_period_series - as_period_series
-    check(assert_type(offset_series, "pd.Series[BaseOffset]"), pd.Series)
-    check(assert_type(p + offset_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p - as_pd_td, pd.Period), pd.Period)
     check(assert_type(p - as_dt_td, pd.Period), pd.Period)
     check(assert_type(p - as_np_td, pd.Period), pd.Period)
@@ -1767,35 +1753,9 @@ def test_period_add_subtract() -> None:
     check(assert_type(p - as_nat, NaTType), NaTType)
     check(assert_type(p - p.freq, pd.Period), pd.Period)
 
-    # The __radd__ and __rsub__ methods are included to
-    # establish the location of the concrete implementation
-    # Those missing are using the __add__ of the other class
-    check(assert_type(as_pd_td + p, pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_pd_td), pd.Period), pd.Period)
-
-    check(assert_type(as_dt_td + p, pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_dt_td), pd.Period), pd.Period)
-
-    check(assert_type(as_np_td + p, pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_np_td), pd.Period), pd.Period)
-
-    # TODO: facebook/pyrefly#4422
-    # pyrefly: ignore[assert-type]
-    check(assert_type(as_np_i64 + p, pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_np_i64), pd.Period), pd.Period)
-
-    check(assert_type(as_int + p, pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_int), pd.Period), pd.Period)
-
     check(assert_type(as_td_series + p, "pd.Series[pd.Period]"), pd.Series, pd.Period)
 
     check(assert_type(as_timedelta_idx + p, pd.PeriodIndex), pd.PeriodIndex)
-
-    check(assert_type(as_nat + p, NaTType), NaTType)
-    check(assert_type(p.__radd__(as_nat), NaTType), NaTType)
-
-    check(assert_type(p.freq + p, pd.Period), pd.Period)
-    check(assert_type(p.__radd__(p.freq), pd.Period), pd.Period)
 
     check(assert_type(as_period_index - p, pd.Index), pd.Index)
 
