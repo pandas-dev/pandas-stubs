@@ -25,12 +25,12 @@ When generating documentation or writing PR descriptions, format all GitHub refe
 
 ## PR and Commit Conventions
 
-- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Finding official emails can be tricky, so use these standard templates for popular agents:
-  - `Co-authored-by: Antigravity AI <bot@antigravity.dev>`
-  - `Co-authored-by: DeepCode <bot@deepcode.ai>`
+- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Prefer the exact model name when known; use the tool name only when the model is not disclosed. Use the provider's official no-reply address:
+  - `Co-authored-by: deepseek-v4-pro <noreply@deepseek.com>`
+  - `Co-authored-by: gpt-5.6-terra <noreply@openai.com>`
+  - `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`
   - `Co-authored-by: GitHub Copilot <noreply@github.com>`
-  - `Co-authored-by: OpenAI Codex <noreply@openai.com>`
-- **Emojis in PR Titles**: Consider adding an emoji to the PR title (e.g., 🤖 or 🪄) as a fun, immediate signal to maintainers that AI assisted with the PR.
+  - `Co-authored-by: Antigravity AI <noreply@google.com>`
 - **PR body — visible and collapsible text**:
   - *Visible text* (for human reviewers): concise summary, checklist, links. Humans read the rendered page.
   - *Collapsible text* (for AI agents): place comprehensive implementation plans or technical notes inside a `<details><summary>AI Implementation Plan</summary>` block at the bottom of the body. This keeps the PR clean for humans but accessible if they want to read it, while agents can read it via the raw body.
@@ -61,21 +61,29 @@ When an error is expected to raise (invalid operations):
 **Example 1: Standard invalid operations** (tested in `tests/scalars/timedelta/test_arithmetic.py`):
 
 ```python
+a = pd.Timedelta("1 day")
+b = True
 if TYPE_CHECKING_INVALID_USAGE:
     _0 = a * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 ```
 
-**Example 2: Guarding `Never` assertions**
-When a stub returns `Never`, attempting to assign it or use it will trigger a type error. Because `Never` represents an operation that shouldn't happen, placing it in standard execution flow can cause runtime crashes. Guard these inside an uncalled function:
+**Example 2: Asserting a `Never` return**
+When a stub overload returns `Never`, do not wrap the call in an uncalled function: code after a `Never` call is unreachable, so type checkers stop checking the rest of the block. Assert the return type directly instead (tested in `tests/indexes/test_floordiv.py`):
 
 ```python
+from tests import TYPE_CHECKING_INVALID_USAGE
+from typing import Never, assert_type
+
+import numpy as np
+import pandas as pd
+
+left_i = pd.MultiIndex.from_arrays([[1, 2, 3]]).levels[0]  # pd.Index[int]
+c = np.array([1.1j, 2.2j, 4.1j], np.complex128)
 if TYPE_CHECKING_INVALID_USAGE:
-    def _test_never():
-        # This function is never called at runtime, safely allowing type checkers to evaluate the Never return
-        _0 = s.dt.tz_convert("UTC")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[missing-overload]
+    assert_type(left_i // c, Never)
 ```
 
-**Why:** The goal is to catch errors at **type-check time**, not runtime. The `TYPE_CHECKING_INVALID_USAGE` guard (which is `False` at runtime) and uncalled functions prevent runtime execution while the ignore comments verify `mypy`, `pyright`, `pyrefly`, and `ty` properly reject the invalid code.
+**Why:** The goal is to catch errors at **type-check time**, not runtime. The `TYPE_CHECKING_INVALID_USAGE` guard (which is `False` at runtime) prevents runtime execution while `assert_type(expr, Never)` verifies the stub really returns `Never` — no ignore comments needed.
 
 **Note on `ty`**: `ty` is being gradually integrated into `pandas-stubs`, fully parallel with the other three type checkers. It is currently in beta; we actively report bugs to `astral-sh/ty` (and similarly to `mypy`, `pyright`, and `pyrefly`).
 
@@ -91,6 +99,10 @@ with pytest.raises(TypeError):
 **Correct pattern:**
 
 ```python
+import pandas as pd
+
+s1 = pd.Series([pd.Timestamp("2000-01-01")])
+s2 = pd.Series([pd.Timestamp("2000-01-02")])
 if TYPE_CHECKING_INVALID_USAGE:
     _0 = s1 + s2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 ```
@@ -100,8 +112,13 @@ if TYPE_CHECKING_INVALID_USAGE:
 When testing operations, assign the result to a dummy variable (e.g., `_0`, `_1`, etc.) to avoid [ruff's useless-comparison rule](https://docs.astral.sh/ruff/rules/useless-comparison/):
 
 ```python
+import datetime as dt
+
+import pandas as pd
+
+date_obj = dt.date(2023, 1, 1)
 if TYPE_CHECKING_INVALID_USAGE:
-    _0 = a > b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+    _0 = date_obj > pd.NaT  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 ```
 
 This applies to any expression that would trigger warnings about unused results (comparisons, arithmetic operations, etc.).
