@@ -5,6 +5,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from pandas.errors import Pandas4Warning
 
@@ -18,10 +19,15 @@ from tests._typing import (
     np_ndarray_str,
 )
 
-left = pd.Index(["1", "23", "456"])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Index[str]":
+    """Left operand"""
+    lo = pd.Index(["1", "23", "456"])
+    return check(assert_type(lo, "pd.Index[str]"), pd.Index, str)
 
 
-def test_add_py_scalar() -> None:
+def test_add_py_scalar(left: "pd.Index[str]") -> None:
     """Test pd.Index[str] + Python native 'scalar's"""
     i = 4
     r0 = "right"
@@ -35,7 +41,7 @@ def test_add_py_scalar() -> None:
     check(assert_type(r0 + left, "pd.Index[str]"), pd.Index, str)
 
 
-def test_add_py_sequence() -> None:
+def test_add_py_sequence(left: "pd.Index[str]") -> None:
     """Test pd.Index[str] + Python native sequences"""
     i = [3, 5, 8]
     r0 = ["a", "bc", "def"]
@@ -54,7 +60,7 @@ def test_add_py_sequence() -> None:
         check(assert_type(r1 + left, "pd.Index[str]"), pd.Index, str)
 
 
-def test_add_numpy_array() -> None:
+def test_add_numpy_array(left: "pd.Index[str]") -> None:
     """Test pd.Index[str] + numpy arrays"""
     i = np.array([3, 5, 8], np.int64)
     r0 = np.array(["a", "bc", "def"], np.str_)
@@ -74,7 +80,7 @@ def test_add_numpy_array() -> None:
     check(assert_type(r0 + left, np_ndarray_str), pd.Index, str)
 
 
-def test_add_pd_index() -> None:
+def test_add_pd_index(left: "pd.Index[str]") -> None:
     """Test pd.Index[str] + pandas Indexes"""
     i = pd.Index([3, 5, 8])
     r0 = pd.Index(["a", "bc", "def"])
