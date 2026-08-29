@@ -57,6 +57,7 @@ from pandas import (
     Timestamp,
 )
 from pandas._stubs_only import (
+    T_INTERVAL_NP,
     ArrayIndexSeriesTimedeltaNoSeq,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
@@ -80,7 +81,6 @@ from pandas._stubs_only import (
     Supports_ProtoRMul,
     Supports_ProtoRTrueDiv,
     Supports_ProtoTrueDiv,
-    T_INTERVAL_NP,
     T_co,
     T_contra,
 )
@@ -1969,10 +1969,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __add__(
-        self: Series[Period], other: ScalarArrayIndexSeriesPeriod, /
-    ) -> Series[Period]: ...
-    @overload
-    def __add__(
         self: Series[BaseOffset], other: Period | Index[Period] | Series[Period], /
     ) -> Series[Period]: ...
     @overload
@@ -2040,6 +2036,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         other: np_ndarray_complex | Index[complex] | Series[complex],
         /,
     ) -> Series[complex]: ...
+    @overload
+    def __add__(
+        self: Series[Period], other: ScalarArrayIndexSeriesPeriod, /
+    ) -> Series[Period]: ...
     @overload
     def add(self: Series[Never], other: _str) -> Series[_str]: ...
     @overload

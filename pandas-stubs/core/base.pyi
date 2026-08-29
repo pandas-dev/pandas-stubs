@@ -29,7 +29,6 @@ from pandas._typing import (
     np_1darray_intp,
 )
 
-
 class PandasObject(DirNamesMixin): ...
 
 class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
