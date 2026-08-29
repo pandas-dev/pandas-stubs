@@ -57,32 +57,11 @@ from pandas import (
     Timestamp,
 )
 from pandas._stubs_only import (
-    OrderableT,
-    T_co,
-    T_contra,
-)
-from pandas.core.api import (
-    Int8Dtype as Int8Dtype,
-    Int16Dtype as Int16Dtype,
-    Int32Dtype as Int32Dtype,
-    Int64Dtype as Int64Dtype,
-)
-from pandas.core.arrays.base import ExtensionArray
-from pandas.core.arrays.boolean import BooleanDtype
-from pandas.core.arrays.categorical import (
-    Categorical,
-    CategoricalAccessor,
-)
-from pandas.core.arrays.datetimes import DatetimeArray
-from pandas.core.arrays.floating import FloatingArray
-from pandas.core.arrays.timedeltas import TimedeltaArray
-from pandas.core.base import (
-    T_INTERVAL_NP,
     ArrayIndexSeriesTimedeltaNoSeq,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
-    IndexOpsMixin,
     NumListLike,
+    OrderableT,
     ScalarArrayIndexSeriesComplex,
     ScalarArrayIndexSeriesDateTime,
     ScalarArrayIndexSeriesJustComplex,
@@ -101,7 +80,26 @@ from pandas.core.base import (
     Supports_ProtoRMul,
     Supports_ProtoRTrueDiv,
     Supports_ProtoTrueDiv,
+    T_INTERVAL_NP,
+    T_co,
+    T_contra,
 )
+from pandas.core.api import (
+    Int8Dtype as Int8Dtype,
+    Int16Dtype as Int16Dtype,
+    Int32Dtype as Int32Dtype,
+    Int64Dtype as Int64Dtype,
+)
+from pandas.core.arrays.base import ExtensionArray
+from pandas.core.arrays.boolean import BooleanDtype
+from pandas.core.arrays.categorical import (
+    Categorical,
+    CategoricalAccessor,
+)
+from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.floating import FloatingArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
+from pandas.core.base import IndexOpsMixin
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import SeriesGroupBy

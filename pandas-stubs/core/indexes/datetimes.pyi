@@ -17,7 +17,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas.core.base import ScalarArrayIndexTimedelta
+from pandas._stubs_only import ScalarArrayIndexTimedelta
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.base import Index

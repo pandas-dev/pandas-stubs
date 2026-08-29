@@ -8,8 +8,10 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Index
-from pandas._stubs_only import PeriodAddSub
-from pandas.core.base import ScalarArrayIndexPeriod
+from pandas._stubs_only import (
+    PeriodAddSub,
+    ScalarArrayIndexPeriod,
+)
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
 from pandas.core.indexes.datetimelike import DatetimeIndexOpsMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex

@@ -16,7 +16,7 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.base import (
+from pandas._stubs_only import (
     ScalarArrayIndexDateTime,
     ScalarArrayIndexTimedelta,
 )
