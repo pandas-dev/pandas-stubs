@@ -45,7 +45,7 @@ When generating documentation or writing PR descriptions, format all GitHub refe
   - `Co-authored-by: gpt-5.6-terra <noreply@openai.com>`
   - `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`
   - `Co-authored-by: GitHub Copilot <noreply@github.com>`
-  - `Co-authored-by: Antigravity AI <noreply@google.com>`
+  - `Co-authored-by: Gemini 3.1 Pro <noreply@google.com>`
 - **Splitting exceptionally large PRs**: If a PR is massive, split it into small, individually reviewable sub-PRs. Each sub-PR body should start with `- [x] Towards pandas-dev/pandas-stubs#<parent>`.
 
 ## Decision Heuristics
