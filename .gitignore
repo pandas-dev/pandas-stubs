@@ -141,4 +141,3 @@ dmypy.json
 
 # duplication of stub specific objects upon testing
 tests/_typing.pyi
-
