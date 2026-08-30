@@ -1330,7 +1330,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         **kwargs: Any,
     ) -> float: ...
     @overload
-    def aggregate(  # pyright: ignore[reportOverlappingOverload]
+    def aggregate(
         self,
         func: AggFuncTypeBase[...],
         axis: AxisIndex = ...,
@@ -1347,7 +1347,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     agg = aggregate
     @overload
-    def transform(  # pyright: ignore[reportOverlappingOverload]
+    def transform(
         self,
         func: AggFuncTypeBase[...],
         axis: AxisIndex = ...,
