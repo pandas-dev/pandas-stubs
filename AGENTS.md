@@ -18,7 +18,7 @@ The `pandas-stubs` project is introduced in `README.md`.
 ## Citation & Reference Formatting Rules (Important)
 
 When generating documentation or writing PR descriptions, format all GitHub references as plain text so that GitHub renders them as native autolinks.
-- Avoid wrapping PRs, Issues, or Commits in backticks.
+- Avoid wrapping PRs, Issues, or Commits in backticks; GitHub will only render these as clickable links if they are left as plain text.
 - **Pull Requests / Issues**: pandas-dev/pandas-stubs#1911 (not `` `pandas-dev/pandas-stubs#1911` ``).
 - **Commits**: pandas-dev/pandas-stubs@cebd954 (not `` `cebd954` ``).
 - **External issues**: pandas-dev/pandas#39196 (not a full URL).
@@ -37,7 +37,7 @@ When generating documentation or writing PR descriptions, format all GitHub refe
 - **PR descriptions**: follow the template; keep the visible text succinct (usually a few sentences). PRs resolving an existing issue should include a link to it in the description.
 - **PR body — concise for humans, comprehensive for agents**:
   - Humans read the rendered page: lead with a concise summary, checklist, and links.
-  - AI agents read the raw body and can consume far more detail than a human reviewer wants to scroll through. Put a comprehensive implementation record at the bottom of the body inside a `<details><summary>AI Implementation Plan</summary>` block: motivation, experiments and attempts (including failures), caveats, outcome, out-of-scope items, and a to-do list. This information lives in a developer's head; an AI agent can write it down cheaply, and later agents (e.g. pandas-dev/pandas-stubs#1926 sub-PRs) can pick it up without re-deriving it. This follows the evidence-traceability direction of arXiv:2604.24658 without claiming ARA compliance.
+  - AI agents read the raw body and can consume far more detail than a human reviewer wants to scroll through. Put a comprehensive implementation record at the bottom of the body inside a `<details><summary>AI Implementation Plan</summary>` block: motivation, experiments and attempts (including failures), caveats, outcome, out-of-scope items, and a to-do list. This information lives in a developer's head; an AI agent can write it down cheaply, and later agents (e.g. pandas-dev/pandas-stubs#1926 sub-PRs) can pick it up without re-deriving it.
   - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs. The `<details>` block stays visible when expanded, so both audiences keep full access.
 - **Commit messages**: do not add summaries or additional comments to individual commits. The single PR description is sufficient.
 - **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Prefer the exact model name when known; use the tool name only when the model is not disclosed. Use the provider's official no-reply address:
