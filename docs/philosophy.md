@@ -120,6 +120,22 @@ which is supported by `typing_extensions` version 4.2 and beyond makes it easier
 to test to validate the return types of functions and methods.  Future work
 is intended to expand the use of `assert_type()` in the test code.
 
+When a stub returns `Never`, verify it with `assert_type(expr, Never)`.  For
+arithmetic operators returning `Never`, type checkers still check the rest of
+the scope, so a bare assertion is fine.  Some `Never`-returning calls, however,
+make everything after them unreachable, so type checkers stop checking the rest
+of the block.  Wrap those assertions in an uncalled function, as in
+`tests/indexes/test_indexes.py`:
+
+```python
+def test_multiindex_from_product_forbid_strings() -> None:
+    """Test that passing strings directly to `MultiIndex.from_product` is forbidden."""
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.MultiIndex.from_product(["12", "34"]), Never)
+```
+
 ## Narrow vs. Wide Arguments
 
 A consideration in creating stubs is to make the set of type annotations for
@@ -177,3 +193,7 @@ for them.
 If type checkers report errors, for example, inside a `TYPE_CHECKING_INVALID_USAGE`
 block, please ensure that the comment for mypy comes first:
 `# type: ignore[<error code>] # pyright: ignore[<error code>] # pyrefly: ignore[<error code>] # ty: ignore[<error code>]`.
+
+One special case: an uncalled helper function that contains a `Never` assertion
+needs `# pyright: ignore[reportUnusedFunction]` on its `def` line.  This is not
+part of the canonical multi-checker sequence.

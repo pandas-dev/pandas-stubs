@@ -67,8 +67,8 @@ if TYPE_CHECKING_INVALID_USAGE:
     _0 = a * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 ```
 
-**Example 2: Asserting a `Never` return**
-When a stub overload returns `Never`, do not wrap the call in an uncalled function: code after a `Never` call is unreachable, so type checkers stop checking the rest of the block. Assert the return type directly instead (tested in `tests/indexes/test_floordiv.py`):
+**Example 2: Asserting a `Never` return from arithmetic**
+Arithmetic operators that return `Never` do not stop type checkers from checking the rest of the scope, so assert the return type directly without an uncalled-function wrapper (tested in `tests/indexes/test_floordiv.py`):
 
 ```python
 from tests import TYPE_CHECKING_INVALID_USAGE
@@ -84,6 +84,20 @@ if TYPE_CHECKING_INVALID_USAGE:
 ```
 
 **Why:** The goal is to catch errors at **type-check time**, not runtime. The `TYPE_CHECKING_INVALID_USAGE` guard (which is `False` at runtime) prevents runtime execution while `assert_type(expr, Never)` verifies the stub really returns `Never` — no ignore comments needed.
+
+**Example 3: Guarding `Never`-returning calls with an uncalled function**
+Some `Never`-returning calls make everything after them unreachable, so type checkers stop checking the rest of the block. Confine such an assertion to an uncalled function (tested in `tests/indexes/test_indexes.py`):
+
+```python
+def test_multiindex_from_product_forbid_strings() -> None:
+    """Test that passing strings directly to `MultiIndex.from_product` is forbidden."""
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.MultiIndex.from_product(["12", "34"]), Never)
+```
+
+`# pyright: ignore[reportUnusedFunction]` silences pyright's unused-function diagnostic. When in doubt, the wrapper is always safe.
 
 **Note on `ty`**: `ty` is being gradually integrated into `pandas-stubs`, fully parallel with the other three type checkers. It is currently in beta; we actively report bugs to `astral-sh/ty` (and similarly to `mypy`, `pyright`, and `pyrefly`).
 
