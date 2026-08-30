@@ -463,3 +463,11 @@ def test_categorical_ordering_comparison() -> None:
     check(assert_type(cat_int < 2, np_1darray_bool), np_1darray_bool, np.bool)
     s_cat_int = pd.Series(Categorical([1, 2, 3], categories=[1, 2, 3], ordered=True))
     check(assert_type(cat_int < s_cat_int, "pd.Series[bool]"), pd.Series)
+
+    # Categorical vs plain Series (non-categorical dtype, matching value type)
+    # -> Series[bool], pandas-dev/pandas-stubs#1901
+    s_plain = pd.Series(["a", "b", "c"])
+    check(assert_type(cat < s_plain, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat <= s_plain, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat > s_plain, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat >= s_plain, "pd.Series[bool]"), pd.Series)
