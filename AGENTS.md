@@ -23,18 +23,29 @@ When generating documentation or writing PR descriptions, format all GitHub refe
 - **Commits**: pandas-dev/pandas-stubs@cebd954 (not `` `cebd954` ``).
 - **External issues**: pandas-dev/pandas#39196 (not a full URL).
 
-## PR and Commit Conventions
+## Pull Requests and Commits
 
+- **PR titles**: descriptive, and include one of the following prefixes:
+  - ENH: Enhancement, new functionality
+  - BUG: Bug fix
+  - DOC: Additions/updates to documentation
+  - TST: Additions/updates to tests
+  - BLD: Updates to the build process/scripts
+  - PERF: Performance improvement
+  - TYP: Type annotations
+  - CLN: Code cleanup
+- **PR descriptions**: follow the template; keep the visible text succinct (usually a few sentences). PRs resolving an existing issue should include a link to it in the description.
+- **PR body — concise for humans, comprehensive for agents**:
+  - Humans read the rendered page: lead with a concise summary, checklist, and links.
+  - AI agents read the raw body and can consume far more detail than a human reviewer wants to scroll through. Put a comprehensive implementation record at the bottom of the body inside a `<details><summary>AI Implementation Plan</summary>` block: motivation, experiments and attempts (including failures), caveats, outcome, out-of-scope items, and a to-do list. This information lives in a developer's head; an AI agent can write it down cheaply, and later agents (e.g. pandas-dev/pandas-stubs#1926 sub-PRs) can pick it up without re-deriving it. This follows the evidence-traceability direction of arXiv:2604.24658 without claiming ARA compliance.
+  - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs. The `<details>` block stays visible when expanded, so both audiences keep full access.
+- **Commit messages**: do not add summaries or additional comments to individual commits. The single PR description is sufficient.
 - **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Prefer the exact model name when known; use the tool name only when the model is not disclosed. Use the provider's official no-reply address:
   - `Co-authored-by: deepseek-v4-pro <noreply@deepseek.com>`
   - `Co-authored-by: gpt-5.6-terra <noreply@openai.com>`
   - `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`
   - `Co-authored-by: GitHub Copilot <noreply@github.com>`
   - `Co-authored-by: Antigravity AI <noreply@google.com>`
-- **PR body — concise for humans, comprehensive for agents**:
-  - Humans read the rendered page: lead with a concise summary, checklist, and links.
-  - AI agents read the raw body and can consume far more detail than a human reviewer wants to scroll through. Put a comprehensive implementation record at the bottom of the body inside a `<details><summary>AI Implementation Plan</summary>` block: motivation, experiments and attempts (including failures), caveats, outcome, out-of-scope items, and a to-do list. This information lives in a developer's head; an AI agent can write it down cheaply, and later agents (e.g. pandas-dev/pandas-stubs#1926 sub-PRs) can pick it up without re-deriving it. This follows the evidence-traceability direction of arXiv:2604.24658 without claiming ARA compliance.
-  - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs. The `<details>` block stays visible when expanded, so both audiences keep full access.
 - **Splitting exceptionally large PRs**: If a PR is massive, split it into small, individually reviewable sub-PRs. Each sub-PR body should start with `- [x] Towards pandas-dev/pandas-stubs#<parent>`.
 
 ## Decision Heuristics
@@ -160,18 +171,3 @@ All checks must pass before submitting changes. These commands verify:
 
 - Type stubs are correctly annotated (`mypy`, `pyright`, `pyrefly`, `ty`)
 - Tests execute successfully at runtime (`pytest`)
-
-## Pull Requests (summary)
-
-- Pull request titles should be descriptive and include one of the following prefixes:
-  - ENH: Enhancement, new functionality
-  - BUG: Bug fix
-  - DOC: Additions/updates to documentation
-  - TST: Additions/updates to tests
-  - BLD: Updates to the build process/scripts
-  - PERF: Performance improvement
-  - TYP: Type annotations
-  - CLN: Code cleanup
-- Pull request descriptions should follow the template, and **succinctly** describe the change being made. Usually a few sentences is sufficient.
-- Pull requests which are resolving an existing Github Issue should include a link to the issue in the PR Description.
-- Do not add summaries or additional comments to individual commit messages. The single PR description is sufficient.
