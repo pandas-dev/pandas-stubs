@@ -179,4 +179,7 @@ if not TYPE_CHECKING:
     from pathlib import Path
 
     _source = Path(__file__).parents[1] / "pandas-stubs" / "_typing.pyi"
-    exec(compile(_source.read_text(), str(_source), "exec"), globals())  # noqa: S102
+    exec(  # noqa: S102
+        compile(_source.read_text(encoding="utf-8"), str(_source), "exec"),
+        globals(),
+    )
