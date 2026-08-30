@@ -46,6 +46,7 @@ When generating documentation or writing PR descriptions, format all GitHub refe
   - `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`
   - `Co-authored-by: GitHub Copilot <noreply@github.com>`
   - `Co-authored-by: Gemini 3.1 Pro <noreply@google.com>`
+- **Why a fixed list**: models cannot reliably report their own name or version (they frequently hallucinate or are unaware of their exact identifier), so a canonical list lets an agent choose the closest matching identity deterministically; when the model isn't listed, use the tool name.
 - **Splitting exceptionally large PRs**: If a PR is massive, split it into small, individually reviewable sub-PRs. Each sub-PR body should start with `- [x] Towards pandas-dev/pandas-stubs#<parent>`.
 
 ## Decision Heuristics
