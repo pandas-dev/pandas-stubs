@@ -112,8 +112,8 @@ interval of `Timestamp`s.
 ## Testing the Type Stubs
 
 A set of (most likely incomplete) tests for testing the type stubs is in the pandas-stubs
-repository in the `tests` directory.  The tests are used with `mypy`, `pyright`
-and `pyrefly` to
+repository in the `tests` directory.  The tests are used with `mypy`, `pyright`,
+`pyrefly`, and `ty` to
 validate correct typing, and also with `pytest` to validate that the provided code
 actually executes.  The recent decision for Python 3.11 to include `assert_type()`,
 which is supported by `typing_extensions` version 4.2 and beyond makes it easier

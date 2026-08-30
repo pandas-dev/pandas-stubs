@@ -31,10 +31,10 @@ When generating documentation or writing PR descriptions, format all GitHub refe
   - `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`
   - `Co-authored-by: GitHub Copilot <noreply@github.com>`
   - `Co-authored-by: Antigravity AI <noreply@google.com>`
-- **PR body — visible and collapsible text**:
-  - *Visible text* (for human reviewers): concise summary, checklist, links. Humans read the rendered page.
-  - *Collapsible text* (for AI agents): place comprehensive implementation plans or technical notes inside a `<details><summary>AI Implementation Plan</summary>` block at the bottom of the body. This keeps the PR clean for humans but accessible if they want to read it, while agents can read it via the raw body.
-  - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs.
+- **PR body — concise for humans, comprehensive for agents**:
+  - Humans read the rendered page: lead with a concise summary, checklist, and links.
+  - AI agents read the raw body and can consume far more detail than a human reviewer wants to scroll through. Put a comprehensive implementation record at the bottom of the body inside a `<details><summary>AI Implementation Plan</summary>` block: motivation, experiments and attempts (including failures), caveats, outcome, out-of-scope items, and a to-do list. This information lives in a developer's head; an AI agent can write it down cheaply, and later agents (e.g. pandas-dev/pandas-stubs#1926 sub-PRs) can pick it up without re-deriving it. This follows the evidence-traceability direction of arXiv:2604.24658 without claiming ARA compliance.
+  - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs. The `<details>` block stays visible when expanded, so both audiences keep full access.
 - **Splitting exceptionally large PRs**: If a PR is massive, split it into small, individually reviewable sub-PRs. Each sub-PR body should start with `- [x] Towards pandas-dev/pandas-stubs#<parent>`.
 
 ## Decision Heuristics
@@ -54,7 +54,7 @@ When designing stubs and tests:
 
 When an error is expected to raise (invalid operations):
 
-1. **Design stubs** to return `Never` or cause type checker errors for invalid usage.
+1. **Design stubs** to cause type checker errors for invalid usage. Return `Never` only when a direct error cannot be expressed.
 2. **In tests**, protect invalid operations with `if TYPE_CHECKING_INVALID_USAGE:` instead of `with pytest.raises(...)`.
 3. Add the canonical multi-checker ignore comment sequence.
 
@@ -136,6 +136,15 @@ if TYPE_CHECKING_INVALID_USAGE:
 ```
 
 This applies to any expression that would trigger warnings about unused results (comparisons, arithmetic operations, etc.).
+
+### Version-conditional runtime warnings
+
+Use the `pytest_warns_bounded` / `pytest_warns_conditioned` helpers from `tests/__init__.py` when a runtime warning only exists in a certain pandas (or Python) version range, so tests pass on all supported versions (pandas-dev/pandas-stubs#1927, pandas-dev/pandas-stubs#1802):
+
+```python
+with pytest_warns_bounded(UserWarning, match="foo", lower="1.2.99", upper="1.5.99"):
+    ...
+```
 
 See `docs/philosophy.md` sections "Testing the Type Stubs" and "Narrow vs. Wide Arguments" for full details.
 
