@@ -294,4 +294,5 @@ class JsonReader(Iterator[NDFrameT], Generic[NDFrameT]):
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
+        /,
     ) -> None: ...

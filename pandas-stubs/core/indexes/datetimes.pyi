@@ -81,16 +81,16 @@ class DatetimeIndex(
     @overload  # type: ignore[override]
     @override
     def __sub__(  # pyrefly: ignore[bad-override]
-        self, other: datetime | np.datetime64 | np_ndarray_dt | Self
+        self, other: datetime | np.datetime64 | np_ndarray_dt | Self, /
     ) -> TimedeltaIndex: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
+        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset, /
     ) -> Self: ...
     @override
-    def __truediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
+    def __truediv__(self, other: np_ndarray, /) -> Never: ...  # type: ignore[override]
     @override
-    def __rtruediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
+    def __rtruediv__(self, other: np_ndarray, /) -> Never: ...  # type: ignore[override]
     @final
     @override
     def to_series(

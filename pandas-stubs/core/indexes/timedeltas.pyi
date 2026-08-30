@@ -95,67 +95,67 @@ class TimedeltaIndex(
     ) -> Self: ...
     @override
     def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
+        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self, /
     ) -> Self: ...
     @overload  # type: ignore[override]
     @override
     # pyrefly: ignore[bad-override]
     def __rsub__(
-        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
+        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self, /
     ) -> Self: ...
     @overload
     def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
+        self, other: datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex, /
     ) -> DatetimeIndex: ...
     @overload  # type: ignore[override]
     @override
-    def __mul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
+    def __mul__(self, other: np_ndarray_bool | np_ndarray_complex, /) -> Never: ...
     @overload
-    def __mul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
+    def __mul__(self, other: _NUM_FACTOR_SEQ, /) -> Self: ...
     @overload  # type: ignore[override]
     @override
-    def __rmul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
+    def __rmul__(self, other: np_ndarray_bool | np_ndarray_complex, /) -> Never: ...
     @overload
-    def __rmul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
+    def __rmul__(self, other: _NUM_FACTOR_SEQ, /) -> Self: ...
     @overload  # type: ignore[override]
     @override
-    def __truediv__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
+    def __truediv__(self, other: Index[Never], /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __truediv__(
-        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
+        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt, /
     ) -> Never: ...
     @overload
-    def __truediv__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
+    def __truediv__(self, other: _NUM_FACTOR_SEQ, /) -> Self: ...
     @overload
     def __truediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: _DT_FACTOR_SEQ | Self
+        self, other: _DT_FACTOR_SEQ | Self, /
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
     @override
     def __rtruediv__(
-        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
+        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt, /
     ) -> Never: ...
     @overload
     def __rtruediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: _DT_FACTOR_SEQ | Self
+        self, other: _DT_FACTOR_SEQ | Self, /
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
     @override
     def __floordiv__(
-        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
+        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt, /
     ) -> Never: ...
     @overload
-    def __floordiv__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
+    def __floordiv__(self, other: _NUM_FACTOR_SEQ, /) -> Self: ...
     @overload
     def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: _DT_FACTOR_SEQ | Self
+        self, other: _DT_FACTOR_SEQ | Self, /
     ) -> Index[int]: ...
     @overload
     @override
-    def __rfloordiv__(self, other: np_ndarray_num | np_ndarray_dt) -> Never: ...
+    def __rfloordiv__(self, other: np_ndarray_num | np_ndarray_dt, /) -> Never: ...
     @overload
     def __rfloordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: _DT_FACTOR_SEQ | Self
+        self, other: _DT_FACTOR_SEQ | Self, /
     ) -> Index[int]: ...
     @final
     @override
