@@ -1,7 +1,7 @@
-# AI-Accountable Development in pandas-stubs
+# Accountable Development in pandas-stubs
 
-The canonical, living record of how AI-accountable development is integrated into
-pandas-stubs. It is split into two files linked from this index:
+The canonical, living record of how AI-assisted development in pandas-stubs is kept
+accountable. It is split into two files linked from this index:
 
 - [Rollout plan](rollout-plan.md) — the provisional implementation order.
 - [Decision log](decision-log.md) — decisions as they are made, newest first.

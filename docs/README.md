@@ -12,4 +12,4 @@ Instructions for working with the code are found here:
 - [How to test the project](tests.md)
 - [How to make a release](release_procedure.md)
 - [Type architecture](type-architecture.md)
-- [AI-accountable development](ai-accountable-development/index.md)
+- [Accountable development](accountable-development/index.md)
