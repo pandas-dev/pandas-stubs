@@ -27,4 +27,10 @@ repos:
         entry: '#.*\]\s{2,}#'
         language: pygrep
         types_or: [python, pyi]
-
+    -   id: guard-dunders-posonly
+        name: Guard positional-only dunder methods (, /)
+        entry: '(?s)\bdef __(?:lt|le|eq|ne|gt|ge|[ri]?(?:add|sub|mul|matmul|truediv|floordiv|mod|divmod|pow|lshift|rshift|and|xor|or)|getitem|setitem|delitem|contains|get|set|delete|round|format|reduce_ex|setstate|class_getitem|subclasshook|instancecheck|subclasscheck)__\((?:(?!/|\)\s*(?:->|:)).)*\)\s*(?:->|:)'
+        language: pygrep
+        types_or: [pyi, python]
+        args: [--multiline]
+        files: ^pandas-stubs/

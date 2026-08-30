@@ -102,6 +102,7 @@ class StataReader(StataParser, Iterator[DataFrame]):
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
+        /,
     ) -> None: ...
     @override
     def __next__(self) -> DataFrame: ...

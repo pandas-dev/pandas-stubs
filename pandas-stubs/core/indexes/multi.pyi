@@ -160,12 +160,11 @@ class MultiIndex(Index):
     @overload  # type: ignore[override]
     @override
     def __getitem__(  # pyrefly: ignore[bad-override]
-        self,
-        idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
+        self, idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType, /
     ) -> Self: ...
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, key: int
+        self, key: int, /
     ) -> tuple[Hashable, ...]: ...
     @overload  # type: ignore[override]
     @override

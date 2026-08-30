@@ -32,11 +32,11 @@ _StorageT = TypeVar("_StorageT", bound=Storage | None, default=None)
 class _StringDtypeStorageDescriptor:
     @overload
     def __get__(
-        self, instance: StringDtype[None], owner: type[StringDtype[None]]
+        self, instance: StringDtype[None], owner: type[StringDtype[None]], /
     ) -> Storage: ...
     @overload
     def __get__(
-        self, instance: StringDtype[StorageT], owner: type[StringDtype[StorageT]]
+        self, instance: StringDtype[StorageT], owner: type[StringDtype[StorageT]], /
     ) -> StorageT: ...
 
 class StringDtype(ExtensionDtype, Generic[_StorageT]):

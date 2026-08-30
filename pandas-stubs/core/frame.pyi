@@ -216,13 +216,13 @@ _SetItemValueNotDataFrame: TypeAlias = (
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
-    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...
+    def __getitem__(self, key: tuple[int, int], /) -> Scalar: ...
     @overload
-    def __getitem__(self, key: IndexingInt) -> Series: ...
+    def __getitem__(self, key: IndexingInt, /) -> Series: ...
     @overload
-    def __getitem__(self, key: tuple[IndexType | MaskType, int]) -> Series: ...
+    def __getitem__(self, key: tuple[IndexType | MaskType, int], /) -> Series: ...
     @overload
-    def __getitem__(self, key: tuple[int, IndexType | MaskType]) -> Series: ...
+    def __getitem__(self, key: tuple[int, IndexType | MaskType], /) -> Series: ...
     @overload
     def __getitem__(
         self,
@@ -232,39 +232,41 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
             | tuple[IndexType | MaskType, IndexType | MaskType]
             | tuple[slice]
         ),
+        /,
     ) -> _T: ...
 
     # Keep in sync with `DataFrame.__setitem__`
     @overload
     def __setitem__(
-        self, key: tuple[slice, Hashable], value: _SetItemValueNotDataFrame
+        self, key: tuple[slice, Hashable], value: _SetItemValueNotDataFrame, /
     ) -> None: ...
     @overload
     def __setitem__(
-        self, key: _iLocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
+        self, key: _iLocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame, /
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
-    def __getitem__(self, idx: Expression) -> _T: ...
+    def __getitem__(self, key: Expression, /) -> _T: ...
     @overload
-    def __getitem__(self, idx: tuple[Expression, Scalar]) -> Series: ...
+    def __getitem__(self, key: tuple[Expression, Scalar], /) -> Series: ...
     @overload
     def __getitem__(
-        self, idx: tuple[Expression, list[HashableT] | Index | slice]
+        self, key: tuple[Expression, list[HashableT] | Index | slice], /
     ) -> _T: ...
     @overload
     def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
-        idx: tuple[
+        key: tuple[
             int | str | Timestamp | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
             int | str | tuple[Scalar, ...],
         ],
+        /,
     ) -> Scalar: ...
     @overload
     def __getitem__(
         self,
-        idx: (
+        key: (
             Callable[[DataFrame], ScalarT]
             | tuple[
                 IndexType
@@ -278,17 +280,19 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             ]
             | None
         ),
+        /,
     ) -> Series: ...
     @overload
-    def __getitem__(self, idx: Scalar) -> Series | _T: ...
+    def __getitem__(self, key: Scalar, /) -> Series | _T: ...
     @overload
     def __getitem__(
         self,
-        idx: (
+        key: (
             tuple[Scalar, slice]
             | tuple[slice, tuple[Scalar, ...]]
             | tuple[Scalar, SequenceNotStr[Scalar]]
         ),
+        /,
     ) -> Series | _T: ...
     @overload
     def __getitem__(
@@ -312,55 +316,59 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | _IndexSliceTuple,
             ]
         ),
+        /,
     ) -> _T: ...
 
     # Keep in sync with `DataFrame.__setitem__`
     @overload
     def __setitem__(
-        self, key: tuple[_IndexSliceTuple, Hashable], value: _SetItemValueNotDataFrame
+        self,
+        key: tuple[_IndexSliceTuple, Hashable],
+        value: _SetItemValueNotDataFrame,
+        /,
     ) -> None: ...
     @overload
     def __setitem__(
-        self, key: _LocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
+        self, key: _LocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame, /
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
     @override
-    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(self, key: tuple[int, int], /) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, key: tuple[int, int], value: ScalarOrNA
+        self, key: tuple[int, int], value: ScalarOrNA, /
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
     @override
     def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, key: tuple[Hashable, Hashable]
+        self, key: tuple[Hashable, Hashable], /
     ) -> Scalar: ...
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, key: tuple[Hashable, Hashable], value: ScalarOrNA
+        self, key: tuple[Hashable, Hashable], value: ScalarOrNA, /
     ) -> None: ...
 
 class _GetItemHack:
     @overload
-    def __getitem__(self, key: Expression) -> Self: ...
+    def __getitem__(self, key: Expression, /) -> Self: ...
     @overload
-    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...], /) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     # With python 3.12+, the second overload needs a type-ignore statement
     if sys.version_info >= (3, 12):
         @overload
         def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-            self, key: Iterable[Hashable] | slice
+            self, key: Iterable[Hashable] | slice, /
         ) -> Self: ...
     else:
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
-            self, key: Iterable[Hashable] | slice
+            self, key: Iterable[Hashable] | slice, /
         ) -> Self: ...
 
     @overload
-    def __getitem__(self, key: Hashable) -> Series: ...
+    def __getitem__(self, key: Hashable, /) -> Series: ...
 
 _AstypeArgExt: TypeAlias = (
     AstypeArg
@@ -432,12 +440,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def dot(self, other: Series | Sequence[SupportsSelfMul[Any]]) -> Series: ...
     @overload
-    def __matmul__(self, other: DataFrame) -> Self: ...
+    def __matmul__(self, other: DataFrame, /) -> Self: ...
     @overload
-    def __matmul__(self, other: Series) -> Series: ...
+    def __matmul__(self, other: Series, /) -> Series: ...
     @overload
-    def __matmul__(self, other: np_ndarray_num) -> Self: ...
-    def __rmatmul__(self, other: np_ndarray_num) -> Self: ...
+    def __matmul__(self, other: np_ndarray_num, /) -> Self: ...
+    def __rmatmul__(self, other: np_ndarray_num, /) -> Self: ...
     @overload
     @classmethod
     def from_dict(
@@ -792,7 +800,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def T(self) -> Self: ...
     @final
-    def __getattr__(self, name: str) -> Series: ...
+    def __getattr__(self, name: str, /) -> Series: ...
     def isetitem(
         self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
     ) -> None: ...
@@ -800,26 +808,29 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # Keep in sync with `_iLocIndexerFrame.__setitem__`
     @overload
     def __setitem__(
-        self, idex: tuple[slice, Hashable], value: _SetItemValueNotDataFrame
+        self, idex: tuple[slice, Hashable], value: _SetItemValueNotDataFrame, /
     ) -> None: ...
     @overload
     def __setitem__(
-        self, idx: _iLocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
+        self, idx: _iLocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame, /
     ) -> None: ...
     # Keep in sync with `_LocIndexerFrame.__setitem__`
     @overload
     def __setitem__(
-        self, idx: tuple[_IndexSliceTuple, Hashable], value: _SetItemValueNotDataFrame
+        self,
+        idx: tuple[_IndexSliceTuple, Hashable],
+        value: _SetItemValueNotDataFrame,
+        /,
     ) -> None: ...
     @overload
     def __setitem__(
-        self, idx: _LocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
+        self, idx: _LocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame, /
     ) -> None: ...
     # Extra cases not supported by  `_LocIndexerFrame.__setitem__` /
     # `_iLocIndexerFrame.__setitem__`.
     @overload
     def __setitem__(
-        self, idx: IndexOpsMixin | DataFrame, value: _SetItemValueNotDataFrame
+        self, idx: IndexOpsMixin | DataFrame, value: _SetItemValueNotDataFrame, /
     ) -> None: ...
     @overload
     def query(
@@ -1846,7 +1857,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # methods
     @final
     def abs(self) -> Self: ...
-    def __add__(self, other: Any) -> Self: ...
+    def __add__(self, other: Any, /) -> Self: ...
     def add(
         self,
         other: complex | ListLike | DataFrame,
@@ -1854,7 +1865,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
-    def __radd__(self, other: Any) -> Self: ...
+    def __radd__(self, other: Any, /) -> Self: ...
     def radd(
         self,
         other: complex | ListLike | DataFrame,
@@ -1862,7 +1873,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
-    def __sub__(self, other: Any) -> Self: ...
+    def __sub__(self, other: Any, /) -> Self: ...
     def sub(
         self,
         other: complex | ListLike | DataFrame,
@@ -1871,7 +1882,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         fill_value: float | None = None,
     ) -> Self: ...
     subtract = sub
-    def __rsub__(self, other: Any) -> Self: ...
+    def __rsub__(self, other: Any, /) -> Self: ...
     def rsub(
         self,
         other: complex | ListLike | DataFrame,
@@ -1879,8 +1890,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
-    def __mul__(self, other: Any) -> Self: ...
-    def __rmul__(self, other: Any) -> Self: ...
+    def __mul__(self, other: Any, /) -> Self: ...
+    def __rmul__(self, other: Any, /) -> Self: ...
     @final
     def add_prefix(self, prefix: _str, axis: Axis | None = None) -> Self: ...
     @final
@@ -2665,16 +2676,20 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __invert__(self) -> Self: ...
     # floordiv overload
     def __floordiv__(
-        self, other: float | DataFrame | Series[int] | Series[float] | Sequence[float]
+        self,
+        other: float | DataFrame | Series[int] | Series[float] | Sequence[float],
+        /,
     ) -> Self: ...
     def __rfloordiv__(
-        self, other: float | DataFrame | Series[int] | Series[float] | Sequence[float]
+        self,
+        other: float | DataFrame | Series[int] | Series[float] | Sequence[float],
+        /,
     ) -> Self: ...
     def __truediv__(
-        self, other: float | DataFrame | Series | Sequence[Any]
+        self, other: float | DataFrame | Series | Sequence[Any], /
     ) -> Self: ...
     def __rtruediv__(
-        self, other: float | DataFrame | Series | Sequence[Any]
+        self, other: float | DataFrame | Series | Sequence[Any], /
     ) -> Self: ...
     @final
     def __bool__(self) -> NoReturn: ...
@@ -2691,4 +2706,4 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
 @type_check_only
 class PandasNamedTuple(tuple[Any, ...]):
-    def __getattr__(self, field: str) -> Scalar: ...
+    def __getattr__(self, field: str, /) -> Scalar: ...

@@ -63,22 +63,22 @@ class DatetimeIndex(
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @override
-    def __add__(self, other: timedelta | BaseOffset) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __add__(self, other: timedelta | BaseOffset, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
-    def __radd__(self, other: timedelta | BaseOffset) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __radd__(self, other: timedelta | BaseOffset, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     @overload  # type: ignore[override]
     @override
     def __sub__(  # pyrefly: ignore[bad-override]
-        self, other: datetime | np.datetime64 | np_ndarray_dt | Self
+        self, other: datetime | np.datetime64 | np_ndarray_dt | Self, /
     ) -> TimedeltaIndex: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
+        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset, /
     ) -> Self: ...
     @override
-    def __truediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
+    def __truediv__(self, other: np_ndarray, /) -> Never: ...  # type: ignore[override]
     @override
-    def __rtruediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
+    def __rtruediv__(self, other: np_ndarray, /) -> Never: ...  # type: ignore[override]
     @final
     @override
     def to_series(

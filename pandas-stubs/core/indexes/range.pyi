@@ -67,11 +67,11 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
     @overload  # type: ignore[override]
     @override
     def __getitem__(  # pyrefly: ignore[bad-override]
-        self, idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType
+        self, idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType, /
     ) -> Index: ...
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, idx: int
+        self, idx: int, /
     ) -> int: ...
     @override
     def where(  # type: ignore[override] # pyrefly: ignore[bad-override]

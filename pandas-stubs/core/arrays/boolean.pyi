@@ -41,6 +41,7 @@ class BooleanArray(BaseMaskedArray):
             | IntegerArray
             | Self
         ),
+        /,
     ) -> Self: ...
     def __rand__(
         self,
@@ -53,4 +54,5 @@ class BooleanArray(BaseMaskedArray):
             | IntegerArray
             | Self
         ),
+        /,
     ) -> Self: ...
