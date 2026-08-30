@@ -1,0 +1,3 @@
+# Pinned recovery-environment dependencies. The portable generator uses only Python's stdlib.
+scikit-learn==1.7.1
+numpy==2.3.2

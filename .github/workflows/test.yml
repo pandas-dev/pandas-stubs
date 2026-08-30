@@ -13,6 +13,36 @@ env:
 permissions: {}
 
 jobs:
+  architecture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install project dependencies
+        uses: ./.github/setup
+        with:
+          os: ubuntu-latest
+          python-version: "3.14"
+
+      - name: Validate architecture documentation
+        run: poetry run poe architecture_check
+
+      - name: Validate architecture subsystem guides
+        run: poetry run python scripts/aqa_validate_subsystems.py
+
+      - name: Check architecture docs are in sync with stubs
+        run: poetry run python scripts/check_docs_sync.py
+
+      - name: Validate container hierarchy invariant
+        run: poetry run python scripts/check_container_hierarchy.py
+
   released:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20

@@ -1,0 +1,14 @@
+[
+  {
+    "filename": "foundation-and-early-type-checking.md",
+    "title": "Foundation and early type checking",
+    "pull_requests": [6, 7, 8, 9, 10],
+    "summary": "The initial merged work established cleanup and assertion-based type checking, then added focused pyright and mypy fixes."
+  },
+  {
+    "filename": "maintenance-and-tooling.md",
+    "title": "Maintenance and tooling",
+    "pull_requests": [15, 16, 18],
+    "summary": "These merge commits record early maintenance of item typing, the mypy dependency, and an issue-driven correction."
+  }
+]
