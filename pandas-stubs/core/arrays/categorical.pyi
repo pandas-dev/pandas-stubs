@@ -193,11 +193,52 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     def remove_categories(
         self, removals: Hashable | SequenceNotStr[Hashable] | AnyArrayLike
     ) -> Self: ...
-    # TODO: make proper overloads pandas-dev/pandas-stubs#1901
+    @overload  # type: ignore[override]
     @override
-    def __eq__(self, other: ExtensionArray) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __eq__(self, other: Series) -> Series[bool]: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
+    @overload
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
+        self, other: object
+    ) -> np_1darray_bool: ...
+    @overload  # type: ignore[override]
     @override
-    def __ne__(self, other: ExtensionArray) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __ne__(self, other: Series) -> Series[bool]: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
+    @overload
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
+        self, other: object
+    ) -> np_1darray_bool: ...
+    @overload
+    def __lt__(self, other: Self) -> np_1darray_bool: ...
+    @overload
+    def __lt__(  # type: ignore[overload-overlap]
+        self, other: Series[CategoricalDtype[CategoricalValueT]]
+    ) -> Series[bool]: ...
+    @overload
+    def __lt__(self, other: CategoricalValueT) -> np_1darray_bool: ...
+    @overload
+    def __le__(self, other: Self) -> np_1darray_bool: ...
+    @overload
+    def __le__(  # type: ignore[overload-overlap]
+        self, other: Series[CategoricalDtype[CategoricalValueT]]
+    ) -> Series[bool]: ...
+    @overload
+    def __le__(self, other: CategoricalValueT) -> np_1darray_bool: ...
+    @overload
+    def __gt__(self, other: Self) -> np_1darray_bool: ...
+    @overload
+    def __gt__(  # type: ignore[overload-overlap]
+        self, other: Series[CategoricalDtype[CategoricalValueT]]
+    ) -> Series[bool]: ...
+    @overload
+    def __gt__(self, other: CategoricalValueT) -> np_1darray_bool: ...
+    @overload
+    def __ge__(self, other: Self) -> np_1darray_bool: ...
+    @overload
+    def __ge__(  # type: ignore[overload-overlap]
+        self, other: Series[CategoricalDtype[CategoricalValueT]]
+    ) -> Series[bool]: ...
+    @overload
+    def __ge__(self, other: CategoricalValueT) -> np_1darray_bool: ...
     def remove_unused_categories(self) -> Self: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
