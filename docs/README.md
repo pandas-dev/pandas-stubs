@@ -11,3 +11,5 @@ Instructions for working with the code are found here:
 - [How to set up the environment](setup.md)
 - [How to test the project](tests.md)
 - [How to make a release](release_procedure.md)
+- [Type architecture](type-architecture.md)
+- [AI-accountable development](ai-accountable-development/index.md)
