@@ -11,5 +11,4 @@ Instructions for working with the code are found here:
 - [How to set up the environment](setup.md)
 - [How to test the project](tests.md)
 - [How to make a release](release_procedure.md)
-- [Type architecture](type-architecture.md)
-- [Accountable development](accountable-development/index.md)
+- [Type architecture](type-architecture/README.md)
