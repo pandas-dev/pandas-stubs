@@ -32,5 +32,5 @@ the completeness of overloads, or that this documentation is exhaustive.
 
 Keep a new page focused on one stable technical topic. Link it here, identify the stubs
 and tests it explains, and distinguish checked facts from contributor guidance. Record
-rollout history and review decisions in the relevant pull request rather than adding a
-repository-wide process diary.
+rollout history and review decisions in commit messages and the discussion thread,
+indexed in the pull request body, rather than adding a repository-wide process diary.
