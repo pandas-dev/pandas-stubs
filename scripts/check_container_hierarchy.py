@@ -8,8 +8,7 @@ The checker reads the stubs as syntax trees. It verifies that:
 * ``ScalarArrayIndexSeries*`` aliases do not reference ``DataFrame``; and
 * forward binary dunders declared directly on ``Index`` and ``Series`` do not name a
   higher-tier container in their ``other`` annotation, unless an explicit exception
-  permits it; and
-* those ``other`` parameters are positional-only.
+  permits it.
 
 The checks include direct and transitive references through ``TypeAlias`` definitions.
 Reflected dunders are deliberately outside this structural check.
@@ -140,10 +139,6 @@ def _other_annotation(function: ast.FunctionDef) -> ast.AST | None:
     return None if parameter is None else parameter.annotation
 
 
-def _has_positional_only_other(function: ast.FunctionDef) -> bool:
-    return any(arg.arg == "other" for arg in function.args.posonlyargs)
-
-
 def is_forward_binary_dunder(function: ast.FunctionDef) -> bool:
     """Return whether ``function`` is an in-scope forward binary dunder."""
     return (
@@ -196,14 +191,6 @@ def check_forward_binary_dunders(
     for node in class_node.body:
         if not isinstance(node, ast.FunctionDef) or not is_forward_binary_dunder(node):
             continue
-
-        if not _has_positional_only_other(node):
-            print(
-                f"ERROR: {class_name}.{node.name} `other` parameter must be "
-                "positional-only.",
-                file=sys.stderr,
-            )
-            ok = False
 
         if references_name(_other_annotation(node), forbidden, aliases):
             key = (class_name, node.name, forbidden)

@@ -35,7 +35,7 @@ sequence for every operand pair.
 
 ## Structural invariant
 
-The checker enforces four restrictions in the current stubs:
+The checker enforces three restrictions in the current stubs:
 
 1. A `ScalarArrayIndex*` alias must not directly or transitively reference `Series` or
    `DataFrame`.
@@ -44,7 +44,6 @@ The checker enforces four restrictions in the current stubs:
 3. Every forward binary dunder declared directly on `Index` or `Series` with an `other`
    parameter must not directly or transitively reference that class's higher tier:
    `Series` or `DataFrame` for `Index`, and `DataFrame` for `Series`.
-4. Each such `other` parameter must be positional-only.
 
 This includes arithmetic, bitwise, comparison, and matrix-multiplication dunders. The
 checker deliberately excludes reflected dunders such as `__radd__`; those signatures

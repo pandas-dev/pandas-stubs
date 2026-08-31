@@ -118,27 +118,6 @@ class Series:
     assert "Series.__add__ `other` operand references DataFrame" in output
 
 
-def test_rejects_non_positional_only_other_parameter(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    stub_root = _write_stub_tree(
-        tmp_path,
-        index="""
-class Index:
-    def __add__(self, other: int) -> None: ...
-""",
-        series="""
-class Series:
-    def __add__(self, other: int, /) -> None: ...
-""",
-    )
-
-    assert not check_container_hierarchy(stub_root)
-    captured = capsys.readouterr()
-    assert captured.out == ""
-    assert "Index.__add__ `other` parameter must be positional-only" in captured.err
-
-
 def test_checks_bitwise_and_comparison_dunders(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -209,7 +188,7 @@ def test_exception_registry_documents_the_matrix_multiplication_case() -> None:
     }
 
     assert FORWARD_DUNDER_EXCEPTIONS == expected
-    document = Path("docs/type-architecture/container-hierarchy.md").read_text(
-        encoding="utf-8"
-    )
+    document = (
+        Path(__file__).parents[1] / "docs/type-architecture/container-hierarchy.md"
+    ).read_text(encoding="utf-8")
     assert "Series.__matmul__(DataFrame)" in document

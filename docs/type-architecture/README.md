@@ -6,7 +6,7 @@ specification of pandas runtime behavior.
 
 ## Source of truth
 
-Reviewed against pandas-dev/pandas-stubs@1a50cae.
+Reviewed as of 2026-08-31 against pandas-dev/pandas-stubs@1a50cae.
 
 The relevant `.pyi` declarations and focused type/runtime tests are the source of truth.
 This guide helps contributors navigate those artifacts and state the local constraints
