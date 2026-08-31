@@ -10,9 +10,10 @@ runtime method-resolution rules.
 | Tier | Examples | Normal operand scope |
 | --- | --- | --- |
 | 0 | Scalars such as `int`, `Timestamp`, and `Timedelta` | Scalar values |
-| 1 | `Index`, extension arrays, and NumPy arrays | Scalars and one-dimensional values |
-| 2 | `Series` | Scalars, one-dimensional values, and `Series` |
-| 3 | `DataFrame` | Scalars, one-dimensional values, and `DataFrame` |
+| 1 | Array-like values such as extension arrays and NumPy arrays | Scalars and array-like values |
+| 2 | `Index` | Scalars, array-like values, and `Index` |
+| 3 | `Series` | Scalars, array-like values, `Index`, and `Series` |
+| 4 | `DataFrame` | Scalars, lower-dimensional containers, and `DataFrame` |
 
 The tiers describe the ownership convention used in the current operator annotations;
 they do not classify every pandas object or every method.
@@ -34,7 +35,7 @@ sequence for every operand pair.
 
 ## Structural invariant
 
-The checker enforces three restrictions in the current stubs:
+The checker enforces four restrictions in the current stubs:
 
 1. A `ScalarArrayIndex*` alias must not directly or transitively reference `Series` or
    `DataFrame`.
@@ -43,6 +44,7 @@ The checker enforces three restrictions in the current stubs:
 3. Every forward binary dunder declared directly on `Index` or `Series` with an `other`
    parameter must not directly or transitively reference that class's higher tier:
    `Series` or `DataFrame` for `Index`, and `DataFrame` for `Series`.
+4. Each such `other` parameter must be positional-only.
 
 This includes arithmetic, bitwise, comparison, and matrix-multiplication dunders. The
 checker deliberately excludes reflected dunders such as `__radd__`; those signatures
@@ -52,7 +54,10 @@ need their own review and focused tests.
 
 `Series.__matmul__(DataFrame)` is the sole current exception. It is represented in
 `FORWARD_DUNDER_EXCEPTIONS` in the checker rather than omitted from the scan: the stubs
-return a `Series` for this matrix-multiplication overload.
+return a `Series` for this matrix-multiplication overload. Pandas supports the expression
+at runtime, and `tests/series/test_series.py::test_types_dot` exercises the forward
+operation. Removing the overload would therefore regress valid code unless pandas changes
+which operand owns this runtime operation.
 
 Adding an exception requires all three of the following changes in the same review:
 

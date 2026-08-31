@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: T201
 """Check the container-hierarchy constraints in a pandas-stubs tree.
 
 The checker reads the stubs as syntax trees. It verifies that:
@@ -7,7 +8,8 @@ The checker reads the stubs as syntax trees. It verifies that:
 * ``ScalarArrayIndexSeries*`` aliases do not reference ``DataFrame``; and
 * forward binary dunders declared directly on ``Index`` and ``Series`` do not name a
   higher-tier container in their ``other`` annotation, unless an explicit exception
-  permits it.
+  permits it; and
+* those ``other`` parameters are positional-only.
 
 The checks include direct and transitive references through ``TypeAlias`` definitions.
 Reflected dunders are deliberately outside this structural check.
@@ -16,16 +18,11 @@ Reflected dunders are deliberately outside this structural check.
 from __future__ import annotations
 
 import ast
+from collections.abc import Mapping  # noqa: TC003
 from dataclasses import dataclass
 from pathlib import Path
 import sys
-from typing import (
-    TYPE_CHECKING,
-    Final,
-)
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping
+from typing import Final
 
 ExceptionKey = tuple[str, str, str]
 
@@ -125,12 +122,26 @@ def find_class(tree: ast.Module, name: str) -> ast.ClassDef | None:
     return None
 
 
-def _other_annotation(function: ast.FunctionDef) -> ast.AST | None:
-    all_args = function.args.posonlyargs + function.args.args
+def _other_parameter(function: ast.FunctionDef) -> ast.arg | None:
+    arguments = function.args
+    all_args = arguments.posonlyargs + arguments.args + arguments.kwonlyargs
+    if arguments.vararg is not None:
+        all_args.append(arguments.vararg)
+    if arguments.kwarg is not None:
+        all_args.append(arguments.kwarg)
     for arg in all_args:
         if arg.arg == "other":
-            return arg.annotation
+            return arg
     return None
+
+
+def _other_annotation(function: ast.FunctionDef) -> ast.AST | None:
+    parameter = _other_parameter(function)
+    return None if parameter is None else parameter.annotation
+
+
+def _has_positional_only_other(function: ast.FunctionDef) -> bool:
+    return any(arg.arg == "other" for arg in function.args.posonlyargs)
 
 
 def is_forward_binary_dunder(function: ast.FunctionDef) -> bool:
@@ -157,12 +168,10 @@ def check_alias_level(aliases: Mapping[str, ast.AST]) -> bool:
 
         for forbidden in forbidden_names:
             if references_name(value, forbidden, aliases):
-                message = "ERROR: alias {} references {} — violates the container hierarchy.\n"
-                sys.stdout.write(
-                    message.format(
-                        name,
-                        forbidden,
-                    )
+                print(
+                    f"ERROR: alias {name} references {forbidden} — "
+                    "violates the container hierarchy.",
+                    file=sys.stderr,
                 )
                 ok = False
     return ok
@@ -177,7 +186,10 @@ def check_forward_binary_dunders(
 ) -> bool:
     """Check every direct forward binary dunder with an ``other`` operand."""
     if class_node is None:
-        sys.stdout.write(f"ERROR: could not find class {class_name!r} in stubs.\n")
+        print(
+            f"ERROR: could not find class {class_name!r} in stubs.",
+            file=sys.stderr,
+        )
         return False
 
     ok = True
@@ -185,17 +197,22 @@ def check_forward_binary_dunders(
         if not isinstance(node, ast.FunctionDef) or not is_forward_binary_dunder(node):
             continue
 
+        if not _has_positional_only_other(node):
+            print(
+                f"ERROR: {class_name}.{node.name} `other` parameter must be "
+                "positional-only.",
+                file=sys.stderr,
+            )
+            ok = False
+
         if references_name(_other_annotation(node), forbidden, aliases):
             key = (class_name, node.name, forbidden)
             if key in exceptions:
                 continue
-            message = "ERROR: {}.{} `other` operand references {} — violates the container hierarchy.\n"
-            sys.stdout.write(
-                message.format(
-                    class_name,
-                    node.name,
-                    forbidden,
-                )
+            print(
+                f"ERROR: {class_name}.{node.name} `other` operand references "
+                f"{forbidden} — violates the container hierarchy.",
+                file=sys.stderr,
             )
             ok = False
     return ok
@@ -210,7 +227,7 @@ def _read_required_trees(stub_root: Path) -> dict[Path, ast.Module] | None:
     paths = [stub_root / path for path in required_files]
     for path in paths:
         if not path.exists():
-            sys.stdout.write(f"ERROR: missing required stub file {path}.\n")
+            print(f"ERROR: missing required stub file {path}.", file=sys.stderr)
             return None
     return {
         path.relative_to(stub_root): ast.parse(path.read_text(encoding="utf-8"))
@@ -250,10 +267,10 @@ def check_container_hierarchy(
         ok = False
 
     if ok:
-        sys.stdout.write("Container hierarchy invariant holds.\n")
+        print("Container hierarchy invariant holds.")
     return ok
 
 
 if __name__ == "__main__":
-    STUB_ROOT = Path(__file__).parent.parent / "pandas-stubs"
+    STUB_ROOT = Path(__file__).parents[1] / "pandas-stubs"
     sys.exit(not check_container_hierarchy(STUB_ROOT))

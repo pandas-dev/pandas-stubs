@@ -28,8 +28,9 @@ python3 scripts/check_container_hierarchy.py
 ```
 
 It parses every `.pyi` file to resolve `TypeAlias` references and inspects binary
-dunders declared directly on `Index` and `Series`. Its unit tests create temporary stub
-trees for positive, direct-reference, transitive-alias, bitwise/comparison, and
+dunders declared directly on `Index` and `Series`, including whether each `other`
+parameter is positional-only. Its unit tests create temporary stub trees for positive,
+direct-reference, transitive-alias, positional-parameter, bitwise/comparison, and
 matrix-exception cases.
 
 The checker proves only that its alias and operand restrictions hold. It does not check

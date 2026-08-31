@@ -74,7 +74,7 @@ class Series:
     )
 
     assert not check_container_hierarchy(stub_root)
-    output = capsys.readouterr().out
+    output = capsys.readouterr().err
     assert "alias ScalarArrayIndexOperand references Series" in output
     assert "alias ScalarArrayIndexOperand references DataFrame" in output
     assert "alias ScalarArrayIndexSeriesOperand references DataFrame" in output
@@ -109,13 +109,34 @@ class Series:
     )
 
     assert not check_container_hierarchy(stub_root)
-    output = capsys.readouterr().out
+    output = capsys.readouterr().err
     assert "alias ScalarArrayIndexOperand references Series" in output
     assert "alias ScalarArrayIndexOperand references DataFrame" in output
     assert "alias ScalarArrayIndexSeriesOperand references DataFrame" in output
     assert "Index.__add__ `other` operand references Series" in output
     assert "Index.__add__ `other` operand references DataFrame" in output
     assert "Series.__add__ `other` operand references DataFrame" in output
+
+
+def test_rejects_non_positional_only_other_parameter(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    stub_root = _write_stub_tree(
+        tmp_path,
+        index="""
+class Index:
+    def __add__(self, other: int) -> None: ...
+""",
+        series="""
+class Series:
+    def __add__(self, other: int, /) -> None: ...
+""",
+    )
+
+    assert not check_container_hierarchy(stub_root)
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "Index.__add__ `other` parameter must be positional-only" in captured.err
 
 
 def test_checks_bitwise_and_comparison_dunders(
@@ -134,7 +155,7 @@ class Series:
     )
 
     assert not check_container_hierarchy(stub_root)
-    output = capsys.readouterr().out
+    output = capsys.readouterr().err
     assert "Index.__or__ `other` operand references Series" in output
     assert "Series.__lt__ `other` operand references DataFrame" in output
 
@@ -157,7 +178,7 @@ class Series:
     assert not check_container_hierarchy(stub_root, exceptions={})
     assert (
         "Series.__matmul__ `other` operand references DataFrame"
-        in capsys.readouterr().out
+        in capsys.readouterr().err
     )
 
 
