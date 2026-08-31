@@ -135,7 +135,7 @@ class MultiIndex(Index):
     @property
     def dtypes(self) -> pd.Series[Dtype]: ...
     @override
-    def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
+    def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def get_level_values(self, level: str | int) -> Index: ...
     @overload  # type: ignore[override]

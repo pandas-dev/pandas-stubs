@@ -61,7 +61,7 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
         self, other: Sequence[int] | Index[int] | Self, sort: bool | None = None
     ) -> Index[int] | Self: ...
     @overload
-    def union(
+    def union(  # ty: ignore[invalid-method-override]
         self, other: Sequence[HashableT] | Index, sort: bool | None = None
     ) -> Index: ...
     @overload  # type: ignore[override]
@@ -74,7 +74,7 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
         self, idx: int, /
     ) -> int: ...
     @override
-    def where(  # type: ignore[override] # pyrefly: ignore[bad-override]
+    def where(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self,
         cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
         other: Scalar | AnyArrayLike | None = None,
