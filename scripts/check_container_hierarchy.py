@@ -6,7 +6,8 @@ The checker reads the stubs as syntax trees. It verifies that:
 
 * ``ScalarArrayIndex*`` aliases do not reference ``Series`` or ``DataFrame``;
 * ``ScalarArrayIndexSeries*`` aliases do not reference ``DataFrame``; and
-* forward binary dunders declared directly on ``Index`` and ``Series`` do not name a
+* forward binary dunders declared directly on ``Index``, ``MultiIndex``, and
+  ``Series`` do not name a
   higher-tier container in their ``other`` annotation, unless an explicit exception
   permits it.
 
@@ -209,6 +210,7 @@ def _read_required_trees(stub_root: Path) -> dict[Path, ast.Module] | None:
     required_files = (
         Path("core/base.pyi"),
         Path("core/indexes/base.pyi"),
+        Path("core/indexes/multi.pyi"),
         Path("core/series.pyi"),
     )
     paths = [stub_root / path for path in required_files]
@@ -239,6 +241,16 @@ def check_container_hierarchy(
         if not check_forward_binary_dunders(
             index_class,
             "Index",
+            forbidden,
+            aliases,
+            exceptions,
+        ):
+            ok = False
+    multi_index_class = find_class(trees[Path("core/indexes/multi.pyi")], "MultiIndex")
+    for forbidden in ("Series", "DataFrame"):
+        if not check_forward_binary_dunders(
+            multi_index_class,
+            "MultiIndex",
             forbidden,
             aliases,
             exceptions,

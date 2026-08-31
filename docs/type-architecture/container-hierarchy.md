@@ -11,12 +11,17 @@ runtime method-resolution rules.
 | --- | --- | --- |
 | 0 | Scalars such as `int`, `Timestamp`, and `Timedelta` | Scalar values |
 | 1 | Array-like values such as extension arrays and NumPy arrays | Scalars and array-like values |
-| 2 | `Index` | Scalars, array-like values, and `Index` |
+| 2 | `Index` and `MultiIndex` | Scalars, array-like values, and `Index` |
 | 3 | `Series` | Scalars, array-like values, `Index`, and `Series` |
 | 4 | `DataFrame` | Scalars, lower-dimensional containers, and `DataFrame` |
 
 The tiers describe the ownership convention used in the current operator annotations;
 they do not classify every pandas object or every method.
+
+`MultiIndex` is an `Index` subclass in the stubs and declares no forward binary dunders of
+its own, so it shares `Index`'s operand scope. Its multidimensional labels are data
+semantics, not operator ownership; the checker scans `MultiIndex` directly as a guard
+against future higher-tier forward operands.
 
 ## Cross-tier lookup examples
 
@@ -41,9 +46,10 @@ The checker enforces three restrictions in the current stubs:
    `DataFrame`.
 2. A `ScalarArrayIndexSeries*` alias must not directly or transitively reference
    `DataFrame`.
-3. Every forward binary dunder declared directly on `Index` or `Series` with an `other`
-   parameter must not directly or transitively reference that class's higher tier:
-   `Series` or `DataFrame` for `Index`, and `DataFrame` for `Series`.
+3. Every forward binary dunder declared directly on `Index`, `MultiIndex`, or `Series`
+   with an `other` parameter must not directly or transitively reference that class's
+   higher tier: `Series` or `DataFrame` for `Index` and `MultiIndex`, and `DataFrame`
+   for `Series`.
 
 This includes arithmetic, bitwise, comparison, and matrix-multiplication dunders. The
 checker deliberately excludes reflected dunders such as `__radd__`; those signatures

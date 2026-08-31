@@ -16,6 +16,7 @@ def _write_stub_tree(
     *,
     base: str = "",
     index: str = "",
+    multi: str = "class MultiIndex:\n    pass\n",
     series: str = "",
 ) -> Path:
     """Create the smallest stub tree the hierarchy checker requires."""
@@ -23,6 +24,7 @@ def _write_stub_tree(
     index_file = stub_root / "core" / "indexes" / "base.pyi"
     index_file.parent.mkdir(parents=True)
     index_file.write_text(index, encoding="utf-8")
+    (stub_root / "core" / "indexes" / "multi.pyi").write_text(multi, encoding="utf-8")
     (stub_root / "core" / "base.pyi").write_text(base, encoding="utf-8")
     (stub_root / "core" / "series.pyi").write_text(series, encoding="utf-8")
     return stub_root
@@ -192,3 +194,40 @@ def test_exception_registry_documents_the_matrix_multiplication_case() -> None:
         Path(__file__).parents[1] / "docs/type-architecture/container-hierarchy.md"
     ).read_text(encoding="utf-8")
     assert "Series.__matmul__(DataFrame)" in document
+
+
+def test_accepts_multiindex_with_lower_tier_operand(tmp_path: Path) -> None:
+    stub_root = _write_stub_tree(
+        tmp_path,
+        index="""
+class Index:
+    def __add__(self, other: int, /) -> None: ...
+""",
+        multi="""
+class MultiIndex:
+    def __add__(self, other: int, /) -> None: ...
+""",
+        series="""
+class Series:
+    def __add__(self, other: int | Series, /) -> None: ...
+""",
+    )
+
+    assert check_container_hierarchy(stub_root)
+
+
+def test_rejects_multiindex_higher_tier_operands(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    stub_root = _write_stub_tree(
+        tmp_path,
+        multi="""
+class MultiIndex:
+    def __add__(self, other: Series | DataFrame, /) -> None: ...
+""",
+    )
+
+    assert not check_container_hierarchy(stub_root)
+    output = capsys.readouterr().err
+    assert "MultiIndex.__add__ `other` operand references Series" in output
+    assert "MultiIndex.__add__ `other` operand references DataFrame" in output
