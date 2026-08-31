@@ -1,0 +1,167 @@
+# GitHub CI and Issue Tracking (Semantic NLP Chronicle)
+
+> **Generated via Unsupervised NLP Clustering (TF-IDF + K-Means)**
+> This domain was automatically synthesized based on the semantic similarity of PR bodies and titles. 
+> To reproduce this algorithmic classification locally, please execute the NLP pipeline script located at `scratch/run_clustering.sh` from the repository root (this will spin up a local `uv` virtual environment, install `scikit-learn`, and run the K-Means algorithm over `scratch/raw_prs.jsonl`).
+
+## 1. Domain Signature
+- **Defining Terms**: `pandas`, `dev`, `https`, `com`, `stubs`, `github`, `issues`
+- **Total Historical PRs**: 151
+
+## 2. Synthesized Technical Overview
+This domain captures the architectural evolution surrounding **pandas** and **dev**. Rather than relying on fragile keyword regex routing, these PRs were mathematically clustered due to their shared discussion of `https` and related type paradigms.
+
+## 3. Historical PR Index
+| PR/Issue Reference |
+| :--- |
+| pandas-dev/pandas-stubs#1910 |
+| pandas-dev/pandas-stubs#1902 |
+| pandas-dev/pandas-stubs#1830 |
+| pandas-dev/pandas-stubs#1825 |
+| pandas-dev/pandas-stubs#1820 |
+| pandas-dev/pandas-stubs#1819 |
+| pandas-dev/pandas-stubs#1785 |
+| pandas-dev/pandas-stubs#1783 |
+| pandas-dev/pandas-stubs#1741 |
+| pandas-dev/pandas-stubs#1740 |
+| pandas-dev/pandas-stubs#1731 |
+| pandas-dev/pandas-stubs#1729 |
+| pandas-dev/pandas-stubs#1722 |
+| pandas-dev/pandas-stubs#1721 |
+| pandas-dev/pandas-stubs#1720 |
+| pandas-dev/pandas-stubs#1719 |
+| pandas-dev/pandas-stubs#1693 |
+| pandas-dev/pandas-stubs#1690 |
+| pandas-dev/pandas-stubs#1688 |
+| pandas-dev/pandas-stubs#1686 |
+| pandas-dev/pandas-stubs#1683 |
+| pandas-dev/pandas-stubs#1682 |
+| pandas-dev/pandas-stubs#1677 |
+| pandas-dev/pandas-stubs#1668 |
+| pandas-dev/pandas-stubs#1667 |
+| pandas-dev/pandas-stubs#1666 |
+| pandas-dev/pandas-stubs#1665 |
+| pandas-dev/pandas-stubs#1663 |
+| pandas-dev/pandas-stubs#1659 |
+| pandas-dev/pandas-stubs#1658 |
+| pandas-dev/pandas-stubs#1656 |
+| pandas-dev/pandas-stubs#1655 |
+| pandas-dev/pandas-stubs#1640 |
+| pandas-dev/pandas-stubs#1633 |
+| pandas-dev/pandas-stubs#1620 |
+| pandas-dev/pandas-stubs#1616 |
+| pandas-dev/pandas-stubs#1613 |
+| pandas-dev/pandas-stubs#1612 |
+| pandas-dev/pandas-stubs#1599 |
+| pandas-dev/pandas-stubs#1576 |
+| pandas-dev/pandas-stubs#1561 |
+| pandas-dev/pandas-stubs#1496 |
+| pandas-dev/pandas-stubs#1494 |
+| pandas-dev/pandas-stubs#1479 |
+| pandas-dev/pandas-stubs#1477 |
+| pandas-dev/pandas-stubs#1457 |
+| pandas-dev/pandas-stubs#1430 |
+| pandas-dev/pandas-stubs#1412 |
+| pandas-dev/pandas-stubs#1408 |
+| pandas-dev/pandas-stubs#1406 |
+| pandas-dev/pandas-stubs#1402 |
+| pandas-dev/pandas-stubs#1400 |
+| pandas-dev/pandas-stubs#1360 |
+| pandas-dev/pandas-stubs#1348 |
+| pandas-dev/pandas-stubs#1343 |
+| pandas-dev/pandas-stubs#1342 |
+| pandas-dev/pandas-stubs#1338 |
+| pandas-dev/pandas-stubs#1322 |
+| pandas-dev/pandas-stubs#1319 |
+| pandas-dev/pandas-stubs#1316 |
+| pandas-dev/pandas-stubs#1314 |
+| pandas-dev/pandas-stubs#1312 |
+| pandas-dev/pandas-stubs#1302 |
+| pandas-dev/pandas-stubs#1271 |
+| pandas-dev/pandas-stubs#1263 |
+| pandas-dev/pandas-stubs#1254 |
+| pandas-dev/pandas-stubs#1231 |
+| pandas-dev/pandas-stubs#1219 |
+| pandas-dev/pandas-stubs#1201 |
+| pandas-dev/pandas-stubs#1200 |
+| pandas-dev/pandas-stubs#1198 |
+| pandas-dev/pandas-stubs#1178 |
+| pandas-dev/pandas-stubs#1177 |
+| pandas-dev/pandas-stubs#1175 |
+| pandas-dev/pandas-stubs#1170 |
+| pandas-dev/pandas-stubs#1167 |
+| pandas-dev/pandas-stubs#1165 |
+| pandas-dev/pandas-stubs#1156 |
+| pandas-dev/pandas-stubs#1146 |
+| pandas-dev/pandas-stubs#1143 |
+| pandas-dev/pandas-stubs#1135 |
+| pandas-dev/pandas-stubs#1131 |
+| pandas-dev/pandas-stubs#1123 |
+| pandas-dev/pandas-stubs#1117 |
+| pandas-dev/pandas-stubs#1092 |
+| pandas-dev/pandas-stubs#1075 |
+| pandas-dev/pandas-stubs#1064 |
+| pandas-dev/pandas-stubs#1058 |
+| pandas-dev/pandas-stubs#1050 |
+| pandas-dev/pandas-stubs#1028 |
+| pandas-dev/pandas-stubs#1024 |
+| pandas-dev/pandas-stubs#1013 |
+| pandas-dev/pandas-stubs#997 |
+| pandas-dev/pandas-stubs#989 |
+| pandas-dev/pandas-stubs#986 |
+| pandas-dev/pandas-stubs#985 |
+| pandas-dev/pandas-stubs#964 |
+| pandas-dev/pandas-stubs#953 |
+| pandas-dev/pandas-stubs#951 |
+| pandas-dev/pandas-stubs#949 |
+| pandas-dev/pandas-stubs#947 |
+| pandas-dev/pandas-stubs#945 |
+| pandas-dev/pandas-stubs#942 |
+| pandas-dev/pandas-stubs#937 |
+| pandas-dev/pandas-stubs#933 |
+| pandas-dev/pandas-stubs#932 |
+| pandas-dev/pandas-stubs#931 |
+| pandas-dev/pandas-stubs#930 |
+| pandas-dev/pandas-stubs#926 |
+| pandas-dev/pandas-stubs#918 |
+| pandas-dev/pandas-stubs#912 |
+| pandas-dev/pandas-stubs#905 |
+| pandas-dev/pandas-stubs#898 |
+| pandas-dev/pandas-stubs#865 |
+| pandas-dev/pandas-stubs#823 |
+| pandas-dev/pandas-stubs#818 |
+| pandas-dev/pandas-stubs#815 |
+| pandas-dev/pandas-stubs#806 |
+| pandas-dev/pandas-stubs#801 |
+| pandas-dev/pandas-stubs#785 |
+| pandas-dev/pandas-stubs#779 |
+| pandas-dev/pandas-stubs#772 |
+| pandas-dev/pandas-stubs#757 |
+| pandas-dev/pandas-stubs#754 |
+| pandas-dev/pandas-stubs#739 |
+| pandas-dev/pandas-stubs#727 |
+| pandas-dev/pandas-stubs#647 |
+| pandas-dev/pandas-stubs#643 |
+| pandas-dev/pandas-stubs#639 |
+| pandas-dev/pandas-stubs#632 |
+| pandas-dev/pandas-stubs#631 |
+| pandas-dev/pandas-stubs#590 |
+| pandas-dev/pandas-stubs#521 |
+| pandas-dev/pandas-stubs#506 |
+| pandas-dev/pandas-stubs#496 |
+| pandas-dev/pandas-stubs#435 |
+| pandas-dev/pandas-stubs#359 |
+| pandas-dev/pandas-stubs#326 |
+| pandas-dev/pandas-stubs#322 |
+| pandas-dev/pandas-stubs#281 |
+| pandas-dev/pandas-stubs#200 |
+| pandas-dev/pandas-stubs#109 |
+| pandas-dev/pandas-stubs#99 |
+| pandas-dev/pandas-stubs#64 |
+| pandas-dev/pandas-stubs#52 |
+| pandas-dev/pandas-stubs#51 |
+| pandas-dev/pandas-stubs#28 |
+| pandas-dev/pandas-stubs#25 |
+| pandas-dev/pandas-stubs#22 |
+| pandas-dev/pandas-stubs#20 |
+| pandas-dev/pandas-stubs#15 |

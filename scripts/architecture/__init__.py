@@ -1,0 +1,1 @@
+"""Deterministic architecture-documentation tooling."""

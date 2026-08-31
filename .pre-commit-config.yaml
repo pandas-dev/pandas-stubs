@@ -12,6 +12,7 @@ repos:
     hooks:
     - id: codespell
       args: [-L, "THIRDPARTY"]
+      exclude: ^scratch/raw_prs\.jsonl$
 -   repo: https://github.com/PyCQA/isort
     rev: 8.0.1
     hooks:

@@ -1,0 +1,8 @@
+{"number": 6, "title": "cleanup", "state": "merged", "merged_at": "2022-05-07", "merge_commit": "1af190411028fd05f7fceaa7043a5c811d864e33"}
+{"number": 7, "title": "asserttype", "state": "merged", "merged_at": "2022-05-07", "merge_commit": "17b4423e65abcf8a0b403bf9fe445f06d3ff2236"}
+{"number": 8, "title": "assertype part 2", "state": "merged", "merged_at": "2022-05-08", "merge_commit": "51aeba53ceb106492a167d87dd117c2922c5d147"}
+{"number": 9, "title": "pyright fixes", "state": "merged", "merged_at": "2022-05-08", "merge_commit": "bf30e404342bd501264b41cd2a4f1b64fed30e1f"}
+{"number": 10, "title": "mypy fixes", "state": "merged", "merged_at": "2022-05-09", "merge_commit": "63d03bc9297357715eda7a41b8f694b91b51395e"}
+{"number": 15, "title": "hashable item", "state": "merged", "merged_at": "2022-05-24", "merge_commit": "2ba73b03d50764862db339a5c5c445a0802f4d40"}
+{"number": 16, "title": "upgrade mypy", "state": "merged", "merged_at": "2022-05-27", "merge_commit": "3174ab6d09a612af5f31a5c62f3991d18b5aced8"}
+{"number": 18, "title": "issue 17", "state": "merged", "merged_at": "2022-05-31", "merge_commit": "ca0f3129983005658e48850664b6aee2aeeec065"}

@@ -1,0 +1,17 @@
+{
+  "base_commit": "cebd95490ba9c7b855051e803193f78602371fb5",
+  "base_commit_short": "cebd954",
+  "collected_at": "2026-08-28",
+  "record_counts": {
+    "pull_requests": 8,
+    "issues": 1,
+    "commits": 8
+  },
+  "sha256": {
+    "pull_requests.jsonl": "ef9e9672ad702e9b145b21a8d3876faa08612536191f9fae71ef6ca439ec09cb",
+    "issues.jsonl": "178f961c458f93ec57afe0854365ad2200da8ba209a233f162d4155e017fd698",
+    "commits.jsonl": "a7a66bbc3e442ca35d398e9bb8226e0f58acc6c076cd6c34ab595ead44d354dd",
+    "semantic_clusters.json": "d44795424157c9353cc25379d4adaa39c15b6826f62690ed7f83688f63957ddf",
+    "requirements.txt": "92337e8c2ea291c6959d9dd571afed4cde70bc76fd6f63fce91ae95dca0eabe7"
+  }
+}

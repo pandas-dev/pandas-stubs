@@ -84,6 +84,10 @@ packages = [{ include = "pandas-stubs" }]
 help = "Run all tests"
 script = "scripts.test:run_tests(src=True, dist=True)"
 
+[tool.poe.tasks.architecture_check]
+help = "Validate generated architecture documentation and its offline snapshot"
+cmd = "python scripts/architecture/check.py"
+
 [tool.poe.tasks.test]
 help = "Run local tests (includes 'mypy', 'pyright', 'pyrefly', 'ty', 'pytest', and 'style')"
 script = "scripts.test:run_tests(src=True)"
