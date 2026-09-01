@@ -28,6 +28,7 @@ from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from typing_extensions import override
 
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     AxesData,
@@ -39,11 +40,10 @@ from pandas._typing import (
     np_1darray_intp,
     np_ndarray,
     np_ndarray_bool,
+    np_ndarray_dt,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
-
-from pandas.tseries.offsets import BaseOffset
 
 class DatetimeIndex(
     DatetimeTimedeltaMixin[Timestamp, np.datetime64], DatetimeIndexProperties
@@ -63,10 +63,22 @@ class DatetimeIndex(
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
+    @overload  # type: ignore[override]
     @override
-    def __add__(self, other: timedelta | BaseOffset, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    # pyrefly: ignore[bad-override]
+    def __add__(self, other: np_ndarray_dt, /) -> Never: ...
+    @overload
+    def __add__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+        self, other: ScalarArrayIndexTimedelta | BaseOffset, /
+    ) -> Self: ...
+    @overload  # type: ignore[override]
     @override
-    def __radd__(self, other: timedelta | BaseOffset, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    # pyrefly: ignore[bad-override]
+    def __radd__(self, other: np_ndarray_dt, /) -> Never: ...
+    @overload
+    def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+        self, other: ScalarArrayIndexTimedelta | BaseOffset, /
+    ) -> Self: ...
     @overload  # type: ignore[override]
     @override
     def __sub__(  # pyrefly: ignore[bad-override]

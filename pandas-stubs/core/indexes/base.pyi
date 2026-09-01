@@ -77,6 +77,7 @@ from pandas.core.strings.accessor import StrDescriptor
 from typing_extensions import override
 
 from pandas._libs.interval import Interval
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -112,6 +113,7 @@ from pandas._typing import (
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
     NumpyTimestampDtypeArg,
+    OffsetT,
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
     ReindexMethod,
@@ -643,13 +645,39 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __add__(self: Index[Never], other: _str, /) -> Index[_str]: ...
     @overload
-    def __add__(
+    def __add__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self: Index[Never],
         other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
         /,
     ) -> Index: ...
     @overload
-    def __add__(self, other: Index[Never], /) -> Index: ...
+    def __add__(self, other: Index[Never], /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __add__(
+        self: Index[_str],
+        other: (
+            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
+        ),
+        /,
+    ) -> Never: ...
+    @overload
+    def __add__(
+        self: Index[_str],
+        other: _str | SequenceNotStr[_str] | np_ndarray_str | Index[_str],
+        /,
+    ) -> Index[_str]: ...
+    @overload
+    def __add__(
+        self: Index[OffsetT], other: Period | PeriodIndex, /
+    ) -> PeriodIndex: ...
+    @overload
+    def __add__(
+        self: Index[OffsetT], other: BaseOffset | Index[OffsetT], /
+    ) -> Index[OffsetT]: ...
+    @overload
+    def __add__(
+        self: Index[BaseOffset], other: BaseOffset | Index[OffsetT], /
+    ) -> Index[BaseOffset]: ...
     @overload
     def __add__(
         self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
@@ -657,9 +685,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __add__(
         self: Index[S2_contra],
-        other: SupportsRAdd[S2_contra, S2] | Sequence[SupportsRAdd[S2_contra, S2]],
+        other: (
+            SupportsRAdd[S2_contra, S2_NSDT]
+            | Sequence[SupportsRAdd[S2_contra, S2_NSDT]]
+        ),
         /,
-    ) -> Index[S2]: ...
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __add__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
@@ -685,7 +716,17 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
     ) -> Index[complex]: ...
     @overload
-    def __add__(
+    def __radd__(self: Index[Never], other: _str, /) -> Index[_str]: ...
+    @overload
+    def __radd__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self: Index[Never],
+        other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
+        /,
+    ) -> Index: ...
+    @overload
+    def __radd__(self, other: Index[Never], /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __radd__(
         self: Index[_str],
         other: (
             np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
@@ -693,17 +734,23 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         /,
     ) -> Never: ...
     @overload
-    def __add__(
-        self: Index[_str], other: np_ndarray_str | Index[_str], /
+    def __radd__(
+        self: Index[_str],
+        other: _str | SequenceNotStr[_str] | np_ndarray_str | Index[_str],
+        /,
     ) -> Index[_str]: ...
     @overload
-    def __radd__(self: Index[Never], other: _str, /) -> Index[_str]: ...
+    def __radd__(
+        self: Index[OffsetT], other: Period | PeriodIndex, /
+    ) -> PeriodIndex: ...
+    @overload
+    def __radd__(  # type: ignore[misc]
+        self: Index[OffsetT], other: BaseOffset | Index[OffsetT], /
+    ) -> Index[OffsetT]: ...
     @overload
     def __radd__(
-        self: Index[Never],
-        other: complex | Period | ArrayLike | SequenceNotStr[S1] | Index,
-        /,
-    ) -> Index: ...
+        self: Index[BaseOffset], other: BaseOffset | Index[OffsetT], /
+    ) -> Index[BaseOffset]: ...
     @overload
     def __radd__(
         self: Supports_ProtoRAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
@@ -711,9 +758,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __radd__(
         self: Index[S2_contra],
-        other: SupportsAdd[S2_contra, S2] | Sequence[SupportsAdd[S2_contra, S2]],
+        other: (
+            SupportsAdd[S2_contra, S2_NSDT] | Sequence[SupportsAdd[S2_contra, S2_NSDT]]
+        ),
         /,
-    ) -> Index[S2]: ...
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __radd__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
@@ -738,18 +787,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __radd__(
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
     ) -> Index[complex]: ...
-    @overload
-    def __radd__(
-        self: Index[_str],
-        other: (
-            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
-        ),
-        /,
-    ) -> Never: ...
-    @overload
-    def __radd__(
-        self: Index[_str], other: np_ndarray_str | Index[_str], /
-    ) -> Index[_str]: ...
     @overload
     def __sub__(self: Index[Never], other: DatetimeIndex, /) -> Never: ...
     @overload

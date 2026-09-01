@@ -2,10 +2,7 @@ from collections.abc import (
     Hashable,
     Sequence,
 )
-from datetime import (
-    datetime,
-    timedelta,
-)
+from datetime import timedelta
 from typing import (
     Literal,
     Never,
@@ -77,19 +74,20 @@ class TimedeltaIndex(
     # pyrefly: ignore[bad-override]
     def __add__(self, other: Period, /) -> PeriodIndex: ...
     @overload
-    def __add__(self, other: datetime | DatetimeIndex, /) -> DatetimeIndex: ...
+    def __add__(self, other: ScalarArrayIndexDatetime, /) -> DatetimeIndex: ...
     @overload
     def __add__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | Self, /
+        self, other: ScalarArrayIndexTimedelta, /
     ) -> Self: ...
     @overload  # type: ignore[override]
     @override
+    # pyrefly: ignore[bad-override]
     def __radd__(self, other: Period, /) -> PeriodIndex: ...
     @overload
-    def __radd__(self, other: datetime | DatetimeIndex, /) -> DatetimeIndex: ...
+    def __radd__(self, other: ScalarArrayIndexDatetime, /) -> DatetimeIndex: ...
     @overload
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | Self, /
+        self, other: ScalarArrayIndexTimedelta, /
     ) -> Self: ...
     @overload  # type: ignore[override]
     @override
