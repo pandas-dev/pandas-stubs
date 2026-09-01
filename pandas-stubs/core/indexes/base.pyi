@@ -30,20 +30,11 @@ from _typeshed import (
 )
 import numpy as np
 from pandas._stubs_only import (
-    OrderableT,
-    T_contra,
-)
-from pandas.core.arrays.boolean import (
-    BooleanArray,
-    BooleanDtype,
-)
-from pandas.core.arrays.floating import FloatingArray
-from pandas.core.base import (
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
     IndexComplex,
-    IndexOpsMixin,
     IndexReal,
+    OrderableT,
     ScalarArrayIndexComplex,
     ScalarArrayIndexJustComplex,
     ScalarArrayIndexJustFloat,
@@ -58,7 +49,14 @@ from pandas.core.base import (
     Supports_ProtoRMul,
     Supports_ProtoRTrueDiv,
     Supports_ProtoTrueDiv,
+    T_contra,
 )
+from pandas.core.arrays.boolean import (
+    BooleanArray,
+    BooleanDtype,
+)
+from pandas.core.arrays.floating import FloatingArray
+from pandas.core.base import IndexOpsMixin
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
