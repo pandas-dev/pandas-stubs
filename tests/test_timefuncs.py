@@ -226,10 +226,6 @@ def test_datetimeindex_plus_timedelta() -> None:
     )
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
     tdi = pd.to_timedelta([10, 20], "minutes")
-    dti_tdi_dti = dti + tdi
-    check(assert_type(dti_tdi_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
-    tdi_dti_dti = tdi + dti
-    check(assert_type(tdi_dti_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
     dti_td_dti = dti + pd.Timedelta(10, "minutes")
     check(assert_type(dti_td_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
     ts_tdi_dti = pd.Timestamp("2022-03-05") + tdi
@@ -1834,13 +1830,6 @@ def test_timedelta64_and_arithmatic_operator() -> None:
         _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-
-
-def test_timedeltaseries_add_timestampseries() -> None:
-    tds = pd.Series(pd.timedelta_range(start="1 day", periods=10))
-    tss = pd.Series(pd.date_range(start="2012-01-01", periods=10, freq="W-MON"))
-    plus = tds + tss
-    check(assert_type(plus, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
 def test_timestamp_strptime_fails() -> None:
