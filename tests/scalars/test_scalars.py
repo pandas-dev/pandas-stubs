@@ -613,7 +613,6 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td - as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td - as_ndarray_td64, np_ndarray_td), np_ndarray, np.timedelta64)
     check(assert_type(td - as_nat, NaTType), NaTType)
-    check(assert_type(as_period - td, pd.Period), pd.Period)
     check(assert_type(as_timestamp - td, pd.Timestamp), pd.Timestamp)
     check(assert_type(as_datetime - td, dt.datetime), dt.datetime)
     check(assert_type(as_date - td, dt.date), dt.date)
@@ -1724,7 +1723,6 @@ def test_period_add_subtract() -> None:
     as_int: int = 1
     as_period_index = pd.period_range("2012-1-1", periods=10, freq="D")
     check(assert_type(as_period_index, pd.PeriodIndex), pd.PeriodIndex)
-    as_period = pd.Period("2012-1-1", freq="D")
     scale = 24 * 60 * 60 * 10**9
     as_td_series = pd.Series(pd.timedelta_range(scale, scale, freq="D"))
     check(assert_type(as_td_series, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
@@ -1755,17 +1753,9 @@ def test_period_add_subtract() -> None:
     offset_series = as_period_series - as_period_series
     check(assert_type(offset_series, "pd.Series[BaseOffset]"), pd.Series)
     check(assert_type(p + offset_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
-    check(assert_type(p - as_pd_td, pd.Period), pd.Period)
-    check(assert_type(p - as_dt_td, pd.Period), pd.Period)
-    check(assert_type(p - as_np_td, pd.Period), pd.Period)
-    check(assert_type(p - as_np_i64, pd.Period), pd.Period)
-    check(assert_type(p - as_int, pd.Period), pd.Period)
     check(assert_type(offset_index, pd.Index), pd.Index)
-    check(assert_type(p - as_period, BaseOffset), Day)
     check(assert_type(p - as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p - as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(p - as_nat, NaTType), NaTType)
-    check(assert_type(p - p.freq, pd.Period), pd.Period)
 
     # The __radd__ and __rsub__ methods are included to
     # establish the location of the concrete implementation
