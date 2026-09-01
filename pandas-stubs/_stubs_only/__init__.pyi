@@ -18,7 +18,7 @@ from typing import (
 )
 
 import numpy as np
-import numpy.typing as npt
+from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
