@@ -595,10 +595,9 @@ def test_timedelta_add_sub() -> None:
 
     # sub is not symmetric with dates. In general date_like - timedelta is
     # sensible, while timedelta - date_like is not
-    # TypeError: as_period, as_timestamp, as_datetime, as_date, as_datetime64,
+    # TypeError: as_timestamp, as_datetime, as_date, as_datetime64,
     #            as_period_index, as_datetime_index, as_ndarray_dt64
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = td - as_period  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _1 = td - as_timestamp  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _2 = td - as_datetime  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _3 = td - as_date  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
