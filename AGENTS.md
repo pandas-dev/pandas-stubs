@@ -97,6 +97,8 @@ if TYPE_CHECKING_INVALID_USAGE:
 
 **Why:** The goal is to catch errors at **type-check time**, not runtime. The `TYPE_CHECKING_INVALID_USAGE` guard (which is `False` at runtime) prevents runtime execution while `assert_type(expr, Never)` verifies the stub really returns `Never` — no ignore comments needed.
 
+**Protocol-typed `self` overloads**: a protocol-typed `self` overload (the `Supports_Proto*` idiom) does not reliably reject element types absent from the protocol under mypy (python/mypy#20061), so add an explicit `Never` overload immediately before it. See `docs/architecture/decisions/adr-0023-protocol-self-overloads-need-never-exclusions.md`.
+
 **Example 3: Guarding `Never`-returning calls with an uncalled function**
 Some `Never`-returning calls make everything after them unreachable, so type checkers stop checking the rest of the block. Confine such an assertion to an uncalled function (tested in `tests/indexes/test_indexes.py`):
 
