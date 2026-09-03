@@ -3,7 +3,6 @@ from collections.abc import (
     Sequence,
 )
 from datetime import (
-    datetime,
     time,
     timedelta,
 )
@@ -17,6 +16,10 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas._stubs_only import (
+    ScalarArrayIndexDatetime,
+    ScalarArrayIndexTimedelta,
+)
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.base import Index
@@ -36,8 +39,6 @@ from pandas._typing import (
     np_1darray_intp,
     np_ndarray,
     np_ndarray_bool,
-    np_ndarray_dt,
-    np_ndarray_td,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
@@ -69,12 +70,16 @@ class DatetimeIndex(
     @overload  # type: ignore[override]
     @override
     def __sub__(  # pyrefly: ignore[bad-override]
-        self, other: datetime | np.datetime64 | np_ndarray_dt | Self, /
+        self, other: ScalarArrayIndexDatetime, /
     ) -> TimedeltaIndex: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset, /
+        self, other: ScalarArrayIndexTimedelta | BaseOffset, /
     ) -> Self: ...
+    @override
+    def __rsub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+        self, other: ScalarArrayIndexDatetime, /
+    ) -> TimedeltaIndex: ...
     @override
     def __truediv__(self, other: np_ndarray, /) -> Never: ...  # type: ignore[override]
     @override

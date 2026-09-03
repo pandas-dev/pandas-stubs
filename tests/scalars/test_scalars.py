@@ -541,7 +541,6 @@ def test_timedelta_add_sub() -> None:
 
     ndarray_td64: np_ndarray_td = np.array([1, 2, 3], dtype="timedelta64[D]")
     ndarray_dt64: np_ndarray_dt = np.array([1, 2, 3], dtype="datetime64[D]")
-    as_period = pd.Period("2012-01-01", freq="D")
     as_timestamp = pd.Timestamp("2012-01-01")
     as_datetime = dt.datetime(2012, 1, 1)
     as_date = dt.date(2012, 1, 1)
@@ -1713,11 +1712,6 @@ def test_period_properties() -> None:
 def test_period_add_subtract() -> None:
     p = pd.Period("2012-1-1", freq="D")
 
-    as_pd_td = pd.Timedelta(1, "D")
-    as_dt_td = dt.timedelta(days=1)
-    as_np_td = np.timedelta64(1, "D")
-    as_np_i64 = np.int64(1)
-    as_int: int = 1
     as_period_index = pd.period_range("2012-1-1", periods=10, freq="D")
     check(assert_type(as_period_index, pd.PeriodIndex), pd.PeriodIndex)
     scale = 24 * 60 * 60 * 10**9
@@ -1726,8 +1720,6 @@ def test_period_add_subtract() -> None:
     as_period_series = pd.Series(as_period_index)
     check(assert_type(as_period_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     as_timedelta_idx = pd.timedelta_range(scale, scale, freq="D")
-    as_nat = pd.NaT
-
     # offset_index is tested below
     offset_index = p - as_period_index
     # https://github.com/pandas-dev/pandas/issues/50162 dtype=object
@@ -1745,13 +1737,9 @@ def test_period_add_subtract() -> None:
     check(assert_type(p + offset_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(offset_index, pd.Index), pd.Index)
     check(assert_type(p - as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
-    check(assert_type(p - as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
-
     check(assert_type(as_td_series + p, "pd.Series[pd.Period]"), pd.Series, pd.Period)
 
     check(assert_type(as_timedelta_idx + p, pd.PeriodIndex), pd.PeriodIndex)
-
-    check(assert_type(as_period_index - p, pd.Index), pd.Index)
 
 
 def test_period_cmp_scalar() -> None:

@@ -16,6 +16,10 @@ from typing import (
 )
 
 import numpy as np
+from pandas._stubs_only import (
+    ScalarArrayIndexDatetime,
+    ScalarArrayIndexTimedelta,
+)
 from pandas.core.indexes.accessors import TimedeltaIndexProperties
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
@@ -26,7 +30,6 @@ from typing_extensions import override
 
 from pandas._libs import Timedelta
 from pandas._libs.lib import NoDefault
-from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
     AxesData,
@@ -88,20 +91,22 @@ class TimedeltaIndex(
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, other: timedelta | Self, /
     ) -> Self: ...
-    @override
-    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self, /
-    ) -> Self: ...
     @overload  # type: ignore[override]
     @override
     # pyrefly: ignore[bad-override]
-    def __rsub__(
-        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self, /
-    ) -> Self: ...
+    def __sub__(self, other: ScalarArrayIndexTimedelta, /) -> Self: ...
+    @overload
+    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+        self, other: ScalarArrayIndexDatetime, /
+    ) -> Never: ...
+    @overload  # type: ignore[override]
+    @override
+    # pyrefly: ignore[bad-override]
+    def __rsub__(self, other: ScalarArrayIndexDatetime, /) -> DatetimeIndex: ...
     @overload
     def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex, /
-    ) -> DatetimeIndex: ...
+        self, other: ScalarArrayIndexTimedelta, /
+    ) -> Self: ...
     @overload  # type: ignore[override]
     @override
     def __mul__(self, other: np_ndarray_bool | np_ndarray_complex, /) -> Never: ...
