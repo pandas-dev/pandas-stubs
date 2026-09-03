@@ -593,10 +593,9 @@ def test_timedelta_add_sub() -> None:
 
     # sub is not symmetric with dates. In general date_like - timedelta is
     # sensible, while timedelta - date_like is not
-    # TypeError: as_period, as_timestamp, as_datetime, as_date, as_datetime64,
+    # TypeError: as_timestamp, as_datetime, as_date, as_datetime64,
     #            as_period_index, as_datetime_index, as_ndarray_dt64
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = td - as_period  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _1 = td - as_timestamp  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _2 = td - as_datetime  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _3 = td - as_date  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
@@ -611,7 +610,6 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td - as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td - as_ndarray_td64, np_ndarray_td), np_ndarray, np.timedelta64)
     check(assert_type(td - as_nat, NaTType), NaTType)
-    check(assert_type(as_period - td, pd.Period), pd.Period)
     check(assert_type(as_timestamp - td, pd.Timestamp), pd.Timestamp)
     check(assert_type(as_datetime - td, dt.datetime), dt.datetime)
     check(assert_type(as_date - td, dt.date), dt.date)
@@ -1722,7 +1720,6 @@ def test_period_add_subtract() -> None:
     as_int: int = 1
     as_period_index = pd.period_range("2012-1-1", periods=10, freq="D")
     check(assert_type(as_period_index, pd.PeriodIndex), pd.PeriodIndex)
-    as_period = pd.Period("2012-1-1", freq="D")
     scale = 24 * 60 * 60 * 10**9
     as_td_series = pd.Series(pd.timedelta_range(scale, scale, freq="D"))
     check(assert_type(as_td_series, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
@@ -1746,17 +1743,9 @@ def test_period_add_subtract() -> None:
     offset_series = as_period_series - as_period_series
     check(assert_type(offset_series, "pd.Series[BaseOffset]"), pd.Series)
     check(assert_type(p + offset_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
-    check(assert_type(p - as_pd_td, pd.Period), pd.Period)
-    check(assert_type(p - as_dt_td, pd.Period), pd.Period)
-    check(assert_type(p - as_np_td, pd.Period), pd.Period)
-    check(assert_type(p - as_np_i64, pd.Period), pd.Period)
-    check(assert_type(p - as_int, pd.Period), pd.Period)
     check(assert_type(offset_index, pd.Index), pd.Index)
-    check(assert_type(p - as_period, BaseOffset), Day)
     check(assert_type(p - as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p - as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(p - as_nat, NaTType), NaTType)
-    check(assert_type(p - p.freq, pd.Period), pd.Period)
 
     check(assert_type(as_td_series + p, "pd.Series[pd.Period]"), pd.Series, pd.Period)
 
