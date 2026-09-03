@@ -91,13 +91,13 @@ def test_sub_pd_index(left: "pd.Index[bool]") -> None:
     c = pd.Index([1.1j, 2.2j, 4.1j])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(left - b, "pd.Index[Never]")
     check(assert_type(left - i, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left - f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left - c, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = b - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(b - left, "pd.Index[Never]")
     check(assert_type(i - left, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(f - left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c - left, "pd.Index[complex]"), pd.Index, np.complexfloating)

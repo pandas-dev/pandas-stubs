@@ -27,6 +27,8 @@ from _typeshed import (
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
+    SupportsRSub,
+    SupportsSub,
 )
 import numpy as np
 from pandas._stubs_only import (
@@ -758,13 +760,26 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __sub__(self, other: Index[Never], /) -> Index: ...
-    # Must precede `Supports_ProtoSub`: mypy matches it for `bool` (python/mypy#20061)
+    # Must precede `Supports_ProtoSub` (and `SupportsRSub`, which `Index[bool]`
+    # structurally satisfies because `bool <: int`): mypy matches it for `bool`
+    # (python/mypy#20061).
     @overload
-    def __sub__(self: Index[bool], other: bool | SequenceNotStr[bool], /) -> Never: ...
+    def __sub__(
+        self: Index[bool], other: bool | SequenceNotStr[bool] | np_ndarray_bool, /
+    ) -> Never: ...
     @overload
     def __sub__(
         self: Supports_ProtoSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
     ) -> Index[S2]: ...
+    @overload
+    def __sub__(
+        self: Index[S2_contra],
+        other: (
+            SupportsRSub[S2_contra, S2_NSDT]
+            | Sequence[SupportsRSub[S2_contra, S2_NSDT]]
+        ),
+        /,
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __sub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
     @overload
@@ -806,6 +821,14 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rsub__(
         self: Supports_ProtoRSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
     ) -> Index[S2]: ...
+    @overload
+    def __rsub__(
+        self: Index[S2_contra],
+        other: (
+            SupportsSub[S2_contra, S2_NSDT] | Sequence[SupportsSub[S2_contra, S2_NSDT]]
+        ),
+        /,
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __rsub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
     @overload

@@ -8,8 +8,28 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 import pytest
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 from tests._typing import np_ndarray_int64
+
+
+class _ReflectedSub:
+    """External scalar whose reflected ``__sub__``/``__rsub__`` returns an int.
+
+    Stands in for a user (or third-party) object that pandas subtracts an
+    :class:`Index` against. Because its reflected dunders return a scalar
+    element type, the ``_typeshed.SupportsRSub``/``SupportsSub`` overloads on
+    ``Index.__sub__``/``__rsub__`` are selected and the result is pinned to
+    ``Index[int]`` rather than falling through to the untyped/error path.
+    """
+
+    def __rsub__(self, other: int, /) -> int:
+        return other
+
+    def __sub__(self, other: int, /) -> int:
+        return other
 
 
 @pytest.fixture
@@ -92,3 +112,17 @@ def test_sub_pd_index(left: "pd.Index[int]") -> None:
     check(assert_type(i - left, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(f - left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c - left, "pd.Index[complex]"), pd.Index, np.complexfloating)
+
+
+def test_sub_external_reflected(left: "pd.Index[int]") -> None:
+    """Test pd.Index[int] - an external operand with reflected subtraction.
+
+    The ``SupportsRSub``/``SupportsSub`` overloads give element-type precision
+    for an operand whose reflected ``__sub__``/``__rsub__`` returns a scalar
+    dtype (``int`` here). These are rejected as unsupported operators without
+    those overloads; the reflected dunders do not run at runtime, so this is
+    asserted only under ``TYPE_CHECKING_INVALID_USAGE``.
+    """
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(left - _ReflectedSub(), "pd.Index[int]")
+        assert_type(_ReflectedSub() - left, "pd.Index[int]")
