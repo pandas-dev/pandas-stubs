@@ -113,8 +113,8 @@ def test_sub_numpy_array(left: pd.DatetimeIndex) -> None:
     check(assert_type(left - d, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
-    # checking, where our `__rsub__` cannot override. At runtime, they return
-    # `TimedeltaIndex`.
+    # checking, where our `__rsub__` cannot override. At runtime, `s - left`
+    # returns a `TimedeltaIndex`, while `d - left` raises `TypeError`.
     check(assert_type(s - left, np_ndarray_dt), pd.TimedeltaIndex, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(d - left, np_ndarray_td)

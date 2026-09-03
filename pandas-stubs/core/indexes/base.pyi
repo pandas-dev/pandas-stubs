@@ -27,8 +27,6 @@ from _typeshed import (
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
-    SupportsRSub,
-    SupportsSub,
 )
 import numpy as np
 from pandas._stubs_only import (
@@ -760,26 +758,20 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __sub__(self, other: Index[Never], /) -> Index: ...
-    # Must precede `Supports_ProtoSub` (and `SupportsRSub`, which `Index[bool]`
-    # structurally satisfies because `bool <: int`): mypy matches it for `bool`
-    # (python/mypy#20061).
+    # Must precede `Supports_ProtoSub`: mypy matches it for `bool` (python/mypy#20061)
     @overload
-    def __sub__(
-        self: Index[bool], other: bool | SequenceNotStr[bool] | np_ndarray_bool, /
-    ) -> Never: ...
+    def __sub__(self: Index[bool], other: bool | SequenceNotStr[bool], /) -> Never: ...
+    # `-` follows `/`, not `+`/`*`: only the internal, self-bound
+    # `Supports_ProtoSub` plus explicit `Never` guards, with no external
+    # `_typeshed.Supports*` overload. `bool <: int` plus `Index[bool]`'s
+    # `Never`-guarded dunders structurally satisfy `SupportsRSub[bool, Never]`,
+    # so an external `Supports*` overload would greedily capture `Index[bool]`
+    # and resolve the invalid `Index[bool] - Index[bool]` to `Index[Never]`.
+    # See ADR-0023.
     @overload
     def __sub__(
         self: Supports_ProtoSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
     ) -> Index[S2]: ...
-    @overload
-    def __sub__(
-        self: Index[S2_contra],
-        other: (
-            SupportsRSub[S2_contra, S2_NSDT]
-            | Sequence[SupportsRSub[S2_contra, S2_NSDT]]
-        ),
-        /,
-    ) -> Index[S2_NSDT]: ...
     @overload
     def __sub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
     @overload
@@ -817,18 +809,17 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     # Must precede `Supports_ProtoRSub`: mypy matches it for `bool` (python/mypy#20061)
     @overload
     def __rsub__(self: Index[bool], other: bool | SequenceNotStr[bool], /) -> Never: ...
+    # `-` follows `/`, not `+`/`*`: only the internal, self-bound
+    # `Supports_ProtoRSub` plus explicit `Never` guards, with no external
+    # `_typeshed.Supports*` overload. `bool <: int` plus `Index[bool]`'s
+    # `Never`-guarded dunders structurally satisfy `SupportsSub[bool, Never]`,
+    # so an external `Supports*` overload would greedily capture `Index[bool]`
+    # and resolve the invalid `Index[bool] - Index[bool]` to `Index[Never]`.
+    # See ADR-0023.
     @overload
     def __rsub__(
         self: Supports_ProtoRSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
     ) -> Index[S2]: ...
-    @overload
-    def __rsub__(
-        self: Index[S2_contra],
-        other: (
-            SupportsSub[S2_contra, S2_NSDT] | Sequence[SupportsSub[S2_contra, S2_NSDT]]
-        ),
-        /,
-    ) -> Index[S2_NSDT]: ...
     @overload
     def __rsub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
     @overload
