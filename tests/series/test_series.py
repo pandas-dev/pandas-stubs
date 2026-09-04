@@ -258,8 +258,20 @@ def test_types_drop() -> None:
     check(assert_type(s.drop(0), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.drop([0, 1]), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.drop(0, axis=0), "pd.Series[int]"), pd.Series, np.integer)
-    assert assert_type(s.drop([0, 1], inplace=True, errors="raise"), None) is None
-    assert assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.drop([0, 1], inplace=True, errors="raise"), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None) is None
     # GH 302
     s = pd.Series([0, 1, 2])
     check(
@@ -1607,26 +1619,54 @@ def test_types_rename() -> None:
     s5 = pd.Series([1, 2, 3]).rename({1: 10})
     check(assert_type(s5, "pd.Series[int]"), pd.Series, np.integer)
     # inplace
-    check(
-        assert_type(pd.Series([1, 2, 3]).rename("A", inplace=True), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(pd.Series([1, 2, 3]).rename({1: 4, 2: 5}, inplace=True), None),
-        type(None),
-    )
-    check(
-        assert_type(
-            pd.Series([1, 2, 3]).rename(index=None, inplace=True), "pd.Series[int]"
-        ),
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None),
-        type(None),
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(
+                pd.Series([1, 2, 3]).rename("A", inplace=True), "pd.Series[int]"
+            ),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(pd.Series([1, 2, 3]).rename({1: 4, 2: 5}, inplace=True), None),
+            type(None),
+        )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(
+                pd.Series([1, 2, 3]).rename(index=None, inplace=True), "pd.Series[int]"
+            ),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(
+                pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None
+            ),
+            type(None),
+        )
 
     if TYPE_CHECKING_INVALID_USAGE:
         _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
