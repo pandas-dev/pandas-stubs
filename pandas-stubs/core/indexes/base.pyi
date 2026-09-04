@@ -30,6 +30,8 @@ from _typeshed import (
 )
 import numpy as np
 from pandas._stubs_only import (
+    ArrayIndexBoolIntNoSeq,
+    ArrayIndexBoolNoSeq,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
     IndexComplex,
@@ -47,7 +49,9 @@ from pandas._stubs_only import (
     Supports_ProtoRAdd,
     Supports_ProtoRFloorDiv,
     Supports_ProtoRMul,
+    Supports_ProtoRSub,
     Supports_ProtoRTrueDiv,
+    Supports_ProtoSub,
     Supports_ProtoTrueDiv,
     T_contra,
 )
@@ -98,7 +102,6 @@ from pandas._typing import (
     IgnoreRaise,
     IntDtypeArg,
     JoinHow,
-    Just,
     Label,
     Level,
     MaskType,
@@ -750,158 +753,98 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __sub__(self: Index[Never], other: DatetimeIndex, /) -> Never: ...
     @overload
-    def __sub__(
+    def __sub__(  # type: ignore[overload-overlap]
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index, /
     ) -> Index: ...
     @overload
     def __sub__(self, other: Index[Never], /) -> Index: ...
+    # Must precede `Supports_ProtoSub`: mypy matches it for `bool` (python/mypy#20061)
+    @overload
+    def __sub__(self: Index[bool], other: bool | SequenceNotStr[bool], /) -> Never: ...
+    # `-` follows `/`, not `+`/`*`: only the internal, self-bound
+    # `Supports_ProtoSub` plus explicit `Never` guards, with no external
+    # `_typeshed.Supports*` overload. `bool <: int` plus `Index[bool]`'s
+    # `Never`-guarded dunders structurally satisfy `SupportsRSub[bool, Never]`,
+    # so an external `Supports*` overload would greedily capture `Index[bool]`
+    # and resolve the invalid `Index[bool] - Index[bool]` to `Index[Never]`.
+    # See ADR-0023.
     @overload
     def __sub__(
-        self: Index[bool],
-        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
-        /,
+        self: Supports_ProtoSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
+    @overload
+    def __sub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
+    @overload
+    def __sub__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
     ) -> Index[int]: ...
     @overload
     def __sub__(
-        self: Index[bool],
-        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
-        /,
+        self: Index[float], other: ArrayIndexBoolIntNoSeq, /
     ) -> Index[float]: ...
     @overload
     def __sub__(
-        self: Index[int],
-        other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | Index[bool]
-            | Index[int]
-        ),
-        /,
-    ) -> Index[int]: ...
-    @overload
-    def __sub__(
-        self: Index[int],
-        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
-        /,
-    ) -> Index[float]: ...
-    @overload
-    def __sub__(
-        self: Index[float],
-        other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[bool]
-            | Index[int]
-            | Index[float]
-        ),
-        /,
-    ) -> Index[float]: ...
-    @overload
-    def __sub__(
-        self: Index[complex],
-        other: (
-            T_COMPLEX
-            | Sequence[T_COMPLEX]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_COMPLEX]
-        ),
-        /,
+        self: Index[complex], other: ArrayIndexBoolIntNoSeq, /
     ) -> Index[complex]: ...
     @overload
     def __sub__(
-        self: Index[T_COMPLEX],
-        other: (
-            Just[complex]
-            | Sequence[Just[complex]]
-            | np_ndarray_complex
-            | Index[complex]
-        ),
-        /,
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
+    ) -> Index[float]: ...
+    @overload
+    def __sub__(
+        self: Index[T_COMPLEX], other: ScalarArrayIndexJustFloat, /
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __sub__(
+        self: IndexComplex, other: ScalarArrayIndexJustComplex, /
     ) -> Index[complex]: ...
     @overload
     def __rsub__(self: Index[Never], other: DatetimeIndex, /) -> Never: ...  # type: ignore[misc]
     @overload
-    def __rsub__(
+    def __rsub__(  # type: ignore[overload-overlap]
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index, /
     ) -> Index: ...
     @overload
     def __rsub__(self, other: Index[Never], /) -> Index: ...
+    # Must precede `Supports_ProtoRSub`: mypy matches it for `bool` (python/mypy#20061)
+    @overload
+    def __rsub__(self: Index[bool], other: bool | SequenceNotStr[bool], /) -> Never: ...
+    # `-` follows `/`, not `+`/`*`: only the internal, self-bound
+    # `Supports_ProtoRSub` plus explicit `Never` guards, with no external
+    # `_typeshed.Supports*` overload. `bool <: int` plus `Index[bool]`'s
+    # `Never`-guarded dunders structurally satisfy `SupportsSub[bool, Never]`,
+    # so an external `Supports*` overload would greedily capture `Index[bool]`
+    # and resolve the invalid `Index[bool] - Index[bool]` to `Index[Never]`.
+    # See ADR-0023.
     @overload
     def __rsub__(
-        self: Index[bool],
-        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
-        /,
+        self: Supports_ProtoRSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
+    @overload
+    def __rsub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
+    @overload
+    def __rsub__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
     ) -> Index[int]: ...
     @overload
-    def __rsub__(
-        self: Index[bool],
-        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
-        /,
+    def __rsub__(  # type: ignore[misc]
+        self: Index[float], other: ArrayIndexBoolIntNoSeq, /
     ) -> Index[float]: ...
     @overload
     def __rsub__(
-        self: Index[int],
-        other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | Index[bool]
-            | Index[int]
-        ),
-        /,
-    ) -> Index[int]: ...
-    @overload
-    def __rsub__(
-        self: Index[int],
-        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
-        /,
-    ) -> Index[float]: ...
-    @overload
-    def __rsub__(
-        self: Index[float],
-        other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[bool]
-            | Index[int]
-            | Index[float]
-        ),
-        /,
-    ) -> Index[float]: ...
-    @overload
-    def __rsub__(
-        self: Index[complex],
-        other: (
-            T_COMPLEX
-            | Sequence[T_COMPLEX]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_COMPLEX]
-        ),
-        /,
+        self: Index[complex], other: ArrayIndexBoolIntNoSeq, /
     ) -> Index[complex]: ...
     @overload
     def __rsub__(
-        self: Index[T_COMPLEX],
-        other: (
-            Just[complex]
-            | Sequence[Just[complex]]
-            | np_ndarray_complex
-            | Index[complex]
-        ),
-        /,
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
+    ) -> Index[float]: ...
+    @overload
+    def __rsub__(
+        self: Index[T_COMPLEX], other: ScalarArrayIndexJustFloat, /
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __rsub__(
+        self: IndexComplex, other: ScalarArrayIndexJustComplex, /
     ) -> Index[complex]: ...
     @overload
     def __mul__(

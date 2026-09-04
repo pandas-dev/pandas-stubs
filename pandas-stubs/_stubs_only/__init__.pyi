@@ -6,7 +6,10 @@ from collections.abc import (
     Mapping,
     Sequence,
 )
-from datetime import timedelta
+from datetime import (
+    datetime,
+    timedelta,
+)
 from typing import (
     Any,
     Generic,
@@ -20,6 +23,7 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
+from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
@@ -27,6 +31,7 @@ from pandas.core.base import T_INTERVAL_NP
 from pandas.core.groupby.base import ReductionKernelType
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from typing_extensions import (
@@ -54,6 +59,7 @@ from pandas._typing import (
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
+    np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_td,
 )
@@ -150,6 +156,12 @@ ScalarArrayIndexComplex: TypeAlias = (
 SeriesComplex: TypeAlias = SeriesReal | Series[complex]
 ScalarArrayIndexSeriesComplex: TypeAlias = ScalarArrayIndexComplex | SeriesComplex
 
+ArrayIndexBoolNoSeq: TypeAlias = np_ndarray_bool | Index[bool]
+
+ArrayIndexBoolIntNoSeq: TypeAlias = (
+    np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int]
+)
+
 ArrayIndexTimedeltaNoSeq: TypeAlias = np_ndarray_td | TimedeltaArray | TimedeltaIndex
 ScalarArrayIndexTimedelta: TypeAlias = (
     timedelta
@@ -160,6 +172,14 @@ ScalarArrayIndexTimedelta: TypeAlias = (
 ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = ArrayIndexTimedeltaNoSeq | Series[Timedelta]
 ScalarArrayIndexSeriesTimedelta: TypeAlias = (
     ScalarArrayIndexTimedelta | Series[Timedelta]
+)
+
+ArrayIndexDatetimeNoSeq: TypeAlias = np_ndarray_dt | DatetimeArray | DatetimeIndex
+ScalarArrayIndexDatetime: TypeAlias = (
+    datetime
+    | np.datetime64
+    | Sequence[datetime | np.datetime64]
+    | ArrayIndexDatetimeNoSeq
 )
 
 NumListLike: TypeAlias = (  # TODO: pandas-dev/pandas-stubs#1474 deprecated, do not use
@@ -217,6 +237,55 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_radd(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[Timedelta]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[Timestamp],
+        other: timedelta | np.timedelta64 | Timedelta | BaseOffset,
+    ) -> ElementOpsMixin[Timestamp]: ...
+    @overload
+    def _proto_sub(
+        self: ElementOpsMixin[Timestamp], other: datetime | np.datetime64 | Timestamp
+    ) -> ElementOpsMixin[Timedelta]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[Timedelta]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[Timedelta], other: datetime | np.datetime64 | Timestamp
+    ) -> ElementOpsMixin[Timestamp]: ...
+    @overload
+    def _proto_rsub(
+        self: ElementOpsMixin[Timestamp], other: datetime | np.datetime64 | Timestamp
+    ) -> ElementOpsMixin[Timedelta]: ...
     @overload
     def _proto_mul(
         self: ElementOpsMixin[bool], other: bool | np.bool_
@@ -331,6 +400,14 @@ class Supports_ProtoAdd(Protocol[T_contra, S2]):
 @type_check_only
 class Supports_ProtoRAdd(Protocol[T_contra, S2]):
     def _proto_radd(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoSub(Protocol[T_contra, S2]):
+    def _proto_sub(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRSub(Protocol[T_contra, S2]):
+    def _proto_rsub(self, other: T_contra, /) -> ElementOpsMixin[S2]: ...
 
 @type_check_only
 class Supports_ProtoMul(Protocol[T_contra, S2]):
