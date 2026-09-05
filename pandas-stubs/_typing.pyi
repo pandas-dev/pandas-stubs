@@ -1037,6 +1037,7 @@ S2_NDT_contra = TypeVar(
 )
 S2_NSDT = TypeVar("S2_NSDT", bound=SeriesDTypeNoStrDateTime)
 S3 = TypeVar("S3", bound=SeriesDType)
+OffsetT = TypeVar("OffsetT", bound=BaseOffset)
 
 # Constraint, instead of bound
 C2 = TypeVar(

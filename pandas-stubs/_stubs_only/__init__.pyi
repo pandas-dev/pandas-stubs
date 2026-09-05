@@ -166,7 +166,8 @@ ArrayIndexTimedeltaNoSeq: TypeAlias = np_ndarray_td | TimedeltaArray | Timedelta
 ScalarArrayIndexTimedelta: TypeAlias = (
     timedelta
     | np.timedelta64
-    | Sequence[timedelta | np.timedelta64]
+    | Timedelta
+    | Sequence[timedelta | np.timedelta64 | Timedelta]
     | ArrayIndexTimedeltaNoSeq
 )
 ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = ArrayIndexTimedeltaNoSeq | Series[Timedelta]
@@ -180,6 +181,18 @@ ScalarArrayIndexDatetime: TypeAlias = (
     | np.datetime64
     | Sequence[datetime | np.datetime64]
     | ArrayIndexDatetimeNoSeq
+)
+
+ArrayIndexPeriodNoSeq: TypeAlias = (
+    np_ndarray_td
+    | np_ndarray_anyint
+    | TimedeltaArray
+    | TimedeltaIndex
+    | Index[int]
+    | Index[BaseOffset]
+)
+ScalarArrayIndexPeriod: TypeAlias = (
+    PeriodAddSub | Sequence[PeriodAddSub] | ArrayIndexPeriodNoSeq
 )
 
 NumListLike: TypeAlias = (  # TODO: pandas-dev/pandas-stubs#1474 deprecated, do not use
