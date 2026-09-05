@@ -21,9 +21,12 @@ from pandas.core.groupby.generic import (
     NamedAgg,
 )
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 if TYPE_CHECKING:
@@ -428,7 +431,13 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.nlargest(), pd.Series), pd.Series)
     check(assert_type(gb.nsmallest(), pd.Series), pd.Series)
     check(assert_type(gb.nth(0), pd.DataFrame | pd.Series), pd.Series)
-    check(assert_type(gb.nth[0, 1, 2], pd.DataFrame | pd.Series), pd.Series)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "GroupBy.nth",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(gb.nth[0, 1, 2], pd.DataFrame | pd.Series), pd.Series)
     check(assert_type(gb.nth((0, 1, 2)), pd.DataFrame | pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
