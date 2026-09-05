@@ -1,15 +1,11 @@
 """Test module for methods in pandas.core.arrays.categorical."""
 
-from typing import (
-    assert_type,
-)
+from typing import assert_type
 
 import numpy as np
 import pandas as pd
 from pandas import Categorical
-from pandas.api.typing.aliases import (
-    Ordered,
-)
+from pandas.api.typing.aliases import Ordered
 from pandas.core.arrays.categorical import CategoricalDtype
 from pandas.core.indexes.base import Index
 
@@ -19,18 +15,12 @@ from tests import check
 from tests._typing import (
     np_1darray,
     np_1darray_bool,
+    np_ndarray_str,
 )
 
 
 def test_construction_array_like() -> None:
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.array(pd.Categorical([1])),
-            "Categorical[int]",
-        ),
-        Categorical,
-    )
+    check(assert_type(pd.array(pd.Categorical([1])), "Categorical[int]"), Categorical)
     check(assert_type(pd.array(pd.CategoricalIndex([1])), Categorical), Categorical)
 
 
@@ -60,39 +50,34 @@ def test_constructor() -> None:
     cat = Categorical(dd)
     check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
-    values = np.array(["a", "b", "c", "a"])
-    cat_np = Categorical(values)
-    # np.array() is typed as ndarray[Any, Any] by numpy stubs, so mypy cannot infer
-    # the element type; the actual type is Categorical[str]
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(assert_type(cat_np, "Categorical[str]"), Categorical)  # type: ignore[assert-type] # pyrefly: ignore[assert-type]
+    values = check(
+        assert_type(np.array(["a", "b", "c", "a"], np.str_), np_ndarray_str),
+        np_1darray,
+        np.str_,
+    )
+    check(assert_type(Categorical(values), "Categorical[str]"), Categorical, str)
 
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c", "d"])
-    check(assert_type(cat, "Categorical[str]"), Categorical)
-
-    cat = Categorical(["a", "b", "c"], categories=np.array(["a", "b", "c", "d"]))
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(cat, "Categorical[str]"),  # pyrefly: ignore[assert-type]
-        Categorical,
-    )
-
-    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
-
-    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=False)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
-
-    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=None)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     cat = Categorical(
-        values=["x", "y", "z", "x"],
-        categories=["x", "y", "z"],
-        ordered=True,
-        copy=True,
+        ["a", "b", "c"], categories=np.array(["a", "b", "c", "d"], np.str_)
     )
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
+
+    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
+
+    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=False)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
+
+    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=None)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
+
+    cat = Categorical(
+        values=["x", "y", "z", "x"], categories=["x", "y", "z"], ordered=True, copy=True
+    )
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     dtype = pd.CategoricalDtype(categories=["x", "y", "z"], ordered=True)
     cat = Categorical(
@@ -100,38 +85,31 @@ def test_constructor() -> None:
         dtype=dtype,
         copy=True,
     )
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     cat_int = Categorical([1, 2, 3, 1, 2])
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(cat_int, "Categorical[int]"),  # pyrefly: ignore[assert-type]
-        Categorical,
-    )
+    check(assert_type(cat_int, "Categorical[int]"), Categorical, int)
 
     cat_mixed = Categorical(["a", 1, "b", 2])
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(cat_mixed, Categorical), Categorical  # pyrefly: ignore[assert-type]
-    )
+    check(assert_type(cat_mixed, Categorical), Categorical)
 
     cat_empty = Categorical([])
     check(assert_type(cat_empty, Categorical), Categorical)
 
     cat = Categorical(["a", "b", "c"], categories=None)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     cat1 = Categorical(["a", "b", "c"])
     cat = Categorical(cat1)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     values_series = pd.Series(["a", "b", "c", "a"])
     cat = Categorical(values_series)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
     values_index = pd.Index(["a", "b", "c", "a"])
     cat = Categorical(values_index)
-    check(assert_type(cat, "Categorical[str]"), Categorical)
+    check(assert_type(cat, "Categorical[str]"), Categorical, str)
 
 
 def test_categorical_dtype() -> None:
@@ -150,6 +128,13 @@ def test_categorical_properties() -> None:
     check(assert_type(cat.dtype, "CategoricalDtype[str]"), CategoricalDtype)
     check(assert_type(cat.nbytes, int), int)
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray, np.integer)
+
+
+def test_categorical_dunder_methods() -> None:
+    """Test dunder methods for Categorical."""
+    cat = Categorical(["a", "b", "c", "a"])
+
+    check(assert_type(cat.__hash__, None), type(None))
 
 
 def test_categorical_tolist() -> None:
@@ -397,3 +382,92 @@ def test_categorical_isin() -> None:
     cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
 
     check(assert_type(cat.isin(["b", 1]), np_1darray_bool), np_1darray_bool)
+
+
+def test_categorical_eq_ne() -> None:
+    """Test __eq__ and __ne__ for Categorical, pandas-dev/pandas-stubs#1901."""
+    cat = Categorical(["a", "b", "c"])
+
+    # Categorical vs Categorical -> ndarray
+    check(assert_type(cat == cat, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != cat, np_1darray_bool), np_1darray_bool, np.bool)
+
+    # Categorical vs ndarray -> ndarray
+    arr = np.array(["a", "b", "c"])
+    check(assert_type(cat == arr, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != arr, np_1darray_bool), np_1darray_bool, np.bool)
+
+    # Categorical vs list -> ndarray
+    check(
+        assert_type(cat == ["a", "b", "c"], np_1darray_bool), np_1darray_bool, np.bool
+    )
+    check(
+        assert_type(cat != ["a", "b", "c"], np_1darray_bool), np_1darray_bool, np.bool
+    )
+
+    # Categorical vs Index -> ndarray
+    idx = Index(["a", "b", "c"])
+    check(assert_type(cat == idx, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != idx, np_1darray_bool), np_1darray_bool, np.bool)
+
+    # Categorical vs scalar -> ndarray
+    check(assert_type(cat == "a", np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != "a", np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat == 1, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != 1, np_1darray_bool), np_1darray_bool, np.bool)
+
+    # Categorical vs None / NA -> ndarray
+    none_val: None = None
+    check(assert_type(cat == none_val, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != none_val, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat == pd.NA, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat != pd.NA, np_1darray_bool), np_1darray_bool, np.bool)
+
+    # Categorical vs Series (any dtype) -> Series[bool]
+    check(assert_type(cat == pd.Series(["a", "b", "c"]), "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat != pd.Series(["a", "b", "c"]), "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat == pd.Series([1, 2, 3]), "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat != pd.Series([1, 2, 3]), "pd.Series[bool]"), pd.Series)
+    s_cat = pd.Series(["a", "b", "c"], dtype="category")
+    check(assert_type(cat == s_cat, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat != s_cat, "pd.Series[bool]"), pd.Series)
+
+
+def test_categorical_ordering_comparison() -> None:
+    """Test __lt__, __le__, __gt__, __ge__ for Categorical, pandas-dev/pandas-stubs#1901."""
+    cat = Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
+
+    # Categorical vs Categorical (Self) -> ndarray
+    check(assert_type(cat < cat, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat <= cat, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat > cat, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat >= cat, np_1darray_bool), np_1darray_bool, np.bool)
+
+    # Categorical vs scalar (of the value type) -> ndarray
+    check(assert_type(cat < "b", np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat <= "b", np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat > "b", np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat >= "b", np_1darray_bool), np_1darray_bool, np.bool)
+
+    # Categorical vs Series[CategoricalDtype[...]] (matching categories) -> Series[bool]
+    s_cat = pd.Series(
+        Categorical(["a", "b", "c"], categories=["a", "b", "c"], ordered=True)
+    )
+    check(assert_type(cat < s_cat, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat <= s_cat, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat > s_cat, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat >= s_cat, "pd.Series[bool]"), pd.Series)
+
+    cat_int = Categorical([1, 2, 3], categories=[1, 2, 3], ordered=True)
+    check(assert_type(cat_int < cat_int, np_1darray_bool), np_1darray_bool, np.bool)
+    check(assert_type(cat_int < 2, np_1darray_bool), np_1darray_bool, np.bool)
+    s_cat_int = pd.Series(Categorical([1, 2, 3], categories=[1, 2, 3], ordered=True))
+    check(assert_type(cat_int < s_cat_int, "pd.Series[bool]"), pd.Series)
+
+    # Categorical vs plain Series (non-categorical dtype, matching value type)
+    # -> Series[bool], pandas-dev/pandas-stubs#1901
+    s_plain = pd.Series(["a", "b", "c"])
+    check(assert_type(cat < s_plain, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat <= s_plain, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat > s_plain, "pd.Series[bool]"), pd.Series)
+    check(assert_type(cat >= s_plain, "pd.Series[bool]"), pd.Series)

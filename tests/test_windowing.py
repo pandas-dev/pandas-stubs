@@ -1,4 +1,8 @@
+# pyright: reportMissingTypeArgument=false
+from __future__ import annotations
+
 import datetime as dt
+import sys
 from typing import assert_type
 
 import numpy as np
@@ -14,6 +18,7 @@ from pandas.core.indexers.objects import (
     VariableOffsetWindowIndexer,
 )
 from pandas.core.window import (
+    ExponentialMovingWindow,
     Rolling,
     Window,
 )
@@ -38,9 +43,41 @@ S_DTI = Series(data=np.random.standard_normal(700), index=IDX)
 DF_DTI = DataFrame(data=np.random.standard_normal(700), index=IDX)
 
 
+def _s_mean(s: Series) -> float:
+    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+    return s.mean()  # ty: ignore[unsound-return-statement]
+
+
+def _np_mean_s_0(s: Series) -> np_ndarray:
+    # numpy >= 2.5 has eliminated the type checking errors
+    if sys.version_info >= (3, 12):
+        return np.mean(s, axis=0)
+    else:  # noqa: RET505
+        return np.mean(s, axis=0)  # type: ignore[no-any-return]
+
+
+def _df_mean(df: DataFrame) -> Series:
+    return df.mean()
+
+
+def _np_mean_df(df: DataFrame) -> float:
+    return float(np.mean(df))
+
+
+def _np_mean_df_0(df: DataFrame) -> np_ndarray:
+    # numpy >= 2.5 has eliminated the type checking errors
+    if sys.version_info >= (3, 12):
+        return np.mean(df, axis=0)
+    else:  # noqa: RET505
+        return np.mean(df, axis=0)  # type: ignore[no-any-return]
+
+
 def test_rolling_basic() -> None:
     check(assert_type(DF.rolling(10, win_type="gaussian"), "Window[DataFrame]"), Window)
     check(assert_type(DF.rolling(10, min_periods=10), "Rolling[DataFrame]"), Rolling)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.rolling(10, axis=0)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_rolling_basic_math() -> None:
@@ -89,21 +126,13 @@ def test_rolling_datetime_index() -> None:
 
 def test_rolling_apply() -> None:
     check(assert_type(DF.rolling(10).apply(np.mean), DataFrame), DataFrame)
-
-    def _mean(df: DataFrame) -> Series:
-        return df.mean()
-
-    check(assert_type(DF.rolling(10).apply(_mean), DataFrame), DataFrame)
-
-    def _mean2(df: DataFrame) -> np_ndarray:
-        return np.mean(df, axis=0)
-
-    check(assert_type(DF.rolling(10).apply(_mean2, raw=True), DataFrame), DataFrame)
-
-    def _mean4(df: DataFrame) -> float:
-        return float(np.mean(df))
-
-    check(assert_type(DF.rolling(10).apply(_mean4, raw=True), DataFrame), DataFrame)
+    check(assert_type(DF.rolling(10).apply(_df_mean), DataFrame), DataFrame)
+    check(
+        assert_type(DF.rolling(10).apply(_np_mean_df_0, raw=True), DataFrame), DataFrame
+    )
+    check(
+        assert_type(DF.rolling(10).apply(_np_mean_df, raw=True), DataFrame), DataFrame
+    )
 
 
 def test_rolling_aggregate() -> None:
@@ -122,10 +151,7 @@ def test_rolling_aggregate() -> None:
 
     check(assert_type(DF.rolling(10).aggregate("mean"), DataFrame), DataFrame)
 
-    def _mean(df: DataFrame) -> Series:
-        return df.mean()
-
-    check(assert_type(DF.rolling(10).aggregate(_mean), DataFrame), DataFrame)
+    check(assert_type(DF.rolling(10).aggregate(_df_mean), DataFrame), DataFrame)
 
     check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
     check(
@@ -176,25 +202,14 @@ def test_rolling_basic_math_series() -> None:
 
 def test_rolling_apply_series() -> None:
     check(assert_type(S.rolling(10).apply(np.mean), Series), Series)
-
-    def _mean(df: Series) -> float:
-        return df.mean()
-
-    check(assert_type(S.rolling(10).apply(_mean), Series), Series)
-
-    def _mean2(df: Series) -> np_ndarray:
-        return np.mean(df, axis=0)
-
-    check(assert_type(S.rolling(10).apply(_mean2, raw=True), Series), Series)
+    check(assert_type(S.rolling(10).apply(_s_mean), Series), Series)
+    check(assert_type(S.rolling(10).apply(_np_mean_s_0, raw=True), Series), Series)
 
 
 def test_rolling_aggregate_series() -> None:
     check(assert_type(S.rolling(10).aggregate("mean"), Series), Series)
 
-    def _mean(s: Series) -> float:
-        return s.mean()
-
-    check(assert_type(S.rolling(10).aggregate(_mean), Series), Series)
+    check(assert_type(S.rolling(10).aggregate(_s_mean), Series), Series)
 
     check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
 
@@ -205,7 +220,7 @@ def test_rolling_aggregate_series() -> None:
     )
     check(
         assert_type(
-            S.rolling(10).aggregate({"col1": np.mean, "col2": "mean", "col3": _mean}),
+            S.rolling(10).aggregate({"col1": np.mean, "col2": "mean", "col3": _s_mean}),
             DataFrame,
         ),
         DataFrame,
@@ -232,24 +247,20 @@ def test_expanding_basic_math() -> None:
     check(assert_type(DF.expanding(10).rank("min"), DataFrame), DataFrame)
     check(assert_type(DF.expanding(10).rank("max"), DataFrame), DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.expanding(10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
 
 def test_expanding_apply() -> None:
     check(assert_type(DF.expanding(10).apply(np.mean), DataFrame), DataFrame)
-
-    def _mean(df: DataFrame) -> Series:
-        return df.mean()
-
-    check(assert_type(DF.expanding(10).apply(_mean), DataFrame), DataFrame)
-
-    def _mean2(df: DataFrame) -> np_ndarray:
-        return np.mean(df, axis=0)
-
-    check(assert_type(DF.expanding(10).apply(_mean2, raw=True), DataFrame), DataFrame)
-
-    def _mean4(df: DataFrame) -> float:
-        return float(np.mean(df))
-
-    check(assert_type(DF.expanding(10).apply(_mean4, raw=True), DataFrame), DataFrame)
+    check(assert_type(DF.expanding(10).apply(_df_mean), DataFrame), DataFrame)
+    check(
+        assert_type(DF.expanding(10).apply(_np_mean_df_0, raw=True), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(DF.expanding(10).apply(_np_mean_df, raw=True), DataFrame), DataFrame
+    )
 
 
 def test_expanding_aggregate() -> None:
@@ -289,16 +300,8 @@ def test_expanding_basic_math_series() -> None:
 
 def test_expanding_apply_series() -> None:
     check(assert_type(S.expanding(10).apply(np.mean), Series), Series)
-
-    def _mean(df: Series) -> float:
-        return df.mean()
-
-    check(assert_type(S.expanding(10).apply(_mean), Series), Series)
-
-    def _mean2(df: Series) -> np_ndarray:
-        return np.mean(df, axis=0)
-
-    check(assert_type(S.expanding(10).apply(_mean2, raw=True), Series), Series)
+    check(assert_type(S.expanding(10).apply(_s_mean), Series), Series)
+    check(assert_type(S.expanding(10).apply(_np_mean_s_0, raw=True), Series), Series)
 
 
 def test_expanding_aggregate_series() -> None:
@@ -324,15 +327,49 @@ def test_ewm_basic_math() -> None:
     check(assert_type(DF.ewm(span=10).corr(), DataFrame), DataFrame)
     check(assert_type(DF.ewm(span=10).cov(), DataFrame), DataFrame)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.ewm(span=10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
+
+def test_ewm_times_method() -> None:
+    times = Series(IDX)
+    check(
+        assert_type(
+            DF.ewm(halflife="4D", times=times), "ExponentialMovingWindow[DataFrame]"
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(halflife="4D", times=IDX.values),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(span=10, method="table"),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            DF.ewm(span=10, method="single"),
+            "ExponentialMovingWindow[DataFrame]",
+        ),
+        ExponentialMovingWindow,
+    )
+
 
 def test_ewm_aggregate() -> None:
     check(assert_type(DF.ewm(span=10).agg("sum"), DataFrame), DataFrame)
 
     # TODO: pandas-dev/pandas#63855, see if ewm.aggregate(any callable) is implemented
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_ewm_basic_math_series() -> None:
@@ -347,9 +384,9 @@ def test_ewm_basic_math_series() -> None:
 def test_ewm_aggregate_series() -> None:
     # TODO: pandas-dev/pandas#63855, only str function names are possible, not callable, add tests
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = S.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        _1 = S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        _2 = S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _0 = S.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _2 = S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
 

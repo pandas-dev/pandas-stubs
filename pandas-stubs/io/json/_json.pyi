@@ -1,9 +1,11 @@
 from collections.abc import (
+    Hashable,
     Iterator,
     Mapping,
 )
 from types import TracebackType
 from typing import (
+    Any,
     Generic,
     Literal,
     overload,
@@ -11,6 +13,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
@@ -19,6 +22,7 @@ from pandas._typing import (
     DtypeBackend,
     FilePath,
     HashableT,
+    JSONEngine,
     JsonFrameOrient,
     JsonSeriesOrient,
     NDFrameT,
@@ -229,9 +233,60 @@ def read_json(
 ) -> DataFrame: ...
 
 class JsonReader(Iterator[NDFrameT], Generic[NDFrameT]):
+    def __init__(
+        self,
+        filepath_or_buffer: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
+        orient: JsonFrameOrient | JsonSeriesOrient | None,
+        typ: Literal["frame", "series"],
+        dtype: bool | Mapping[HashableT, DtypeArg] | None,
+        convert_axes: bool | None,
+        convert_dates: bool | list[str],
+        keep_default_dates: bool,
+        precise_float: bool,
+        date_unit: TimeUnit | None,
+        encoding: str | None,
+        lines: bool,
+        chunksize: int | None,
+        compression: CompressionOptions,
+        nrows: int | None,
+        storage_options: StorageOptions | None = None,
+        encoding_errors: (
+            Literal[
+                "strict", "ignore", "replace", "backslashreplace", "surrogateescape"
+            ]
+            | None
+        ) = "strict",
+        dtype_backend: DtypeBackend | NoDefault = ...,
+        engine: JSONEngine = "ujson",
+    ) -> None: ...
+    orient: JsonFrameOrient | JsonSeriesOrient | None
+    typ: Literal["frame", "series"]
+    dtype: bool | Mapping[Hashable, DtypeArg] | None
+    convert_axes: bool | None
+    convert_dates: bool | list[str]
+    keep_default_dates: bool
+    precise_float: bool
+    date_unit: TimeUnit | None
+    encoding: str | None
+    engine: JSONEngine
+    compression: CompressionOptions
+    storage_options: StorageOptions | None
+    lines: bool
+    chunksize: int | None
+    nrows_seen: int
+    nrows: int | None
+    encoding_errors: (
+        Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
+        | None
+    )
+    handles: Any
+    dtype_backend: DtypeBackend | NoDefault
+    data: Any
     def read(self) -> NDFrameT: ...
     def close(self) -> None: ...
+    @override
     def __iter__(self) -> JsonReader[NDFrameT]: ...
+    @override
     def __next__(self) -> NDFrameT: ...
     def __enter__(self) -> JsonReader[NDFrameT]: ...
     def __exit__(
@@ -239,4 +294,5 @@ class JsonReader(Iterator[NDFrameT], Generic[NDFrameT]):
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
+        /,
     ) -> None: ...

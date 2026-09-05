@@ -15,9 +15,7 @@ from tests import (
     check,
 )
 from tests._typing import TimestampDtypeArg
-from tests.dtypes import (
-    ASTYPE_TIMESTAMP_ARGS,
-)
+from tests.dtypes import ASTYPE_TIMESTAMP_ARGS
 
 
 def test_series_construction_timestamp_dtype() -> None:

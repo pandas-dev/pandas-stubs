@@ -1,3 +1,5 @@
+# ty: ignore[assert-type-unspellable-subtype]
+# assert-type-unspellable-subtype is ty-specific astral-sh/ty#4005
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
@@ -180,10 +182,7 @@ def test_types_concat() -> None:
         pd.Series,
         np.integer,
     )
-    check(
-        assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({1: s, 2: s2}), "pd.Series[int]"), pd.Series, np.integer
     )
@@ -335,10 +334,7 @@ def test_concat_args() -> None:
 
     df_dict = {"df1": df, "df2": df2}
     check(
-        assert_type(
-            pd.concat(df_dict.values(), keys=df_dict.keys()),
-            pd.DataFrame,
-        ),
+        assert_type(pd.concat(df_dict.values(), keys=df_dict.keys()), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -351,7 +347,7 @@ def test_concat_args() -> None:
     )
     check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.concat([df, df2], copy=True)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        pd.concat([df, df2], copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
@@ -554,16 +550,16 @@ def test_isna() -> None:
     assert check(assert_type(pd.notna(np_dt), bool), bool)
     assert not check(assert_type(pd.isna(np_dt), bool), bool)
 
-    np_td = np.timedelta64(py_td)
+    np_td = np.timedelta64(py_td, "us")
     assert check(assert_type(pd.notna(np_td), bool), bool)
     assert not check(assert_type(pd.isna(np_td), bool), bool)
 
-    np_nat = np.timedelta64("NaT")
+    np_nat = np.timedelta64("NaT", "Y")
     assert check(assert_type(pd.isna(np_nat), bool), bool)
     assert not check(assert_type(pd.notna(np_nat), bool), bool)
 
     # Check TypeIs type narrowing functionality
-    nullable1: str | None | NAType | NaTType = random.choice(
+    nullable1: str | NAType | NaTType | None = random.choice(
         ["value", None, pd.NA, pd.NaT]
     )
     if pd.notna(nullable1):
@@ -585,7 +581,7 @@ def test_isna() -> None:
     if not pd.notna(nullable2):
         check(assert_type(nullable2, None), type(None))
 
-    nullable3: bool | None | NAType = random.choice([True, None, pd.NA])
+    nullable3: bool | NAType | None = random.choice([True, None, pd.NA])
     if pd.notna(nullable3):
         check(assert_type(nullable3, bool), bool)
     if not pd.isna(nullable3):
@@ -1428,7 +1424,7 @@ def test_merge_ordered() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             ls,
             rs,
             left_on="left",
@@ -1436,7 +1432,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="right",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             ls,
             rf,
             left_on="left",
@@ -1444,7 +1440,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="b",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             lf,
             rs,
             left_on="a",
@@ -1702,7 +1698,8 @@ def test_crosstab_args() -> None:
     )
 
     def m(x: pd.Series) -> float:
-        return x.sum() / len(x)
+        # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+        return x.sum() / len(x)  # ty: ignore[unsound-return-statement]
 
     check(
         assert_type(pd.crosstab(a, b, values=values, aggfunc=m), pd.DataFrame),
@@ -2016,7 +2013,8 @@ def test_pivot_table() -> None:
     )
 
     def f(x: pd.Series) -> float:
-        return x.sum()
+        # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+        return x.sum()  # ty: ignore[unsound-return-statement]
 
     check(
         assert_type(
@@ -2027,7 +2025,7 @@ def test_pivot_table() -> None:
     )
 
     def g(x: pd.Series) -> int:
-        return int(np.round(x.sum()))  # pyright: ignore[reportUnknownArgumentType]
+        return int(np.round(x.sum()))
 
     check(
         assert_type(
@@ -2056,9 +2054,8 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": "sum"}
             ),
             pd.DataFrame,
@@ -2066,9 +2063,8 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 df,
                 values="D",
                 index=["A", "B"],
@@ -2496,9 +2492,8 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
 def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using list of strings."""
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df, values="C", index="A", columns="B", aggfunc=["sum", "mean"]
             ),
             pd.DataFrame,
@@ -2506,9 +2501,8 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
         pd.DataFrame,
     )
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df,
                 values="C",
                 index="A",
@@ -2535,14 +2529,9 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     )
 
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
-                sample_df,
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["sum", np.mean],
+        assert_type(
+            pd.pivot_table(
+                sample_df, values="C", index="A", columns="B", aggfunc=["sum", np.mean]
             ),
             pd.DataFrame,
         ),
@@ -2553,9 +2542,8 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
 def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
     """Test dict of aggfuncs mapping columns to functions."""
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df,
                 values=["C", "D"],
                 index="A",
@@ -2567,9 +2555,8 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
         pd.DataFrame,
     )
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df,
                 values=["C", "D"],
                 index="A",
@@ -2596,9 +2583,8 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
     )
 
     check(
-        # https://github.com/facebook/pyrefly/issues/3779
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.pivot_table(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            pd.pivot_table(
                 sample_df,
                 values=["C", "D"],
                 index="A",

@@ -55,6 +55,11 @@ GB_DF = DF.groupby("col3")
 GB_S = cast("SeriesGroupBy[float, int]", GB_DF.col1)
 
 
+def s2scalar(val: Series) -> float:
+    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+    return val.mean()  # ty: ignore[unsound-return-statement]
+
+
 def test_frame_groupby_resample() -> None:
     # basic
     check(
@@ -111,7 +116,7 @@ def test_frame_groupby_resample() -> None:
 
     # fillna (deprecated)
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_DF.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore  # pyrefly: ignore[not-callable]
+        GB_DF.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
 
     # aggregate / apply
     check(
@@ -156,6 +161,7 @@ def test_frame_groupby_resample() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
@@ -218,15 +224,7 @@ def test_frame_groupby_resample() -> None:
     def resample_interpolate_linear(x: DataFrame) -> DataFrame:
         return x.resample("ME").interpolate(method="linear")
 
-    check(
-        assert_type(
-            GB_DF.apply(
-                resample_interpolate_linear,
-            ),
-            DataFrame,
-        ),
-        DataFrame,
-    )
+    check(assert_type(GB_DF.apply(resample_interpolate_linear), DataFrame), DataFrame)
 
     # mypy cannot infer the return type of raw lambdas against Protocol-based overloads;
     # use typed Callable variables to work around this limitation.
@@ -253,6 +251,7 @@ def test_frame_groupby_resample() -> None:
 
     def i(val: Resampler[DataFrame]) -> float:
         assert isinstance(val, Resampler)
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean().mean())
 
     check(assert_type(GB_DF.resample("ME").pipe(i), float), float)
@@ -319,7 +318,7 @@ def test_series_groupby_resample() -> None:
 
     # fillna (deprecated)
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_S.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore  # pyrefly: ignore[not-callable]
+        GB_S.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
 
     # aggregate
     check(
@@ -356,10 +355,7 @@ def test_series_groupby_resample() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> float:
-        return val.mean()
-
-    check(assert_type(GB_S.resample("ME").aggregate(f), Series), Series)
+    check(assert_type(GB_S.resample("ME").aggregate(s2scalar), Series), Series)
 
     # asfreq
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
@@ -375,6 +371,7 @@ def test_series_groupby_resample() -> None:
     # pipe
     def g(val: Resampler[Series]) -> float:
         assert isinstance(val, Resampler)
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_S.resample("ME").pipe(g), float), float)
@@ -388,9 +385,6 @@ def test_series_groupby_resample() -> None:
     # aggregate combinations
     def s2series(val: Series) -> Series:
         return Series(val)
-
-    def s2scalar(val: Series) -> float:
-        return float(val.mean())
 
     check(assert_type(GB_S.resample("ME").aggregate(np.sum), Series), Series)
     check(
@@ -485,6 +479,7 @@ def test_frame_groupby_rolling() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.rolling(1).aggregate(np.sum), DataFrame), DataFrame)
@@ -580,14 +575,6 @@ def test_series_groupby_rolling() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> float:
-        return val.mean()
-
-    check(assert_type(GB_S.rolling(1).aggregate(f), Series), Series)
-
-    def s2scalar(val: Series) -> float:
-        return float(val.mean())
-
     check(assert_type(GB_S.rolling(1).aggregate(s2scalar), Series), Series)
 
     # iter
@@ -660,6 +647,7 @@ def test_frame_groupby_expanding() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.expanding(1).aggregate(np.sum), DataFrame), DataFrame)
@@ -759,14 +747,6 @@ def test_series_groupby_expanding() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> float:
-        return val.mean()
-
-    check(assert_type(GB_S.expanding(1).aggregate(f), Series), Series)
-
-    def s2scalar(val: Series) -> float:
-        return float(val.mean())
-
     check(assert_type(GB_S.expanding(1).aggregate(s2scalar), Series), Series)
 
     # iter
@@ -824,22 +804,22 @@ def test_frame_groupby_ewm() -> None:
     check(assert_type(list(GB_DF.ewm(1)), list[DataFrame]), list, DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).agg(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate([np.sum, np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate({"col1": "sum", "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate({"col1": ["sum", np.mean], "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).agg(np.sum)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate([np.sum, np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": "sum", "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": ["sum", np.mean], "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         # aggregate combinations
-        GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate([np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate({"col1": np.sum})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": np.mean})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate({"col1": [np.sum], "col2": ["sum", np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": ["sum", np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        GB_DF.ewm(1).aggregate({"col1": "sum", "col2": [np.mean]})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate(np.sum)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate([np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate(["sum", np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": np.sum})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": [np.sum], "col2": ["sum", np.mean]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": np.sum, "col2": ["sum", np.mean]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).aggregate({"col1": "sum", "col2": [np.mean]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_series_groupby_ewm() -> None:
@@ -866,25 +846,14 @@ def test_series_groupby_ewm() -> None:
     check(assert_type(list(GB_S.ewm(1)), "list[Series[float]]"), list, Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_DF.ewm(1).agg(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-
-        def _func(x: Series) -> float:
-            return sum(x)
-
-        GB_DF.ewm(1).agg(_func)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        GB_DF.ewm(1).agg(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.ewm(1).agg(s2scalar)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_engine() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # See issue #810
-        DataFrameGroupBy().aggregate(  # pyrefly: ignore[no-matching-overload]
-            "size",
-            "some",
-            "args",
-            engine=0,  # type: ignore[call-overload] # pyright: ignore
-            engine_kwargs="not valid",  # pyright: ignore
-            other_kwarg="",
-        )
+        DataFrameGroupBy().aggregate("size", "some", "args", engine=0, engine_kwargs="not valid", other_kwarg="")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(
         assert_type(GB_DF.aggregate("size", engine="cython", engine_kwargs={}), Series),
@@ -896,6 +865,9 @@ def test_groupby_getitem() -> None:
     df = DataFrame(np.random.random((3, 4)), columns=["a", "b", "c", "d"])
     check(assert_type(df.groupby("a")["b"].sum(), Series), Series, float)
     check(assert_type(df.groupby("a")[["b", "c"]].sum(), DataFrame), DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.groupby("a")[("b", "c")]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
 
 
 def test_series_value_counts() -> None:
@@ -953,12 +925,7 @@ def test_dataframe_apply_kwargs() -> None:
         DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        df.groupby("group", group_keys=False)[
-            ["group", "value"]
-        ].apply(  # pyrefly: ignore[no-matching-overload]
-            add_constant_to_mean,
-            constant="5",  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        )
+        df.groupby("group", group_keys=False)[["group", "value"]].apply(add_constant_to_mean, constant="5")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_frame_groupby_aggregate() -> None:
@@ -1152,7 +1119,7 @@ def test_groupby_shift() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
 
         def _0() -> None:  # pyright: ignore[reportUnusedFunction]
-            GB_DF.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+            GB_DF.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_dataframe_groupby_dtypes() -> None:

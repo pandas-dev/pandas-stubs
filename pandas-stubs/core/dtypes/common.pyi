@@ -1,5 +1,6 @@
 from typing import TypeAlias
 
+from numpy import typing as npt
 import pandas as pd
 from pandas.api.extensions import ExtensionDtype
 
@@ -7,7 +8,6 @@ from pandas._typing import (
     ArrayLike,
     Dtype,
     DtypeObj,
-    npt,
 )
 
 from pandas.core.dtypes.inference import (

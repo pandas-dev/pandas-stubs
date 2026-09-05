@@ -6,7 +6,6 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
-    Sequence,
 )
 import datetime
 from decimal import Decimal
@@ -15,6 +14,7 @@ import io
 import math
 from pathlib import Path
 import re
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -57,6 +57,7 @@ from tests import (
     WINDOWS,
     check,
     pytest_warns_bounded,
+    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray,
@@ -88,7 +89,7 @@ from tests.dtypes import (
 from tests.extension.decimal.array import DecimalDtype
 
 if TYPE_CHECKING:
-    from typing import Any  # noqa: F401
+    from typing import Any
 
 from pandas.io.formats.format import EngFormatter
 from pandas.tseries.offsets import (
@@ -173,7 +174,7 @@ def test_types_any() -> None:
     check(assert_type(pd.Series([np.nan]).any(skipna=False), np.bool), np.bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.Series([False, True]).any(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        pd.Series([False, True]).any(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
 
 
 def test_types_all() -> None:
@@ -182,7 +183,7 @@ def test_types_all() -> None:
     check(assert_type(pd.Series([np.nan]).all(skipna=False), np.bool), np.bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.Series([False, True]).all(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        pd.Series([False, True]).all(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
 
 
 def test_types_csv(tmp_path: Path) -> None:
@@ -220,29 +221,29 @@ def test_types_df_to_df_comparison() -> None:
 
 def test_types_head_tail() -> None:
     s = pd.Series([0, 1, 2])
-    s.head(1)
-    s.tail(1)
+    check(assert_type(s.head(1), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.tail(1), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_sample() -> None:
     s = pd.Series([0, 1, 2])
-    s.sample(frac=0.5)
-    s.sample(n=1)
+    check(assert_type(s.sample(frac=0.5), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.sample(n=1), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_nlargest_nsmallest() -> None:
     s = pd.Series([0, 1, 2])
-    s.nlargest(1)
-    s.nlargest(1, "first")
-    s.nsmallest(1, "last")
-    s.nsmallest(1, "all")
+    check(assert_type(s.nlargest(1), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.nlargest(1, "first"), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.nsmallest(1, "last"), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.nsmallest(1, "all"), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_filter() -> None:
     s = pd.Series(data=[1, 2, 3, 4], index=["cow", "coal", "coalesce", ""])
-    s.filter(items=["cow"])
-    s.filter(regex="co.*")
-    s.filter(like="al")
+    check(assert_type(s.filter(items=["cow"]), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.filter(regex="co.*"), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.filter(like="al"), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_setting() -> None:
@@ -275,9 +276,9 @@ def test_arguments_drop() -> None:
     # GH 950
     s = pd.Series([0, 1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
-        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
-        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(s.drop(columns=None), Never)
@@ -305,17 +306,36 @@ def test_types_drop_multilevel() -> None:
 def test_types_drop_duplicates() -> None:
     s = pd.Series([1.0, 2.0, 2.0])
     check(assert_type(s.drop_duplicates(), "pd.Series[float]"), pd.Series, float)
-    assert assert_type(s.drop_duplicates(inplace=True), None) is None
-    assert (
-        assert_type(s.drop_duplicates(inplace=True, ignore_index=False), None) is None
-    )
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in Series", lower="3.0.99"
+    ):
+        assert assert_type(s.drop_duplicates(inplace=True), None) is None
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in Series", lower="3.0.99"
+    ):
+        assert (
+            assert_type(s.drop_duplicates(inplace=True, ignore_index=False), None)
+            is None
+        )
 
 
 def test_types_dropna() -> None:
     s = pd.Series([1.0, np.nan, np.nan])
     check(assert_type(s.dropna(), "pd.Series[float]"), pd.Series, float)
-    assert assert_type(s.dropna(axis=0, inplace=True), None) is None
-    assert assert_type(s.dropna(axis=0, inplace=True, ignore_index=True), None) is None
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in Series", lower="3.0.99"
+    ):
+        assert assert_type(s.dropna(axis=0, inplace=True), None) is None
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in Series", lower="3.0.99"
+    ):
+        assert (
+            assert_type(s.dropna(axis=0, inplace=True, ignore_index=True), None) is None
+        )
 
 
 def test_pop() -> None:
@@ -365,7 +385,13 @@ def test_types_sort_index() -> None:
         pd.Series,
         np.integer,
     )
-    assert assert_type(s.sort_index(ascending=False, inplace=True), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.sort_index(ascending=False, inplace=True), None) is None
     check(
         assert_type(s.sort_index(kind="mergesort"), "pd.Series[int]"),
         pd.Series,
@@ -387,14 +413,20 @@ def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
     check(assert_type(s.sort_values(), "pd.Series[int]"), pd.Series, np.integer)
     if TYPE_CHECKING_INVALID_USAGE:
-        s.sort_values(0)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        s.sort_values(0)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
     check(assert_type(s.sort_values(axis=0), "pd.Series[int]"), pd.Series, np.integer)
     check(
         assert_type(s.sort_values(ascending=False), "pd.Series[int]"),
         pd.Series,
         np.integer,
     )
-    assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
     check(
         assert_type(s.sort_values(na_position="last"), "pd.Series[int]"),
         pd.Series,
@@ -436,19 +468,19 @@ def test_types_shift() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        s.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_series_pct_change() -> None:
     s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
     check(assert_type(s.pct_change(), "pd.Series[float]"), pd.Series, np.floating)
     check(
-        assert_type(s.pct_change(fill_method=None), "pd.Series[float]"),
+        assert_type(s.pct_change(periods=-1), "pd.Series[float]"),
         pd.Series,
         np.floating,
     )
     check(
-        assert_type(s.pct_change(periods=-1), "pd.Series[float]"),
+        assert_type(s.pct_change(fill_method=None), "pd.Series[float]"),
         pd.Series,
         np.floating,
     )
@@ -456,13 +488,33 @@ def test_series_pct_change() -> None:
 
 def test_types_rank() -> None:
     s = pd.Series([1, 1, 2, 5, 6, np.nan])
-    s.rank()
-    s.rank(axis=0, na_option="bottom")
-    s.rank(method="min", pct=True)
-    s.rank(method="dense", ascending=True)
-    s.rank(method="first", numeric_only=True)
+    check(assert_type(s.rank(), "pd.Series[float]"), pd.Series, np.float64)
+    check(
+        assert_type(s.rank(axis=0, na_option="bottom"), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
+    check(
+        assert_type(s.rank(method="min", pct=True), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
+    check(
+        assert_type(s.rank(method="dense", ascending=True), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
+    check(
+        assert_type(s.rank(method="first", numeric_only=True), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
     s2 = pd.Series([1, 1, 2, 5, 6, np.nan])
-    s2.rank(method="first", numeric_only=True)
+    check(
+        assert_type(s2.rank(method="first", numeric_only=True), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
 
 
 def test_types_mean() -> None:
@@ -487,7 +539,7 @@ def test_types_median() -> None:
     check(assert_type(s.median(numeric_only=False), float), float)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.median(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        s.median(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_sum() -> None:
@@ -531,9 +583,11 @@ def test_types_sum() -> None:
 
 def test_types_cumsum() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    s.cumsum()
-    s.cumsum(axis=0)
-    s.cumsum(skipna=False)
+    check(assert_type(s.cumsum(), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(s.cumsum(axis=0), "pd.Series[float]"), pd.Series, np.floating)
+    check(
+        assert_type(s.cumsum(skipna=False), "pd.Series[float]"), pd.Series, np.floating
+    )
 
 
 def test_types_min() -> None:
@@ -548,7 +602,7 @@ def test_types_min() -> None:
     check(assert_type(s.min(skipna=False), float), np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.min(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.min(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
 
 
 def test_types_max() -> None:
@@ -563,7 +617,7 @@ def test_types_max() -> None:
     check(assert_type(s.max(skipna=False), float), np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.max(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.max(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
 
 
 def test_types_groupby_level() -> None:
@@ -580,11 +634,44 @@ def test_types_groupby_level() -> None:
 
 
 def test_types_quantile() -> None:
-    s = pd.Series([1, 2, 3, 10])
-    s.quantile([0.25, 0.5])
-    s.quantile(0.75)
-    s.quantile()
-    s.quantile(interpolation="nearest")
+    i = pd.Series([1, 2, 3, 10])
+    check(
+        assert_type(i.quantile([0.25, 0.5]), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(
+        assert_type(i.quantile([0.25, 0.5], "lower"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(i.quantile(0.75), np.floating), np.floating)
+    check(assert_type(i.quantile(0.25, "higher"), np.integer), np.integer)
+    check(
+        assert_type(i.quantile(0.25, interpolation="nearest"), np.integer), np.integer
+    )
+    check(assert_type(i.quantile(), np.floating), np.floating)
+    check(assert_type(i.quantile(interpolation="nearest"), np.integer), np.integer)
+
+    f = pd.Series([1.0, 2, 3, 10])
+    check(
+        assert_type(f.quantile([0.25, 0.5]), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(assert_type(f.quantile(0.75), np.floating), np.floating)
+    check(assert_type(f.quantile(), np.floating), np.floating)
+    check(assert_type(f.quantile(interpolation="nearest"), np.floating), np.floating)
+
+    a = pd.DataFrame({0: f})[0]
+    check(
+        assert_type(a.quantile([0.25, 0.5]), "pd.Series[float]"), pd.Series, np.floating
+    )
+    check(assert_type(a.quantile(0.75), np.floating), np.floating)
+    check(assert_type(a.quantile(), np.floating), np.floating)
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            a.quantile(interpolation="nearest"), np.floating
+        ),
+        np.floating,
+    )
 
 
 def test_types_clip() -> None:
@@ -758,13 +845,13 @@ def test_types_clip() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.clip(lower=lower, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        s.clip(lower=lower, axis="column")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        s.clip(lower=lower, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.clip(lower=lower, axis="column")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_abs() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.abs()
+    check(assert_type(s.abs(), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_var() -> None:
@@ -776,20 +863,22 @@ def test_types_var() -> None:
 
 def test_types_std() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.std(axis=0, ddof=1)
-    s.std(skipna=True, numeric_only=False)
+    check(assert_type(s.std(axis=0, ddof=1), float), float)
+    check(assert_type(s.std(skipna=True, numeric_only=False), float), float)
 
 
 def test_types_idxmin() -> None:
-    s = pd.Series([-10, 2, 3, 10])
-    s.idxmin()
-    s.idxmin(axis=0)
+    s = pd.Series([-10, 2, 3, 10], [(), None, "a", 1])
+    check(assert_type(s.idxmin(), Hashable), tuple)
+    check(assert_type(s.idxmin(axis=0), Hashable), tuple)
+    check(assert_type(s.idxmin(axis="index"), Hashable), tuple)
 
 
 def test_types_idxmax() -> None:
-    s = pd.Series([-10, 2, 3, 10])
-    s.idxmax()
-    s.idxmax(axis=0)
+    s = pd.Series([-10, 2, 3, 10], [(), None, "a", 1])
+    check(assert_type(s.idxmax(), Hashable), int)
+    check(assert_type(s.idxmax(axis=0), Hashable), int)
+    check(assert_type(s.idxmax(axis="index"), Hashable), int)
 
 
 def test_types_value_counts() -> None:
@@ -840,27 +929,32 @@ def test_types_apply() -> None:
     ss = s.astype(str)
     check(assert_type(ss.apply(get_depth), pd.Series), pd.Series, np.integer)
 
-    check(
-        assert_type(
-            s.apply(
-                lambda x: pd.NA  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-            ),
-            pd.Series,
-        ),
-        pd.Series,
-        NAType,
-    )
+    check(assert_type(s.apply(lambda _: pd.NA), pd.Series), pd.Series, NAType)
 
 
 def test_types_element_wise_arithmetic() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
 
-    check(assert_type(s.add(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
+    # TODO: remove the ignore astral-sh/ty#4401
+    check(
+        assert_type(
+            s.add(s2, fill_value=0), "pd.Series[int]"
+        ),  # ty: ignore[type-assertion-failure]
+        pd.Series,
+        np.integer,
+    )
 
     check(assert_type(s.sub(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s.mul(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
+    # TODO: remove the ignore astral-sh/ty#4401
+    check(
+        assert_type(
+            s.mul(s2, fill_value=0), "pd.Series[int]"
+        ),  # ty: ignore[type-assertion-failure]
+        pd.Series,
+        np.integer,
+    )
 
     check(
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
@@ -875,6 +969,13 @@ def test_types_element_wise_arithmetic() -> None:
     _res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
 
     check(assert_type(divmod(s, s2), tuple["pd.Series[int]", "pd.Series[int]"]), tuple)
+
+
+def test_types_bool_removed() -> None:
+    # `bool()` was removed from `NDFrame` in pandas 2.1
+    s = pd.Series([1])
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
 
 
 def test_types_scalar_arithmetic() -> None:
@@ -912,11 +1013,11 @@ def test_series_frame_ops() -> None:
     s = pd.Series([0, 1, -10])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = s.add(df)  # type: ignore[type-var] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        _1 = s.sub(df)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        _2 = s.mul(df)  # type: ignore[type-var] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        _3 = s.truediv(df)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType] # pyrefly: ignore[no-matching-overload]
-        _4 = s.divmod(df)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _0 = s.add(df)  # type: ignore[type-var] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = s.sub(df)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _2 = s.mul(df)  # type: ignore[type-var] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _3 = s.truediv(df)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportUnknownVariableType,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _4 = s.divmod(df)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_types_groupby() -> None:
@@ -926,20 +1027,16 @@ def test_types_groupby() -> None:
     s.groupby(s > 2)
     # GH 284
     s.groupby([s > 2, s % 2 == 1])
-    s.groupby(
-        lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-    )
+    s.groupby(lambda x: x)
     s.groupby(
         [
-            lambda x: x,  # pyright: ignore[reportUnknownLambdaType]
-            lambda x: x.replace(  # pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]
-                "a", "b"
-            ),
+            lambda x: x,
+            lambda x: x.replace("a", "b"),  # pyright: ignore[reportUnknownMemberType]
         ]
     )
     s.groupby(np.array([1, 0, 1, 0]))
     s.groupby([np.array([1, 0, 0, 0]), np.array([0, 0, 1, 0])])
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
+    # TODO: facebook/pyrefly#3268
     s.groupby({"a": 1, "b": 2})  # pyrefly: ignore[no-matching-overload]
     s.groupby([{"a": 1, "b": 3}, {"a": 1, "b": 1}])
     s.groupby(s.index)
@@ -968,13 +1065,13 @@ def test_types_groupby_methods() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.sum(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
-        s.prod(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
-        s.std(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        s.var(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        s.sem(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
-        s.skew(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
-        s.kurt(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count]
+        s.sum(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.prod(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
+        s.std(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.var(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.sem(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
+        s.skew(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
+        s.kurt(0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
 
 
 def test_groupby_result() -> None:
@@ -1111,12 +1208,11 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
     # categorical indexes are also ambiguous
-    # TODO: pandas-dev/pandas#54054, needs to be fixed
     categorical_index = pd.CategoricalIndex(s.index)
     iterator2 = s.groupby(categorical_index).__iter__()
     assert_type(iterator2, Iterator[tuple[Any, "pd.Series[int]"]])
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), tuple[Any, "pd.Series[int]"])
+    check(assert_type((index2, value2), tuple[Any, "pd.Series[int]"]), tuple)
 
     check(assert_type(index2, Any), str)
     check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
@@ -1151,9 +1247,7 @@ def test_types_groupby_transform() -> None:
 
     check(
         assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-            ).transform(transform_func, True, kw_arg="foo"),
+            s.groupby(lambda x: x).transform(transform_func, True, kw_arg="foo"),
             "pd.Series[float]",
         ),
         pd.Series,
@@ -1161,32 +1255,16 @@ def test_types_groupby_transform() -> None:
     )
     check(
         assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-            ).transform(transform_func, True, engine="cython", kw_arg="foo"),
+            s.groupby(lambda x: x).transform(
+                transform_func, True, engine="cython", kw_arg="foo"
+            ),
             "pd.Series[float]",
         ),
         pd.Series,
         float,
     )
-    check(
-        assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-            ).transform("mean"),
-            pd.Series,
-        ),
-        pd.Series,
-    )
-    check(
-        assert_type(
-            s.groupby(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-            ).transform("first"),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(s.groupby(lambda x: x).transform("mean"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(lambda x: x).transform("first"), pd.Series), pd.Series)
 
 
 def test_types_groupby_aggregate() -> None:
@@ -1289,10 +1367,10 @@ def test_types_window() -> None:
 def test_types_cov() -> None:
     s1 = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s2 = pd.Series([0, 2, 12, -4, 7, 9, 2])
-    s1.cov(s2)
-    s1.cov(s2, min_periods=1)
+    check(assert_type(s1.cov(s2), float), float)
+    check(assert_type(s1.cov(s2, min_periods=1), float), float)
     # ddof param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    s1.cov(s2, ddof=2)
+    check(assert_type(s1.cov(s2, ddof=2), float), float)
 
 
 def test_update() -> None:
@@ -1301,25 +1379,31 @@ def test_update() -> None:
     # Series.update() accepting objects that can be coerced to a Series was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     s1.update([1, 2, -4, 3])
     if TYPE_CHECKING_INVALID_USAGE:
-        s1.update([1, "b", "c", "d"])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        s1.update([1, "b", "c", "d"])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
     s1.update({1: 9, 3: 4})
 
 
 def test_to_markdown() -> None:
     pytest.importorskip("tabulate")
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
-    s.to_markdown()
-    s.to_markdown(buf=None, mode="wt")
+    check(assert_type(s.to_markdown(), str), str)
+    check(assert_type(s.to_markdown(buf=None, mode="wt"), str), str)
     # index param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    s.to_markdown(index=False)
+    check(assert_type(s.to_markdown(index=False), str), str)
 
 
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_compare() -> None:
     s1 = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s2 = pd.Series([0, 2, 12, -4, 7, 9, 2])
-    s1.compare(s2)
-    s2.compare(s1, align_axis="columns", keep_shape=True, keep_equal=True)
+    check(assert_type(s1.compare(s2), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            s2.compare(s1, align_axis="columns", keep_shape=True, keep_equal=True),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_types_between() -> None:
@@ -1385,7 +1469,7 @@ def test_types_transform() -> None:
 
 def test_types_describe() -> None:
     s = pd.Series([1, 2, 3, np.datetime64("2000-01-01")])
-    s.describe()
+    check(assert_type(s.describe(), "pd.Series"), pd.Series)
 
     with pytest_warns_bounded(
         Pandas4Warning,
@@ -1404,7 +1488,9 @@ def test_types_describe() -> None:
 
 def test_types_resample() -> None:
     s = pd.Series(range(9), index=pd.date_range("1/1/2000", periods=9, freq="min"))
-    s.resample("3min").sum()
+    check(
+        assert_type(s.resample("3min").sum(), "pd.Series[int]"), pd.Series, np.integer
+    )
     # origin and offset params added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     s.resample("20min", origin="epoch", offset=pd.Timedelta(value=2, unit="minutes"))
     s.resample("20min", origin=datetime.datetime.now(), offset=datetime.timedelta(1))
@@ -1412,8 +1498,24 @@ def test_types_resample() -> None:
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
 def test_types_set_flags() -> None:
-    pd.Series([1, 2], index=["a", "b"]).set_flags(allows_duplicate_labels=False)
-    pd.Series([3, 4], index=["a", "a"]).set_flags(allows_duplicate_labels=True)
+    check(
+        assert_type(
+            pd.Series([1, 2], index=["a", "b"]).set_flags(
+                allows_duplicate_labels=False
+            ),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(
+            pd.Series([3, 4], index=["a", "a"]).set_flags(allows_duplicate_labels=True),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
     pd.Series([5, 2], index=["a", "a"])
 
 
@@ -1440,7 +1542,7 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             s.rename_axis(
-                index=lambda name: name.upper()  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
+                index=lambda name: name.upper()  # pyright: ignore[reportUnknownMemberType]
             ),
             "pd.Series[int]",
         ),
@@ -1449,7 +1551,7 @@ def test_types_rename_axis() -> None:
     check(assert_type(s.rename_axis(index=None), "pd.Series[int]"), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.rename_axis(columns="A")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        s.rename_axis(columns="A")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_values() -> None:
@@ -1475,14 +1577,19 @@ def test_types_values() -> None:
         pd.Categorical,
         str,
     )
-    check(
-        assert_type(
-            pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
-            np_1darray | ExtensionArray | pd.Categorical,
-        ),
-        np_1darray,
-        np.datetime64,
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        match="Series.values returning an ndarray that drops timezone",
+        lower="3.0.99",
+    ):
+        check(
+            assert_type(
+                pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
+                np_1darray | ExtensionArray | pd.Categorical,
+            ),
+            np_1darray,
+            np.datetime64,
+        )
 
 
 def test_types_rename() -> None:
@@ -1530,32 +1637,15 @@ def test_types_rename() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         # copy argument is deprecated from 3.0
-        _s8 = pd.Series([1, 2, 3]).rename("A", copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        _s8 = pd.Series([1, 2, 3]).rename("A", copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_ne() -> None:
     s1 = pd.Series([1, 2, 3])
     s2 = pd.Series([1, 2, 4])
     check(assert_type(s1 != s2, "pd.Series[bool]"), pd.Series, np.bool)
-
-
-def test_types_bfill() -> None:
-    s1 = pd.Series([1, 2, 3])
-    check(assert_type(s1.bfill(), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s1.bfill(inplace=False), "pd.Series[int]"), pd.Series, np.integer)
-    check(
-        assert_type(s1.bfill(inplace=False, limit_area="inside"), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
-    check(assert_type(s1.bfill(inplace=True), "pd.Series[int]"), pd.Series, np.integer)
-    check(
-        assert_type(s1.bfill(inplace=True, limit_area="outside"), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
 
 
 def test_types_ewm() -> None:
@@ -1592,23 +1682,6 @@ def test_types_ewm() -> None:
             "ExponentialMovingWindow[pd.Series]",
         ),
         ExponentialMovingWindow,
-    )
-
-
-def test_types_ffill() -> None:
-    s1 = pd.Series([1, 2, 3])
-    check(assert_type(s1.ffill(), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s1.ffill(inplace=False), "pd.Series[int]"), pd.Series, np.integer)
-    check(
-        assert_type(s1.ffill(inplace=False, limit_area="inside"), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
-    check(assert_type(s1.ffill(inplace=True), "pd.Series[int]"), pd.Series, np.integer)
-    check(
-        assert_type(s1.ffill(inplace=True, limit_area="outside"), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
     )
 
 
@@ -1693,45 +1766,70 @@ def test_types_replace() -> None:
 
 
 def test_series_replace() -> None:
-    s: pd.Series[str] = pd.DataFrame({"col1": ["a", "ab", "ba"]})["col1"]
+    s = check(
+        assert_type(pd.Series(["a", "ab", "ba"], name="col1"), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
     pattern = re.compile(r"^a.*")
     replace_dict = {"a": "b"}
-    check(assert_type(s.replace("a", "x"), "pd.Series[str]"), pd.Series)
-    check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series)
+    check(assert_type(s.replace("a", "x"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.replace({"a": "z"}), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.replace(replace_dict), "pd.Series[str]"), pd.Series, str)
+    # pandas-dev/pandas-stubs#1861
+    check(assert_type(s.replace({"": pd.NA}), "pd.Series[str]"), pd.Series, str)
     check(
-        assert_type(s.replace({"a": "z"}), "pd.Series[str]"),
-        pd.Series,
-    )
-    check(
-        assert_type(s.replace(replace_dict), "pd.Series[str]"),
-        pd.Series,
-    )
-    check(
-        assert_type(s.replace(pd.Series({"a": "z"})), "pd.Series[str]"),
-        pd.Series,
+        assert_type(s.replace(pd.Series({"a": "z"})), "pd.Series[str]"), pd.Series, str
     )
     check(
         assert_type(s.replace({pattern: "z"}, regex=True), "pd.Series[str]"),
         pd.Series,
+        str,
     )
-    check(assert_type(s.replace(["a"], ["x"]), "pd.Series[str]"), pd.Series)
+    check(assert_type(s.replace(["a"], ["x"]), "pd.Series[str]"), pd.Series, str)
     check(
         assert_type(s.replace([pattern], ["x"], regex=True), "pd.Series[str]"),
         pd.Series,
+        str,
     )
-    check(assert_type(s.replace(r"^a.*", "x", regex=True), "pd.Series[str]"), pd.Series)
-    check(assert_type(s.replace(value="x", regex=r"^a.*"), "pd.Series[str]"), pd.Series)
     check(
-        assert_type(s.replace(value="x", regex=[r"^a.*"]), "pd.Series[str]"), pd.Series
+        assert_type(s.replace(r"^a.*", "x", regex=True), "pd.Series[str]"),
+        pd.Series,
+        str,
     )
-    check(assert_type(s.replace(value="x", regex=pattern), "pd.Series[str]"), pd.Series)
     check(
-        assert_type(s.replace(value="x", regex=[pattern]), "pd.Series[str]"), pd.Series
+        assert_type(s.replace(value="x", regex=r"^a.*"), "pd.Series[str]"),
+        pd.Series,
+        str,
     )
-    check(assert_type(s.replace(regex={"a": "x"}), "pd.Series[str]"), pd.Series)
     check(
-        assert_type(s.replace(regex=pd.Series({"a": "x"})), "pd.Series[str]"), pd.Series
+        assert_type(s.replace(value="x", regex=[r"^a.*"]), "pd.Series[str]"),
+        pd.Series,
+        str,
     )
+    check(
+        assert_type(s.replace(value="x", regex=pattern), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+    check(
+        assert_type(s.replace(value="x", regex=[pattern]), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+    check(assert_type(s.replace(regex={"a": "x"}), "pd.Series[str]"), pd.Series, str)
+    check(
+        assert_type(s.replace(regex=pd.Series({"a": "x"})), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+
+    s_i = pd.Series([1])
+    check(assert_type(s_i.replace({1: 2}), "pd.Series[int]"), pd.Series, np.integer)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.replace({"1": "2"}, regex={"1": "2"})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_cat_accessor() -> None:
@@ -1808,9 +1906,9 @@ def test_cat_ctor_values() -> None:
     s = ["a", "b", "a"]
     check(assert_type(pd.Categorical(s), "pd.Categorical[str]"), pd.Categorical)
     # GH 107
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
+    # TODO: remove the ignore astral-sh/ty#4366
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(  # ty: ignore[type-assertion-failure]
             pd.Categorical([1, 2, 3, 1, 1]), "pd.Categorical[int]"
         ),
         pd.Categorical,
@@ -2029,7 +2127,13 @@ def test_types_to_numpy() -> None:
         np_1darray_object,
     )
 
-    check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(
+            pd.Series().to_numpy(), np_1darray
+        ),  # ty: ignore[type-assertion-failure]
+        np_1darray,
+    )
 
     check(
         assert_type(
@@ -2219,11 +2323,23 @@ def test_types_to_numpy() -> None:
         np_1darray,
         np.integer,
     )
-    check(
-        assert_type(s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]),
-        np_1darray,
-        np.integer,
-    )
+    # Python 3.11 resolves NumPy 2.4, where ty incorrectly infers these
+    # np.dtype(...) expressions as np.dtype[np.float64]. NumPy 2.5 fixes this.
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]),
+            np_1darray,
+            np.integer,
+        )
+    else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        check(
+            assert_type(
+                s_date.to_numpy(dtype=np.dtype("i8")), np_1darray[np.int64]
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+            np_1darray,
+            np.integer,
+        )
 
     # --- Unsigned integers ---
     check(
@@ -2469,217 +2585,289 @@ def test_types_to_numpy() -> None:
         np_1darray_object,
         pd.Interval,
     )
-    check(
-        assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray_object),
-        np_1darray_object,
-        pd.Period,
-    )
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(s_period.to_numpy(dtype=np.dtype("O")), np_1darray_object),
+            np_1darray_object,
+            pd.Period,
+        )
+    else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        check(
+            assert_type(
+                s_period.to_numpy(dtype=np.dtype("O")), np_1darray_object
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+            np_1darray_object,
+            pd.Period,
+        )
 
     # np.dtypes signed int instances
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int8DType()), np_1darray[np.int8]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.int8,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int16DType()), np_1darray[np.int16]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.int16,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int32DType()), np_1darray[np.int32]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.int32,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int64DType()), np_1darray[np.int64]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.int64,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.IntDType()), np_1darray[np.intc]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.intc,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongDType()), np_1darray[np.long]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.long,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongLongDType()),
             np_1darray[np.longlong],
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.longlong,
     )
 
     # np.dtypes unsigned int instances
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt8DType()), np_1darray[np.uint8]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.uint8,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt16DType()), np_1darray[np.uint16]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.uint16,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt32DType()), np_1darray[np.uint32]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.uint32,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt64DType()), np_1darray[np.uint64]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.uint64,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UIntDType()), np_1darray[np.uintc]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.uintc,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.ULongDType()), np_1darray[np.ulong]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.ulong,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.ULongLongDType()),
             np_1darray[np.ulonglong],
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.ulonglong,
     )
 
     # np.dtypes float instances
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Float16DType()), np_1darray[np.float16]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.float16,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Float32DType()), np_1darray[np.float32]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.float32,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_timedelta.to_numpy(dtype=np.dtypes.Float64DType()), np_1darray[np.float64]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.float64,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongDoubleDType()),
             np_1darray[np.longdouble],
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.longdouble,
     )
 
     # np.dtypes complex instances
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Complex64DType()),
             np_1darray[np.complex64],
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.complex64,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Complex128DType()),
             np_1darray[np.complex128],
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.complex128,
     )
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.CLongDoubleDType()),
             np_1darray[np.clongdouble],
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.clongdouble,
     )
 
     # np.dtypes.BytesDType(size) — fixed-width bytes
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.BytesDType(4)), np_1darray[np.bytes_]
-        ),
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.bytes_,
     )
     # np.dtypes.StrDType(size) — fixed-width unicode
+    # TODO: remove the ignore astral-sh/ty#4364
     check(
-        assert_type(s_td_small.to_numpy(dtype=np.dtypes.StrDType(4)), np_1darray_str),
+        assert_type(
+            s_td_small.to_numpy(dtype=np.dtypes.StrDType(4)), np_1darray_str
+        ),  # ty: ignore[type-assertion-failure]
         np_1darray,
         np.str_,
     )
-    # DateTime64DType — parametric, use np.dtype(...)
+    # DateTime64DType — parametric
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(
+                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
+            ),
+            np_1darray,
+            np.datetime64,
+        )
+    else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        check(
+            assert_type(
+                s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+            np_1darray,
+            np.datetime64,
+        )
     check(
-        assert_type(s_date.to_numpy(dtype=np.dtype("datetime64[ns]")), np_1darray_dt),
+        assert_type(s_date.to_numpy(dtype="datetime64[ns]"), np_1darray_dt),
         np_1darray,
         np.datetime64,
     )
-    # TimeDelta64DType — parametric, use np.dtype(...)
+    # TimeDelta64DType — parametric
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+            ),
+            np_1darray,
+            np.timedelta64,
+        )
+    else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+            np_1darray,
+            np.timedelta64,
+        )
     check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-        ),
+        assert_type(s_td_small.to_numpy(dtype="timedelta64[ns]"), np_1darray_td),
         np_1darray,
         np.timedelta64,
     )
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype("timedelta64[ns]")), np_1darray_td
-        ),
-        np_1darray,
-        np.timedelta64,
-    )
+
     # VoidDType — parametric, use np.dtype(...)
-    check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtype([("x", np.float64)])),
-            np_1darray[np.void],
-        ),
-        np_1darray,
-        np.void,
-    )
+    if sys.version_info >= (3, 12):  # NumPy >= 2.5 eliminates the ty errors
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype([("x", np.float64)])),
+                np_1darray[np.void],
+            ),
+            np_1darray,
+            np.void,
+        )
+    else:
+        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+        check(
+            assert_type(
+                s_td_small.to_numpy(dtype=np.dtype([("x", np.float64)])),
+                np_1darray[np.void],
+            ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+            np_1darray,
+            np.void,
+        )
 
 
 def test_where() -> None:
@@ -2739,14 +2927,14 @@ def test_bitwise_operators() -> None:
     check(assert_type(s2 ^ s, "pd.Series[int]"), pd.Series, np.integer)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = s & [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _1 = [1, 2, 3, 4] & s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = s & [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _1 = [1, 2, 3, 4] & s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
-        _2 = s | [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _3 = [1, 2, 3, 4] | s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _2 = s | [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _3 = [1, 2, 3, 4] | s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
-        _4 = s ^ [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _5 = [1, 2, 3, 4] ^ s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _4 = s ^ [1, 2, 3, 4]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _5 = [1, 2, 3, 4] ^ s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_logical_operators() -> None:
@@ -2776,12 +2964,12 @@ def test_logical_operators() -> None:
     check(assert_type(True ^ (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = (df["a"] >= 2) & [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _1 = [True, False, True] & (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _2 = (df["a"] >= 2) | [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _3 = [True, False, True] | (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _4 = (df["a"] >= 2) ^ [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _5 = [True, False, True] ^ (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = (df["a"] >= 2) & [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _1 = [True, False, True] & (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _2 = (df["a"] >= 2) | [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _3 = [True, False, True] | (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _4 = (df["a"] >= 2) ^ [True, False, True]  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _5 = [True, False, True] ^ (df["a"] >= 2)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_AnyArrayLike_and_clip() -> None:
@@ -2816,10 +3004,20 @@ def test_series_iloc_series_bool() -> None:
     )
 
 
+def test_loc_str() -> None:
+    """Test Series.loc for str and np.str_ types."""
+    sr = pd.Series([1, 2, 3, 4], index=["a", "b", "c", "d"])
+
+    check(assert_type(sr.loc["b"], int), np.integer)
+    check(assert_type(sr.loc[["b"]], "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(sr.loc[np.str_("a")], int), np.integer)
+    check(assert_type(sr.loc[[np.str_("b")]], "pd.Series[int]"), pd.Series, np.integer)
+
+
 def test_change_to_dict_return_type() -> None:
-    id = [1, 2, 3]
+    id_ = [1, 2, 3]
     value = ["a", "b", "c"]
-    df = pd.DataFrame(zip(id, value), columns=["id", "value"])
+    df = pd.DataFrame(zip(id_, value), columns=["id", "value"])
     fd = df.set_index("id")["value"].to_dict()
     check(assert_type(fd, dict[Hashable, Any]), dict)
 
@@ -2829,7 +3027,7 @@ def test_astype_other() -> None:
 
     # Test incorrect Literal
     if TYPE_CHECKING_INVALID_USAGE:
-        s.astype("foobar")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        s.astype("foobar")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     # Test self-consistent with s.dtype (#747)
     # NOTE: https://github.com/python/typing/issues/801#issuecomment-1646171898
@@ -2924,25 +3122,15 @@ def test_check_xs() -> None:
     check(assert_type(s4, "pd.Series[int]"), pd.Series, np.integer)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s4.xs([0])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        s4.xs(0, axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        s4.xs([0])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        s4.xs(0, axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_types_apply_set() -> None:
     series_of_lists: pd.Series = pd.Series(
         {"list1": [1, 2, 3], "list2": ["a", "b", "c"], "list3": [True, False, True]}
     )
-    check(
-        assert_type(
-            series_of_lists.apply(
-                lambda x: set(  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-                    x  # pyright: ignore[reportUnknownArgumentType]
-                )
-            ),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(series_of_lists.apply(set), pd.Series), pd.Series, set)
 
 
 def test_prefix_summix_axis() -> None:
@@ -2969,13 +3157,19 @@ def test_prefix_summix_axis() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.add_prefix("_item", axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        s.add_suffix("_item", axis="columns")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        s.add_prefix("_item", axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        s.add_suffix("_item", axis="columns")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_convert_dtypes_convert_floating() -> None:
     df = pd.Series([1, 2, 3, 4])
-    dfn = df.convert_dtypes(convert_floating=False)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        match="convert_floating keyword in Series.convert_dtypes is deprecated",
+        lower="3.0.99",
+    ):
+        dfn = df.convert_dtypes(convert_floating=False)
     check(assert_type(dfn, "pd.Series[int]"), pd.Series, np.integer)
 
 
@@ -2983,20 +3177,14 @@ def test_convert_dtypes_dtype_backend() -> None:
     s = pd.Series([1, 2, 3, 4])
     s1 = s.convert_dtypes(dtype_backend="numpy_nullable")
     check(assert_type(s1, "pd.Series[int]"), pd.Series, np.integer)
+    s2 = s.convert_dtypes(dtype_backend="pyarrow")
+    check(assert_type(s2, "pd.Series[int]"), pd.Series, int)
 
 
 def test_apply_returns_none() -> None:
     # GH 557
     s = pd.Series([1, 2, 3])
-    check(
-        assert_type(
-            s.apply(
-                lambda x: None  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-            ),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(s.apply(lambda _: None), pd.Series), pd.Series)
 
 
 def test_to_json_mode() -> None:
@@ -3010,8 +3198,8 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
-        _1 = s.to_json(date_format="epoch")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        _0 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = s.to_json(date_format="epoch")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_interpolate() -> None:
@@ -3116,7 +3304,8 @@ def test_round() -> None:
     check(assert_type(round(pd.Series([1], dtype=int)), "pd.Series[int]"), pd.Series)
 
 
-def test_get() -> None:
+@pytest.mark.parametrize(("c", "b"), [("a", True)])  # workaround astral-sh/ty#4363
+def test_get(c: str, b: bool) -> None:
     s_int = pd.Series([1, 2, 3], index=[1, 2, 3])
 
     check(assert_type(s_int.get(1), int | None), np.int64)
@@ -3124,7 +3313,7 @@ def test_get() -> None:
     check(assert_type(s_int.get(1, default=None), int | None), np.int64)
     check(assert_type(s_int.get(99, default=None), int | None), type(None))
     check(assert_type(s_int.get(1, default=2), int), np.int64)
-    check(assert_type(s_int.get(99, default="a"), int | str), str)
+    check(assert_type(s_int.get(99, default=c), int | str), str)
 
     s_str = pd.Series(list("abc"), index=list("abc"))
 
@@ -3133,7 +3322,7 @@ def test_get() -> None:
     check(assert_type(s_str.get("a", default=None), str | None), str)
     check(assert_type(s_str.get("z", default=None), str | None), type(None))
     check(assert_type(s_str.get("a", default="b"), str), str)
-    check(assert_type(s_str.get("z", default=True), str | bool), bool)
+    check(assert_type(s_str.get("z", default=b), str | bool), bool)
 
 
 def test_series_new_empty() -> None:
@@ -3209,49 +3398,49 @@ def test_pipe() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        ser.pipe(  # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             first_arg_series,
             "a",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
             [1.0, 2.0],
             argument_2="hi",
             keyword_only=(1, 2),
         )
-        ser.pipe(  # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             first_arg_series,
             1,
             [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportArgumentType,reportCallIssue]
             argument_2="hi",
             keyword_only=(1, 2),
         )
-        ser.pipe(  # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             first_arg_series,
             1,
             [1.0, 2.0],
             argument_2=11,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
             keyword_only=(1, 2),
         )
-        ser.pipe(  # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             first_arg_series,
             1,
             [1.0, 2.0],
             argument_2="hi",
             keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         )
-        ser.pipe(  # type: ignore[call-arg] # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # type: ignore[call-arg] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             first_arg_series,
             1,
             [1.0, 2.0],
             argument_3="hi",  # pyright: ignore[reportCallIssue]
             keyword_only=(1, 2),
         )
-        ser.pipe(  # type: ignore[call-overload] # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # type: ignore[call-overload] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             first_arg_series,
             1,
             [1.0, 2.0],
             11,
             (1, 2),  # pyright: ignore[reportCallIssue]
         )
-        ser.pipe(  # type: ignore[call-overload] # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # type: ignore[call-overload] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             first_arg_series,
             positional_only=1,  # pyright: ignore[reportCallIssue]
             argument_1=[1.0, 2.0],
@@ -3265,14 +3454,14 @@ def test_pipe() -> None:
     check(assert_type(ser.pipe((first_arg_not_series, "ser"), 1), pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        ser.pipe(  # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             (
                 first_arg_not_series,  # type: ignore[arg-type]
                 1,  # pyright: ignore[reportArgumentType,reportCallIssue]
             ),
             1,
         )
-        ser.pipe(  # pyrefly: ignore[no-matching-overload]
+        ser.pipe(  # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             (
                 1,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
                 "df",
@@ -3328,22 +3517,9 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    if WINDOWS:
-        with pytest_warns_bounded(
-            RuntimeWarning, "overflow encountered in scalar multiply"
-        ):
-            check(
-                assert_type(
-                    pd.Series(
-                        pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
-                    ).diff(),
-                    "pd.Series[BaseOffset]",
-                ),
-                pd.Series,
-                BaseOffset,
-                index_to_check_for_type=-1,
-            )
-    else:
+    with pytest_warns_conditioned(
+        RuntimeWarning, "overflow encountered in scalar multiply", WINDOWS
+    ):
         check(
             assert_type(
                 pd.Series(
@@ -3379,11 +3555,31 @@ def test_diff() -> None:
     # Any -> Any
     s_o = s.astype(object)
     assert_type(s_o, pd.Series)
-    check(assert_type(s_o.diff(), "pd.Series[Any]"), pd.Series, float)
-    df = pd.DataFrame({"a": range(4), "b": pd.date_range("2026-01-30", "2026-02-02")})
-    check(assert_type(df["a"].diff(), "pd.Series[Any]"), pd.Series, float)
+    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(df["b"].diff(), "pd.Series[Any]"),
+        assert_type(  # ty: ignore[type-assertion-failure]
+            s_o.diff(),
+            "pd.Series[Any]",
+        ),
+        pd.Series,
+        float,
+    )
+    df = pd.DataFrame({"a": range(4), "b": pd.date_range("2026-01-30", "2026-02-02")})
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            df["a"].diff(),
+            "pd.Series[Any]",
+        ),
+        pd.Series,
+        float,
+    )
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            df["b"].diff(),
+            "pd.Series[Any]",
+        ),
         pd.Series,
         pd.Timedelta,
         index_to_check_for_type=-1,
@@ -3395,13 +3591,13 @@ def test_diff() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
-        pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+        pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
-        pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+        pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
-        pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+        pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
             # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
@@ -3443,13 +3639,11 @@ def test_map() -> None:
         str,
     )
 
-    def callable(x: int) -> str:
+    def to_str(x: int) -> str:
         return str(x)
 
     check(
-        assert_type(s.map(callable, na_action="ignore"), "pd.Series[str]"),
-        pd.Series,
-        str,
+        assert_type(s.map(to_str, na_action="ignore"), "pd.Series[str]"), pd.Series, str
     )
 
     series = pd.Series(["a", "b", "c"])
@@ -3459,16 +3653,15 @@ def test_map() -> None:
 
     unknown_series = pd.Series([1, 0, None])
     check(
-        # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
-        assert_type(  # pyrefly: ignore[assert-type]
-            unknown_series.map({1: True, 0: False, None: None}), pd.Series
-        ),
+        # TODO: facebook/pyrefly#3268
+        # pyrefly: ignore[assert-type]
+        assert_type(unknown_series.map({1: True, 0: False, None: None}), pd.Series),
         pd.Series,
     )
 
 
 def test_map_na() -> None:
-    s: pd.Series[int] = pd.Series([1, pd.NA, 3])
+    s = pd.Series([1, pd.NA, 3])
 
     mapping = {1: "a", 2: "b", 3: "c"}
     check(assert_type(s.map(mapping, na_action=None), "pd.Series[str]"), pd.Series, str)
@@ -3478,13 +3671,13 @@ def test_map_na() -> None:
         assert_type(s.map(user_dict, na_action=None), "pd.Series[str]"), pd.Series, str
     )
 
-    def callable(x: int | NAType) -> str | NAType:
+    def to_str_na(x: int | NAType) -> str | NAType:
         if isinstance(x, int):
             return str(x)
         return x
 
     check(
-        assert_type(s.map(callable, na_action=None), "pd.Series[str]"), pd.Series, str
+        assert_type(s.map(to_str_na, na_action=None), "pd.Series[str]"), pd.Series, str
     )
 
     series = pd.Series(["a", "b", "c"])
@@ -3584,12 +3777,7 @@ def test_apply_dateoffset() -> None:
     s = pd.Series(months)
     check(
         assert_type(
-            s.apply(
-                lambda x: pd.DateOffset(  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-                    months=x  # pyright: ignore[reportUnknownArgumentType]
-                )
-            ),
-            "pd.Series[BaseOffset]",
+            s.apply(lambda x: pd.DateOffset(months=x)), "pd.Series[BaseOffset]"
         ),
         pd.Series,
         pd.DateOffset,
@@ -3610,11 +3798,19 @@ def test_series_typed_dict() -> None:
 
 def test_series_empty_dtype() -> None:
     """Test for the creation of a Series from an empty list GH571 to map to a Series."""
-    new_tab: Sequence[Never] = []  # need to be typehinted to please mypy
+    new_tab = []  # type: ignore[var-annotated]
     check(assert_type(pd.Series(new_tab), pd.Series), pd.Series)
     check(assert_type(pd.Series([]), pd.Series), pd.Series)
     # ensure that an empty string does not get matched to Sequence[Never]
     check(assert_type(pd.Series(""), "pd.Series[str]"), pd.Series)
+    check(assert_type(pd.Series("", dtype=str), "pd.Series[str]"), pd.Series)
+    check(assert_type(pd.Series("", dtype="string"), "pd.Series[str]"), pd.Series)
+    check(
+        assert_type(
+            pd.Series("", dtype="category"), "pd.Series[pd.CategoricalDtype[str]]"
+        ),
+        pd.Series,
+    )
 
 
 def test_series_bool_fails() -> None:
@@ -3686,7 +3882,7 @@ def test_series_reindex() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
-        _0 = s.reindex([2, 1, 0], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _0 = s.reindex([2, 1, 0], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_series_reindex_like() -> None:
@@ -3703,8 +3899,8 @@ def test_series_reindex_like() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
-        _0 = s.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
-        _1 = s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _0 = s.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        _1 = s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_info() -> None:
@@ -3734,7 +3930,7 @@ def test_align() -> None:
     check(assert_type(aligned_s1, pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _0 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_unknown() -> None:
@@ -3791,7 +3987,7 @@ def test_series_index_type() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload]
+        _t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_timedelta_index_cumprod() -> None:
@@ -3808,13 +4004,13 @@ def test_timedelta_index_cumprod() -> None:
     offset_series = as_period_series - as_period_series
 
     if TYPE_CHECKING_INVALID_USAGE:
-        offset_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+        offset_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
-        pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+        pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
-        pd.Series([pd.Timestamp("2024-04-29"), pd.Timestamp("2034-08-28")]).cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+        pd.Series([pd.Timestamp("2024-04-29"), pd.Timestamp("2034-08-28")]).cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
-        as_period_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+        as_period_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_series_str_methods() -> None:
@@ -3848,6 +4044,9 @@ def test_series_explode() -> None:
     check(assert_type(s.explode(), pd.Series), pd.Series)
     check(assert_type(s.explode(ignore_index=True), pd.Series), pd.Series)
 
+    s_str = pd.Series(["a,b,c"])
+    check(assert_type(s_str.str.split(",").explode(), "pd.Series[str]"), pd.Series, str)
+
 
 def test_series_index_setter() -> None:
     """Test Series.index setter property GH1366."""
@@ -3872,23 +4071,23 @@ def test_series_copy_deprecated() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # truncate
-        _0 = s.truncate(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _0 = s.truncate(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
         # tz_convert
-        _1 = s.tz_convert("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _1 = s.tz_convert("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
         # tz_localize
-        _2 = s.tz_localize("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _2 = s.tz_localize("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
         # infer_objects
-        _3 = s.infer_objects(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _3 = s.infer_objects(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
         # set_axis
-        _4 = s.set_axis([1, 2, 3], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _4 = s.set_axis([1, 2, 3], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
         # to_period
-        _5 = s.to_period(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _5 = s.to_period(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
         # to_timestamp
-        _6 = s.to_timestamp(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _6 = s.to_timestamp(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
         # astype
-        _7 = s.astype(int, copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload]
+        _7 = s.astype(int, copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         # swaplevel
-        _8 = s.swaplevel(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword]
+        _8 = s.swaplevel(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_series_primitive_conversions() -> None:
@@ -3897,29 +4096,29 @@ def test_series_primitive_conversions() -> None:
     check(assert_type(bytes(s_int), bytes), bytes)
     check(assert_type(bytearray(s_int), bytearray), bytearray)
     if TYPE_CHECKING_INVALID_USAGE:
-        int(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        float(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        complex(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        math.trunc(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        math.ceil(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        math.floor(s_int)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        memoryview(s_int)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        int(s_int)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        float(s_int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        complex(s_int)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        math.trunc(s_int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        math.ceil(s_int)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        math.floor(s_int)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        memoryview(s_int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
     s_any: pd.Series[Any] = pd.Series([1, 2, 3])
     check(assert_type(str(s_any), str), str)
     check(assert_type(bytes(s_any), bytes), bytes)
     check(assert_type(bytearray(s_any), bytearray), bytearray)
     if TYPE_CHECKING_INVALID_USAGE:
-        int(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        float(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        complex(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        math.trunc(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        math.ceil(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        math.floor(s_any)  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        memoryview(s_any)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        int(s_any)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        float(s_any)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        complex(s_any)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        math.trunc(s_any)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        math.ceil(s_any)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        math.floor(s_any)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        memoryview(s_any)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
     s_float = pd.Series([1.5, 2.5, 3.5])
     check(assert_type(str(s_float), str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        bytes(s_float)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
-        bytearray(s_float)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        bytes(s_float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        bytearray(s_float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]

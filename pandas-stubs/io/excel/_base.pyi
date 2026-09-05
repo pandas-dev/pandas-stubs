@@ -22,9 +22,7 @@ from pandas.core.frame import DataFrame
 from pyxlsb.workbook import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as PyXlsbWorkbook,
 )
-from typing_extensions import (
-    TypeVar,
-)
+from typing_extensions import TypeVar
 from xlrd.book import Book
 from xlsxwriter import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as XlsxWorkbook,
@@ -293,6 +291,7 @@ class ExcelWriter(Generic[_WorkbookT]):
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
+        /,
     ) -> None: ...
     def close(self) -> None: ...
 
@@ -372,5 +371,6 @@ class ExcelFile:
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
+        /,
     ) -> None: ...
     def __del__(self) -> None: ...

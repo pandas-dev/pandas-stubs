@@ -15,10 +15,26 @@ from tests import (
 
 def test_agg_any_float() -> None:
     series = pd.DataFrame({"A": [1.0, float("nan"), 2.0]})["A"]
-    check(assert_type(series.mean(), float), np.float64)
-    check(assert_type(series.median(), float), np.float64)
-    check(assert_type(series.std(), float), np.float64)
-    check(assert_type(series.var(), float), np.float64)
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(series.mean(), float),  # ty: ignore[type-assertion-failure]
+        np.float64,
+    )
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(series.median(), float),  # ty: ignore[type-assertion-failure]
+        np.float64,
+    )
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(series.std(), float),  # ty: ignore[type-assertion-failure]
+        np.float64,
+    )
+    # TODO: remove the ignore astral-sh/ty#4055
+    check(
+        assert_type(series.var(), float),  # ty: ignore[type-assertion-failure]
+        np.float64,
+    )
 
 
 def test_agg_bool() -> None:
@@ -75,10 +91,10 @@ def test_agg_complex() -> None:
 def test_agg_str() -> None:
     series = pd.Series(["1", "a", "pd"])
     if TYPE_CHECKING_INVALID_USAGE:
-        series.mean()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
-        series.median()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
-        series.std()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
-        series.var()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload]
+        series.mean()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        series.median()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        series.std()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        series.var()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_agg_ts() -> None:

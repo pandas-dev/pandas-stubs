@@ -10,7 +10,7 @@ from loguru import logger
 @dataclass
 class Step:
     name: str
-    run: Callable[[], None]
+    run: Callable[..., None]
     rollback: Callable[[], None] | None = None
 
 

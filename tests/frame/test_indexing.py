@@ -159,8 +159,7 @@ def test_indexslice_getitem() -> None:
     )
     ind = pd.Index([2, 3])
     check(
-        # TODO: https://github.com/facebook/pyrefly/issues/3896
-        assert_type(  # pyrefly: ignore[assert-type]
+        assert_type(
             pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
         ),
         tuple,
@@ -229,6 +228,9 @@ def test_frame_isin() -> None:
     check(assert_type(df.isin(pd.Index([1, 3, 5])), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.isin(df), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.isin({"x": [1, 2]}), pd.DataFrame), pd.DataFrame)
+    # GH 1844
+    isin_map = {"x": [1, 2]}
+    check(assert_type(df.isin(isin_map), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.isin(UserDict({"x": iter([1, "2"])})), pd.DataFrame),
         pd.DataFrame,
@@ -333,11 +335,11 @@ def test_boolean_loc() -> None:
 
 def test_setitem_list() -> None:
     # GH 153
-    lst1: list[str] = ["a", "b", "c"]
-    lst2: list[int] = [1, 2, 3]
-    lst3: list[float] = [4.0, 5.0, 6.0]
-    lst4: list[tuple[str, int]] = [("a", 1), ("b", 2), ("c", 3)]
-    lst5: list[complex] = [0 + 1j, 0 + 2j, 0 + 3j]
+    lst1 = ["a", "b", "c"]
+    lst2 = [1, 2, 3]
+    lst3 = [4.0, 5.0, 6.0]
+    lst4 = [("a", 1), ("b", 2), ("c", 3)]
+    lst5 = [0 + 1j, 0 + 2j, 0 + 3j]
 
     columns: list[Hashable] = [
         "a",
@@ -364,6 +366,13 @@ def test_setitem_list() -> None:
     check(assert_type(df.set_index(lst3), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(lst4), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(lst5), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            df.set_index([df.index, df.index.to_numpy(), df.index.to_series()]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
     iter1: Iterator[str] = (v for v in lst1)
     iter2: Iterator[tuple[str, int]] = (v for v in lst4)
@@ -445,13 +454,14 @@ def test_frame_setitem_na() -> None:
     df.loc[:, "x"] = [None, pd.NA, pd.NaT]
     df.iloc[:, 0] = [None, pd.NA, pd.NaT]
 
-    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+    # TODO: mypy bug, remove after python/mypy#20420 is resolved
     df.loc[:, ["x"]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
     df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
 
-    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+    # TODO: mypy bug, remove after python/mypy#20420 is resolved
     df.loc[:, iter(["x"])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
-    df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+    # TODO: remove after python/mypy#21813 astral-sh/ty#4196 are resolved
+    df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index] # ty: ignore[invalid-assignment]
 
 
 def test_loc_set() -> None:
@@ -539,7 +549,7 @@ def test_loc_callable() -> None:
         assert_type(
             df.loc[
                 :,
-                lambda df: df.columns.str.startswith(  # pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]
+                lambda df: df.columns.str.startswith(  # pyright: ignore[reportUnknownMemberType]
                     "x"
                 ),
             ],
@@ -665,4 +675,4 @@ def test_frame_iat() -> None:
     df.iat[0, 0] = 999
     df.iat[0, 0] = float("nan")
     if TYPE_CHECKING_INVALID_USAGE:
-        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation]
+        df.iat[(0,), 0] = 999  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]

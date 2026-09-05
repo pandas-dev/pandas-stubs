@@ -1,4 +1,3 @@
-# pyright: reportUnknownLambdaType=false
 from __future__ import annotations
 
 from collections.abc import (
@@ -7,6 +6,7 @@ from collections.abc import (
     Iterator,
 )
 from typing import (
+    TYPE_CHECKING,
     Any,
     assert_type,
 )
@@ -25,6 +25,9 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+
+if TYPE_CHECKING:
+    from pandas._typing import S1
 
 
 def test_types_groupby_as_index() -> None:
@@ -158,7 +161,7 @@ def test_types_groupby() -> None:
     )
     check(
         assert_type(
-            df.groupby(lambda x: x),  # pyright: ignore[reportUnknownArgumentType]
+            df.groupby(lambda x: x),
             "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
         ),
         DataFrameGroupBy,
@@ -304,16 +307,10 @@ def test_types_groupby_agg() -> None:
         pd.DataFrame,
     )
 
-    def wrapped_min(x: pd.Series) -> Scalar:
+    def wrapped_min(x: pd.Series[S1]) -> S1:
         return x.min()
 
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
-    check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.groupby("col1")["col3"].agg(min), pd.Series
-        ),
-        pd.Series,
-    )
+    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
     check(
         assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
         pd.DataFrame,
@@ -457,7 +454,8 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.nth((0, 1, 2)), pd.DataFrame | pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword]
+        gb.pct_change(limit=3)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        gb.pct_change(fill_method=None)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_groupby_index() -> None:
@@ -633,14 +631,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     # categorical indexes are also ambiguous
-
-    # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
     categorical_index = pd.CategoricalIndex(df.a)
     iterator2 = df.groupby(categorical_index).__iter__()
-    check(
-        assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]]),
-        Iterator,
-    )
+    check(assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]]), Iterator)
     index2, value2 = next(iterator2)
     check(
         assert_type((index2, value2), tuple[Any, pd.DataFrame]),
@@ -654,30 +647,34 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
 def test_groupby_apply() -> None:
     # GH 167
     df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
+    df_gb = df.groupby("col1")
 
     def sum_mean(x: pd.DataFrame) -> float:
-        return x.sum().mean()
+        # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+        return x.sum().mean()  # ty: ignore[unsound-return-statement]
 
-    check(
-        assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
-        pd.Series,
-    )
+    check(assert_type(df_gb.apply(sum_mean), pd.Series), pd.Series)
 
-    lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
+    # TODO: revert to the original once astral-sh/ty#4135 are fixed
+    lfunc: Callable[[pd.DataFrame], float] = lambda _: 1.0  # x: x.sum().mean()
+    check(assert_type(df_gb.apply(lfunc), pd.Series), pd.Series)
 
     def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()
 
-    check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
+    check(assert_type(df_gb.apply(sum_to_list), pd.Series), pd.Series)
 
     def sum_to_series(x: pd.DataFrame) -> pd.Series:
         return x.sum()
 
     check(
-        assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(df_gb.apply(sum_to_series), pd.Series | pd.DataFrame), pd.DataFrame
     )
+
+    def same_len(x: pd.DataFrame) -> pd.Series:
+        return x["col2"]
+
+    check(assert_type(df_gb.apply(same_len), pd.Series | pd.DataFrame), pd.Series)
 
     def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
         return x.sample()
@@ -733,16 +730,9 @@ def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    # TODO: https://github.com/facebook/pyrefly/issues/3891
+    check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.groupby("col1").col3.agg(min), pd.Series
-        ),
-        pd.Series,
-    )
-    check(
-        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame), pd.DataFrame
     )
 
 

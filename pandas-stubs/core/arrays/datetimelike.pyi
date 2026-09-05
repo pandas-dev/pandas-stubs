@@ -1,7 +1,7 @@
 from collections.abc import (
-    Iterator,
     Sequence,
 )
+from datetime import timedelta
 from typing import (
     Any,
     Self,
@@ -11,6 +11,7 @@ from typing import (
 
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
+from typing_extensions import override
 
 from pandas._libs import (
     NaT as NaT,
@@ -44,45 +45,38 @@ class TimelikeOps(DatetimeLikeArrayMixin):
     def as_unit(self, unit: TimeUnit) -> Self: ...
     def round(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> Self: ...
     def floor(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> Self: ...
     def ceil(
         self,
-        freq: Frequency,
+        freq: Frequency | timedelta,
         ambiguous: TimeAmbiguous = "raise",
         nonexistent: TimeNonexistent = "raise",
     ) -> Self: ...
 
 class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
-    @property
-    def ndim(self) -> int: ...
+    @override
     def reshape(self, *args: Any, **kwargs: Any) -> Self: ...
-    def __iter__(self) -> Iterator[Any]: ...
-    @property
-    def nbytes(self) -> int: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...
-    @property
-    def size(self) -> int: ...
     @overload
-    def __getitem__(  # pyrefly: ignore[bad-override]
-        self, key: ScalarIndexer
-    ) -> DTScalarOrNaT: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __getitem__(self, key: ScalarIndexer, /) -> DTScalarOrNaT: ...
     @overload
-    def __getitem__(  # ty: ignore[invalid-method-override]
-        self, key: SequenceIndexer | PositionalIndexerTuple
-    ) -> Self: ...
+    def __getitem__(self, key: SequenceIndexer | PositionalIndexerTuple, /) -> Self: ...
+    @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, key: int | Sequence[int] | Sequence[bool] | slice, value: Any
+        self, key: int | Sequence[int] | Sequence[bool] | slice, value: Any, /
     ) -> None: ...
     # TODO: pandas-dev/pandas-stubs#1589 import testing
     # def view(self, dtype: DtypeArg | None = None) -> np_ndarray: ...
@@ -97,10 +91,10 @@ class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
     @property
     def resolution(self) -> str: ...
     # TODO: pandas-dev/pandas-stubs#1589 add testing for the below
-    def __sub__(self, other: Any) -> Any: ...
-    def __rsub__(self, other: Any) -> Any: ...
-    def __iadd__(self, other: Any) -> Self: ...
-    def __isub__(self, other: Any) -> Self: ...
+    def __sub__(self, other: Any, /) -> Any: ...
+    def __rsub__(self, other: Any, /) -> Any: ...
+    def __iadd__(self, other: Any, /) -> Self: ...
+    def __isub__(self, other: Any, /) -> Self: ...
     def min(
         self, *, axis: AxisInt | None = None, skipna: bool = True, **kwargs: Any
     ) -> Timestamp | Timedelta | NaTType: ...

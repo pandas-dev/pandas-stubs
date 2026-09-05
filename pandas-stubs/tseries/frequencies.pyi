@@ -1,18 +1,7 @@
-from datetime import timedelta
-from typing import overload
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import Series
 
-from pandas import (
-    DatetimeIndex,
-    Series,
-    TimedeltaIndex,
-)
+from pandas._libs.tslibs.offsets import to_offset as to_offset
 
-from pandas._typing import Frequency
-
-from pandas.tseries.offsets import BaseOffset
-
-@overload
-def to_offset(freq: None, is_period: bool = False) -> None: ...
-@overload
-def to_offset(freq: Frequency | timedelta, is_period: bool = False) -> BaseOffset: ...
 def infer_freq(index: Series | DatetimeIndex | TimedeltaIndex) -> str | None: ...

@@ -6,6 +6,7 @@ from typing import (
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -13,44 +14,49 @@ from tests import (
 )
 from tests._typing import np_ndarray_int64
 
-left = pd.Index([True, True, False])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Index[bool]":
+    """Left operand"""
+    lo = pd.Index([True, True, False])
+    return check(assert_type(lo, "pd.Index[bool]"), pd.Index, np.bool_)
 
 
-def test_sub_py_scalar() -> None:
+def test_sub_py_scalar(left: "pd.Index[bool]") -> None:
     """Test pd.Index[bool] - Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(left - b, Never)
     check(assert_type(left - i, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left - f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left - c, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = b - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(b - left, Never)
     check(assert_type(i - left, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(f - left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c - left, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
 
-def test_sub_py_sequence() -> None:
+def test_sub_py_sequence(left: "pd.Index[bool]") -> None:
     """Test pd.Index[bool] - Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(left - b, Never)
     check(assert_type(left - i, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left - f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left - c, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = b - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(b - left, Never)
     check(assert_type(i - left, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(f - left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c - left, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
 
-def test_sub_numpy_array() -> None:
+def test_sub_numpy_array(left: "pd.Index[bool]") -> None:
     """Test pd.Index[bool] - numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -77,7 +83,7 @@ def test_sub_numpy_array() -> None:
     )
 
 
-def test_sub_pd_index() -> None:
+def test_sub_pd_index(left: "pd.Index[bool]") -> None:
     """Test pd.Index[bool] - pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])

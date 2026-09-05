@@ -101,6 +101,7 @@ if TYPE_CHECKING:
 _T_co = TypeVar("_T_co", covariant=True)
 _T_contra = TypeVar("_T_contra", contravariant=True)
 
+# TODO: caveats pandas-dev/pandas-stubs#1609 hauntsaninja/useful_types#25
 class SequenceNotStr(Protocol[_T_co]):
     @overload
     def __getitem__(self, index: SupportsIndex, /) -> _T_co: ...
@@ -400,22 +401,25 @@ PandasAstypeTimedeltaDtypeArg: TypeAlias = Literal[
     "<m8[as]",
 ]
 # Refer to https://numpy.org/doc/stable/reference/arrays.datetime.html#datetime-units
-NumpyTimedeltaDtypeArg: TypeAlias = Literal[
-    "timedelta64[s]",
-    "timedelta64[ms]",
-    "timedelta64[us]",
-    "timedelta64[ns]",
-    # numpy type codes
-    "m8[s]",
-    "m8[ms]",
-    "m8[us]",
-    "m8[ns]",
-    # little endian
-    "<m8[s]",
-    "<m8[ms]",
-    "<m8[us]",
-    "<m8[ns]",
-]
+NumpyTimedeltaDtypeArg: TypeAlias = (
+    Literal[
+        "timedelta64[s]",
+        "timedelta64[ms]",
+        "timedelta64[us]",
+        "timedelta64[ns]",
+        # numpy type codes
+        "m8[s]",
+        "m8[ms]",
+        "m8[us]",
+        "m8[ns]",
+        # little endian
+        "<m8[s]",
+        "<m8[ms]",
+        "<m8[us]",
+        "<m8[ns]",
+    ]
+    | np.dtype[np.timedelta64]
+)
 # PyArrow duration type and its string alias
 PyArrowTimedeltaDtypeArg: TypeAlias = Literal[
     "duration[s][pyarrow]",
@@ -468,22 +472,25 @@ PandasAstypeTimestampDtypeArg: TypeAlias = Literal[
     "<M8[as]",
 ]
 # Numpy timestamp type and its string alias
-NumpyTimestampDtypeArg: TypeAlias = Literal[
-    "datetime64[s]",
-    "datetime64[ms]",
-    "datetime64[us]",
-    "datetime64[ns]",
-    # numpy type codes
-    "M8[s]",
-    "M8[ms]",
-    "M8[us]",
-    "M8[ns]",
-    # little endian
-    "<M8[s]",
-    "<M8[ms]",
-    "<M8[us]",
-    "<M8[ns]",
-]
+NumpyTimestampDtypeArg: TypeAlias = (
+    Literal[
+        "datetime64[s]",
+        "datetime64[ms]",
+        "datetime64[us]",
+        "datetime64[ns]",
+        # numpy type codes
+        "M8[s]",
+        "M8[ms]",
+        "M8[us]",
+        "M8[ns]",
+        # little endian
+        "<M8[s]",
+        "<M8[ms]",
+        "<M8[us]",
+        "<M8[ns]",
+    ]
+    | np.dtype[np.datetime64]
+)
 # PyArrow timestamp type and its string alias
 PyArrowTimestampDtypeArg: TypeAlias = Literal[
     "date32[pyarrow]",
@@ -547,7 +554,7 @@ NumpyVoidDtypeArg: TypeAlias = type[np.void] | Literal["V", "void"]
 VoidDtypeArg: TypeAlias = NumpyVoidDtypeArg
 
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
-DtypeArg: TypeAlias = Dtype | Mapping[Hashable, Dtype]
+DtypeArg: TypeAlias = Dtype | Mapping[HashableT0, Dtype]
 DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 AstypeArg: TypeAlias = (
@@ -567,7 +574,7 @@ AstypeArg: TypeAlias = (
 )
 
 # converters
-ConvertersArg: TypeAlias = Mapping[Hashable, Callable[[Dtype], Dtype]]
+ConvertersArg: TypeAlias = Mapping[HashableT0, Callable[[Dtype], Dtype]]
 
 # parse_dates
 ParseDatesArg: TypeAlias = (
@@ -745,7 +752,7 @@ StorageOptions: TypeAlias = dict[str, Any] | None
 # compression keywords and compression
 CompressionDict: TypeAlias = dict[str, Any]
 CompressionOptions: TypeAlias = (
-    None | Literal["infer", "gzip", "bz2", "zip", "xz", "zstd", "tar"] | CompressionDict
+    Literal["infer", "gzip", "bz2", "zip", "xz", "zstd", "tar"] | CompressionDict | None
 )
 ParquetCompressionOptions: TypeAlias = (
     Literal["snappy", "gzip", "brotli", "lz4", "zstd"] | None
@@ -761,7 +768,7 @@ FormattersType: TypeAlias = (
 # ColspaceType = Mapping[Hashable, Union[str, int]] not used in stubs
 FloatFormatType: TypeAlias = str | Callable[[float], str] | EngFormatter
 ColspaceArgType: TypeAlias = (
-    str | int | Sequence[int | str] | Mapping[Hashable, str | int]
+    str | int | Sequence[int | str] | Mapping[HashableT0, str | int]
 )
 
 # Arguments for fillna()
@@ -845,9 +852,9 @@ NaPosition: TypeAlias = Literal["first", "last"]
 NsmallestNlargestKeep: TypeAlias = Literal["first", "last", "all"]
 
 # quantile interpolation
-QuantileInterpolation: TypeAlias = Literal[
-    "linear", "lower", "higher", "midpoint", "nearest"
-]
+QuantileIntInterpolation: TypeAlias = Literal["lower", "higher", "nearest"]
+QuantileFloatInterpolation: TypeAlias = Literal["linear", "midpoint"]
+QuantileInterpolation: TypeAlias = QuantileIntInterpolation | QuantileFloatInterpolation
 
 # plotting
 # PlottingOrientation = Literal["horizontal", "vertical"] not used in stubs
@@ -973,8 +980,6 @@ PyArrowNotStrDtypeArg: TypeAlias = (
     | PyArrowTimestampDtypeArg
     | PyArrowBytesDtypeArg
 )
-
-StrLike: TypeAlias = str | np.str_
 
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 ScalarT0 = TypeVar("ScalarT0", bound=Scalar, default=Scalar)
@@ -1116,40 +1121,36 @@ Function: TypeAlias = np.ufunc | Callable[..., Any]
 # type is need in a function that uses GroupByObjectNonScalar
 _HashableTa = TypeVar("_HashableTa", bound=Hashable, default=Any)
 if TYPE_CHECKING:
-    ByT = TypeVar(
-        "ByT",
-        bound=str
+    SeriesByT_bound: TypeAlias = (
+        str
         | bytes
         | datetime.date
+        | bool
+        | int
+        | float
+        | complex
+        | datetime.datetime
+        | datetime.timedelta
+        | Period
+        # TODO: pandas-dev/pandas-stubs#1799 investigate why ty does not accept Interval[int | float | Timestamp | Timedelta] and eventually report
+        | Interval[int]
+        | Interval[float]
+        | Interval[Timestamp]
+        | Interval[Timedelta]
+    )
+    ByT_bound: TypeAlias = (
+        SeriesByT_bound
         | datetime.datetime
         | datetime.timedelta
         | np.datetime64
         | np.timedelta64
-        | bool
-        | int
-        | float
-        | complex
         | Scalar
-        | Period
-        | Interval[int | float | Timestamp | Timedelta]
-        | tuple[Any, ...],
+        | tuple[Any, ...]
     )
+    ByT = TypeVar("ByT", bound=ByT_bound)
     # Use a distinct SeriesByT when using groupby with Series of known dtype.
     # Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
-    SeriesByT = TypeVar(
-        "SeriesByT",
-        bound=str
-        | bytes
-        | datetime.date
-        | bool
-        | int
-        | float
-        | complex
-        | datetime.datetime
-        | datetime.timedelta
-        | Period
-        | Interval[int | float | Timestamp | Timedelta],
-    )
+    SeriesByT = TypeVar("SeriesByT", bound=SeriesByT_bound)
     GroupByObjectNonScalar: TypeAlias = (
         tuple[_HashableTa, ...]
         | list[_HashableTa]
@@ -1185,8 +1186,8 @@ StataDateFormat: TypeAlias = Literal[
     "%ty",
 ]
 
-# Can be passed to `to_replace`, `value`, or `regex` in `Series.replace`.
-# `DataFrame.replace` also accepts mappings of these.
+# Can be passed to `to_replace`, `value`, or `regex` in `DataFrame.replace`.
+# `Series.replace` has a specialised `_ReplaceValueStr`.
 ReplaceValue: TypeAlias = (
     Scalar
     | Pattern[str]
@@ -1251,7 +1252,7 @@ ExcelWriteEngine: TypeAlias = Literal["openpyxl", "odf", "xlsxwriter"]
 
 # Repeated in `timestamps.pyi` so as to satisfy mixed strict / non-strict paths.
 # https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
-TimeZones: TypeAlias = str | tzinfo | None | int
+TimeZones: TypeAlias = str | tzinfo | int | None
 
 ColumnValue: TypeAlias = AnyArrayLike | Scalar | Sequence[Scalar] | range | None
 # Evaluates to a DataFrame column in DataFrame.assign context.
@@ -1273,7 +1274,8 @@ Incomplete: TypeAlias = Any
 # differentiating between bool and int/float/complex
 # https://github.com/pandas-dev/pandas-stubs/pull/1312#pullrequestreview-3126128971
 class Just(Protocol, Generic[T]):
-    @property  # type: ignore[override]
+    # TODO: python/mypy#15900 we did use explicit override but mypy does not see it
+    @property  # type: ignore[override,explicit-override]
     @override
     def __class__(self, /) -> type[T]: ...  # pyrefly: ignore[bad-override]
     @__class__.setter
@@ -1281,11 +1283,15 @@ class Just(Protocol, Generic[T]):
     def __class__(self, t: type[T], /) -> None: ...
 
 # Read-only (covariant) list for use in parameter annotations (See GH #1745)
+# TODO: caveats astral-sh/ty#4150 python/mypy#21795
 class CovariantList(Protocol[_T_co]):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
-    @property  # type: ignore[override]
+    # TODO: python/mypy#15900 we did use explicit override but mypy does not see it
+    @property  # type: ignore[override,explicit-override]
+    @override
     def __class__(self) -> type[list[Any]]: ...  # pyrefly: ignore[bad-override]
     @__class__.setter
+    @override
     def __class__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, value: type[list[Any]], /
     ) -> None: ...

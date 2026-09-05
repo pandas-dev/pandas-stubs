@@ -46,9 +46,8 @@ def test_construction_sequence(
 
     if TYPE_CHECKING:
         assert_type(pd.array([-2, 3]), IntegerArray)
-        assert_type(pd.array([1 << 32, np.int8(1) << 6]), IntegerArray)
 
-        assert_type(pd.array([2, np.int8(3)]), IntegerArray)
+        assert_type(pd.array([1 << 33, 2, np.int8(3)]), IntegerArray)
 
         assert_type(pd.array([5, np.int16(0o10), None]), IntegerArray)
         assert_type(pd.array([0xD, np.int16(21), pd.NA]), IntegerArray)
@@ -143,11 +142,11 @@ def test_constructor() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _list_np = IntegerArray([1], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        _np_list = IntegerArray(np.array([1]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        _pd_arr = IntegerArray(pd.array([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        _i = IntegerArray(pd.Index([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        _s = IntegerArray(pd.Series([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _list_np = IntegerArray([1], np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _np_list = IntegerArray(np.array([1]), [False])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _pd_arr = IntegerArray(pd.array([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _i = IntegerArray(pd.Index([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
+        _s = IntegerArray(pd.Series([1]), np.array([False]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type]
 
 
 def test_dtype_signed() -> None:

@@ -6,6 +6,7 @@ from typing import (
 )
 
 from pandas.core.resample import TimeGrouper
+from typing_extensions import override
 
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
@@ -37,4 +38,5 @@ class Grouper:
     @overload
     def __new__(cls, *args: Any, freq: Frequency, **kwargs: Any) -> TimeGrouper: ...
     @final
+    @override
     def __repr__(self) -> str: ...  # noqa: PYI029 __repr__ here is final

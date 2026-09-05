@@ -14,7 +14,9 @@ from typing import (
     type_check_only,
 )
 
-from pandas.core.base import NoNewAttributesMixin
+from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.string_ import BaseStringArray
+from pandas.core.col import Expression
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.multi import MultiIndex
@@ -32,12 +34,12 @@ from pandas._typing import (
     np_ndarray_str,
 )
 
-class StringMethods(NoNewAttributesMixin, Generic[S2]):
+class StringMethods(Generic[S2]):
     def __iter__(self) -> Never: ...
 
 @type_check_only
 class IndexStringMethods(StringMethods[S2]):
-    def __getitem__(self, key: _slice | int) -> Index[str]: ...
+    def __getitem__(self, key: _slice | int, /) -> Index[str]: ...
     @overload
     def cat(
         self: IndexStringMethods[str],
@@ -49,7 +51,15 @@ class IndexStringMethods(StringMethods[S2]):
     @overload
     def cat(
         self: IndexStringMethods[str],
-        others: list[str] | np_ndarray_str | Index[str] | DataFrame,
+        others: (
+            tuple[str, ...]
+            | list[str]
+            | np_ndarray_str
+            | BaseStringArray
+            | Categorical[str]
+            | Index[str]
+            | DataFrame
+        ),
         sep: str | None = None,
         na_rep: str | None = None,
         join: AlignJoin = "left",
@@ -295,7 +305,7 @@ class IndexStringMethods(StringMethods[S2]):
 
 @type_check_only
 class SeriesStringMethods(StringMethods[S2]):
-    def __getitem__(self, key: _slice | int) -> Series[str]: ...
+    def __getitem__(self, key: _slice | int, /) -> Series[str]: ...
     @overload
     def cat(
         self: SeriesStringMethods[str],
@@ -307,7 +317,16 @@ class SeriesStringMethods(StringMethods[S2]):
     @overload
     def cat(
         self: SeriesStringMethods[str],
-        others: list[str] | np_ndarray_str | Series[str] | Index[str] | DataFrame,
+        others: (
+            tuple[str, ...]
+            | list[str]
+            | np_ndarray_str
+            | BaseStringArray
+            | Categorical[str]
+            | Series[str]
+            | Index[str]
+            | DataFrame
+        ),
         sep: str | None = None,
         na_rep: str | None = None,
         join: AlignJoin = "left",
@@ -555,9 +574,13 @@ class SeriesStringMethods(StringMethods[S2]):
 class StrDescriptor:
     @overload
     def __get__(
-        self, instance: Series[S2], owner: type[Series]
+        self, instance: Series[S2], owner: type[Series], /
     ) -> SeriesStringMethods[S2]: ...
     @overload
     def __get__(
-        self, instance: Index[S2], owner: type[Index]
+        self, instance: Index[S2], owner: type[Index], /
     ) -> IndexStringMethods[S2]: ...
+    @overload
+    def __get__(
+        self, instance: Expression, owner: type[Expression], /
+    ) -> SeriesStringMethods[str]: ...

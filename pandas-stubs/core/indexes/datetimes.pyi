@@ -3,10 +3,8 @@ from collections.abc import (
     Sequence,
 )
 from datetime import (
-    datetime,
     time,
     timedelta,
-    tzinfo as _tzinfo,
 )
 from typing import (
     Literal,
@@ -18,12 +16,17 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas._stubs_only import (
+    ScalarArrayIndexDatetime,
+    ScalarArrayIndexTimedelta,
+)
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -36,8 +39,6 @@ from pandas._typing import (
     np_1darray_intp,
     np_ndarray,
     np_ndarray_bool,
-    np_ndarray_dt,
-    np_ndarray_td,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
@@ -62,29 +63,33 @@ class DatetimeIndex(
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: timedelta | BaseOffset
-    ) -> Self: ...
-    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | BaseOffset
-    ) -> Self: ...
+    @override
+    def __add__(self, other: timedelta | BaseOffset, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
+    def __radd__(self, other: timedelta | BaseOffset, /) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     @overload  # type: ignore[override]
+    @override
     def __sub__(  # pyrefly: ignore[bad-override]
-        self, other: datetime | np.datetime64 | np_ndarray_dt | Self
+        self, other: ScalarArrayIndexDatetime, /
     ) -> TimedeltaIndex: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
+        self, other: ScalarArrayIndexTimedelta | BaseOffset, /
     ) -> Self: ...
-    def __truediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
-    def __rtruediv__(self, other: np_ndarray) -> Never: ...  # type: ignore[override]
+    @override
+    def __rsub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+        self, other: ScalarArrayIndexDatetime, /
+    ) -> TimedeltaIndex: ...
+    @override
+    def __truediv__(self, other: np_ndarray, /) -> Never: ...  # type: ignore[override]
+    @override
+    def __rtruediv__(self, other: np_ndarray, /) -> Never: ...  # type: ignore[override]
     @final
+    @override
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None
     ) -> Series[Timestamp]: ...
     def snap(self, freq: Frequency = "S") -> Self: ...
-    @property
-    def inferred_type(self) -> str: ...
     def indexer_at_time(
         self, time: str | time, asof: bool = False
     ) -> np_1darray_intp: ...
@@ -98,12 +103,13 @@ class DatetimeIndex(
     def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
     @property
-    def tzinfo(self) -> _tzinfo | None: ...
-    @property
+    @override
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
     def shift(
         self, periods: int = 1, freq: Frequency | timedelta | None = None
     ) -> Self: ...
+    @override
+    def diff(self, periods: int = 1) -> TimedeltaIndex: ...
 
 @overload
 def date_range(

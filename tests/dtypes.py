@@ -182,13 +182,14 @@ ASTYPE_COMPLEX_ARGS = PYTHON_COMPLEX_ARGS | NUMPY_COMPLEX_ARGS
 NUMPY_UNITS = ("s", "ms", "us", "ns")
 PANDAS_UNITS = ("Y", "M", "W", "D", "h", "m", "μs", "ps", "fs", "as")
 
-NUMPY_TIMESTAMP_ARGS = {
+NUMPY_TIMESTAMP_ARGS = {  # type: ignore[misc]
     # numpy datetime64
     **dict.fromkeys([f"datetime64[{u}]" for u in NUMPY_UNITS], datetime),
     # numpy datetime64 type codes
     **dict.fromkeys([f"M8[{u}]" for u in NUMPY_UNITS], datetime),
     # little endian
     **dict.fromkeys([f"<M8[{u}]" for u in NUMPY_UNITS], datetime),
+    np.dtype("datetime64[ms]"): datetime,
 }
 PANDAS_TIMESTAMP_ARGS = dict.fromkeys(
     [f"datetime64[{u}, UTC]" for u in NUMPY_UNITS], datetime
@@ -212,13 +213,14 @@ TYPE_TIMESTAMP_ARGS = (
 )
 ASTYPE_TIMESTAMP_ARGS = TYPE_TIMESTAMP_ARGS | PANDAS_ASTYPE_TIMESTAMP_ARGS
 
-NUMPY_TIMEDELTA_ARGS = {
+NUMPY_TIMEDELTA_ARGS = {  # type: ignore[misc]
     # numpy timedelta64
     **dict.fromkeys([f"timedelta64[{u}]" for u in NUMPY_UNITS], timedelta),
     # numpy timedelta64 type codes
     **dict.fromkeys([f"m8[{u}]" for u in NUMPY_UNITS], timedelta),
     # little endian
     **dict.fromkeys([f"<m8[{u}]" for u in NUMPY_UNITS], timedelta),
+    np.dtype("timedelta64[ms]"): timedelta,
 }
 PANDAS_ASTYPE_TIMEDELTA_ARGS = {
     # numpy timedelta64

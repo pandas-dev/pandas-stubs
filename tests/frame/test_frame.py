@@ -32,6 +32,7 @@ from typing import (
     assert_type,
 )
 import uuid
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -52,6 +53,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_excel_pandas4,
 )
 from tests._typing import (
     np_1darray,
@@ -81,13 +83,16 @@ def getCols(k: int) -> str:
 
 
 def makeStringIndex(k: int = 10) -> pd.Index:
-    return pd.Index(rands_array(nchars=10, size=k), name=None)
+    return pd.Index(rands_array(nchars=10, size=k), name=None)  # type: ignore[no-any-return]
 
 
 def rands_array(nchars: int, size: int) -> np_ndarray:
     chars = np.array(list(string.ascii_letters + string.digits), dtype=(np.str_, 1))
     retval = (
-        np.random.default_rng(2)
+        # TODO: remove the double unused-ignore-comment astral-sh/ty#2681
+        np.random.default_rng(  # ty: ignore[no-matching-overload,unused-ignore-comment,unused-ignore-comment]
+            2
+        )
         .choice(chars, size=nchars * np.prod(size), replace=True)
         .view((np.str_, nchars))
         .reshape(size)
@@ -138,10 +143,15 @@ def test_types_init() -> None:
         assert_type(pd.DataFrame(data=itertools.repeat([1, 2, 3], 3)), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"Constructing a DataFrame from a list of sequences with mismatched",
+        "3.0.99",
+    ):
+        check(
+            assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
+            pd.DataFrame,
+        )
     check(
         assert_type(pd.DataFrame(data=[1, 2, 3, 4], dtype=np.int8), pd.DataFrame),
         pd.DataFrame,
@@ -180,24 +190,14 @@ def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
     if TYPE_CHECKING_INVALID_USAGE:
-        _res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[not-callable]
-        _res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[not-callable]
-        _res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[not-callable]
-        _res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[not-callable]
-            {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
-        )
-        _res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[not-callable]
-            {1: [1, 2, 3]}, ignore_index=True
-        )
-        _res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[not-callable]
-            {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
-        )
-        _res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[not-callable]
-            pd.Series([5, 6]), ignore_index=True
-        )
-        _res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[not-callable]
-            pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
-        )
+        df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append({("a", 1): [1, 2, 3], "b": df2}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append({1: [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append({1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append(pd.Series([5, 6]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append(pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
 
 
 def test_types_to_csv(tmp_path: Path) -> None:
@@ -298,18 +298,20 @@ def test_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], 1: [4, 5, 6]})
 
     my_unnamed_func = (  # pyright: ignore[reportUnknownVariableType]
-        lambda df: df["a"] * 2  # pyright: ignore[reportUnknownLambdaType]
+        lambda df: df["a"] * 2
     )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
-        return df["a"]
+        # ty thinks Series[str] is not a subtype of Series[Any]
+        return df["a"]  # ty: ignore[unsound-return-statement]
 
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
 
     check(assert_type(df.assign(c=lambda df: df["a"] * 2), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(df.assign(c=lambda df: df["a"].index), pd.DataFrame), pd.DataFrame
+        assert_type(df.assign(c=lambda df: df["a"].index), pd.DataFrame),
+        pd.DataFrame,
     )
     check(
         assert_type(df.assign(c=lambda df: df["a"].to_numpy()), pd.DataFrame),
@@ -323,13 +325,7 @@ def test_assign() -> None:
     check(assert_type(df.assign(c=df["a"].index), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=df["a"].to_numpy()), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=2), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(
-            df.assign(c=my_unnamed_func),  # pyright: ignore[reportUnknownArgumentType]
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(df.assign(c=my_unnamed_func), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=None), pd.DataFrame), pd.DataFrame)
@@ -409,9 +405,9 @@ def test_arguments_drop() -> None:
     # GH 950
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     if TYPE_CHECKING_INVALID_USAGE:
-        _res1 = df.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
-        _res2 = df.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
-        _res3 = df.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
+        df.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(df.drop(columns=None), Never)
@@ -428,19 +424,29 @@ def test_types_dropna() -> None:
     check(assert_type(df.dropna(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.dropna(ignore_index=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.dropna(axis=1, thresh=1), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(df.dropna(axis=0, how="all", subset=["col1"], inplace=True), None),
-        type(None),
-    )
-    check(
-        assert_type(
-            df.dropna(
-                axis=0, how="all", subset=["col1"], inplace=True, ignore_index=False
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(
+            assert_type(
+                df.dropna(axis=0, how="all", subset=["col1"], inplace=True), None
             ),
-            None,
-        ),
-        type(None),
-    )
+            type(None),
+        )
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(
+            assert_type(
+                df.dropna(
+                    axis=0, how="all", subset=["col1"], inplace=True, ignore_index=False
+                ),
+                None,
+            ),
+            type(None),
+        )
 
 
 def test_types_drop_duplicates() -> None:
@@ -457,13 +463,22 @@ def test_types_drop_duplicates() -> None:
     check(assert_type(df.drop_duplicates(["AAA"]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.drop_duplicates("AAA", inplace=True), None), type(None))
-    check(
-        assert_type(
-            df.drop_duplicates("AAA", inplace=False, ignore_index=True), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(assert_type(df.drop_duplicates("AAA", inplace=True), None), type(None))
+
+    with pytest_warns_bounded(
+        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
+    ):
+        check(
+            assert_type(
+                df.drop_duplicates("AAA", inplace=False, ignore_index=True),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
 
     check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame)
@@ -489,7 +504,16 @@ def test_types_sort_index() -> None:
     check(
         assert_type(df.sort_index(ascending=False, level=3), pd.DataFrame), pd.DataFrame
     )
-    check(assert_type(df.sort_index(kind="mergesort", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(df.sort_index(kind="mergesort", inplace=True), None),
+            type(None),
+        )
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -517,13 +541,22 @@ def test_types_set_index() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = df.set_index("col1", verify_integrity=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
+        df.set_index("col1", verify_integrity=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_query() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
     check(assert_type(df.query("col1 > col2"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.query("col1 % col2 == 0", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(df.query("col1 % col2 == 0", inplace=True), None),
+            type(None),
+        )
 
 
 def test_types_query_kwargs() -> None:
@@ -534,19 +567,42 @@ def test_types_query_kwargs() -> None:
         ),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            df.query("col1 > col2", parser="pandas", engine="numexpr", inplace=True),
-            None,
-        ),
-        type(None),
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(
+                df.query(
+                    "col1 > col2", parser="pandas", engine="numexpr", inplace=True
+                ),
+                None,
+            ),
+            type(None),
+        )
 
 
 def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
-    check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
-    check(assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None),
+            type(None),
+        )
     check(
         assert_type(
             df.eval("E = col1 > col2"), Scalar | np_ndarray | pd.DataFrame | pd.Series
@@ -558,10 +614,16 @@ def test_types_eval() -> None:
 def test_types_sort_values() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.sort_values("col1"), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(df.sort_values("col1", ascending=False, inplace=True), None),
-        type(None),
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(df.sort_values("col1", ascending=False, inplace=True), None),
+            type(None),
+        )
     check(
         assert_type(
             df.sort_values(by=["col1", "col2"], ascending=[True, False]), pd.DataFrame
@@ -606,7 +668,7 @@ def test_types_shift() -> None:
     check(assert_type(df.shift(freq=None, fill_value=None), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        df.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        df.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_types_rank() -> None:
@@ -781,12 +843,12 @@ def test_dataframe_clip() -> None:
     df = pd.DataFrame(data={"col1": [20, 12], "col2": [3, 14]})
     df2 = pd.DataFrame({"col1": [10, 15], "col2": [5, 1]})
     if TYPE_CHECKING_INVALID_USAGE:
-        df.clip(lower=pd.Series([4, 5]), upper=None, axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        df.clip(lower=None, upper=pd.Series([4, 5]), axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        df.clip(lower=pd.Series([1, 2]), upper=pd.Series([4, 5]), axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        df.copy().clip(lower=pd.Series([1, 2]), upper=None, axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        df.copy().clip(lower=None, upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        df.copy().clip(lower=pd.Series([4, 5]), upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        df.clip(lower=pd.Series([4, 5]), upper=None, axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.clip(lower=None, upper=pd.Series([4, 5]), axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.clip(lower=pd.Series([1, 2]), upper=pd.Series([4, 5]), axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.copy().clip(lower=pd.Series([1, 2]), upper=None, axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.copy().clip(lower=None, upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.copy().clip(lower=pd.Series([4, 5]), upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(
         assert_type(df.clip(lower=None, upper=None, axis=None), pd.DataFrame),
@@ -1081,7 +1143,14 @@ def test_types_value_counts() -> None:
 def test_types_unique() -> None:
     # This is really more for of a Series test
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [1, 4]})
-    check(assert_type(df["col1"].unique(), np_1darray), np_1darray)
+    # TODO: astral-sh/ty#2182
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure]
+            df["col1"].unique(), np_1darray
+        ),
+        np_1darray,
+        np.integer,
+    )
 
 
 def test_types_apply() -> None:
@@ -1114,6 +1183,14 @@ def test_types_apply() -> None:
         return s.head(y)
 
     check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
+
+    # GH 1896: first parameter is named func at runtime
+    check(assert_type(df.apply(func=np.exp), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.apply(func=returns_scalar), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
 
     # Check various return types for default result_type (None) with default axis (0)
     check(
@@ -1332,16 +1409,7 @@ def test_types_apply() -> None:
 def test_types_map() -> None:
     # GH774
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(
-        assert_type(
-            df.map(
-                lambda x: x  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType]
-                ** 2
-            ),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(df.map(lambda x: x**2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.map(np.exp), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.map(str), pd.DataFrame), pd.DataFrame)
     # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -1394,6 +1462,13 @@ def test_types_element_wise_arithmetic() -> None:
         tuple,
         pd.DataFrame,
     )
+
+
+def test_types_bool_removed() -> None:
+    # `bool()` was removed from `NDFrame` in pandas 2.1
+    df = pd.DataFrame(data={"col1": [1]})
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
 
 
 def test_types_scalar_arithmetic() -> None:
@@ -1821,14 +1896,10 @@ def test_pivot_table_aggfunc_numpy_ufunc(sample_df: pd.DataFrame) -> None:
 
 def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     """Test with df.pivot_table using list of strings."""
-    # TODO: https://github.com/facebook/pyrefly/issues/3268
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["sum", "mean"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["sum", "mean"]
             ),
             pd.DataFrame,
         ),
@@ -1837,10 +1908,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["min", "max", "count"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["min", "max", "count"]
             ),
             pd.DataFrame,
         ),
@@ -1849,10 +1917,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["std", "var", "median"],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["std", "var", "median"]
             ),
             pd.DataFrame,
         ),
@@ -1861,14 +1926,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=[  # pyrefly: ignore[bad-argument-type]
-                    "first",
-                    "last",
-                    "nunique",
-                ],
+                values="C", index="A", columns="B", aggfunc=["first", "last", "nunique"]
             ),
             pd.DataFrame,
         ),
@@ -1895,10 +1953,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=["sum", np.mean],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=["sum", np.mean]
             ),
             pd.DataFrame,
         ),
@@ -1907,10 +1962,7 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
     check(
         assert_type(
             sample_df.pivot_table(
-                values="C",
-                index="A",
-                columns="B",
-                aggfunc=[np.sum, "mean", np.max],  # pyrefly: ignore[bad-argument-type]
+                values="C", index="A", columns="B", aggfunc=[np.sum, "mean", np.max]
             ),
             pd.DataFrame,
         ),
@@ -1920,14 +1972,13 @@ def test_pivot_table_aggfunc_list(sample_df: pd.DataFrame) -> None:
 
 def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
     """Test dict of aggfuncs mapping columns to functions."""
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
     check(
         assert_type(
             sample_df.pivot_table(
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={"C": "sum", "D": "mean"},  # pyrefly: ignore[bad-argument-type]
+                aggfunc={"C": "sum", "D": "mean"},
             ),
             pd.DataFrame,
         ),
@@ -1939,7 +1990,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={"C": "min", "D": "max"},  # pyrefly: ignore[bad-argument-type]
+                aggfunc={"C": "min", "D": "max"},
             ),
             pd.DataFrame,
         ),
@@ -1951,10 +2002,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={  # pyrefly: ignore[bad-argument-type]
-                    "C": "nunique",
-                    "D": "count",
-                },
+                aggfunc={"C": "nunique", "D": "count"},
             ),
             pd.DataFrame,
         ),
@@ -1980,10 +2028,7 @@ def test_pivot_table_aggfunc_dict(sample_df: pd.DataFrame) -> None:
                 values=["C", "D"],
                 index="A",
                 columns="B",
-                aggfunc={  # pyrefly: ignore[bad-argument-type]
-                    "C": "sum",
-                    "D": np.mean,
-                },
+                aggfunc={"C": "sum", "D": np.mean},
             ),
             pd.DataFrame,
         ),
@@ -2043,7 +2088,7 @@ def test_types_merge() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
-        _0 = df.merge(df2, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
+        df.merge(df2, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
     # https://github.com/microsoft/python-type-stubs/issues/60
     df1 = pd.DataFrame([["a", 1], ["b", 2]], columns=["let", "num"]).set_index("let")
@@ -2065,9 +2110,9 @@ def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     check(assert_type(df.expanding(), "Expanding[pd.DataFrame]"), Expanding)
     if TYPE_CHECKING_INVALID_USAGE:
-        df.expanding(axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-        df.expanding(axis=1, center=True)  # type: ignore[arg-type, call-arg] # pyright: ignore[reportCallIssue]  # pyrefly: ignore[bad-argument-type,unexpected-keyword]
+        df.expanding(axis=1)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.expanding(axis=1, center=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
     check(assert_type(df.rolling(2), "Rolling[pd.DataFrame]"), Rolling)
 
@@ -2163,7 +2208,9 @@ def test_types_to_feather(tmp_path: Path) -> None:
         r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
         upper="3.0.4",
     ):
-        df.to_feather(path_str, compression="zstd", compression_level=3, chunksize=2)
+        df.to_feather(
+            path_str, compression="zstd", compression_level=3, chunksize=2, version=2
+        )
 
     # to_feather has been able to accept a buffer since pandas 1.0.0
     # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
@@ -2482,13 +2529,7 @@ def test_types_from_dict() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        check(
-            assert_type(  # type: ignore[assert-type]  # pyrefly: ignore[assert-type]
-                pd.DataFrame.from_dict(data, orient="columns", columns=["a", "b", "c"]),  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
+        pd.DataFrame.from_dict(data, orient="columns", columns=["a", "b", "c"])  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_pipe() -> None:
@@ -2546,49 +2587,49 @@ def test_pipe() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        df.pipe(  # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             qux,
             "a",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             [1.0, 2.0],
             argument_2="hi",
             keyword_only=(1, 2),
         )
-        df.pipe(  # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             qux,
             1,
             [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportArgumentType]
             argument_2="hi",
             keyword_only=(1, 2),
         )
-        df.pipe(  # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             qux,
             1,
             [1.0, 2.0],
             argument_2=11,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             keyword_only=(1, 2),
         )
-        df.pipe(  # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             qux,
             1,
             [1.0, 2.0],
             argument_2="hi",
             keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         )
-        df.pipe(  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             qux,
             1,
             [1.0, 2.0],
             argument_3="hi",  # pyright: ignore[reportCallIssue]
             keyword_only=(1, 2),
         )
-        df.pipe(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             qux,
             1,
             [1.0, 2.0],
             11,
             (1, 2),  # pyright: ignore[reportCallIssue]
         )
-        df.pipe(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             qux,
             positional_only=1,  # pyright: ignore[reportCallIssue]
             argument_1=[1.0, 2.0],
@@ -2614,14 +2655,14 @@ def test_pipe() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        df.pipe(  # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             (
                 dataframe_not_first_arg,  # type: ignore[arg-type]
                 1,  # pyright: ignore[reportArgumentType]
             ),
             1,
         )
-        df.pipe(  # pyright: ignore[reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        df.pipe(  # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
             (
                 1,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
                 "df",
@@ -2734,7 +2775,7 @@ def test_types_rename_inplace() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
-        _0 = df.rename(columns={"a": "b"}, copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
+        df.rename(columns={"a": "b"}, copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_rename_axis() -> None:
@@ -2766,8 +2807,8 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
-                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownArgumentType,reportUnknownLambdaType,reportUnknownMemberType]
+                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
+                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
             ),
             pd.DataFrame,
         ),
@@ -2802,6 +2843,11 @@ def test_types_dot() -> None:
     check(assert_type(df1.dot(np_array), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1 @ s1, pd.Series), pd.Series)
     check(assert_type(df1.dot(s1), pd.Series), pd.Series)
+    list_like = [[0, 1], [1, 2], [-1, -1], [2, 0]]
+    check(assert_type(df1.dot(list_like), pd.DataFrame), pd.DataFrame)
+    time = pd.DataFrame({"HH": [1, 2, 3], "MM": [4, 5, 6]})
+    seconds = time.dot([3600, 60])
+    check(assert_type(seconds, pd.Series), pd.Series)
 
 
 def test_read_csv(tmp_path: Path) -> None:
@@ -2922,34 +2968,40 @@ def test_read_csv(tmp_path: Path) -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
-        _0 = pd.read_csv(path_str, parse_dates=parse_dates_2)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        _0 = pd.read_csv(path_str, parse_dates=parse_dates_2)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
         parse_dates_3 = {"combined_date": [1, 2, 3]}
-        _1 = pd.read_csv(path_str, parse_dates=parse_dates_3)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        _1 = pd.read_csv(path_str, parse_dates=parse_dates_3)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
         parse_dates_4: dict[str, list[str | int]] = {"combined_date": [1, "Month", 3]}
-        _2 = pd.read_csv(path_str, parse_dates=parse_dates_4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        _2 = pd.read_csv(path_str, parse_dates=parse_dates_4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
         parse_dates_6 = [[1, 2, 3]]
-        _3 = pd.read_csv(path_str, parse_dates=parse_dates_6)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        _3 = pd.read_csv(path_str, parse_dates=parse_dates_6)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_dataframe_pct_change() -> None:
     df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10, 20, 30, 40, 50]})
     check(assert_type(df.pct_change(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(periods=-1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(fill_value=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis="columns"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis="index"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
 
 
 def test_compute_values() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4]})
     s: pd.Series = pd.Series([10, 20, 30, 40])
-    check(assert_type(df["x"] + s.values, pd.Series), pd.Series, np.int64)
+    # TODO: pandas-dev/pandas-stubs#1799 the original code causes ty
+    # frozen with a marked overload of Series.__add__ in
+    # pandas-stubs/core/series.pyi. Investigate and report to ty. When fixed,
+    # use the following line and remove the line with __add__.
+    # see https://github.com/pandas-dev/pandas-stubs/actions/runs/31049878204
+    # check(assert_type(df["x"] + s.values, pd.Series), pd.Series, np.int64)
+    check(assert_type(df["x"].__add__(s.values), pd.Series), pd.Series, np.int64)
 
 
 # https://github.com/microsoft/python-type-stubs/issues/164
@@ -2970,22 +3022,35 @@ def test_to_excel(tmp_path: Path) -> None:
 
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl")
-    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     path = tmp_path / str(uuid.uuid4())
     df.to_excel(path, engine="openpyxl")
-    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl", startrow=1, startcol=1, header=False)
-    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl", sheet_name="sheet", index=False)
-    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl", header=["x", "y"])
-    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
     path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_excel(path_str, engine="openpyxl", columns=["col1"])
-    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:
@@ -3213,7 +3278,7 @@ def test_set_columns() -> None:
     df.columns = (1, 2)
     df.columns = (1, "a")
     if TYPE_CHECKING_INVALID_USAGE:
-        df.columns = "abc"  # type: ignore[assignment] # pyright: ignore[reportAttributeAccessIssue]  # pyrefly: ignore[bad-argument-type]
+        df.columns = "abc"  # type: ignore[assignment] # pyright: ignore[reportAttributeAccessIssue] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-assignment]
 
 
 def test_frame_index_numpy() -> None:
@@ -3241,8 +3306,8 @@ def test_frame_stack() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = df_multi_level_cols2.stack(0, future_stack=False)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        _1 = df_multi_level_cols2.stack(0, dropna=True, sort=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
+        df_multi_level_cols2.stack(0, future_stack=False)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df_multi_level_cols2.stack(0, dropna=True, sort=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_frame_reindex() -> None:
@@ -3272,7 +3337,7 @@ def test_frame_reindex() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
-        _0 = df.reindex([2, 1, 0], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
+        df.reindex([2, 1, 0], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_frame_reindex_like() -> None:
@@ -3289,8 +3354,8 @@ def test_frame_reindex_like() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
-        _0 = df.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
-        _1 = df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
+        df.reindex_like(other, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_not_hashable() -> None:
@@ -3306,9 +3371,9 @@ def test_not_hashable() -> None:
         pass
 
     if TYPE_CHECKING_INVALID_USAGE:
-        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
-        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_resample() -> None:
@@ -3406,7 +3471,7 @@ def test_to_dict_simple() -> None:
         def test(  # pyright: ignore[reportUnusedFunction]
             mapping: Mapping[Any, Any],
         ) -> None:
-            data.to_dict(into=mapping)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+            data.to_dict(into=mapping)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     def _1() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict(into=defaultdict), Never)
@@ -3471,11 +3536,7 @@ def test_to_dict_into_ordered_dict() -> None:
     data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
 
     check(
-        assert_type(
-            # into is a generic class with no default type parameters, hence the pyright ignore
-            data.to_dict(into=OrderedDict),
-            OrderedDict[Any, Any],  # pyright: ignore[reportUnknownArgumentType]
-        ),
+        assert_type(data.to_dict(into=OrderedDict), OrderedDict[Any, Any]),
         OrderedDict,
         tuple,
     )
@@ -3495,9 +3556,7 @@ def test_to_dict_into_ordered_dict() -> None:
     )
     check(
         assert_type(
-            # into is a generic class with no default type parameters, hence the pyright ignore
-            data.to_dict("records", into=OrderedDict),
-            list[OrderedDict[Any, Any]],  # pyright: ignore[reportUnknownArgumentType]
+            data.to_dict("records", into=OrderedDict), list[OrderedDict[Any, Any]]
         ),
         list,
         OrderedDict,
@@ -3698,6 +3757,18 @@ def test_loc_slice() -> None:
     check(assert_type(df.loc[:, "c1":"c2"], pd.DataFrame), pd.DataFrame)
 
 
+def test_loc_str() -> None:
+    """Test DataFrame.loc for str and np.str_ types."""
+    df = pd.DataFrame(
+        {"c1": [1, 2, 3, 4], "c2": [10, 20, 30, 40]}, index=["a", "b", "c", "d"]
+    )
+
+    check(assert_type(df.loc["b", :], pd.DataFrame | pd.Series), pd.Series)
+    check(assert_type(df.loc[["b"], :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[np.str_("a")], pd.DataFrame | pd.Series), pd.Series)
+    check(assert_type(df.loc[[np.str_("b")], :], pd.DataFrame), pd.DataFrame)
+
+
 def test_insert_newvalues() -> None:
     df = pd.DataFrame({"a": [1, 2]})
     ab = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
@@ -3752,7 +3823,7 @@ def test_astype() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
-        _0 = s.astype(int, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
+        s.astype(int, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_xs_frame_new() -> None:
@@ -3778,7 +3849,7 @@ def test_xs_frame_new() -> None:
     check(assert_type(s2, pd.Series | pd.DataFrame), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        df.xs(["mammel"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        df.xs(["mammel"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_align() -> None:
@@ -3798,9 +3869,15 @@ def test_align() -> None:
     aligned_df0, aligned_s0 = df0.align(s0, axis="index")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
     check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
-    aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
-    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "'int' is not supported as a fill value for str dtype. In",
+        lower="3.0.99",
+    ):
+        aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
+        check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+        check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
 
     s1 = pd.Series(data={"A": "A", "D": "D"})
     aligned_df0, aligned_s1 = df0.align(s1, axis="columns")
@@ -3823,7 +3900,7 @@ def test_align() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
-        _0 = df0.align(df1, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
+        df0.align(df1, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_to_dict_index() -> None:
@@ -3865,10 +3942,10 @@ def test_to_dict_index() -> None:
         str,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = df.to_dict(orient="records", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
-        _1 = df.to_dict(orient="dict", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
-        _2 = df.to_dict(orient="series", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
-        _3 = df.to_dict(orient="index", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
+        df.to_dict(orient="records", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.to_dict(orient="dict", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.to_dict(orient="series", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.to_dict(orient="index", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_suffix_prefix_index() -> None:
@@ -3883,7 +3960,13 @@ def test_suffix_prefix_index() -> None:
 
 def test_convert_dtypes_convert_floating() -> None:
     df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
-    dfn = df.convert_dtypes(convert_floating=False)
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        match="convert_floating keyword in DataFrame.convert_dtypes is deprecated",
+        lower="3.0.99",
+    ):
+        dfn = df.convert_dtypes(convert_floating=False)
     check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
 
 
@@ -3900,34 +3983,45 @@ def test_select_dtypes() -> None:
     check(assert_type(df.select_dtypes(np.number), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(object), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(include="bool"), pd.DataFrame), pd.DataFrame)
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
+    # TODO: facebook/pyrefly#3268
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                include=["float64"], exclude=None
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(include=["float64"], exclude=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                exclude=["int64"], include=None
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(exclude=["int64"], include=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                exclude=["int64", object]
-            ),
+            # pyrefly: ignore[no-matching-overload]
+            df.select_dtypes(exclude=["int64", object]),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"Passing 'datetimetz' to select_dtypes is deprecated and will raise",
+        "3.0.99",
+    ):
+        check(
+            assert_type(  # pyrefly: ignore[assert-type]
+                df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
+                    exclude=["datetimetz"]
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
     check(
         assert_type(  # pyrefly: ignore[assert-type]
             df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
@@ -3939,7 +4033,7 @@ def test_select_dtypes() -> None:
                     "timedelta",
                     "timedelta64",
                     "category",
-                    "datetimetz",
+                    pd.DatetimeTZDtype(tz=ZoneInfo("UTC")),
                     "datetime64[ns]",
                 ]
             ),
@@ -3953,7 +4047,7 @@ def test_select_dtypes() -> None:
         assert_never(df.select_dtypes([], []))
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = df.select_dtypes()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
+        df.select_dtypes()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     # str like dtypes are not allowed
     def _2() -> None:  # pyright: ignore[reportUnusedFunction]
@@ -3981,8 +4075,8 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[no-matching-overload]
-        _1 = df.to_json(date_format="epoch")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[no-matching-overload]
+        df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.to_json(date_format="epoch")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_interpolate() -> None:
@@ -4008,7 +4102,8 @@ def test_itertuples() -> None:
         assert_type(item.a, Scalar)
 
 
-def test_get() -> None:
+@pytest.mark.parametrize("d", [1])
+def test_get(d: int) -> None:
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]})
 
     # Get single column
@@ -4020,23 +4115,20 @@ def test_get() -> None:
         np.int64,
     )
     check(assert_type(df.get("z", default=None), pd.Series | None), type(None))
-    check(assert_type(df.get("a", default=1), pd.Series | int), pd.Series, np.int64)
-    check(assert_type(df.get("z", default=1), pd.Series | int), int)
+    # ty specialises to pd.Series | Literal[1] if we insert default=1
+    check(assert_type(df.get("a", default=d), pd.Series | int), pd.Series, np.integer)
+    check(assert_type(df.get("z", default=d), pd.Series | int), int)
 
     # Get multiple columns
     check(assert_type(df.get(["a"]), pd.DataFrame | None), pd.DataFrame)
     check(assert_type(df.get(["a", "b"]), pd.DataFrame | None), pd.DataFrame)
     check(assert_type(df.get(["z"]), pd.DataFrame | None), type(None))
     check(
-        assert_type(df.get(["a", "b"], default=None), pd.DataFrame | None),
-        pd.DataFrame,
+        assert_type(df.get(["a", "b"], default=None), pd.DataFrame | None), pd.DataFrame
     )
     check(assert_type(df.get(["z"], default=None), pd.DataFrame | None), type(None))
-    check(
-        assert_type(df.get(["a", "b"], default=1), pd.DataFrame | int),
-        pd.DataFrame,
-    )
-    check(assert_type(df.get(["z"], default=1), pd.DataFrame | int), int)
+    check(assert_type(df.get(["a", "b"], default=d), pd.DataFrame | int), pd.DataFrame)
+    check(assert_type(df.get(["z"], default=d), pd.DataFrame | int), int)
 
     key = ["a", "b"]
     check(assert_type(df.get(key), pd.DataFrame | None), pd.DataFrame)
@@ -4138,24 +4230,19 @@ def test_transpose() -> None:
     check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = df.transpose(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
+        df.transpose(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_combine() -> None:
     df1 = pd.DataFrame({"A": [0, 0], "B": [4, 4]})
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
-    take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownLambdaType,reportUnknownVariableType]
+
+    take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownVariableType]
         s1 if s1.sum() < s2.sum() else s2  # pyright: ignore[reportUnknownMemberType]
     )
     assert_type(
         check(
-            df1.combine(
-                df2,
-                take_smaller,  # pyright: ignore[reportUnknownArgumentType]
-                fill_value=0,
-                overwrite=False,
-            ),
-            pd.DataFrame,
+            df1.combine(df2, take_smaller, fill_value=0, overwrite=False), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -4372,11 +4459,11 @@ def test_from_records() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # test with single dictionary
         data_single_dict = {"id": 1, "name": "a"}
-        _0 = pd.DataFrame.from_records(data_single_dict, index=["0"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _0 = pd.DataFrame.from_records(data_single_dict, index=["0"])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
         # testing with mapping of sequences
         data_mapping_dict = {"id": [1, 2], "name": ["a", "b"]}
-        _1 = pd.DataFrame.from_records(data_mapping_dict)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]  # pyrefly: ignore[bad-argument-type]
+        _1 = pd.DataFrame.from_records(data_mapping_dict)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_frame_index_setter() -> None:
@@ -4401,20 +4488,13 @@ def test_frame_copy_deprecated() -> None:
     df = pd.DataFrame({"a": [1, 2, 3]})
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # truncate
-        _0 = df.truncate(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
-        # tz_convert
-        _1 = df.tz_convert("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
-        # tz_localize
-        _2 = df.tz_localize("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
-        # infer_objects
-        _3 = df.infer_objects(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
-        # set_axis
-        _4 = df.set_axis([1, 2, 3], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
-        # to_period
-        _5 = df.to_period(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
-        # to_timestamp
-        _6 = df.to_timestamp(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue,reportUnknownVariableType]  # pyrefly: ignore[unexpected-keyword]
+        df.truncate(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.tz_convert("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.tz_localize("UTC", copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.infer_objects(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.set_axis([1, 2, 3], copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.to_period(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        df.to_timestamp(copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_rolling_first() -> None:
@@ -4535,26 +4615,20 @@ def test_frame_pipe() -> None:
         }
     )
 
-    def func_r(x: Rolling[pd.DataFrame], k: int) -> pd.DataFrame:
+    def func_r(x: pd.DataFrame, k: int) -> pd.Series:
         return x.max() - k * x.min()
 
-    def func_e(x: Expanding[pd.DataFrame], k: int) -> pd.DataFrame:
+    def func_e(x: pd.DataFrame, k: int) -> pd.Series:
         return x.max() - k * x.min()
 
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame
-        ),
+        assert_type(df.rolling(2).pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
     check(assert_type(df.rolling(2).pipe(func_r, k=2), pd.DataFrame), pd.DataFrame)
 
-    # TODO: https://github.com/facebook/pyrefly/pyrefly/issues/3268
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame
-        ),
+        assert_type(df.expanding().pipe(lambda x: x.min() - x.max()), pd.DataFrame),
         pd.DataFrame,
     )
     check(assert_type(df.expanding().pipe(func_e, k=2), pd.DataFrame), pd.DataFrame)

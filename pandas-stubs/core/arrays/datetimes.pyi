@@ -11,6 +11,7 @@ from pandas.core.arrays.period import PeriodArray
 from pandas.core.arrays.string_ import BaseStringArray
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -43,15 +44,15 @@ class DatetimeArray(TimelikeOps, DatelikeOps):
         copy: bool = False,
     ) -> None: ...
     @property
-    def dtype(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-        self,
-    ) -> np.dtypes.DateTime64DType | DatetimeTZDtype: ...
+    @override
+    def dtype(self) -> np.dtypes.DateTime64DType | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     @property
     def tz(self) -> _tzinfo | None: ...
     @property
     def tzinfo(self) -> _tzinfo | None: ...
     @property
     def is_normalized(self) -> bool: ...
+    @override
     def __iter__(self) -> Iterator[Timestamp]: ...
     def tz_convert(self, tz: TimeZones) -> Self: ...
     def tz_localize(

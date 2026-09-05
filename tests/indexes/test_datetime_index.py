@@ -6,7 +6,12 @@ from typing import assert_type
 import numpy as np
 import pandas as pd
 
-from tests import check
+from pandas.errors import Pandas4Warning
+
+from tests import (
+    check,
+    pytest_warns_bounded,
+)
 from tests._typing import (
     np_1darray_bool,
     np_1darray_intp,
@@ -59,13 +64,18 @@ def test_datetime_index_constructor() -> None:
     # https://github.com/microsoft/python-type-stubs/issues/115
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
 
-    check(
-        assert_type(
-            pd.DatetimeIndex(data=df["A"], tz=None, ambiguous="NaT", copy=True),
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"The 'ambiguous' keyword in DatetimeIndex is deprecated and will be removed",
+        lower="3.0.99",
+    ):
+        check(
+            assert_type(
+                pd.DatetimeIndex(data=df["A"], tz=None, ambiguous="NaT", copy=True),
+                pd.DatetimeIndex,
+            ),
             pd.DatetimeIndex,
-        ),
-        pd.DatetimeIndex,
-    )
+        )
 
 
 def test_intersection() -> None:

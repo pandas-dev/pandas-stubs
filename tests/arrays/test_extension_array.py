@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from pandas.api.typing.aliases import ArrayLike
 from pandas.core.arrays import ExtensionArray
+from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import (
     Int32Dtype,
     IntegerArray,
@@ -54,3 +55,22 @@ def test_ea_common() -> None:
     check(assert_type(arr.searchsorted([1]), np_1darray_intp), np_1darray_intp)
     check(assert_type(arr.searchsorted(1, side="left"), np.intp), np.intp)
     check(assert_type(arr.searchsorted(1, sorter=[1, 0, 2]), np.intp), np.intp)
+
+    # Note: interpolate promotes IntegerArray to FloatingArray, so it is tested
+    # here on a nullable float array to keep the result type equal to `Self`.
+    float_arr = array([1.0, 2.0, None, 4.0], dtype="Float64")
+    check(
+        assert_type(
+            float_arr.interpolate(
+                method="linear",
+                axis=0,
+                index=pd.Index(range(len(float_arr))),
+                limit=None,
+                limit_direction="forward",
+                limit_area=None,
+                copy=True,
+            ),
+            FloatingArray,
+        ),
+        FloatingArray,
+    )

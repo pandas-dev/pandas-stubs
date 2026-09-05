@@ -5,6 +5,7 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    ClassVar,
     Generic,
     Literal,
     Never,
@@ -13,13 +14,13 @@ from typing import (
 )
 
 import numpy as np
-from pandas import Series
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
+from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.missing import NAType
 from pandas._typing import (
@@ -36,9 +37,9 @@ from pandas._typing import (
     SequenceNotStr,
     np_1darray,
     np_1darray_bool,
-    np_1darray_str,
     np_ndarray_anyint,
     np_ndarray_float,
+    np_ndarray_str,
 )
 
 from pandas.core.dtypes.dtypes import (
@@ -49,8 +50,9 @@ from pandas.core.dtypes.dtypes import (
 
 class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     __array_priority__: int = ...
+    __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload
-    def __new__(  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
         values: Sequence[Never],
         categories: SequenceNotStr[Hashable] | AnyArrayLike | None = None,
@@ -62,10 +64,10 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     def __new__(  # pyright: ignore[reportOverlappingOverload]
         cls,
         values: (
-            list[str] | np_1darray_str | SequenceNotStr[str] | Series[str] | Index[str]
+            list[str] | np_ndarray_str | SequenceNotStr[str] | Series[str] | Index[str]
         ),
         categories: (
-            SequenceNotStr[str] | Series[str] | Index[str] | np_1darray_str | None
+            SequenceNotStr[str] | Series[str] | Index[str] | np_ndarray_str | None
         ) = None,
         ordered: bool | None = None,
         dtype: CategoricalDtype | None = None,
@@ -101,7 +103,7 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
             SequenceNotStr[CategoricalValueT1]
             | Series[CategoricalValueT1]
             | Index[CategoricalValueT1]
-            | np_1darray_str
+            | np_ndarray_str
             | None
         ) = None,
         ordered: bool | None = None,
@@ -122,7 +124,9 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     @property
     def ordered(self) -> Ordered: ...
     @property
+    @override
     def dtype(self) -> CategoricalDtype[CategoricalValueT]: ...
+    @override
     def tolist(self) -> list[CategoricalValueT]: ...
     @overload
     @classmethod
@@ -189,20 +193,57 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     def remove_categories(
         self, removals: Hashable | SequenceNotStr[Hashable] | AnyArrayLike
     ) -> Self: ...
+    @overload  # type: ignore[override]
+    @override
+    def __eq__(self, other: Series, /) -> Series[bool]: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
+    @overload
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
+        self, other: object, /
+    ) -> np_1darray_bool: ...
+    @overload  # type: ignore[override]
+    @override
+    def __ne__(self, other: Series, /) -> Series[bool]: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
+    @overload
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
+        self, other: object, /
+    ) -> np_1darray_bool: ...
+    @overload
+    def __lt__(self, other: Self, /) -> np_1darray_bool: ...
+    @overload
+    def __lt__(  # type: ignore[overload-overlap]
+        self: Categorical[CategoricalValueT1], other: Series[CategoricalValueT1], /
+    ) -> Series[bool]: ...
+    @overload
+    def __lt__(self, other: CategoricalValueT, /) -> np_1darray_bool: ...
+    @overload
+    def __le__(self, other: Self, /) -> np_1darray_bool: ...
+    @overload
+    def __le__(  # type: ignore[overload-overlap]
+        self: Categorical[CategoricalValueT1], other: Series[CategoricalValueT1], /
+    ) -> Series[bool]: ...
+    @overload
+    def __le__(self, other: CategoricalValueT, /) -> np_1darray_bool: ...
+    @overload
+    def __gt__(self, other: Self, /) -> np_1darray_bool: ...
+    @overload
+    def __gt__(  # type: ignore[overload-overlap]
+        self: Categorical[CategoricalValueT1], other: Series[CategoricalValueT1], /
+    ) -> Series[bool]: ...
+    @overload
+    def __gt__(self, other: CategoricalValueT, /) -> np_1darray_bool: ...
+    @overload
+    def __ge__(self, other: Self, /) -> np_1darray_bool: ...
+    @overload
+    def __ge__(  # type: ignore[overload-overlap]
+        self: Categorical[CategoricalValueT1], other: Series[CategoricalValueT1], /
+    ) -> Series[bool]: ...
+    @overload
+    def __ge__(self, other: CategoricalValueT, /) -> np_1darray_bool: ...
     def remove_unused_categories(self) -> Self: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
-    def __lt__(self, other: Any) -> bool: ...
-    def __gt__(self, other: Any) -> bool: ...
-    def __le__(self, other: Any) -> bool: ...
-    def __ge__(self, other: Any) -> bool: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...
-    @property
-    def nbytes(self) -> int: ...
     def memory_usage(self, deep: bool = False) -> int: ...
-    def isna(self) -> np_1darray_bool: ...
     def isnull(self) -> np_1darray_bool: ...
     def notna(self) -> np_1darray_bool: ...
     def notnull(self) -> np_1darray_bool: ...
@@ -222,15 +263,14 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
         ascending: bool = True,
         na_position: NaPosition = "last",
     ) -> None: ...
-    def __contains__(self, item: Hashable) -> bool: ...
+    @override
+    def __contains__(self, item: Hashable, /) -> bool: ...
     @overload
-    def __getitem__(  # pyrefly: ignore[bad-override]
-        self, key: ScalarIndexer
-    ) -> CategoricalValueT | NAType: ...
+    @override
+    # pyrefly: ignore[bad-override]
+    def __getitem__(self, key: ScalarIndexer, /) -> CategoricalValueT | NAType: ...
     @overload
-    def __getitem__(  # ty: ignore[invalid-method-override]
-        self, key: SequenceIndexer | PositionalIndexerTuple
-    ) -> Self: ...
+    def __getitem__(self, key: SequenceIndexer | PositionalIndexerTuple, /) -> Self: ...
     def min(
         self, *, skipna: bool = True, **kwargs: Any
     ) -> CategoricalValueT | NAType: ...
@@ -243,9 +283,7 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
         self, values: AnyArrayLike | SequenceNotStr[Hashable]
     ) -> np_1darray_bool: ...
 
-class CategoricalAccessor(
-    PandasDelegate, NoNewAttributesMixin, Generic[CategoricalValueT]
-):
+class CategoricalAccessor(PandasDelegate, Generic[CategoricalValueT]):
     @property
     def codes(self) -> Series[int]: ...
     @property

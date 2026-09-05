@@ -3,6 +3,7 @@ from typing import assert_type
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 
 from tests import check
 from tests._typing import (
@@ -10,11 +11,15 @@ from tests._typing import (
     np_ndarray_int64,
 )
 
-# left operand
-left = pd.Index([1j, 2j, 3j])
+
+@pytest.fixture
+def left() -> "pd.Index[complex]":
+    """Left operand"""
+    lo = pd.Index([1j, 2j, 3j])
+    return check(assert_type(lo, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
 
-def test_add_py_scalar() -> None:
+def test_add_py_scalar(left: "pd.Index[complex]") -> None:
     """Test pd.Index[complex] + Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
@@ -29,7 +34,7 @@ def test_add_py_scalar() -> None:
     check(assert_type(c + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
 
-def test_add_py_sequence() -> None:
+def test_add_py_sequence(left: "pd.Index[complex]") -> None:
     """Test pd.Index[complex] + Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
@@ -44,7 +49,7 @@ def test_add_py_sequence() -> None:
     check(assert_type(c + left, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
 
-def test_add_numpy_array() -> None:
+def test_add_numpy_array(left: "pd.Index[complex]") -> None:
     """Test pd.Index[complex] + numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -71,7 +76,7 @@ def test_add_numpy_array() -> None:
     )
 
 
-def test_add_pd_index() -> None:
+def test_add_pd_index(left: "pd.Index[complex]") -> None:
     """Test pd.Index[complex] + pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])

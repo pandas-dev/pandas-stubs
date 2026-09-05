@@ -30,6 +30,8 @@ from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.util.version import Version
 import pytest
 
+from pandas.errors import Pandas4Warning
+
 from pandas.core.dtypes.base import ExtensionDtype
 
 if TYPE_CHECKING:
@@ -40,6 +42,7 @@ LINUX = sys.platform == "linux"
 WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
 PD_LTE_31 = Version(pd.__version__) < Version("3.0.99")
+NP_GTE_25 = Version(np.__version__) >= Version("2.5.0")
 
 
 def check(
@@ -88,8 +91,10 @@ def check(
     value: Any
     if isinstance(actual, pd.Series):
         # cast is by design microsoft/pyright#11191
+        # pyrefly: ignore[redundant-cast]
         value = cast(pd.Series, actual).iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
+        # pyrefly: ignore[redundant-cast]
         # cast is by design microsoft/pyright#11191
         value = cast(pd.Index, actual)[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
@@ -104,9 +109,7 @@ def check(
 
     if not isinstance(value, dtype):
         # pyright ignore is by design microsoft/pyright#11191
-        raise RuntimeError(
-            f"Expected type '{dtype}' but got '{type(value)}'"  # pyright: ignore[reportUnknownArgumentType]
-        )
+        raise RuntimeError(f"Expected type '{dtype}' but got '{type(value)}'")
     # pyright ignore is by design microsoft/pyright#11190
     return actual  # pyright: ignore[reportUnknownVariableType]
 
@@ -189,11 +192,28 @@ def pytest_warns_bounded(
         current = Version(pd.__version__)
     else:
         current = Version(version_str)
-    if lb < current < ub:
+    return pytest_warns_conditioned(warning, match, lb < current < ub, upper_exception)
+
+
+def pytest_warns_conditioned(
+    warning: type[Warning],
+    match: str,
+    condition: bool,
+    upper_exception: type[Exception] | None = None,
+) -> AbstractContextManager[Any]:
+    if condition:
         return pytest.warns(warning, match=match)
     if upper_exception is None:
         return nullcontext()
     return suppress(upper_exception)
+
+
+def pytest_warns_excel_pandas4() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        "The default engine for reading 'xlsx' files will ch",
+        lower="3.0.99",
+    )
 
 
 def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception] | None:

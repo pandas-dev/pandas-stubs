@@ -10,6 +10,8 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
+from pandas.core.indexes.base import Index
 
 from pandas._typing import (
     AnyArrayLikeInt,
@@ -17,6 +19,7 @@ from pandas._typing import (
     AstypeArg,
     AxisInt,
     Dtype,
+    InterpolateOptions,
     ListLike,
     Renamer,
     Scalar,
@@ -27,7 +30,6 @@ from pandas._typing import (
     np_1darray_bool,
     np_1darray_intp,
     np_ndarray,
-    npt,
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
@@ -37,13 +39,13 @@ class ExtensionArray:
         self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
     @overload
-    def __getitem__(self, item: ScalarIndexer) -> Any: ...
+    def __getitem__(self, item: ScalarIndexer, /) -> Any: ...
     @overload
-    def __getitem__(self, item: SequenceIndexer) -> Self: ...
-    def __setitem__(self, key: int | slice | np_ndarray, value: Any) -> None: ...
+    def __getitem__(self, item: SequenceIndexer, /) -> Self: ...
+    def __setitem__(self, key: int | slice | np_ndarray, value: Any, /) -> None: ...
     def __len__(self) -> int: ...
     def __iter__(self) -> Iterator[Any]: ...
-    def __contains__(self, item: object) -> bool | np.bool_: ...
+    def __contains__(self, item: object, /) -> bool | np.bool_: ...
     def to_numpy(
         self,
         dtype: npt.DTypeLike | None = ...,
@@ -54,6 +56,8 @@ class ExtensionArray:
     def dtype(self) -> ExtensionDtype: ...
     @property
     def shape(self) -> tuple[int]: ...
+    @property
+    def size(self) -> int: ...
     @property
     def ndim(self) -> int: ...
     @property
@@ -78,15 +82,15 @@ class ExtensionArray:
     def searchsorted(
         self,
         value: ListLike,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = ...,
+        side: Literal["left", "right"] = "left",
+        sorter: ListLike | None = None,
     ) -> np_1darray_intp: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
-        side: Literal["left", "right"] = ...,
-        sorter: ListLike | None = ...,
+        side: Literal["left", "right"] = "left",
+        sorter: ListLike | None = None,
     ) -> np.intp: ...
     def factorize(self, use_na_sentinel: bool = True) -> tuple[np_1darray, Self]: ...
     def repeat(
@@ -121,6 +125,18 @@ class ExtensionArray:
     def map(
         self, mapper: Renamer, na_action: Literal["ignore"] | None = None
     ) -> Self: ...
+    def interpolate(
+        self,
+        *,
+        method: InterpolateOptions,
+        axis: int,
+        index: Index,
+        limit: int | None,
+        limit_direction: Literal["forward", "backward", "both"],
+        limit_area: Literal["inside", "outside"] | None,
+        copy: bool,
+        **kwargs: Any,
+    ) -> ExtensionArray: ...
 
 class ExtensionArraySupportsAnyAll(ExtensionArray):
     def any(self, *, skipna: bool = True) -> bool: ...

@@ -9,6 +9,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -19,10 +20,15 @@ from tests._typing import (
     np_ndarray_td,
 )
 
-left = pd.Series([pd.Timedelta(1, "s")])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Series[pd.Timedelta]":
+    """Left operand"""
+    lo = pd.Series([pd.Timedelta(1, "s")])
+    return check(assert_type(lo, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_sub_py_scalar() -> None:
+def test_sub_py_scalar(left: "pd.Series[pd.Timedelta]") -> None:
     """Test pd.Series[pd.Timedelta] - Python native scalars"""
     s = datetime(2025, 8, 20)
     d = timedelta(seconds=1)
@@ -42,7 +48,7 @@ def test_sub_py_scalar() -> None:
     check(assert_type(left.rsub(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_sub_numpy_scalar() -> None:
+def test_sub_numpy_scalar(left: "pd.Series[pd.Timedelta]") -> None:
     """Test pd.Series[pd.Timedelta] - numpy scalars"""
     s = np.datetime64("2025-08-20")
     d = np.timedelta64(1, "s")
@@ -62,7 +68,7 @@ def test_sub_numpy_scalar() -> None:
     check(assert_type(left.rsub(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_sub_pd_scalar() -> None:
+def test_sub_pd_scalar(left: "pd.Series[pd.Timedelta]") -> None:
     """Test pd.Series[pd.Timedelta] - pandas scalars"""
     s = pd.Timestamp("2025-08-20")
     d = pd.Timedelta(seconds=1)
@@ -82,7 +88,7 @@ def test_sub_pd_scalar() -> None:
     check(assert_type(left.rsub(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_sub_py_sequence() -> None:
+def test_sub_py_sequence(left: "pd.Series[pd.Timedelta]") -> None:
     """Test pd.Series[pd.Timedelta] - Python native sequences"""
     s = [datetime(2025, 8, 20)]
     d = [timedelta(seconds=1)]
@@ -103,7 +109,7 @@ def test_sub_py_sequence() -> None:
     check(assert_type(left.rsub(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_sub_numpy_array() -> None:
+def test_sub_numpy_array(left: "pd.Series[pd.Timedelta]") -> None:
     """Test pd.Series[pd.Timedelta] - numpy arrays"""
     s = np.array([np.datetime64("2025-08-20")], np.datetime64)
     d = np.array([np.timedelta64(1, "s")], np.timedelta64)
@@ -126,7 +132,7 @@ def test_sub_numpy_array() -> None:
     check(assert_type(left.rsub(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_sub_pd_index() -> None:
+def test_sub_pd_index(left: "pd.Series[pd.Timedelta]") -> None:
     """Test pd.Series[pd.Timedelta] - pandas Indexes"""
     s = pd.Index([pd.Timestamp("2025-08-20")])
     d = pd.Index([pd.Timedelta(seconds=1)])
@@ -146,7 +152,7 @@ def test_sub_pd_index() -> None:
     check(assert_type(left.rsub(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_sub_pd_series() -> None:
+def test_sub_pd_series(left: "pd.Series[pd.Timedelta]") -> None:
     """Test pd.Series[pd.Timedelta] - pandas Series"""
     s = pd.Series([pd.Timestamp("2025-08-20")])
     d = pd.Series([pd.Timedelta(seconds=1)])

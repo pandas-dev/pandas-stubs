@@ -1,4 +1,9 @@
+# mypy: disable-error-code=type-arg
 # pyright: reportMissingTypeArgument=false
+# ty ignore missing-type-argument is unnecessary with dist, but necessary with src
+# ty: ignore[missing-type-argument,unused-ignore-comment,unused-ignore-comment]
+from __future__ import annotations
+
 from collections.abc import (
     Hashable,
     Iterator,
@@ -29,10 +34,18 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S})
 
 
+def s2scalar(val: Series) -> float:
+    # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
+    return val.mean()  # ty: ignore[unsound-return-statement]
+
+
 def test_iter() -> None:
     assert_type(iter(DF.resample("ME")), Iterator[tuple[Hashable, DataFrame]])
     for v in DF.resample("ME"):
         check(assert_type(v, tuple[Hashable, DataFrame]), tuple)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.resample("ME", axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_agg_funcs() -> None:
@@ -101,12 +114,15 @@ def test_aggregate() -> None:
         ),
         DataFrame,
     )
-    # TODO: astral-sh/ty#3956
+    # GH 1844
+    resample_agg = {"col1": "sum", "col2": "mean"}
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
-                {"col1": ["sum", np.mean], "col2": np.mean}
-            ),
+        assert_type(DF.resample("ME").aggregate(resample_agg), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            DF.resample("ME").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
             DataFrame,
         ),
         DataFrame,
@@ -138,32 +154,29 @@ def test_interpolate() -> None:
 
 
 def test_pipe() -> None:
-    def f(val: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
-        assert isinstance(val, DatetimeIndexResampler)
+    def f(val: DatetimeIndexResampler[DataFrame]) -> DataFrame:
         return DataFrame(val)
 
     check(assert_type(DF.resample("ME").pipe(f), DataFrame), DataFrame)
 
-    def g(val: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
-        assert isinstance(val, DatetimeIndexResampler)
+    def g(val: DatetimeIndexResampler[DataFrame]) -> DataFrame:
         return val.mean()
 
     check(assert_type(DF.resample("ME").pipe(g), DataFrame), DataFrame)
 
-    def h(val: "DatetimeIndexResampler[DataFrame]") -> Series:
-        assert isinstance(val, DatetimeIndexResampler)
+    def h(val: DatetimeIndexResampler[DataFrame]) -> Series:
         return val.mean().mean()
 
     check(assert_type(DF.resample("ME").pipe(h), Series), Series)
 
-    def i(val: "DatetimeIndexResampler[DataFrame]") -> float:
-        assert isinstance(val, DatetimeIndexResampler)
+    def i(val: DatetimeIndexResampler[DataFrame]) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean().mean())
 
     check(assert_type(DF.resample("ME").pipe(i), float), float)
 
     def j(
-        res: "DatetimeIndexResampler[DataFrame]",
+        res: DatetimeIndexResampler[DataFrame],
         pos: int,
         /,
         arg1: list[float],
@@ -171,7 +184,6 @@ def test_pipe() -> None:
         *,
         kw: tuple[int],
     ) -> DataFrame:
-        assert isinstance(res, DatetimeIndexResampler)
         return DataFrame({"a": [1, 2, 3]})
 
     check(
@@ -188,7 +200,7 @@ def test_pipe() -> None:
         DF.resample("ME").pipe(j, 1, [1.0], 11, (1,))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         DF.resample("ME").pipe(j, pos=1, arg1=[1.0], arg2=11, kw=(1,))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
-    def k(x: int, t: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
+    def k(x: int, t: DatetimeIndexResampler[DataFrame]) -> DataFrame:
         assert isinstance(x, int)
         return DataFrame({"a": [1, 2, 3]})
 
@@ -208,6 +220,9 @@ def test_transform() -> None:
 def test_iter_series() -> None:
     for v in S.resample("ME"):
         check(assert_type(v, tuple[Hashable, Series]), tuple)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        S.resample("ME", axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_agg_funcs_series() -> None:
@@ -275,10 +290,7 @@ def test_aggregate_series() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> float:
-        return val.mean()
-
-    check(assert_type(S.resample("ME").aggregate(f), Series), Series)
+    check(assert_type(S.resample("ME").aggregate(s2scalar), Series), Series)
 
 
 def test_asfreq_series() -> None:
@@ -291,20 +303,18 @@ def test_interpolate_series() -> None:
 
 
 def test_pipe_series() -> None:
-    def f(val: "DatetimeIndexResampler[Series]") -> Series:
-        assert isinstance(val, DatetimeIndexResampler)
+    def f(val: DatetimeIndexResampler[Series]) -> Series:
         return Series(val)
 
     check(assert_type(S.resample("ME").pipe(f), Series), Series)
 
-    def g(val: "DatetimeIndexResampler[Series]") -> float:
-        assert isinstance(val, DatetimeIndexResampler)
+    def g(val: DatetimeIndexResampler[Series]) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(S.resample("ME").pipe(g), float), float)
 
-    def h(val: "DatetimeIndexResampler[Series]") -> DataFrame:
-        assert isinstance(val, DatetimeIndexResampler)
+    def h(val: DatetimeIndexResampler[Series]) -> DataFrame:
         return DataFrame({0: val, 1: val})
 
     check(assert_type(S.resample("ME").pipe(h), DataFrame), DataFrame)
@@ -320,9 +330,6 @@ def test_transform_series() -> None:
 def test_aggregate_series_combinations() -> None:
     def s2series(val: Series) -> Series:
         return Series(val)
-
-    def s2scalar(val: Series) -> float:
-        return float(val.mean())
 
     check(assert_type(S.resample("ME").aggregate(np.sum), Series), Series)
     check(
@@ -356,6 +363,7 @@ def test_aggregate_frame_combinations() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
+        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
@@ -372,31 +380,23 @@ def test_aggregate_frame_combinations() -> None:
         ),
         DataFrame,
     )
-    # TODO: astral-sh/ty#3956 for the following three cases
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
-                {"col1": [np.sum], "col2": ["sum", np.mean]}
-            ),
+        assert_type(
+            DF.resample("ME").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
             DataFrame,
         ),
         DataFrame,
     )
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
-                {"col1": np.sum, "col2": ["sum", np.mean]}
-            ),
+        assert_type(
+            DF.resample("ME").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
             DataFrame,
         ),
         DataFrame,
     )
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            DF.resample("ME").aggregate(  # ty: ignore[no-matching-overload]
-                {"col1": "sum", "col2": [np.mean]}
-            ),
-            DataFrame,
+        assert_type(
+            DF.resample("ME").aggregate({"col1": "sum", "col2": [np.mean]}), DataFrame
         ),
         DataFrame,
     )

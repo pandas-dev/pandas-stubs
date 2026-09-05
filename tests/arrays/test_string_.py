@@ -26,7 +26,7 @@ from tests.utils import powerset
 @pytest.mark.parametrize("data", list(powerset(["pd", np.str_("pd")])))
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_STRING_ARGS.items())
 def test_construction_dtype(
-    data: tuple[str | np.str_, ...], dtype: PandasStrDtypeArg, target_dtype: type
+    data: tuple[str, ...], dtype: PandasStrDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
     check(assert_type(pd.array([*data], dtype), StringArray), StringArray, dtype_notna)
@@ -109,11 +109,11 @@ def test_constructor(values: np_ndarray_object | StringArray) -> None:
 def test_dtype() -> None:
     arr = pd.array(["a"], "string[python]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['python']]"), pd.StringDtype)
-    # TODO: https://github.com/facebook/pyrefly/issues/3742
-    assert (
-        assert_type(  # pyrefly: ignore[assert-type]
-            arr.dtype.storage,  # pyrefly: ignore[no-matching-overload]
-            Literal["python"],
-        )
-        == "python"
-    )
+    assert assert_type(arr.dtype.storage, Literal["python"]) == "python"
+
+
+def test_assign() -> None:
+    arr = pd.array(["a", "a"])
+    arr[0] = "11"
+    arr[:1] = ["12"]
+    arr[np.array([True, False])] = ["333"]

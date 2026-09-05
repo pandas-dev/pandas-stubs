@@ -17,6 +17,7 @@ from pandas.core.series import Series
 from pandas._typing import (
     S2,
     Axis,
+    AxisColumn,
     AxisIndex,
     HashableT1,
     HashableT2,
@@ -80,7 +81,20 @@ def concat(  # type: ignore[overload-overlap]
 ) -> Series: ...
 @overload
 def concat(
-    objs: Iterable[DataFrameT0 | None],
+    objs: Iterable[Series | None] | Mapping[HashableT1, Series | None],
+    *,
+    axis: AxisColumn,
+    join: Literal["inner", "outer"] = "outer",
+    ignore_index: bool = False,
+    keys: Iterable[HashableT2] | None = None,
+    levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] | None = None,
+    names: list[HashableT4] | None = None,
+    verify_integrity: bool = False,
+    sort: bool = False,
+) -> DataFrame: ...
+@overload
+def concat(
+    objs: Iterable[DataFrameT0 | None] | Mapping[HashableT1, DataFrameT0 | None],
     *,
     axis: Axis = 0,
     join: Literal["inner", "outer"] = "outer",
@@ -97,7 +111,7 @@ def concat(
     *,
     axis: Axis = 0,
     join: Literal["inner", "outer"] = "outer",
-    ignore_index: bool = False,
+    ignore_index: Literal[False] = False,
     keys: Iterable[HashableT2] | None = None,
     levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] | None = None,
     names: list[HashableT4] | None = None,

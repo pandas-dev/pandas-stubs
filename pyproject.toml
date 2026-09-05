@@ -1,6 +1,6 @@
 [project]
 name = "pandas-stubs"
-version = "3.0.3.260530"
+version = "3.0.5.260730"
 description = "Type annotations for pandas"
 authors = [{name = "The Pandas Development Team", email = "pandas-dev@python.org"}]
 license = "BSD-3-Clause"
@@ -21,7 +21,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
-dependencies = ["numpy>=1.23.5,<2.5"]  # TODO: pandas-dev/pandas-stubs#1786 remove <2.5
+dependencies = ["numpy>=1.23.5"]
 
 [project.urls]
 Homepage = "https://pandas.pydata.org"
@@ -32,12 +32,13 @@ Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 [dependency-groups]
 dev = [
   "mypy>=2.2.0",
-  "pandas==3.0.3",
+  "pandas==3.0.5",
+  "numpy>=2.5.2;python_version>='3.12'",
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright>=1.1.410",
-  "ty>=0.0.58",
-  "pyrefly>=1.1.0",
+  "ty>=0.0.76",
+  "pyrefly>=1.2.0",
   "poethepoet>=0.16.5",
   "loguru>=0.6.0",
   "typing-extensions>=4.5.0",
@@ -69,7 +70,7 @@ dev = [
   "pytz>=2025.2",
   "types-pytz>=2022.1.1",
   "pyiceberg>=0.10.0",
-  "numpy-typing-compat>=20260602",
+  "optype[numpy]"
 ]
 
 [build-system]
@@ -110,6 +111,10 @@ script = "scripts.test.run:ty_src"
 help = "Run ty on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='ty')"
 
+[tool.poe.tasks.ty_all]
+help = "Run ty on 'tests' (using the local stubs) and on the local stubs with all rules raising errors"
+script = "scripts.test.run:ty_src_all"
+
 [tool.poe.tasks.pyrefly]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyrefly_src"
@@ -117,6 +122,10 @@ script = "scripts.test.run:pyrefly_src"
 [tool.poe.tasks.pyrefly_dist]
 help = "Run pyrefly on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='pyrefly')"
+
+[tool.poe.tasks.pyrefly_all]
+help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'all'"
+script = "scripts.test.run:pyrefly_src_all"
 
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
@@ -147,7 +156,7 @@ args = [
 ]
 
 [tool.poe.tasks.type_completeness]
-help = "Check type completeness"
+help = "Check type completeness using pyrefly"
 script = "scripts.test.run:type_completeness"
 
 [tool.isort]
@@ -188,6 +197,7 @@ extend-select = ["ALL"]
 ignore = [
   # The following rules are ignored permanently for good reasons
   "COM",    # https://docs.astral.sh/ruff/rules/#flake8-commas-com
+  "CPY001", # https://docs.astral.sh/ruff/rules/missing-copyright-notice/
   "D",      # https://docs.astral.sh/ruff/rules/#pydocstyle-d
   "E501",   # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
   "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
@@ -205,8 +215,6 @@ ignore = [
   "N",      # https://docs.astral.sh/ruff/rules/#pep8-naming-n
   "TD002",  # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
-  "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
-  "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
   "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "ERA001",
@@ -233,11 +241,9 @@ ignore = [
   "S101",    # https://docs.astral.sh/ruff/rules/assert/
   "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
-  "A001",   # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
   "PYI042", # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "SLF001", # https://docs.astral.sh/ruff/rules/private-member-access/
-  "ERA",
-  "RUF",
+  "ERA001",  # https://docs.astral.sh/ruff/rules/commented-out-code/
   "SIM",
   "TRY",
   "PT",
@@ -285,11 +291,15 @@ strict_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 warn_no_return = true
-warn_return_any = false     # TODO
+warn_return_any = true
 warn_unreachable = true
 # Suppressing errors
 ignore_errors = false
-enable_error_code = "ignore-without-code" # same as in pandas
+enable_error_code = [
+  "ignore-without-code",  # same as in pandas
+    # TODO: exhaust https://mypy.readthedocs.io/en/stable/error_code_list2.html
+  "explicit-override"
+]
 # Miscellaneous strictness flags
 allow_untyped_globals = false
 allow_redefinition = false
@@ -306,9 +316,23 @@ typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false    # use pyright-specific ignores
-reportUnnecessaryTypeIgnoreComment = true
+reportUnknownArgumentType = false   # users will do the same
+reportUnknownLambdaType = false     # users will do the same
 # enable optional checks
-reportMissingModuleSource = true
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-settings-defaults
+deprecateTypingAliases = true
+enableExperimentalFeatures = false
+reportCallInDefaultInitializer = true
+reportImplicitOverride = true
+reportImplicitStringConcatenation = true
+reportImportCycles = "none"
+reportMissingSuperCall = true
+reportPropertyTypeMismatch = "none"
+reportUninitializedInstanceVariable = true
+reportUnnecessaryTypeIgnoreComment = true
+reportUnreachable = "none"
+reportUnusedCallResult = "none"
+
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser, ttest"
@@ -326,43 +350,99 @@ filterwarnings = [
 project-includes = ["pandas-stubs", "tests"]
 enabled-ignores = ["pyrefly"]
 python-version = "3.11"
+min-severity = "warn"
+
+[tool.pyrefly.coverage]
+includes = ["pandas-stubs"]
+excludes = [
+    # NOTE: pyrefly's coverage check maps each `pandas-stubs/**/*.pyi` handle to
+    # its corresponding real `pandas/**/*.py` file to measure coverage, but
+    # `project-excludes` is only matched against the `.pyi` paths that are
+    # actually walked (i.e. paths under `pandas-stubs`), not the real `pandas`
+    # source paths that show up in the resulting warnings.
+    #
+    # pandas distributes (untyped) tests with the package. `pandas-stubs`
+    # doesn't currently ship a `tests` dir or `conftest.pyi`, so these are
+    # no-ops today; kept in case that ever changes.
+    "**/pandas-stubs/tests/**",
+    "**/pandas-stubs/conftest.pyi",
+    # pandas.core is technically private, and anything considered public
+    # is re-exported in other places. For example, `DataFrameGroupBy` is
+    # re-exported in `pandas.api.typing`.
+    "**/pandas-stubs/core/**",
+    # Not considered public
+    # https://github.com/pandas-dev/pandas/blob/e87248e1a5d6d78a138039f2856a3aec6b9fef54/doc/source/reference/index.rst#L34
+    # `pandas-stubs` doesn't currently stub `compat`, so this is a no-op today.
+    "**/pandas-stubs/compat/**",
+    # The only parts of `pandas.io` which appears in the API reference are:
+    # - `pandas.io.json`
+    # - `pandas.io.formats.style`
+    # https://github.com/pandas-dev/pandas/blob/b8371f5e6f329bfe1b5f1e099e221c8219fc6bbd/doc/source/reference/io.rst
+    # See also: https://github.com/pandas-dev/pandas/issues/27522#issuecomment-516360201
+    # `pandas-stubs` doesn't currently stub `io/common.pyi` or any of the
+    # `io/formats/*` modules below, so those entries are no-ops today.
+    "**/pandas-stubs/io/common.pyi",
+    "**/pandas-stubs/io/parsers/**",
+    "**/pandas-stubs/io/excel/**",
+    "**/pandas-stubs/io/pytables.pyi",
+    "**/pandas-stubs/io/sas/**",
+    "**/pandas-stubs/io/sql.pyi",
+    "**/pandas-stubs/io/stata.pyi",
+    "**/pandas-stubs/io/formats/csvs.pyi",
+    "**/pandas-stubs/io/formats/style_render.pyi",
+    "**/pandas-stubs/io/formats/excel.pyi",
+    "**/pandas-stubs/io/formats/html.pyi",
+    "**/pandas-stubs/io/formats/info.pyi",
+    "**/pandas-stubs/io/formats/printing.pyi",
+    "**/pandas-stubs/io/formats/string.pyi",
+    "**/pandas-stubs/io/formats/xml.pyi",
+    # Not documented, not really part of public API. `pandas-stubs` doesn't
+    # currently stub `api/executors.pyi`, so this is a no-op today. If it ever
+    # is stubbed: pyrefly excludes whole files, not individual symbols, so this
+    # would hide the whole module, not just `BaseExecutionEngine` (which is
+    # the only symbol defined there upstream today).
+    "**/pandas-stubs/api/executors.pyi",
+]
 
 [tool.pyrefly.errors]
-# Import discovery
-untyped-import = false
-# enable optional checks
-implicit-abstract-class = true
-implicitly-defined-attribute = true
-open-unpacking = true
-unannotated-attribute = true
-# TODO: enable
-# implicit-any = true
-# missing-source = true
-# missing-override-decorator = true
-# unannotated-parameter = true
-# unannotated-return = true
+explicit-any = false  # We do use implicit Any
+implicit-any-lambda = false # Users do this
+implicit-any-type-argument = false  # We do use implicit Any
+implicit-bool = false  # We do use implicit bool
+no-any-return-explicit = false  # np.mean(DataFrame(...), axis=0) is such an example
+no-any-return-implicit = false  # x.sum() / len(x) is such an example
+unknown-argument-type = false  # Only in tests, companion with other errors
+unknown-variable-type = false  # Implicit Any is fine
+untyped-import = false  # Import discovery
+unused-call-result = false  # results of check(...) are never used
+# TODO: remove when facebook/pyrefly#4427 is resolved
+unused-ignore = false
+# TODO: remove when facebook/pyrefly#4439 is resolved
+missing-source = false
+# TOdo: remove when facebook/pyrefly#4443 is resolved
+missing-super-call = false
 
 [tool.ty.environment]
 python-platform = "all"
 
 [tool.ty.rules]
-possibly-unresolved-reference = "error"
+unsound-return-statement = "error"
 
 [tool.ty.analysis]
 respect-type-ignore-comments = false
 
 [tool.ty.src]
 exclude = [
-  "tests/arrays/**/*",
-  "tests/frame/**/*",
-  "tests/indexes/**/*",
-  "tests/scalars/**/*",
-  "tests/series/**/*",
-  "tests/test_api_types.py",
-  "tests/test_extension.py",
-  "tests/test_groupby.py",
-  "tests/test_natype.py",
-  "tests/test_pandas.py",
-  "tests/test_string_accessors.py",
-  "tests/test_timefuncs.py",
+  "tests/arrays/test_boolean.py",
+  "tests/arrays/test_categorical.py",
+  "tests/arrays/test_datetime_array.py",
+  "tests/arrays/test_floating.py",
+  "tests/arrays/test_integer.py",
+  "tests/arrays/test_string_.py",
+  "tests/arrays/test_string_arrow.py",
+  "tests/**/*add.py",
+  "tests/**/*sub.py",
+  "tests/**/*truediv.py",
+  "tests/**/*mul.py",
+  "tests/**/*floordiv.py",
 ]

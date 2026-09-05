@@ -3,15 +3,22 @@ from typing import (
     Any,
     Generic,
     Literal,
+    Never,
     Self,
     TypeAlias,
     overload,
 )
 
 import numpy as np
+from numpy import typing as npt
+from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
-from typing_extensions import TypeVar
+import pyarrow as pa
+from typing_extensions import (
+    TypeVar,
+    override,
+)
 
 from pandas._libs import NaTType
 from pandas._libs.missing import NAType
@@ -21,10 +28,11 @@ from pandas._libs.tslibs.offsets import (
     SingleConstructorOffset,
 )
 from pandas._typing import (
-    Dtype,
+    NumpyTimedeltaDtypeArg,
+    NumpyTimestampDtypeArg,
     Ordered,
+    Scalar,
     TimeZones,
-    npt,
 )
 
 from pandas.core.dtypes.base import (
@@ -41,6 +49,7 @@ CategoricalValueT1 = TypeVar("CategoricalValueT1", str, int, float)
 
 class BaseMaskedDtype(ExtensionDtype):
     @property
+    @override
     def na_value(self) -> NAType: ...
 
 class PandasExtensionDtype(ExtensionDtype): ...
@@ -69,7 +78,11 @@ class DatetimeTZDtype(PandasExtensionDtype):
     @property
     def tz(self) -> timezone: ...
     @property
+    @override
     def na_value(self) -> NaTType: ...
+    def __from_arrow__(
+        self, array: pa.Array[Any] | pa.ChunkedArray[Any]
+    ) -> DatetimeArray: ...
 
 class PeriodDtype(PandasExtensionDtype):
     def __init__(
@@ -78,6 +91,7 @@ class PeriodDtype(PandasExtensionDtype):
     @property
     def freq(self) -> BaseOffset: ...
     @property
+    @override
     def na_value(self) -> NaTType: ...
 
 class IntervalDtype(PandasExtensionDtype):
@@ -86,4 +100,46 @@ class IntervalDtype(PandasExtensionDtype):
     def subtype(self) -> np.dtype | None: ...
 
 class SparseDtype(ExtensionDtype):
-    def __init__(self, dtype: Dtype = ..., fill_value: Any = None) -> None: ...
+    @overload
+    def __new__(
+        cls, dtype: type[bool | np.bool_], fill_value: bool | None = None
+    ) -> Self: ...
+    @overload
+    def __new__(
+        cls, dtype: type[int | np.integer], fill_value: int | None = None
+    ) -> Self: ...
+    @overload
+    def __new__(
+        cls, dtype: type[float | np.floating], fill_value: float | None = None
+    ) -> Self: ...
+    @overload
+    def __new__(
+        cls,
+        dtype: type[complex | np.complexfloating],
+        fill_value: complex | None = None,
+    ) -> Self: ...
+    @overload
+    def __new__(
+        cls,
+        dtype: type[np.datetime64 | np.timedelta64],
+        fill_value: np.datetime64 | None = None,
+    ) -> Never: ...
+    @overload
+    def __new__(
+        cls, dtype: NumpyTimestampDtypeArg, fill_value: np.datetime64 | None = None
+    ) -> Self: ...
+    @overload
+    def __new__(
+        cls, dtype: NumpyTimedeltaDtypeArg, fill_value: np.timedelta64 | None = None
+    ) -> Self: ...
+    @overload
+    def __new__(
+        cls,
+        dtype: type[str | bytes] | str | np.dtype[np.generic] | ExtensionDtype = ...,
+        fill_value: Scalar | None = None,
+    ) -> Self: ...
+    # TODO: pandas-dev/pandas-stubs#1654 make the class Generic so we can embed the subtype more precisely
+    @property
+    def subtype(self) -> np.dtype: ...
+    @property
+    def fill_value(self) -> Scalar | None: ...

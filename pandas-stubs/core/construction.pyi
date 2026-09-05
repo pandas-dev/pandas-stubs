@@ -11,6 +11,7 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.arrays.arrow import ArrowExtensionArray
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.categorical import Categorical
@@ -60,6 +61,7 @@ from pandas._typing import (
     PandasStrDtypeArg,
     PandasTimestampDtypeArg,
     PandasUIntDtypeArg,
+    PyArrowNotStrDtypeArg,
     PyArrowStrDtypeArg,
     TimedeltaDtypeArg,
     np_1darray_td,
@@ -80,7 +82,7 @@ from pandas.core.dtypes.dtypes import (
     SparseDtype,
 )
 
-_NAStrElement: TypeAlias = str | np.str_ | NAType | None
+_NAStrElement: TypeAlias = str | NAType | None
 _NaNStrElement: TypeAlias = Just[float] | _NAStrElement
 _NaNStrData: TypeAlias = Sequence[_NaNStrElement] | np_ndarray | BaseStringArray
 _NaTDatetimeElement: TypeAlias = (
@@ -136,7 +138,7 @@ def array(  # type: ignore[overload-overlap]
 @overload
 def array(
     data: (
-        Sequence[IntervalT | None | float]
+        Sequence[IntervalT | float | None]
         | IntervalArray
         | IntervalIndex
         | Series[Interval]
@@ -283,6 +285,12 @@ def array(
     dtype: None = None,
     copy: bool = True,
 ) -> BaseStringArray: ...
+@overload
+def array(
+    data: Sequence[Any],
+    dtype: PyArrowNotStrDtypeArg | PyArrowStrDtypeArg,
+    copy: bool = True,
+) -> ArrowExtensionArray: ...
 @overload
 def array(
     data: Sequence[Any], dtype: BuiltinObjectDtypeArg | None = None, copy: bool = True

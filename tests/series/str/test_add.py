@@ -5,6 +5,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from pandas.errors import Pandas4Warning
 
@@ -18,39 +19,44 @@ from tests._typing import (
     np_ndarray_str,
 )
 
-left = pd.Series(["1", "23", "456"])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Series[str]":
+    """Left operand"""
+    lo = pd.Series(["1", "23", "456"])
+    return check(assert_type(lo, "pd.Series[str]"), pd.Series, str)
 
 
-def test_add_py_scalar() -> None:
+def test_add_py_scalar(left: "pd.Series[str]") -> None:
     """Test pd.Series[str] + Python native 'scalar's"""
     i = 4
     r0 = "right"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
 
 
-def test_add_py_sequence() -> None:
+def test_add_py_sequence(left: "pd.Series[str]") -> None:
     """Test pd.Series[str] + Python native sequences"""
     i = [3, 5, 8]
     r0 = ["a", "bc", "def"]
     r1 = tuple(r0)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
     with pytest_warns_bounded(
         Pandas4Warning, "Operation with tuple", lower="3.0.99", upper="3.1.99"
@@ -58,7 +64,7 @@ def test_add_py_sequence() -> None:
         check(assert_type(left + r1, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
     with pytest_warns_bounded(
         Pandas4Warning, "Operation with tuple", lower="3.0.99", upper="3.1.99"
@@ -66,7 +72,7 @@ def test_add_py_sequence() -> None:
         check(assert_type(r1 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     with (
@@ -80,7 +86,7 @@ def test_add_py_sequence() -> None:
         check(assert_type(left.add(r1), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
 
     with pytest_warns_bounded(
@@ -92,7 +98,7 @@ def test_add_py_sequence() -> None:
         check(assert_type(left.radd(r1), "pd.Series[str]"), pd.Series, str)
 
 
-def test_add_numpy_array() -> None:
+def test_add_numpy_array(left: "pd.Series[str]") -> None:
     """Test pd.Series[str] + numpy arrays"""
     i = np.array([3, 5, 8], np.int64)
     r0 = np.array(["a", "bc", "def"], np.str_)
@@ -112,53 +118,53 @@ def test_add_numpy_array() -> None:
     check(assert_type(r0 + left, np_ndarray_str), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
 
 
-def test_add_pd_index() -> None:
+def test_add_pd_index(left: "pd.Series[str]") -> None:
     """Test pd.Series[str] + pandas Indexes"""
     i = pd.Index([3, 5, 8])
     r0 = pd.Index(["a", "bc", "def"])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
 
 
-def test_add_pd_series() -> None:
+def test_add_pd_series(left: "pd.Series[str]") -> None:
     """Test pd.Series[str] + pandas Series"""
     i = pd.Series([3, 5, 8])
     r0 = pd.Series(["a", "bc", "def"])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]  # pyrefly: ignore[unsupported-operation]
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]  # pyrefly: ignore[no-matching-overload]
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)

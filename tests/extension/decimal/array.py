@@ -43,6 +43,7 @@ from pandas.core.arraylike import (
 from pandas.core.arrays import ExtensionArray
 from pandas.core.indexers import check_array_indexer
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.common import (
@@ -72,15 +73,19 @@ class DecimalDtype(ExtensionDtype):
     _metadata = ("context",)
 
     @property
+    @override
     def na_value(self) -> decimal.Decimal:
         return decimal.Decimal("NaN")
 
     def __init__(self, context: decimal.Context | None = None) -> None:
+        super().__init__()
         self.context = context or decimal.getcontext()
 
+    @override
     def __repr__(self) -> str:
         return f"DecimalDtype(context={self.context})"
 
+    @override
     def construct_array_type(self) -> type_t[DecimalArray]:
         """
         Return the array type associated with this dtype.
@@ -106,6 +111,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         copy: bool = False,
         context: decimal.Context | None = None,
     ) -> None:
+        super().__init__()
         for i, val in enumerate(values):
             if is_float(val):
                 if np.isnan(val):
@@ -127,6 +133,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         self._dtype = DecimalDtype(context)
 
     @property
+    @override
     def dtype(self) -> DecimalDtype:
         return self._dtype
 
@@ -159,6 +166,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
     _HANDLED_TYPES = (decimal.Decimal, numbers.Number, np.ndarray)
 
+    @override
     def to_numpy(
         self,
         dtype: np.typing.DTypeLike | None = None,
@@ -171,12 +179,11 @@ class DecimalArray(OpsMixin, ExtensionArray):
             result = cast(np_1darray, np.asarray([round(x, decimals) for x in result]))
         return result
 
+    @override
     def __array_ufunc__(
         self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
     ) -> Any:
-        if not all(
-            isinstance(t, self._HANDLED_TYPES + (DecimalArray,)) for t in inputs
-        ):
+        if not all(isinstance(t, (*self._HANDLED_TYPES, DecimalArray)) for t in inputs):
             return NotImplemented
 
         if "out" in kwargs:
@@ -206,6 +213,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
             return tuple(reconstruct(x) for x in result)
         return reconstruct(result)
 
+    @override
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
             return self._data[item]  # type: ignore[unreachable]
@@ -213,6 +221,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         item = check_array_indexer(self, item)
         return type(self)(self._data[item])
 
+    @override
     def take(
         self, indexer: TakeIndexer, *, allow_fill: bool = False, fill_value: Any = None
     ) -> DecimalArray:
@@ -225,6 +234,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         result = take(data, indexer, fill_value=fill_value, allow_fill=allow_fill)
         return self._from_sequence(result)
 
+    @override
     def copy(self) -> DecimalArray:
         return type(self)(self._data.copy(), dtype=self.dtype)
 
@@ -234,8 +244,10 @@ class DecimalArray(OpsMixin, ExtensionArray):
     def astype(self, dtype: ExtensionDtype, copy: bool = True) -> ExtensionArray: ...
     @overload
     def astype(self, dtype: AstypeArg, copy: bool = True) -> ArrayLike: ...
-
-    def astype(self, dtype: Dtype, copy: bool = True):
+    @override
+    def astype(
+        self, dtype: Dtype, copy: bool = True
+    ) -> np_1darray | ExtensionArray | ArrayLike:
         if is_dtype_equal(dtype, self._dtype):
             if not copy:
                 return self
@@ -245,6 +257,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
         return super().astype(dtype, copy=copy)
 
+    @override
     def __setitem__(
         self,
         key: int | slice[Any, Any, Any] | ListLike,
@@ -261,9 +274,11 @@ class DecimalArray(OpsMixin, ExtensionArray):
         key = check_array_indexer(self, key)
         self._data[key] = value
 
+    @override
     def __len__(self) -> int:
         return len(self._data)
 
+    @override
     def __contains__(self, item: Any) -> bool | np.bool_:
         if not isinstance(item, decimal.Decimal):
             return False
@@ -272,12 +287,14 @@ class DecimalArray(OpsMixin, ExtensionArray):
         return super().__contains__(item)
 
     @property
+    @override
     def nbytes(self) -> int:
         n = len(self)
         if n:
             return n * sys.getsizeof(self[0])
         return 0
 
+    @override
     def isna(self) -> np_1darray_bool:
         return cast(np_1darray_bool, np.array([x.is_nan() for x in self._data], bool))
 
@@ -294,6 +311,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
     def _concat_same_type(cls, to_concat: Iterable[Self]) -> Self:
         return cls(np.concatenate([x._data for x in to_concat]))
 
+    @override
     def _reduce(self, name: str, *, skipna: bool = True, **kwargs: Any) -> Any:
         if skipna:
             # If we don't have any NAs, we can ignore skipna
@@ -323,7 +341,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
             else:
                 # Assume it's an object
                 ovalues = [param] * len(self)
-            return ovalues
+            return ovalues  # type: ignore[no-any-return]
 
         lvalues = self
         rvalues = convert_values(other)

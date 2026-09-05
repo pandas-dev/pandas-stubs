@@ -14,9 +14,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import (
-    TimedeltaDtypeArg,
-)
+from tests._typing import TimedeltaDtypeArg
 from tests.dtypes import ASTYPE_TIMEDELTA_ARGS
 
 

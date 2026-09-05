@@ -11,7 +11,6 @@ from typing import (
     Generic,
     Literal,
     Never,
-    Protocol,
     Self,
     TypeAlias,
     TypeVar,
@@ -27,6 +26,7 @@ from pandas.core.groupby.groupby import (
     GroupByPlot,
 )
 from pandas.core.series import Series
+from typing_extensions import override
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -36,6 +36,7 @@ from pandas._typing import (
     AggFuncTypeFrame,
     ByT,
     CorrelationMethod,
+    CovariantList,
     Dtype,
     IndexLabel,
     Level,
@@ -68,40 +69,28 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
     def aggregate(
         self,
-        func: Callable[Concatenate[Series[S2], P], S3],
-        /,
-        *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs: Any,
-    ) -> Series[S3]: ...
-    @overload
-    def aggregate(
-        self,
         func: Callable[[Series], S3],
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> Series[S3]: ...
     @overload
     def aggregate(
         self,
         func: list[AggFuncTypeBase[...]],
-        /,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self,
         func: AggFuncTypeBase[...] | None = ...,
-        /,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> Series: ...
     agg = aggregate
@@ -109,10 +98,9 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def transform(
         self,
         func: Callable[Concatenate[Series[S2], P], Series[S3]],
-        /,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> Series[S3]: ...
     @overload
@@ -135,6 +123,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     ) -> Series: ...
     def nunique(self, dropna: bool = ...) -> Series[int]: ...
     # describe delegates to super() method but here it has keyword-only parameters
+    @override
     def describe(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self,
         *,
@@ -217,50 +206,35 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def unique(self) -> Series: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
+    @override
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[override-of-final-method]
         self,
     ) -> Iterator[tuple[ByT, Series[S2]]]: ...
 
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
-class DFCallable1(Protocol[P]):
-    def __call__(
-        self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
-    ) -> Scalar | list[Any] | dict[Hashable, Any]: ...
-
-class DFCallable2(Protocol[P]):
-    def __call__(
-        self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
-    ) -> DataFrame | Series: ...
-
-class DFCallable3(Protocol[P]):
-    def __call__(
-        self, df: Iterable[Any], /, *args: P.args, **kwargs: P.kwargs
-    ) -> float: ...
-
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
-    # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
-    @overload  # type: ignore[override]
-    def apply(  # pyrefly: ignore[bad-override]
+    @overload
+    @override
+    def apply(
         self,
-        func: DFCallable1[P],
-        /,
+        func: Callable[
+            Concatenate[DataFrame, P], Scalar | list[Any] | dict[Hashable, Any]
+        ],
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> Series: ...
     @overload
     def apply(
         self,
-        func: DFCallable2[P],
-        /,
+        func: Callable[Concatenate[DataFrame, P], Series],
         *args: P.args,
         **kwargs: P.kwargs,
-    ) -> DataFrame: ...
+    ) -> Series | DataFrame: ...
     @overload
-    def apply(  # ty: ignore[invalid-method-override]
+    def apply(
         self,
-        func: DFCallable3[P],
-        /,
+        func: Callable[Concatenate[DataFrame, P], DataFrame] | str,
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> DataFrame: ...
@@ -270,8 +244,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self,
         func: Literal["size"],
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> Series: ...
     @overload
@@ -279,8 +253,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self,
         func: AggFuncTypeFrame[..., Any] | None = ...,
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
@@ -296,8 +270,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self,
         func: Callable[Concatenate[DataFrame, P], DataFrame],
         *args: Any,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
@@ -319,10 +293,11 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
-    def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    @override
+    def __getitem__(self, key: Scalar, /) -> SeriesGroupBy[Any, ByT]: ...
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, key: Iterable[Hashable]
+        self, key: CovariantList[Hashable], /
     ) -> DataFrameGroupBy[ByT, _TT]: ...
     def nunique(self, dropna: bool = True) -> DataFrame: ...
     def idxmax(
@@ -473,19 +448,20 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
     def dtypes(self) -> Never: ...
-    def __getattr__(self, attr: str) -> SeriesGroupBy[Any, ByT]: ...
+    @override
+    def __getattr__(self, attr: str, /) -> SeriesGroupBy[Any, ByT]: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
+    @override
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[override-of-final-method] # pyrefly: ignore[bad-override]
         self,
     ) -> Iterator[tuple[ByT, DataFrame]]: ...
     @overload
+    @override
     def size(self: DataFrameGroupBy[ByT, Literal[True]]) -> Series[int]: ...
     @overload
     def size(self: DataFrameGroupBy[ByT, Literal[False]]) -> DataFrame: ...
     @overload
     def size(self: DataFrameGroupBy[Timestamp, Literal[True]]) -> Series[int]: ...
     @overload
-    def size(  # ty: ignore[invalid-method-override]
-        self: DataFrameGroupBy[Timestamp, Literal[False]],
-    ) -> DataFrame: ...
+    def size(self: DataFrameGroupBy[Timestamp, Literal[False]]) -> DataFrame: ...

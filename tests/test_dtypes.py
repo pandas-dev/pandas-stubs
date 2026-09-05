@@ -7,6 +7,7 @@ from datetime import (
 from typing import (
     TYPE_CHECKING,
     Literal,
+    Never,
     assert_type,
 )
 from zoneinfo import (
@@ -26,12 +27,16 @@ from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
 )
+from pandas.core.arrays.datetimes import DatetimeArray
 import pyarrow as pa
 import pytest
+
+from pandas.errors import Pandas4Warning
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 from tests._typing import TimeUnit
 
@@ -65,6 +70,9 @@ def test_datetimetz_dtype() -> None:
         pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         pd.DatetimeTZDtype("us")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
+    pa_arr = pa.array([1, 2, 3], type=pa.timestamp("ns", tz="UTC"))
+    check(assert_type(dttz_dt.__from_arrow__(pa_arr), DatetimeArray), DatetimeArray)
+
 
 @pytest.mark.parametrize("key", available_timezones())
 def test_datetimetz_dtype_tz(key: str) -> None:
@@ -79,9 +87,21 @@ def test_period_dtype() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         pd.PeriodDtype(freq=CustomBusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         pd.PeriodDtype(freq=BusinessDay())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated for offsets that are not DateOffse",
+        lower="3.0.99",
+        upper="3.1.99",
+    ):
+        check(
+            assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
+            pd.tseries.offsets.DateOffset,
+        )
+
     check(
-        assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
-        pd.tseries.offsets.DateOffset,
+        assert_type(p_dt.freq, pd.offsets.BaseOffset),
+        pd.offsets.BaseOffset,
     )
     check(assert_type(p_dt.na_value, NaTType), NaTType)
     check(assert_type(p_dt.name, str), str)
@@ -138,11 +158,28 @@ def test_sparse_dtype() -> None:
     check(assert_type(pd.SparseDtype(np.int64), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(str), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(float), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype(np.datetime64), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(pd.SparseDtype("datetime64"), pd.SparseDtype), pd.SparseDtype)
+    check(
+        assert_type(pd.SparseDtype(np.dtype("datetime64[s]")), pd.SparseDtype),
+        pd.SparseDtype,
+    )
+    check(
+        assert_type(pd.SparseDtype(np.dtype("timedelta64[s]")), pd.SparseDtype),
+        pd.SparseDtype,
+    )
+    check(assert_type(pd.SparseDtype("datetime64[ms]"), pd.SparseDtype), pd.SparseDtype)
+    check(
+        assert_type(pd.SparseDtype("timedelta64[us]"), pd.SparseDtype), pd.SparseDtype
+    )
     check(assert_type(pd.SparseDtype(), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(s_dt.fill_value, Scalar | None), int)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _np_datetime64() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.SparseDtype(np.datetime64), Never)
+
+        def _np_timedelta64() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.SparseDtype(np.timedelta64), Never)
 
 
 def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
@@ -162,7 +199,7 @@ def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
     check(assert_type(s_dt_bool.fill_value, Scalar | None), bool)
 
     # datetime64 subtype: default fill_value is NaT
-    s_dt_dt = pd.SparseDtype(np.datetime64)
+    s_dt_dt = pd.SparseDtype(np.dtype("datetime64[us]"))
     check(assert_type(s_dt_dt.subtype, np.dtype), np.dtypes.DateTime64DType)
     check(assert_type(s_dt_dt.fill_value, Scalar | None), np.datetime64)
 
@@ -186,10 +223,7 @@ def test_string_dtype(
         s_dts.append(pd.StringDtype(storage))
     for s_dt in s_dts:
         check(s_dt, pd.StringDtype)
-        # TODO: facebook/pyrefly#3742
-        assert s_dt.storage in (  # pyrefly: ignore[no-matching-overload]
-            {storage} if storage else {"python", "pyarrow"}
-        )
+        assert s_dt.storage in ({storage} if storage else {"python", "pyarrow"})
         check(assert_type(s_dt.na_value, NAType | float), type(na_value))
 
     if TYPE_CHECKING:
@@ -200,15 +234,8 @@ def test_string_dtype(
 
         assert_type(pd.StringDtype().storage, Literal["python", "pyarrow"])
         assert_type(pd.StringDtype(None).storage, Literal["python", "pyarrow"])
-        # TODO: facebook/pyrefly#3742
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.StringDtype("python").storage,  # pyrefly: ignore[no-matching-overload]
-            Literal["python"],
-        )
-        assert_type(  # pyrefly: ignore[assert-type]
-            pd.StringDtype("pyarrow").storage,  # pyrefly: ignore[no-matching-overload]
-            Literal["pyarrow"],
-        )
+        assert_type(pd.StringDtype("python").storage, Literal["python"])
+        assert_type(pd.StringDtype("pyarrow").storage, Literal["pyarrow"])
 
     if TYPE_CHECKING_INVALID_USAGE:
         pd.StringDtype("invalid_storage")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]

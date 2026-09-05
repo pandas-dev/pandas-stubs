@@ -11,6 +11,7 @@ from typing import (
     Any,
     Literal,
     assert_type,
+    get_args,
 )
 import uuid
 
@@ -52,11 +53,22 @@ from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
     Workbook as XlsxWorkbook,
 )
 
+from pandas._libs.lib import NoDefault
+from pandas._typing import (
+    CompressionOptions,
+    DtypeBackend,
+    JSONEngine,
+    StorageOptions,
+    TimeUnit,
+)
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
     pytest_warns_bounded,
+    pytest_warns_excel_pandas4,
 )
 
 from pandas.io.iceberg import read_iceberg
@@ -111,6 +123,9 @@ def test_xml(tmp_path: Path) -> None:
     check(assert_type(read_xml(path_str), DataFrame), DataFrame)
     with path.open("rb") as f:
         check(assert_type(read_xml(f), DataFrame), DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.to_xml(path_str, True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_xml_str() -> None:
@@ -208,6 +223,12 @@ def test_clipboard() -> None:
         assert_type(read_clipboard(dtype={"first": "f8"}), DataFrame),
         DataFrame,
     )
+    # GH 1844
+    clipboard_dtypes = {"first": "f8"}
+    check(
+        assert_type(read_clipboard(dtype=clipboard_dtypes), DataFrame),
+        DataFrame,
+    )
     check(assert_type(read_clipboard(names=None), DataFrame), DataFrame)
     check(
         assert_type(read_clipboard(names=("first", "second"), header=0), DataFrame),
@@ -268,6 +289,9 @@ def test_clipboard() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
         pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.to_clipboard(True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
 
 
 def test_clipboard_iterator() -> None:
@@ -349,10 +373,10 @@ def test_hdfstore(tmp_path: Path) -> None:
     store = HDFStore(path_str, model="w")
     check(assert_type(store, HDFStore), HDFStore)
     with pytest_warns_bounded(
-        errors.Pandas4Warning,
+        Pandas4Warning,
         r"The default value of 'track_times' in HDFStore.put will change from True to False in a future version. Pass track_times=False explicitly to silence this warning and get deterministic HDF5 files.",
-        "3.0.99",
-        "3.1.99",
+        lower="3.0.99",
+        upper="3.1.99",
     ):
         check(assert_type(store.put("df", DF, "table"), None), type(None))
     check(assert_type(store.append("df2", DF, "table"), None), type(None))
@@ -524,18 +548,92 @@ def test_json_chunk(tmp_path: Path) -> None:
     check(assert_type(DF.to_json(), str), str)
 
 
+def test_json_reader_init(tmp_path: Path) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    DF.to_json(path_str, orient="records", lines=True)
+    json_reader: JsonReader[DataFrame] = JsonReader(
+        path_str,
+        orient="records",
+        typ="frame",
+        dtype={"a": "int64"},
+        convert_axes=True,
+        convert_dates=["a"],
+        keep_default_dates=False,
+        precise_float=True,
+        date_unit="ms",
+        encoding="utf-8",
+        lines=True,
+        chunksize=1,
+        compression="infer",
+        nrows=5,
+        storage_options=None,
+        encoding_errors="ignore",
+        dtype_backend="numpy_nullable",
+        engine="ujson",
+    )
+    check(assert_type(json_reader, JsonReader[DataFrame]), JsonReader)
+
+    check(assert_type(json_reader.typ, Literal["frame", "series"]), str)
+    check(assert_type(json_reader.convert_axes, bool | None), bool)
+    check(assert_type(json_reader.convert_dates, bool | list[str]), list)
+    check(assert_type(json_reader.keep_default_dates, bool), bool)
+    check(assert_type(json_reader.precise_float, bool), bool)
+    check(assert_type(json_reader.lines, bool), bool)
+    check(assert_type(json_reader.chunksize, int | None), int)
+    check(assert_type(json_reader.nrows, int | None), int)
+    check(assert_type(json_reader.nrows_seen, int), int)
+    assert assert_type(
+        json_reader.orient,
+        Literal["split", "records", "index", "columns", "values", "table"] | None,
+    ) in {"split", "records", "index", "columns", "values", "table"}
+    check(assert_type(json_reader.date_unit, TimeUnit | None), str)
+    check(assert_type(json_reader.encoding, str | None), str)
+    assert assert_type(
+        json_reader.encoding_errors,
+        (
+            Literal[
+                "strict", "ignore", "replace", "backslashreplace", "surrogateescape"
+            ]
+            | None
+        ),
+    ) in {"strict", "ignore", "replace", "backslashreplace", "surrogateescape"}
+    check(assert_type(json_reader.engine, JSONEngine), str)
+    assert assert_type(json_reader.dtype_backend, DtypeBackend | NoDefault) in get_args(
+        DtypeBackend
+    )
+    check(assert_type(json_reader.compression, CompressionOptions), str)
+    check(assert_type(json_reader.storage_options, StorageOptions | None), type(None))
+
+    for sub_df in json_reader:
+        check(assert_type(sub_df, DataFrame), DataFrame)
+    json_reader.close()
+
+
 def test_parquet(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_parquet(path_str), None), type(None))
     check(assert_type(DF.to_parquet(), bytes), bytes)
     check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
+    check(assert_type(read_parquet(path_str, "pyarrow"), DataFrame), DataFrame)
+    check(
+        assert_type(
+            read_parquet(
+                path_str,
+                engine="pyarrow",
+                columns=["a"],
+                filesystem=None,
+            ),
+            DataFrame,
+        ),
+        DataFrame,
+    )
 
 
 def test_parquet_to_pandas() -> None:
     """Test passing `to_pandas_kwargs` in read_parquet."""
 
     if TYPE_CHECKING_INVALID_USAGE:
-        read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        read_parquet(Path(), to_pandas_kwargs={"categories": ["a", "b"]})  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
 def test_parquet_options(tmp_path: Path) -> None:
@@ -809,6 +907,18 @@ def test_types_read_csv_date(tmp_path: Path) -> None:
     )
 
 
+def test_read_csv_dtype_dict() -> None:
+    # GH 1842
+    csv = io.StringIO("i,f\n1,2.5\n")
+
+    my_col_types = {
+        "i": int,
+        "f": float,
+    }
+
+    check(assert_type(pd.read_csv(csv, dtype=my_col_types), pd.DataFrame), pd.DataFrame)
+
+
 def test_read_table(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_csv(path_str, sep="\t"), None), type(None))
@@ -821,6 +931,12 @@ def test_read_table(tmp_path: Path) -> None:
     )
     check(
         assert_type(read_table(path_str, dtype={"first": "f8"}), DataFrame),
+        DataFrame,
+    )
+    # GH 1844
+    table_col_types = {"a": int, "b": float}
+    check(
+        assert_type(read_table(path_str, dtype=table_col_types), DataFrame),
         DataFrame,
     )
     check(
@@ -957,107 +1073,159 @@ def test_read_excel(tmp_path: Path) -> None:
     check(
         assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path_str), None), type(None)
     )
-    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.read_excel(path_str, sheet_name="Sheet1"), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.read_excel(path_str, sheet_name=["Sheet1"]), dict[str, pd.DataFrame]
-        ),
-        dict,
-    )
-    # GH 98
-    check(
-        assert_type(pd.read_excel(path_str, sheet_name=0), pd.DataFrame), pd.DataFrame
-    )
-    check(
-        assert_type(pd.read_excel(path_str, sheet_name=[0]), dict[int, pd.DataFrame]),
-        dict,
-    )
-    check(
-        assert_type(
-            pd.read_excel(path_str, sheet_name=[0, "Sheet1"]),
-            dict[int | str, pd.DataFrame],
-        ),
-        dict,
-    )
-    # GH 641
-    check(
-        assert_type(pd.read_excel(path_str, sheet_name=None), dict[str, pd.DataFrame]),
-        dict,
-    )
-    check(
-        assert_type(pd.read_excel(path_str, names=("test",), header=0), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_excel(path_str, names=(1,), header=0), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.read_excel(path_str, names=(("higher", "lower"),), header=0),
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, sheet_name="Sheet1"), pd.DataFrame),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_excel(path_str, names=range(1), header=0), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_excel(path_str, usecols=None), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_excel(path_str, usecols=["A"]), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_excel(path_str, usecols=(0,)), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_excel(path_str, usecols=range(1)), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_excel(path_str, usecols=_true_if_b), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.read_excel(
-                path_str,
-                names=[1, 2],
-                usecols=_true_if_greater_than_0,
-                header=0,
-                index_col=0,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(path_str, sheet_name=["Sheet1"]), dict[str, pd.DataFrame]
+            ),
+            dict,
+        )
+
+    with pytest_warns_excel_pandas4():
+        # GH 98
+        check(
+            assert_type(pd.read_excel(path_str, sheet_name=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(path_str, sheet_name=[0]), dict[int, pd.DataFrame]
+            ),
+            dict,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(path_str, sheet_name=[0, "Sheet1"]),
+                dict[int | str, pd.DataFrame],
+            ),
+            dict,
+        )
+
+    with pytest_warns_excel_pandas4():
+        # GH 641
+        check(
+            assert_type(
+                pd.read_excel(path_str, sheet_name=None), dict[str, pd.DataFrame]
+            ),
+            dict,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(path_str, names=("test",), header=0), pd.DataFrame
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.read_excel(
-                path_str,
-                names=(("head", 1), ("tail", 2)),
-                usecols=_true_if_first_param_is_head,
-                header=0,
-                index_col=0,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, names=(1,), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(path_str, names=(("higher", "lower"),), header=0),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(assert_type(pd.read_excel(path_str, usecols="A"), pd.DataFrame), pd.DataFrame)
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(path_str, names=range(1), header=0), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, usecols=None), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, usecols=["A"]), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, usecols=(0,)), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, usecols=range(1)), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, usecols=_true_if_b), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(
+                    path_str,
+                    names=[1, 2],
+                    usecols=_true_if_greater_than_0,
+                    header=0,
+                    index_col=0,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(
+                    path_str,
+                    names=(("head", 1), ("tail", 2)),
+                    usecols=_true_if_first_param_is_head,
+                    header=0,
+                    index_col=0,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, usecols="A"), pd.DataFrame),
+            pd.DataFrame,
+        )
+
     check(
         assert_type(pd.read_excel(path_str, engine="calamine"), pd.DataFrame),
         pd.DataFrame,
     )
+
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_excel(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
@@ -1068,31 +1236,53 @@ def test_read_excel_io_types(tmp_path: Path) -> None:
     as_str = check(assert_type(str(tmp_path / f"{uuid.uuid4()}test.xlsx"), str), str)
     df.to_excel(as_str)
 
-    check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_excel_pandas4():
+        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
 
-    as_path = Path(as_str)
-    check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_excel_pandas4():
+        as_path = Path(as_str)
+        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
 
-    with as_path.open("rb") as as_file:
+    with (
+        pytest_warns_excel_pandas4(),
+        as_path.open("rb") as as_file,
+    ):
         check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
 
 
 def test_read_excel_basic(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     check(assert_type(DF.to_excel(path_str), None), type(None))
-    check(assert_type(read_excel(path_str), DataFrame), DataFrame)
-    check(assert_type(read_excel(path_str, sheet_name="Sheet1"), DataFrame), DataFrame)
-    check(assert_type(read_excel(path_str, sheet_name=0), DataFrame), DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(read_excel(path_str), DataFrame), DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(read_excel(path_str, sheet_name="Sheet1"), DataFrame), DataFrame
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(read_excel(path_str, sheet_name=0), DataFrame), DataFrame)
 
 
 def test_read_excel_list(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     check(assert_type(DF.to_excel(path_str), None), type(None))
-    check(
-        assert_type(read_excel(path_str, sheet_name=["Sheet1"]), dict[str, DataFrame]),
-        dict,
-    )
-    check(assert_type(read_excel(path_str, sheet_name=[0]), dict[int, DataFrame]), dict)
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                read_excel(path_str, sheet_name=["Sheet1"]), dict[str, DataFrame]
+            ),
+            dict,
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(read_excel(path_str, sheet_name=[0]), dict[int, DataFrame]),
+            dict,
+        )
 
 
 def test_read_excel_dtypes(tmp_path: Path) -> None:
@@ -1101,7 +1291,11 @@ def test_read_excel_dtypes(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     check(assert_type(df.to_excel(path_str), None), type(None))
     dtypes = {"a": np.int64, "b": str, "c": np.float64}
-    check(assert_type(read_excel(path_str, dtype=dtypes), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(read_excel(path_str, dtype=dtypes), pd.DataFrame), pd.DataFrame
+        )
 
 
 def test_excel_reader(tmp_path: Path) -> None:
@@ -1133,24 +1327,28 @@ def test_excel_writer(tmp_path: Path) -> None:
     with pd.ExcelWriter(path_str) as ew:
         check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
         DF.to_excel(ew, sheet_name="A")
-    check(assert_type(read_excel(path_str, sheet_name="A"), DataFrame), DataFrame)
-    check(assert_type(read_excel(path_str), DataFrame), DataFrame)
-    ef = pd.ExcelFile(path_str)
-    check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+
+    with pytest_warns_excel_pandas4():
+        check(assert_type(read_excel(path_str, sheet_name="A"), DataFrame), DataFrame)
+
+    with pytest_warns_excel_pandas4():
+        ef = pd.ExcelFile(path_str)
+        check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
     check(assert_type(read_excel(ef), DataFrame), DataFrame)
 
     with pytest_warns_bounded(
-        errors.Pandas4Warning,
-        match="ExcelFile.parse is deprecated",
+        Pandas4Warning,
+        "ExcelFile.parse is deprecated",
         lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
 
     with pytest_warns_bounded(
-        errors.Pandas4Warning,
-        match="ExcelFile.parse is deprecated",
+        Pandas4Warning,
+        "ExcelFile.parse is deprecated",
         lower="3.0.99",
         upper="3.99",
     ):
@@ -1160,13 +1358,17 @@ def test_excel_writer(tmp_path: Path) -> None:
         )
     check(assert_type(ef.close(), None), type(None))
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.to_excel(path_str, "Sheet1")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
+
 
 def test_excel_writer_io() -> None:
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
         DF.to_excel(writer, sheet_name="A")
 
-    ef = pd.ExcelFile(buffer)
+    with pytest_warns_excel_pandas4():
+        ef = pd.ExcelFile(buffer)
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
 
@@ -1180,8 +1382,10 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test1.xlsx")
     with pd.ExcelWriter(path_str, engine="openpyxl") as ew:
         check(
+            # TODO: remove the pyrefly ignores facebook/pyrefly#4425
+            # pyrefly: ignore[assert-type,bad-specialization]
             assert_type(ew, pd.ExcelWriter[OpenXlWorkbook]),
-            pd.ExcelWriter[OpenXlWorkbook],
+            pd.ExcelWriter[OpenXlWorkbook],  # pyrefly: ignore[bad-specialization]
         )
         DF.to_excel(ew, sheet_name="A")
         check(
@@ -1231,6 +1435,9 @@ def test_to_string(tmp_path: Path) -> None:
         check(assert_type(DF.to_string(df_string), None), type(None))
     sio = io.StringIO()
     check(assert_type(DF.to_string(sio), None), type(None))
+    # GH 1844
+    string_formatters = {"a": str}
+    check(assert_type(DF.to_string(formatters=string_formatters), str), str)
 
 
 def test_read_sql(tmp_path: Path) -> None:
@@ -1304,6 +1511,14 @@ def test_to_sql_dtype_sqlalchemy_type(tmp_path: Path) -> None:
                 },
             ),
             int | None,
+        ),
+        int,
+    )
+    # GH 1844
+    sql_dtypes = {"a": sqlalchemy.types.INTEGER, "b": sqlalchemy.types.FLOAT}
+    check(
+        assert_type(
+            DF.to_sql("test_typed_map", con=engine, dtype=sql_dtypes), int | None
         ),
         int,
     )
@@ -1415,36 +1630,132 @@ def test_read_sql_query_via_sqlalchemy_engine_with_params(tmp_path: Path) -> Non
     engine.dispose()
 
 
-@pytest.mark.skip(
-    reason="Only works in Postgres (and MySQL, but with different query syntax)"
-)
-def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params() -> None:
-    db_uri = "postgresql+psycopg2://postgres@localhost:5432/postgres"
+def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params(
+    tmp_path: Path,
+) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
     engine = sqlalchemy.create_engine(db_uri)
 
-    check(
-        assert_type(
-            read_sql_query(
-                "select * from test where a in %(a)s", con=engine, params={"a": (1, 2)}
+    check(assert_type(DF.to_sql("test", con=engine), int | None), int)
+    statement = sqlalchemy.text("select * from test where a in :a").bindparams(
+        sqlalchemy.bindparam("a", expanding=True)
+    )
+    with engine.connect() as conn:
+        check(
+            assert_type(
+                read_sql_query(statement, con=conn, params={"a": (1, 2)}), DataFrame
             ),
             DataFrame,
-        ),
-        DataFrame,
-    )
-    check(
+        )
+    if TYPE_CHECKING:
+        # %s paramstyle needs psycopg2 or MySQLdb, so this is checked but not run
         assert_type(
             read_sql_query(
                 "select * from test where a in %s", con=engine, params=((1, 2),)
             ),
             DataFrame,
+        )
+    engine.dispose()
+
+
+def test_read_sql_query_with_mixed_params(tmp_path: Path) -> None:
+    # GH 1890
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
+    engine = sqlalchemy.create_engine(db_uri)
+
+    check(assert_type(DF.to_sql("test", con=engine), int | None), int)
+    statement = sqlalchemy.text(
+        "select * from test where b = :b and a in :a"
+    ).bindparams(sqlalchemy.bindparam("a", expanding=True))
+    with engine.connect() as conn:
+        check(
+            assert_type(
+                read_sql_query(statement, con=conn, params={"b": 0.0, "a": (1, 2)}),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+    if TYPE_CHECKING:
+        # %s paramstyle needs psycopg2 or MySQLdb, so this is checked but not run
+        assert_type(
+            read_sql_query(
+                "select * from test where b = %s and a in %s",
+                con=engine,
+                params=[0.0, (1, 2)],
+            ),
+            DataFrame,
+        )
+    engine.dispose()
+
+
+def test_read_sql_with_mixed_params(tmp_path: Path) -> None:
+    # GH 1890
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
+    engine = sqlalchemy.create_engine(db_uri)
+
+    check(assert_type(DF.to_sql("test", con=engine), int | None), int)
+    statement = sqlalchemy.text(
+        "select * from test where b = :b and a in :a"
+    ).bindparams(sqlalchemy.bindparam("a", expanding=True))
+    with engine.connect() as conn:
+        check(
+            assert_type(
+                read_sql(statement, con=conn, params={"b": 0.0, "a": (1, 2)}),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+    engine.dispose()
+
+
+def test_read_sql_query_with_list_params(tmp_path: Path) -> None:
+    # GH 1890
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
+    frame = DataFrame({"a": ["x", "y"], "b": [1, 2]})
+    check(assert_type(frame.to_sql("test", con=con), int | None), int)
+    names = ["x"]
+    check(
+        assert_type(
+            read_sql_query("select * from test where a = ?", con=con, params=names),
+            DataFrame,
         ),
         DataFrame,
     )
-    engine.dispose()
+    check(
+        assert_type(
+            read_sql_query("select * from test where a is ?", con=con, params=[None]),
+            DataFrame,
+        ),
+        DataFrame,
+    )
+    con.close()
+
+
+def test_read_sql_params_invalid_usage(tmp_path: Path) -> None:
+    # GH 1890
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
+    check(assert_type(DF.to_sql("test", con=con), int | None), int)
+    if TYPE_CHECKING_INVALID_USAGE:
+        values = {1, 2}
+        set_valued = {"a": {1, 2}}
+        nested = {"a": [[1, 2]]}
+        read_sql_query("select * from test where a in ?", con=con, params=values)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        read_sql_query("select * from test where a in :a", con=con, params=set_valued)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        read_sql_query("select * from test where a in :a", con=con, params=nested)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        read_sql_query("select * from test where a = ?", con=con, params=[{1, 2}])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+    con.close()
 
 
 def test_read_html(tmp_path: Path) -> None:
     check(assert_type(DF.to_html(), str), str)
+    # GH 1844
+    html_formatters = {"a": str}
+    check(assert_type(DF.to_html(formatters=html_formatters), str), str)
     path_str = str(tmp_path / str(uuid.uuid4()))
     check(assert_type(DF.to_html(path_str), None), type(None))
     check(assert_type(read_html(path_str), list[DataFrame]), list)
@@ -1573,6 +1884,9 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
     check(
         assert_type(read_json(path_str, dtype={"MatchID": str}), DataFrame), DataFrame
     )
+    # GH 1844
+    json_dtypes = {"MatchID": str}
+    check(assert_type(read_json(path_str, dtype=json_dtypes), DataFrame), DataFrame)
 
     path_str = str(tmp_path / str(uuid.uuid4()))
     con = sqlite3.connect(path_str)
@@ -1616,10 +1930,12 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     as_str: str = path_str
     DF.to_excel(path_str)
-    check(
-        assert_type(pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame),
-        pd.DataFrame,
-    )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame),
+            pd.DataFrame,
+        )
 
     try:
         DF.to_clipboard()
@@ -1738,39 +2054,48 @@ def test_added_date_format(tmp_path: Path) -> None:
         ),
         type(None),
     )
-    check(
-        assert_type(
-            pd.read_excel(path_str, parse_dates=["col1"], date_format={0: "%Y-%m-%d"}),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.read_excel(
-                path_str, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(
+                    path_str, parse_dates=["col1"], date_format={0: "%Y-%m-%d"}
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.read_excel(path_str, parse_dates=["col1"], date_format="%Y-%m-%d"),
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(
+                    path_str, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+                ),
+                pd.DataFrame,
+            ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
+
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(
+                pd.read_excel(path_str, parse_dates=["col1"], date_format="%Y-%m-%d"),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
 
 
 def test_read_excel_index_col(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     pd.DataFrame(data={"foo": [1, 3], "bar": [2, 4]}).to_excel(path_str)
 
-    check(
-        assert_type(pd.read_excel(path_str, index_col="bar"), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_excel_pandas4():
+        check(
+            assert_type(pd.read_excel(path_str, index_col="bar"), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 def test_read_json_engine() -> None:
@@ -1810,8 +2135,9 @@ def test_converters_partial(tmp_path: Path) -> None:
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     check(assert_type(df.to_excel(path_str, index=False), None), type(None))
 
-    result = pd.read_excel(path_str, converters={"field_1": partial_func})
-    check(assert_type(result, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_excel_pandas4():
+        result = pd.read_excel(path_str, converters={"field_1": partial_func})
+        check(assert_type(result, pd.DataFrame), pd.DataFrame)
 
 
 @pytest.mark.filterwarnings("ignore::ResourceWarning")

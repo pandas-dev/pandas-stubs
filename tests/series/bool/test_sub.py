@@ -6,6 +6,7 @@ from typing import (
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -13,10 +14,15 @@ from tests import (
 )
 from tests._typing import np_ndarray_int64
 
-left = pd.Series([True, True, False])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Series[bool]":
+    """Left operand"""
+    lo = pd.Series([True, True, False])
+    return check(assert_type(lo, "pd.Series[bool]"), pd.Series, np.bool_)
 
 
-def test_sub_py_scalar() -> None:
+def test_sub_py_scalar(left: "pd.Series[bool]") -> None:
     """Test pd.Series[bool] - Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
@@ -47,7 +53,7 @@ def test_sub_py_scalar() -> None:
     )
 
 
-def test_sub_py_sequence() -> None:
+def test_sub_py_sequence(left: "pd.Series[bool]") -> None:
     """Test pd.Series[bool] - Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
@@ -78,7 +84,7 @@ def test_sub_py_sequence() -> None:
     )
 
 
-def test_sub_numpy_array() -> None:
+def test_sub_numpy_array(left: "pd.Series[bool]") -> None:
     """Test pd.Series[bool] - numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -119,7 +125,7 @@ def test_sub_numpy_array() -> None:
     )
 
 
-def test_sub_pd_index() -> None:
+def test_sub_pd_index(left: "pd.Series[bool]") -> None:
     """Test pd.Series[bool] - pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
@@ -153,7 +159,7 @@ def test_sub_pd_index() -> None:
     )
 
 
-def test_sub_pd_series() -> None:
+def test_sub_pd_series(left: "pd.Series[bool]") -> None:
     """Test pd.Series[bool] - pandas Series"""
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])

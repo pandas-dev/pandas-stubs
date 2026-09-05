@@ -38,6 +38,10 @@ _SQLStatement: TypeAlias = (
     str | Selectable | TextClause | Select[Any] | FromStatement[Any] | UpdateBase
 )
 
+_SQLBindValue: TypeAlias = Scalar | Sequence[Scalar | None] | None
+
+_SQLParams: TypeAlias = Sequence[_SQLBindValue] | Mapping[str, _SQLBindValue]
+
 @overload
 def read_sql_table(
     table_name: str,
@@ -69,14 +73,7 @@ def read_sql_query(
     con: _SQLConnection,
     index_col: str | list[str] | None = None,
     coerce_float: bool = True,
-    params: (
-        list[Scalar]
-        | tuple[Scalar, ...]
-        | tuple[tuple[Scalar, ...], ...]
-        | Mapping[str, Scalar]
-        | Mapping[str, tuple[Scalar, ...]]
-        | None
-    ) = None,
+    params: _SQLParams | None = None,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
     *,
     chunksize: int,
@@ -89,14 +86,7 @@ def read_sql_query(
     con: _SQLConnection,
     index_col: str | list[str] | None = None,
     coerce_float: bool = True,
-    params: (
-        list[Scalar]
-        | tuple[Scalar, ...]
-        | tuple[tuple[Scalar, ...], ...]
-        | Mapping[str, Scalar]
-        | Mapping[str, tuple[Scalar, ...]]
-        | None
-    ) = None,
+    params: _SQLParams | None = None,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
     chunksize: None = None,
     dtype: DtypeArg | None = None,
@@ -108,13 +98,7 @@ def read_sql(
     con: _SQLConnection,
     index_col: str | list[str] | None = None,
     coerce_float: bool = True,
-    params: (
-        Sequence[Scalar]
-        | tuple[tuple[Scalar, ...], ...]
-        | Mapping[str, Scalar]
-        | Mapping[str, tuple[Scalar, ...]]
-        | None
-    ) = None,
+    params: _SQLParams | None = None,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
     columns: list[str] | None = None,
     *,
@@ -128,13 +112,7 @@ def read_sql(
     con: _SQLConnection,
     index_col: str | list[str] | None = None,
     coerce_float: bool = True,
-    params: (
-        Sequence[Scalar]
-        | tuple[tuple[Scalar, ...], ...]
-        | Mapping[str, Scalar]
-        | Mapping[str, tuple[Scalar, ...]]
-        | None
-    ) = None,
+    params: _SQLParams | None = None,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
     columns: list[str] | None = None,
     chunksize: None = None,

@@ -9,7 +9,7 @@ from typing import (
 )
 
 import numpy as np
-import numpy.typing as npt  # noqa:F401
+from numpy import typing as npt  # noqa:F401
 import pandas as pd
 import pytest
 
