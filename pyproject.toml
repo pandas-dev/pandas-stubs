@@ -36,7 +36,7 @@ dev = [
   "numpy>=2.5.2;python_version>='3.12'",
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
-  "pyright>=1.1.410",
+  "pyright==1.1.411",
   "ty>=0.0.76",
   "pyrefly>=1.2.0",
   "poethepoet>=0.16.5",
