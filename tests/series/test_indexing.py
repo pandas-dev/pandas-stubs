@@ -15,8 +15,13 @@ from tests import (
 
 
 def test_types_select() -> None:
+    # TODO: https://github.com/facebook/pyrefly/issues/4913
     s = pd.Series(data={"row1": 1, "row2": 2})
-    check(assert_type(s[1:], "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s[1:], "pd.Series[int]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        np.integer,
+    )
 
 
 def test_types_iloc_iat() -> None:

@@ -190,10 +190,9 @@ def test_types_groupby() -> None:
         ),
         DataFrameGroupBy,
     )
-    # TODO: https://github.com/facebook/pyrefly/issues/3268
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.groupby({1: 1, 2: 2, 3: 3}),  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            df.groupby({1: 1, 2: 2, 3: 3}),
             "DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]",
         ),
         DataFrameGroupBy,

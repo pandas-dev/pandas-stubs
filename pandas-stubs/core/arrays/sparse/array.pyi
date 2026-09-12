@@ -97,7 +97,6 @@ class SparseArray(OpsMixin, ExtensionArray):
     def value_counts(self, dropna: bool = True) -> Series[int]: ...
     @overload
     @override
-    # pyrefly: ignore[bad-override]
     def __getitem__(self, key: ScalarIndexer, /) -> Any: ...
     @overload
     def __getitem__(

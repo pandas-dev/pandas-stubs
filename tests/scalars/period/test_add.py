@@ -2,6 +2,7 @@ from datetime import (
     datetime,
     timedelta,
 )
+import sys
 from typing import assert_type
 
 import numpy as np
@@ -52,7 +53,13 @@ def test_add_numpy_scalar(left: pd.Period) -> None:
     check(assert_type(d + left, pd.Period), pd.Period)
 
     check(assert_type(left + i, pd.Period), pd.Period)
-    check(assert_type(i + left, pd.Period), pd.Period)
+    if sys.version_info >= (3, 12):
+        check(assert_type(i + left, pd.Period), pd.Period)
+    else:
+        check(
+            assert_type(i + left, pd.Period),  # pyrefly: ignore[assert-type]
+            pd.Period,
+        )
 
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
