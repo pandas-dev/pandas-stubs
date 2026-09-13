@@ -141,6 +141,7 @@ def test_scalar_indexers_include_extension_scalars_and_missing_values() -> None:
     assert_type(df.iloc[0, 1], "ScalarOrNA")
     assert_type(df.at[0, "ts"], "ScalarOrNA")
     assert_type(df.iat[0, 3], "ScalarOrNA")
+    assert_type(df.at[0, "iv"], "ScalarOrNA")
 
 
 def test_types_boolean_indexing() -> None:
