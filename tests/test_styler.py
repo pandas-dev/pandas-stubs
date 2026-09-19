@@ -251,6 +251,22 @@ def test_subset() -> None:
     check(assert_type(DF.style.highlight_min(subset=IndexSlice[1:2]), Styler), Styler)
     check(assert_type(DF.style.highlight_min(subset=[1]), Styler), Styler)
     check(assert_type(DF.style.highlight_min(subset=DF.columns[1:]), Styler), Styler)
+    # GH 1893: 2D subset selectors (rows, columns)
+    df_2d = DataFrame({"a": [1.0, 2.0], "b": [3.0, 4.0]}, index=["r1", "r2"])
+    check(
+        assert_type(
+            df_2d.style.format("{:.1f}", subset=IndexSlice[["r1"], :]),
+            Styler,
+        ),
+        Styler,
+    )
+    check(
+        assert_type(
+            df_2d.style.highlight_max(subset=(df_2d["b"] > 0, "b")),
+            Styler,
+        ),
+        Styler,
+    )
 
 
 def test_styler_columns_and_index() -> None:
