@@ -441,6 +441,7 @@ exclude = [
   "tests/arrays/test_string_.py",
   "tests/arrays/test_string_arrow.py",
   "tests/**/*add.py",
+  "!tests/scalars/offsets/easter/test_add.py",
   "tests/**/*sub.py",
   "tests/**/*truediv.py",
   "tests/**/*mul.py",
