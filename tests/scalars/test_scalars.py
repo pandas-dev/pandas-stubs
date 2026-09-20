@@ -576,7 +576,7 @@ def test_timedelta_add_sub() -> None:
     # td.__radd__(as_td_timedelta),  not as_dt_timedelta.__add__(td)
     # https://github.com/microsoft/pyright/issues/4088
     check(
-        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(  # ty: ignore[type-assertion-failure]
             as_dt_timedelta + td,  # pyright: ignore[reportAssertTypeFailure]
             pd.Timedelta,
         ),
@@ -617,7 +617,7 @@ def test_timedelta_add_sub() -> None:
     # td.__rsub__(as_dt_timedelta), not as_dt_timedelta.__sub__(td)
     # https://github.com/microsoft/pyright/issues/4088
     check(
-        assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(  # ty: ignore[type-assertion-failure]
             as_dt_timedelta - td,  # pyright: ignore[reportAssertTypeFailure]
             pd.Timedelta,
         ),
