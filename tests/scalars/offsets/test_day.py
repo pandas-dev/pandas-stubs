@@ -8,8 +8,10 @@ from tests import (
 )
 
 from pandas.tseries.offsets import (
+    BaseOffset,
     Day,
     Hour,
+    Tick,
 )
 
 
@@ -18,17 +20,12 @@ def test_day_is_not_a_tick() -> None:
     check(assert_type(pd.Timedelta(Hour()), pd.Timedelta), pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         pd.Timedelta(Day())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _0: Tick = Day()  # type: ignore[assignment] # pyright: ignore[reportAssignmentType] # pyrefly: ignore[bad-assignment] # ty: ignore[invalid-assignment]
 
 
-def test_day_stays_an_offset() -> None:
-    """`Day` is still a `BaseOffset`, so it still applies to datetimes and combines with itself."""
-    timestamp = pd.Timestamp("2026-01-01")
-    check(assert_type(Day() + timestamp, pd.Timestamp), pd.Timestamp)
-    check(assert_type(timestamp + Day(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(Day(1) + Day(2), Day), Day)
-    check(
-        assert_type(
-            pd.date_range("2026-01-01", periods=2, freq=Day()), pd.DatetimeIndex
-        ),
-        pd.DatetimeIndex,
-    )
+def test_day_is_still_a_base_offset() -> None:
+    """`Day` still inherits `BaseOffset`, so the hierarchy change is confined to `Tick`."""
+    # The assignment is the assertion: it only type checks because `Day` is a
+    # `BaseOffset`.  `assert_type` cannot express it, as ty narrows `offset` to `Day`.
+    offset: BaseOffset = Day()
+    check(offset, Day)

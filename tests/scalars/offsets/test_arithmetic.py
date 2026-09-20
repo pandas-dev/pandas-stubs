@@ -43,6 +43,11 @@ def timestamp() -> pd.Timestamp:
 @pytest.fixture
 def anchors() -> list[BaseOffset]:
     """Offsets that shift to an anchor, so they reject durations and other offsets."""
+    # The `BaseOffset` annotation statically erases every element, so this fixture proves
+    # the *base* contract over eight heterogeneous runtime instances.  Pinning a
+    # concrete anchor class is `easter/test_add.py`'s job -- it is what would catch
+    # `Easter` resolving incorrectly, and its object-array cases have no counterpart
+    # here.  The two modules are complementary, not duplicative.
     return [
         DateOffset(),
         Easter(),
