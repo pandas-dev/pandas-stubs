@@ -57,7 +57,9 @@ This includes arithmetic, bitwise, comparison, and matrix-multiplication dunders
 checker deliberately excludes reflected dunders such as `__radd__`; those signatures
 need their own review and focused tests. See
 [Operator signatures](operator-signatures.md#dunder-parameters) for which dunders the
-checker scans and how it reads the `other` operand.
+checker scans and how it reads the `other` operand, and
+[Reflected dunders](operator-signatures.md#reflected-dunders) for why the excluded ones
+are still reviewed.
 
 ## Matrix multiplication
 

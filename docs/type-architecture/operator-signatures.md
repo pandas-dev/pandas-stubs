@@ -45,6 +45,31 @@ positional-only `other` parameter of the methods it scans.
   reflected dunder, such as `__radd__`, and non-operator methods, such as `__init__`
   or a bespoke `__foo__`.
 
+## Reflected dunders
+
+Reflected dunders (`__radd__`, `__rsub__`, …, `__rmatmul__`) mirror the forward binary
+operators and use the same positional-only `other` parameter. The
+`guard-dunders-posonly` pre-commit hook matches `[ri]?(?:add|sub|…)`, so it enforces the
+`/` for `__radd__` and `__iadd__` exactly as it does for `__add__`.
+
+They are deliberately outside the operand-hierarchy check, which scans only the names in
+`FORWARD_BINARY_DUNDERS`. A reflected dunder may legitimately name a higher-tier type as
+`other`:
+
+```python
+def __rmatmul__(self, other: DataFrame, /) -> Series: ...
+```
+
+A reflected method fires only when the higher-tier left operand did not implement the
+forward operation, so the forward rule that a type must not claim a higher tier does not
+apply to it. The stubs also use reflected signatures to narrow the reflecting type, as in
+`def __radd__(self: Series[Never], other: _str, /) -> Series[_str]: ...`.
+
+Reflected dunders are a substantial part of the operator surface — 67 declarations in
+`core/indexes/base.pyi` and 97 in `core/series.pyi`, while `core/indexes/multi.pyi`
+declares none and inherits `Index`'s. Because the checker cannot prove their operand
+scope, they need the same focused type and runtime tests as the rest of that surface.
+
 ## Protocol overloads
 
 Protocol-based overloads and constrained type variables are the preferred direction when
