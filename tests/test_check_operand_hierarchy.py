@@ -4,10 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from scripts.check_container_hierarchy import (
+from scripts.check_operand_hierarchy import (
     FORWARD_DUNDER_EXCEPTIONS,
     HierarchyException,
-    check_container_hierarchy,
+    check_operand_hierarchy,
 )
 
 
@@ -51,7 +51,7 @@ class Series:
 """,
     )
 
-    assert check_container_hierarchy(stub_root)
+    assert check_operand_hierarchy(stub_root)
 
 
 def test_rejects_direct_alias_and_operand_violations(
@@ -75,7 +75,7 @@ class Series:
 """,
     )
 
-    assert not check_container_hierarchy(stub_root)
+    assert not check_operand_hierarchy(stub_root)
     output = capsys.readouterr().err
     assert "alias ScalarArrayIndexOperand references Series" in output
     assert "alias ScalarArrayIndexOperand references DataFrame" in output
@@ -110,7 +110,7 @@ class Series:
 """,
     )
 
-    assert not check_container_hierarchy(stub_root)
+    assert not check_operand_hierarchy(stub_root)
     output = capsys.readouterr().err
     assert "alias ScalarArrayIndexOperand references Series" in output
     assert "alias ScalarArrayIndexOperand references DataFrame" in output
@@ -135,7 +135,7 @@ class Series:
 """,
     )
 
-    assert not check_container_hierarchy(stub_root)
+    assert not check_operand_hierarchy(stub_root)
     output = capsys.readouterr().err
     assert "Index.__or__ `other` operand references Series" in output
     assert "Series.__lt__ `other` operand references DataFrame" in output
@@ -156,7 +156,7 @@ class Series:
 """,
     )
 
-    assert not check_container_hierarchy(stub_root, exceptions={})
+    assert not check_operand_hierarchy(stub_root, exceptions={})
     assert (
         "Series.__matmul__ `other` operand references DataFrame"
         in capsys.readouterr().err
@@ -176,7 +176,7 @@ class Series:
 """,
     )
 
-    assert check_container_hierarchy(stub_root)
+    assert check_operand_hierarchy(stub_root)
 
 
 def test_exception_registry_documents_the_matrix_multiplication_case() -> None:
@@ -184,14 +184,14 @@ def test_exception_registry_documents_the_matrix_multiplication_case() -> None:
         ("Series", "__matmul__", "DataFrame"): HierarchyException(
             rationale="Series matrix multiplication with a DataFrame returns a Series.",
             documentation=(
-                "docs/type-architecture/container-hierarchy.md#matrix-multiplication"
+                "docs/type-architecture/operand-hierarchy.md#matrix-multiplication"
             ),
         ),
     }
 
     assert FORWARD_DUNDER_EXCEPTIONS == expected
     document = (
-        Path(__file__).parents[1] / "docs/type-architecture/container-hierarchy.md"
+        Path(__file__).parents[1] / "docs/type-architecture/operand-hierarchy.md"
     ).read_text(encoding="utf-8")
     assert "Series.__matmul__(DataFrame)" in document
 
@@ -213,7 +213,7 @@ class Series:
 """,
     )
 
-    assert check_container_hierarchy(stub_root)
+    assert check_operand_hierarchy(stub_root)
 
 
 def test_rejects_multiindex_higher_tier_operands(
@@ -227,7 +227,42 @@ class MultiIndex:
 """,
     )
 
-    assert not check_container_hierarchy(stub_root)
+    assert not check_operand_hierarchy(stub_root)
     output = capsys.readouterr().err
     assert "MultiIndex.__add__ `other` operand references Series" in output
     assert "MultiIndex.__add__ `other` operand references DataFrame" in output
+
+
+def test_ignores_non_binary_dunder_with_other(tmp_path: Path) -> None:
+    stub_root = _write_stub_tree(
+        tmp_path,
+        index="""
+class Index:
+    def __foo__(self, other: DataFrame, /) -> None: ...
+""",
+        series="""
+class Series:
+    def __add__(self, other: int, /) -> None: ...
+""",
+    )
+
+    assert check_operand_hierarchy(stub_root)
+
+
+def test_rejects_forward_binary_dunder_without_other(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    stub_root = _write_stub_tree(
+        tmp_path,
+        index="""
+class Index:
+    def __add__(self, right: int, /) -> None: ...
+""",
+        series="""
+class Series:
+    def __add__(self, other: int, /) -> None: ...
+""",
+    )
+
+    assert not check_operand_hierarchy(stub_root)
+    assert "Index.__add__ declares no 'other' operand" in capsys.readouterr().err

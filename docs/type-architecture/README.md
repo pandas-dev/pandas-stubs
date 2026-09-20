@@ -1,6 +1,6 @@
 # Type architecture
 
-This guide records the current type-container structure used when changing pandas-stubs
+This guide records the current operand hierarchy used when changing pandas-stubs
 operator signatures. It is an explanation of the checked-in stubs, not an independent
 specification of pandas runtime behavior.
 
@@ -15,18 +15,18 @@ stubs and tests establish the intended behavior. The review marker records the b
 used for this guide; it is not an assertion that the pages stay automatically current.
 
 The checker at
-[`scripts/check_container_hierarchy.py`](../../scripts/check_container_hierarchy.py)
+[`scripts/check_operand_hierarchy.py`](../../scripts/check_operand_hierarchy.py)
 tests a narrow structural contract. It does not prove result types, runtime dispatch,
 the completeness of overloads, or that this documentation is exhaustive.
 
 ## Pages
 
-- [Container hierarchy](container-hierarchy.md) — tiers, cross-tier lookup examples,
+- [Operand hierarchy](operand-hierarchy.md) — tiers, cross-tier lookup examples,
   structural invariant, and the matrix-multiplication exception.
 - [Operator signatures](operator-signatures.md) — operand aliases, protocols,
-  positional-only parameters, and subclass overrides.
-- [Testing and validation](testing-and-validation.md) — focused type-test patterns,
-  checker diagnostics, and the exact scope of validation.
+  positional-only parameters, subclass overrides, and the dunder set the checker scans.
+- [Validation](validation.md) — the operand-hierarchy checker, when to run it, and the
+  exact scope of validation.
 
 ## Adding a page
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # ruff: noqa: T201
-"""Check the container-hierarchy constraints in a pandas-stubs tree.
+"""Check the operand-hierarchy constraints in a pandas-stubs tree.
 
 The checker reads the stubs as syntax trees. It verifies that:
 
@@ -8,7 +8,7 @@ The checker reads the stubs as syntax trees. It verifies that:
 * ``ScalarArrayIndexSeries*`` aliases do not reference ``DataFrame``; and
 * forward binary dunders declared directly on ``Index``, ``MultiIndex``, and
   ``Series`` do not name a
-  higher-tier container in their ``other`` annotation, unless an explicit exception
+  higher-tier operand type in their ``other`` annotation, unless an explicit exception
   permits it.
 
 The checks include direct and transitive references through ``TypeAlias`` definitions.
@@ -36,34 +36,42 @@ class HierarchyException:
 
 
 # Adding an exception is a compatibility decision: update the linked documentation
-# and the exact-registry test in tests/test_check_container_hierarchy.py as well.
+# and the exact-registry test in tests/test_check_operand_hierarchy.py as well.
 FORWARD_DUNDER_EXCEPTIONS: Final[dict[ExceptionKey, HierarchyException]] = {
     ("Series", "__matmul__", "DataFrame"): HierarchyException(
         rationale="Series matrix multiplication with a DataFrame returns a Series.",
         documentation=(
-            "docs/type-architecture/container-hierarchy.md#matrix-multiplication"
+            "docs/type-architecture/operand-hierarchy.md#matrix-multiplication"
         ),
     ),
 }
 
-# A forward dunder can itself start with ``__r`` (for example, ``__rshift__``), so
-# reverse operations are enumerated instead of being filtered by a name prefix.
-REVERSE_BINARY_DUNDERS: Final[frozenset[str]] = frozenset(
+# The scanned set is enumerated explicitly. Name heuristics cannot separate forward
+# from reflected operations (a forward dunder can itself start with ``__r``, as
+# ``__rshift__`` does), and a dunder outside this set — every reflected dunder, like
+# ``__radd__``, plus non-operator methods such as ``__init__`` — is not scanned.
+FORWARD_BINARY_DUNDERS: Final[frozenset[str]] = frozenset(
     {
-        "__radd__",
-        "__rand__",
-        "__rdivmod__",
-        "__rfloordiv__",
-        "__rlshift__",
-        "__rmatmul__",
-        "__rmod__",
-        "__rmul__",
-        "__ror__",
-        "__rpow__",
-        "__rrshift__",
-        "__rsub__",
-        "__rtruediv__",
-        "__rxor__",
+        "__add__",
+        "__sub__",
+        "__mul__",
+        "__matmul__",
+        "__truediv__",
+        "__floordiv__",
+        "__mod__",
+        "__divmod__",
+        "__pow__",
+        "__lshift__",
+        "__rshift__",
+        "__and__",
+        "__or__",
+        "__xor__",
+        "__lt__",
+        "__le__",
+        "__eq__",
+        "__ne__",
+        "__gt__",
+        "__ge__",
     }
 )
 
@@ -142,12 +150,7 @@ def _other_annotation(function: ast.FunctionDef) -> ast.AST | None:
 
 def is_forward_binary_dunder(function: ast.FunctionDef) -> bool:
     """Return whether ``function`` is an in-scope forward binary dunder."""
-    return (
-        function.name.startswith("__")
-        and function.name.endswith("__")
-        and function.name not in REVERSE_BINARY_DUNDERS
-        and _other_annotation(function) is not None
-    )
+    return function.name in FORWARD_BINARY_DUNDERS
 
 
 def check_alias_level(aliases: Mapping[str, ast.AST]) -> bool:
@@ -166,7 +169,7 @@ def check_alias_level(aliases: Mapping[str, ast.AST]) -> bool:
             if references_name(value, forbidden, aliases):
                 print(
                     f"ERROR: alias {name} references {forbidden} — "
-                    "violates the container hierarchy.",
+                    "violates the operand hierarchy.",
                     file=sys.stderr,
                 )
                 ok = False
@@ -176,11 +179,11 @@ def check_alias_level(aliases: Mapping[str, ast.AST]) -> bool:
 def check_forward_binary_dunders(
     class_node: ast.ClassDef | None,
     class_name: str,
-    forbidden: str,
+    forbidden_names: tuple[str, ...],
     aliases: Mapping[str, ast.AST],
     exceptions: Mapping[ExceptionKey, HierarchyException],
 ) -> bool:
-    """Check every direct forward binary dunder with an ``other`` operand."""
+    """Check every direct forward binary dunder for a higher-tier ``other`` operand."""
     if class_node is None:
         print(
             f"ERROR: could not find class {class_name!r} in stubs.",
@@ -193,13 +196,26 @@ def check_forward_binary_dunders(
         if not isinstance(node, ast.FunctionDef) or not is_forward_binary_dunder(node):
             continue
 
-        if references_name(_other_annotation(node), forbidden, aliases):
-            key = (class_name, node.name, forbidden)
-            if key in exceptions:
+        # A scanned dunder that renames its operand would otherwise slip through the
+        # reference check below, so demand the ``other`` operand by name.
+        annotation = _other_annotation(node)
+        if annotation is None:
+            print(
+                f"ERROR: {class_name}.{node.name} declares no 'other' operand — "
+                "violates the operand hierarchy.",
+                file=sys.stderr,
+            )
+            ok = False
+            continue
+
+        for forbidden in forbidden_names:
+            if not references_name(annotation, forbidden, aliases):
+                continue
+            if (class_name, node.name, forbidden) in exceptions:
                 continue
             print(
                 f"ERROR: {class_name}.{node.name} `other` operand references "
-                f"{forbidden} — violates the container hierarchy.",
+                f"{forbidden} — violates the operand hierarchy.",
                 file=sys.stderr,
             )
             ok = False
@@ -224,52 +240,48 @@ def _read_required_trees(stub_root: Path) -> dict[Path, ast.Module] | None:
     }
 
 
-def check_container_hierarchy(
+def check_operand_hierarchy(
     stub_root: Path,
     *,
     exceptions: Mapping[ExceptionKey, HierarchyException] = FORWARD_DUNDER_EXCEPTIONS,
 ) -> bool:
-    """Check the hierarchy constraints in the ``pandas-stubs`` directory ``stub_root``."""
+    """Check the operand-hierarchy constraints in the ``pandas-stubs`` root directory."""
     trees = _read_required_trees(stub_root)
     if trees is None:
         return False
 
     aliases = collect_aliases(stub_root)
     ok = check_alias_level(aliases)
-    index_class = find_class(trees[Path("core/indexes/base.pyi")], "Index")
-    for forbidden in ("Series", "DataFrame"):
-        if not check_forward_binary_dunders(
-            index_class,
-            "Index",
-            forbidden,
-            aliases,
-            exceptions,
-        ):
-            ok = False
-    multi_index_class = find_class(trees[Path("core/indexes/multi.pyi")], "MultiIndex")
-    for forbidden in ("Series", "DataFrame"):
-        if not check_forward_binary_dunders(
-            multi_index_class,
-            "MultiIndex",
-            forbidden,
-            aliases,
-            exceptions,
-        ):
-            ok = False
+    if not check_forward_binary_dunders(
+        find_class(trees[Path("core/indexes/base.pyi")], "Index"),
+        "Index",
+        ("Series", "DataFrame"),
+        aliases,
+        exceptions,
+    ):
+        ok = False
+    if not check_forward_binary_dunders(
+        find_class(trees[Path("core/indexes/multi.pyi")], "MultiIndex"),
+        "MultiIndex",
+        ("Series", "DataFrame"),
+        aliases,
+        exceptions,
+    ):
+        ok = False
     if not check_forward_binary_dunders(
         find_class(trees[Path("core/series.pyi")], "Series"),
         "Series",
-        "DataFrame",
+        ("DataFrame",),
         aliases,
         exceptions,
     ):
         ok = False
 
     if ok:
-        print("Container hierarchy invariant holds.")
+        print("Operand hierarchy invariant holds.")
     return ok
 
 
 if __name__ == "__main__":
     STUB_ROOT = Path(__file__).parents[1] / "pandas-stubs"
-    sys.exit(not check_container_hierarchy(STUB_ROOT))
+    sys.exit(not check_operand_hierarchy(STUB_ROOT))

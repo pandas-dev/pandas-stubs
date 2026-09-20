@@ -1,9 +1,11 @@
-# Container hierarchy
+# Operand hierarchy
 
-The stubs model a useful direction for binary operators: a container should not claim a
-higher-tier container as a normal forward operand when that higher tier owns the relevant
+The stubs model a useful direction for binary operators: a type should not claim a
+higher-tier type as a normal forward operand when that higher tier owns the relevant
 result shape. This is a signature-design constraint, not a description of Python's full
-runtime method-resolution rules.
+runtime method-resolution rules. It is about operand scope, not about containment: the
+tiers span scalars and array-like values that are not containers in the `typing.Container`
+sense.
 
 ## Tiers
 
@@ -13,7 +15,7 @@ runtime method-resolution rules.
 | 1 | Array-like values such as extension arrays and NumPy arrays | Scalars and array-like values |
 | 2 | `Index` and `MultiIndex` | Scalars, array-like values, and `Index` |
 | 3 | `Series` | Scalars, array-like values, `Index`, and `Series` |
-| 4 | `DataFrame` | Scalars, lower-dimensional containers, and `DataFrame` |
+| 4 | `DataFrame` | Scalars, lower-dimensional types, and `DataFrame` |
 
 The tiers describe the ownership convention used in the current operator annotations;
 they do not classify every pandas object or every method.
@@ -25,7 +27,7 @@ against future higher-tier forward operands.
 
 ## Cross-tier lookup examples
 
-When reviewing a cross-tier expression, start with the container whose result shape is
+When reviewing a cross-tier expression, start with the operand type whose result shape is
 being represented, then inspect its forward and reflected overloads and a focused test.
 For example:
 
@@ -47,13 +49,15 @@ The checker enforces three restrictions in the current stubs:
 2. A `ScalarArrayIndexSeries*` alias must not directly or transitively reference
    `DataFrame`.
 3. Every forward binary dunder declared directly on `Index`, `MultiIndex`, or `Series`
-   with an `other` parameter must not directly or transitively reference that class's
-   higher tier: `Series` or `DataFrame` for `Index` and `MultiIndex`, and `DataFrame`
-   for `Series`.
+   must declare an `other` operand and must not directly or transitively reference that
+   class's higher tier: `Series` or `DataFrame` for `Index` and `MultiIndex`, and
+   `DataFrame` for `Series`.
 
 This includes arithmetic, bitwise, comparison, and matrix-multiplication dunders. The
 checker deliberately excludes reflected dunders such as `__radd__`; those signatures
-need their own review and focused tests.
+need their own review and focused tests. See
+[Operator signatures](operator-signatures.md#dunder-parameters) for which dunders the
+checker scans and how it reads the `other` operand.
 
 ## Matrix multiplication
 
@@ -67,6 +71,6 @@ which operand owns this runtime operation.
 Adding an exception requires all three of the following changes in the same review:
 
 1. Add a rationale and documentation entry here.
-2. Add the explicit registry entry in `scripts/check_container_hierarchy.py`.
+2. Add the explicit registry entry in `scripts/check_operand_hierarchy.py`.
 3. Update the exact-registry and declared-exception tests in
-   `tests/test_check_container_hierarchy.py`.
+   `tests/test_check_operand_hierarchy.py`.

@@ -82,5 +82,5 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - name: Validate container hierarchy invariant
-        run: python scripts/check_container_hierarchy.py
+      - name: Validate operand hierarchy invariant
+        run: python scripts/check_operand_hierarchy.py

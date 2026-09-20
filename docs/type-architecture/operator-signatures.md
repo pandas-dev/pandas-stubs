@@ -33,6 +33,18 @@ The `/` records the dunder calling convention in the stubs. Named methods such a
 `add`, `sub`, and `mul` can additionally expose keyword parameters such as `axis`,
 `level`, or `fill_value` when their own declarations support them.
 
+The name matters, not just the shape: the
+[operand-hierarchy checker](../../scripts/check_operand_hierarchy.py) enumerates its
+scanned methods in `FORWARD_BINARY_DUNDERS` and reads the operand by name from the
+positional-only `other` parameter of the methods it scans.
+
+- A forward binary dunder must keep an `other` parameter. A scanned dunder that
+  declares its operand under another name (say `right` or `value`) fails the checker
+  rather than being skipped.
+- Methods named `__*__` outside that set are not scanned at all. That includes every
+  reflected dunder, such as `__radd__`, and non-operator methods, such as `__init__`
+  or a bespoke `__foo__`.
+
 ## Protocol overloads
 
 Protocol-based overloads and constrained type variables are the preferred direction when

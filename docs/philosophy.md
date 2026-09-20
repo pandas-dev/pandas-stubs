@@ -120,6 +120,18 @@ which is supported by `typing_extensions` version 4.2 and beyond makes it easier
 to test to validate the return types of functions and methods.  Future work
 is intended to expand the use of `assert_type()` in the test code.
 
+Type checkers read `assert_type()`, but `pytest` does not: it is satisfied by any
+expression.  When a test also needs to confirm the runtime value or type, wrap it in the
+`check` helper from `tests/__init__.py`, which is imported as `from tests import check`
+and asserts the runtime type as the test runs:
+
+```python
+check(assert_type(left + right, "pd.Series[int]"), pd.Series, int)
+```
+
+The third argument is the expected dtype and is optional; `check` also verifies NumPy
+array shape and dtype when the target class is `np.ndarray`.
+
 When a stub returns `Never`, verify it with `assert_type(expr, Never)`.  For
 arithmetic operators returning `Never`, type checkers still check the rest of
 the scope, so a bare assertion is fine.  Some `Never`-returning calls, however,
@@ -135,6 +147,9 @@ def test_multiindex_from_product_forbid_strings() -> None:
         def _0() -> None:  # pyright: ignore[reportUnusedFunction]
             assert_type(pd.MultiIndex.from_product(["12", "34"]), Never)
 ```
+
+See [Using ignore comments](#using-ignore-comments) for the canonical ignore sequence
+that invalid-usage tests carry on the offending line.
 
 ## Narrow vs. Wide Arguments
 
