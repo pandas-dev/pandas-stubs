@@ -12,13 +12,13 @@ from tests import (
 )
 
 from pandas.tseries.offsets import (
+    FY5253,
     BaseOffset,
     BusinessDay,
     CustomBusinessDay,
     DateOffset,
     Day,
     Easter,
-    FY5253,
     Hour,
     Micro,
     Milli,
@@ -55,14 +55,17 @@ def anchors() -> list[BaseOffset]:
     ]
 
 
-def test_anchor_datetime_like(anchors: list[BaseOffset], timestamp: pd.Timestamp) -> None:
+def test_anchor_datetime_like(
+    anchors: list[BaseOffset], timestamp: pd.Timestamp
+) -> None:
     """Every anchor offset maps a datetime-like operand to a `Timestamp` in both directions."""
     for anchor in anchors:
         check(assert_type(anchor + timestamp, pd.Timestamp), pd.Timestamp)
         check(assert_type(timestamp + anchor, pd.Timestamp), pd.Timestamp)
         check(assert_type(anchor + dt.date(2026, 1, 1), pd.Timestamp), pd.Timestamp)
         check(
-            assert_type(anchor + np.datetime64("2026-01-01"), pd.Timestamp), pd.Timestamp
+            assert_type(anchor + np.datetime64("2026-01-01"), pd.Timestamp),
+            pd.Timestamp,
         )
         check(assert_type(anchor.__radd__(timestamp), pd.Timestamp), pd.Timestamp)
 
@@ -101,9 +104,7 @@ def test_tick_arithmetic(timestamp: pd.Timestamp) -> None:
     check(assert_type(timestamp + Hour(1), pd.Timestamp), pd.Timestamp)
     check(assert_type(Hour(1) + timestamp, pd.Timestamp), pd.Timestamp)
     check(assert_type(Hour(1) + pd.NaT, NaTType), NaTType)
-    check(
-        assert_type(Hour(1) + dt.timedelta(hours=2), pd.Timedelta), pd.Timedelta
-    )
+    check(assert_type(Hour(1) + dt.timedelta(hours=2), pd.Timedelta), pd.Timedelta)
     check(assert_type(Hour(1) + np.timedelta64(2, "h"), pd.Timedelta), pd.Timedelta)
     check(assert_type(Hour(1) + pd.Timedelta("2h"), pd.Timedelta), pd.Timedelta)
     check(assert_type(Hour(1) + Day(), pd.Timedelta), pd.Timedelta)

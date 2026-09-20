@@ -27,6 +27,8 @@ def test_day_stays_an_offset() -> None:
     check(assert_type(timestamp + Day(), pd.Timestamp), pd.Timestamp)
     check(assert_type(Day(1) + Day(2), Day), Day)
     check(
-        assert_type(pd.date_range("2026-01-01", periods=2, freq=Day()), pd.DatetimeIndex),
+        assert_type(
+            pd.date_range("2026-01-01", periods=2, freq=Day()), pd.DatetimeIndex
+        ),
         pd.DatetimeIndex,
     )
