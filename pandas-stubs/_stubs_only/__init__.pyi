@@ -182,6 +182,7 @@ ScalarArrayIndexDatetime: TypeAlias = (
     | Sequence[datetime | np.datetime64]
     | ArrayIndexDatetimeNoSeq
 )
+ScalarArrayIndexSeriesDatetime: TypeAlias = ScalarArrayIndexDatetime | Series[Timestamp]
 
 ArrayIndexPeriodNoSeq: TypeAlias = (
     np_ndarray_td
@@ -193,6 +194,9 @@ ArrayIndexPeriodNoSeq: TypeAlias = (
 )
 ScalarArrayIndexPeriod: TypeAlias = (
     PeriodAddSub | Sequence[PeriodAddSub] | ArrayIndexPeriodNoSeq
+)
+ScalarArrayIndexSeriesPeriod: TypeAlias = (
+    ScalarArrayIndexPeriod | Series[Timedelta] | Series[int] | Series[BaseOffset]
 )
 
 NumListLike: TypeAlias = (  # TODO: pandas-dev/pandas-stubs#1474 deprecated, do not use
