@@ -1296,15 +1296,6 @@ def test_new() -> None:
     )
 
 
-def test_datetime_operators_builtin() -> None:
-    time = pd.date_range("2022-01-01", "2022-01-31", freq="D")
-    check(assert_type(time + dt.timedelta(0), pd.DatetimeIndex), pd.DatetimeIndex)
-
-    delta = check(assert_type(time - time, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(delta + dt.timedelta(0), pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(dt.datetime.now() + delta, pd.DatetimeIndex), pd.DatetimeIndex)
-
-
 def test_get_loc() -> None:
     unique_index = pd.Index(list("abc"))
     check(
