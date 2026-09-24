@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from typing import (
+    TYPE_CHECKING,
     Any,
     assert_type,
 )
 
 import numpy as np
 import pandas as pd
+
+if TYPE_CHECKING:
+    from pandas._typing import ScalarOrNA  # noqa: F401
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -47,6 +51,9 @@ def test_types_loc_at() -> None:
     s2.loc[1]
     s2.at[1]
     s2.at[1] = 99
+
+    assert_type(s.at["row1"], "ScalarOrNA")
+    assert_type(s.iat[0], "ScalarOrNA")
 
 
 def test_types_getitem() -> None:
