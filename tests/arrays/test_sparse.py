@@ -17,6 +17,7 @@ from pandas._libs.sparse import SparseIndex
 from pandas.core.dtypes.dtypes import SparseDtype
 
 from tests import (
+    PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -210,9 +211,9 @@ def test_sparse_nonzero() -> None:
 def test_sparse_all() -> None:
     """Test all method for SparseArray."""
     arr = SparseArray([1, 1, 1, 1, 1])
-    check(assert_type(arr.all(), bool), np.bool_)
-    check(assert_type(arr.all(axis=None), bool), np.bool_)
-    check(assert_type(arr.all(axis=0), bool), np.bool_)
+    check(assert_type(arr.all(), bool), np.bool_ if PD_LTE_31 else bool)
+    check(assert_type(arr.all(axis=None), bool), np.bool_ if PD_LTE_31 else bool)
+    check(assert_type(arr.all(axis=0), bool), np.bool_ if PD_LTE_31 else bool)
 
 
 def test_sparse_any() -> None:

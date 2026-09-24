@@ -1772,7 +1772,13 @@ def test_reset_index() -> None:
     check(assert_type(r5, "pd.Series[int]"), pd.Series, np.integer)
     r6 = s.reset_index(["ab"], drop=True, allow_duplicates=True)
     check(assert_type(r6, "pd.Series[int]"), pd.Series, np.integer)
-    assert assert_type(s.reset_index(inplace=True, drop=True), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.reset_index(inplace=True, drop=True), None) is None
 
 
 def test_series_dtype() -> None:
