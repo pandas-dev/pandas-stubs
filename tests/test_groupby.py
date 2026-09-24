@@ -25,15 +25,34 @@ from pandas.core.groupby.generic import (
     DataFrameGroupBy,
     SeriesGroupBy,
 )
-from pandas.core.resample import (
-    DatetimeIndexResamplerGroupby,
-    Resampler,
-)
-from pandas.core.window import (
-    ExpandingGroupby,
-    ExponentialMovingWindowGroupby,
-    RollingGroupby,
-)
+from pandas.core.resample import Resampler
+
+if TYPE_CHECKING:
+    # The stubs still use the pre-3.1 *Groupby spellings, which pandas
+    # renames to *GroupBy in 3.1 (pandas-dev/pandas#49578).
+    from pandas.core.resample import DatetimeIndexResamplerGroupby
+    from pandas.core.window import (
+        ExpandingGroupby,
+        ExponentialMovingWindowGroupby,
+        RollingGroupby,
+    )
+else:
+    try:
+        from pandas.core.resample import (
+            DatetimeIndexResamplerGroupBy as DatetimeIndexResamplerGroupby,
+        )
+        from pandas.core.window import (
+            ExpandingGroupBy as ExpandingGroupby,
+            ExponentialMovingWindowGroupBy as ExponentialMovingWindowGroupby,
+            RollingGroupBy as RollingGroupby,
+        )
+    except ImportError:  # pandas < 3.1
+        from pandas.core.resample import DatetimeIndexResamplerGroupby
+        from pandas.core.window import (
+            ExpandingGroupby,
+            ExponentialMovingWindowGroupby,
+            RollingGroupby,
+        )
 
 from pandas.errors import Pandas4Warning
 
