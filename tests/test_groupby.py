@@ -25,15 +25,34 @@ from pandas.core.groupby.generic import (
     DataFrameGroupBy,
     SeriesGroupBy,
 )
-from pandas.core.resample import (
-    DatetimeIndexResamplerGroupby,
-    Resampler,
-)
-from pandas.core.window import (
-    ExpandingGroupby,
-    ExponentialMovingWindowGroupby,
-    RollingGroupby,
-)
+from pandas.core.resample import Resampler
+
+if TYPE_CHECKING:
+    # The stubs still use the pre-3.1 *Groupby spellings, which pandas
+    # renames to *GroupBy in 3.1 (pandas-dev/pandas#49578).
+    from pandas.core.resample import DatetimeIndexResamplerGroupby
+    from pandas.core.window import (
+        ExpandingGroupby,
+        ExponentialMovingWindowGroupby,
+        RollingGroupby,
+    )
+else:
+    try:
+        from pandas.core.resample import (
+            DatetimeIndexResamplerGroupBy as DatetimeIndexResamplerGroupby,
+        )
+        from pandas.core.window import (
+            ExpandingGroupBy as ExpandingGroupby,
+            ExponentialMovingWindowGroupBy as ExponentialMovingWindowGroupby,
+            RollingGroupBy as RollingGroupby,
+        )
+    except ImportError:  # pandas < 3.1
+        from pandas.core.resample import DatetimeIndexResamplerGroupby
+        from pandas.core.window import (
+            ExpandingGroupby,
+            ExponentialMovingWindowGroupby,
+            RollingGroupby,
+        )
 
 from pandas.errors import Pandas4Warning
 
@@ -161,7 +180,6 @@ def test_frame_groupby_resample() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
-        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
@@ -251,7 +269,6 @@ def test_frame_groupby_resample() -> None:
 
     def i(val: Resampler[DataFrame]) -> float:
         assert isinstance(val, Resampler)
-        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean().mean())
 
     check(assert_type(GB_DF.resample("ME").pipe(i), float), float)
@@ -371,7 +388,6 @@ def test_series_groupby_resample() -> None:
     # pipe
     def g(val: Resampler[Series]) -> float:
         assert isinstance(val, Resampler)
-        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_S.resample("ME").pipe(g), float), float)
@@ -479,7 +495,6 @@ def test_frame_groupby_rolling() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
-        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.rolling(1).aggregate(np.sum), DataFrame), DataFrame)
@@ -647,7 +662,6 @@ def test_frame_groupby_expanding() -> None:
         return val.mean()
 
     def df2scalar(val: DataFrame) -> float:
-        # pyrefly: ignore[unnecessary-type-conversion]
         return float(val.mean().mean())
 
     check(assert_type(GB_DF.expanding(1).aggregate(np.sum), DataFrame), DataFrame)

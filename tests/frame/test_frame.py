@@ -26,7 +26,6 @@ from typing import (
     Generic,
     Never,
     TypeAlias,
-    TypedDict,
     TypeVar,
     assert_never,
     assert_type,
@@ -45,6 +44,7 @@ from pandas.core.resample import (
 from pandas.core.window.expanding import Expanding
 from pandas.core.window.rolling import Rolling
 import pytest
+from typing_extensions import TypedDict
 import xarray as xr
 
 from pandas.errors import Pandas4Warning
@@ -533,7 +533,13 @@ def test_types_set_index() -> None:
     check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.set_index("col1", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
     check(
         assert_type(df.set_index(pd.Index(["w", "x", "y", "z"])), pd.DataFrame),
@@ -2928,7 +2934,7 @@ def test_read_csv(tmp_path: Path) -> None:
         pd.DataFrame,
     )
 
-    class ReadCsvKwargs(TypedDict):
+    class ReadCsvKwargs(TypedDict, closed=True):
         converters: dict[int, Callable[[str], Any]]
 
     read_csv_kwargs: ReadCsvKwargs = {"converters": {0: int}}
@@ -3656,7 +3662,13 @@ def test_reset_index_150_changes() -> None:
     check(assert_type(df4, pd.DataFrame), pd.DataFrame)
     check(assert_type(df4[["num"]], pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(frame.reset_index(inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(frame.reset_index(inplace=True), None), type(None))
 
 
 def test_compare_150_changes() -> None:
@@ -3865,10 +3877,15 @@ def test_align() -> None:
         columns=["A", "B", "C"],
     )
 
+    # TODO: https://github.com/facebook/pyrefly/issues/4913
     s0 = pd.Series(data={0: "1", 3: "3", 5: "5"})
     aligned_df0, aligned_s0 = df0.align(s0, axis="index")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
+    check(
+        assert_type(aligned_s0, "pd.Series[str]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        str,
+    )
 
     with pytest_warns_bounded(
         Pandas4Warning,
@@ -3877,12 +3894,21 @@ def test_align() -> None:
     ):
         aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
         check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-        check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
+        check(
+            assert_type(aligned_s0, "pd.Series[str]"),  # pyrefly: ignore[assert-type]
+            pd.Series,
+            str,
+        )
 
+    # TODO: https://github.com/facebook/pyrefly/issues/4913
     s1 = pd.Series(data={"A": "A", "D": "D"})
     aligned_df0, aligned_s1 = df0.align(s1, axis="columns")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(aligned_s1, "pd.Series[str]"), pd.Series, str)
+    check(
+        assert_type(aligned_s1, "pd.Series[str]"),  # pyrefly: ignore[assert-type]
+        pd.Series,
+        str,
+    )
 
     df1 = pd.DataFrame(
         data=np.array(
@@ -3983,48 +4009,30 @@ def test_select_dtypes() -> None:
     check(assert_type(df.select_dtypes(np.number), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(object), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(include="bool"), pd.DataFrame), pd.DataFrame)
-    # TODO: facebook/pyrefly#3268
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            # pyrefly: ignore[no-matching-overload]
+        assert_type(
             df.select_dtypes(include=["float64"], exclude=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            # pyrefly: ignore[no-matching-overload]
+        assert_type(
             df.select_dtypes(exclude=["int64"], include=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            # pyrefly: ignore[no-matching-overload]
+        assert_type(
             df.select_dtypes(exclude=["int64", object]),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        r"Passing 'datetimetz' to select_dtypes is deprecated and will raise",
-        "3.0.99",
-    ):
-        check(
-            assert_type(  # pyrefly: ignore[assert-type]
-                df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
-                    exclude=["datetimetz"]
-                ),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
     check(
-        assert_type(  # pyrefly: ignore[assert-type]
-            df.select_dtypes(  # pyrefly: ignore[no-matching-overload]
+        assert_type(
+            df.select_dtypes(
                 exclude=[
                     np.datetime64,
                     "datetime64",
@@ -4033,6 +4041,7 @@ def test_select_dtypes() -> None:
                     "timedelta",
                     "timedelta64",
                     "category",
+                    "datetimetz",
                     pd.DatetimeTZDtype(tz=ZoneInfo("UTC")),
                     "datetime64[ns]",
                 ]

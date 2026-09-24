@@ -186,6 +186,7 @@ class _InterpolateMixin:
         **kwargs: Any,
     ) -> Never: ...
 
+# TODO: rename to DatetimeIndexResamplerGroupBy (pandas-dev/pandas-stubs#1948)
 class DatetimeIndexResamplerGroupby(
     _InterpolateMixin, _GroupByMixin[NDFrameT], DatetimeIndexResampler[NDFrameT]
 ):
@@ -195,6 +196,7 @@ class DatetimeIndexResamplerGroupby(
 
 class PeriodIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
+# TODO: rename to PeriodIndexResamplerGroupBy (pandas-dev/pandas-stubs#1948)
 class PeriodIndexResamplerGroupby(
     _InterpolateMixin, _GroupByMixin[NDFrameT], PeriodIndexResampler[NDFrameT]
 ):
@@ -204,6 +206,7 @@ class PeriodIndexResamplerGroupby(
 
 class TimedeltaIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
 
+# TODO: rename to TimedeltaIndexResamplerGroupBy (pandas-dev/pandas-stubs#1948)
 class TimedeltaIndexResamplerGroupby(
     _InterpolateMixin, _GroupByMixin[NDFrameT], TimedeltaIndexResampler[NDFrameT]
 ):

@@ -8,7 +8,10 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Index
-from pandas._stubs_only import PeriodAddSub
+from pandas._stubs_only import (
+    PeriodAddSub,
+    ScalarArrayIndexPeriod,
+)
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
 from pandas.core.indexes.datetimelike import DatetimeIndexOpsMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
@@ -41,11 +44,11 @@ class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps
     def values(self) -> np_1darray_object: ...
     @override
     def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, other: datetime.timedelta, /
+        self, other: ScalarArrayIndexPeriod, /
     ) -> Self: ...
     @override
-    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: datetime.timedelta, /
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+        self, other: ScalarArrayIndexPeriod, /
     ) -> Self: ...
     @overload  # type: ignore[override]
     @override

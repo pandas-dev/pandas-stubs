@@ -258,8 +258,20 @@ def test_types_drop() -> None:
     check(assert_type(s.drop(0), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.drop([0, 1]), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.drop(0, axis=0), "pd.Series[int]"), pd.Series, np.integer)
-    assert assert_type(s.drop([0, 1], inplace=True, errors="raise"), None) is None
-    assert assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.drop([0, 1], inplace=True, errors="raise"), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None) is None
     # GH 302
     s = pd.Series([0, 1, 2])
     check(
@@ -1036,8 +1048,7 @@ def test_types_groupby() -> None:
     )
     s.groupby(np.array([1, 0, 1, 0]))
     s.groupby([np.array([1, 0, 0, 0]), np.array([0, 0, 1, 0])])
-    # TODO: facebook/pyrefly#3268
-    s.groupby({"a": 1, "b": 2})  # pyrefly: ignore[no-matching-overload]
+    s.groupby({"a": 1, "b": 2})
     s.groupby([{"a": 1, "b": 3}, {"a": 1, "b": 1}])
     s.groupby(s.index)
     s.groupby([pd.Index([1, 0, 0, 0]), pd.Index([0, 0, 1, 0])])
@@ -1615,29 +1626,57 @@ def test_types_rename() -> None:
     s5 = pd.Series([1, 2, 3]).rename({1: 10})
     check(assert_type(s5, "pd.Series[int]"), pd.Series, np.integer)
     # inplace
-    check(
-        assert_type(pd.Series([1, 2, 3]).rename("A", inplace=True), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(pd.Series([1, 2, 3]).rename({1: 4, 2: 5}, inplace=True), None),
-        type(None),
-    )
-    check(
-        assert_type(
-            pd.Series([1, 2, 3]).rename(index=None, inplace=True), "pd.Series[int]"
-        ),
-        pd.Series,
-        np.integer,
-    )
-    check(
-        assert_type(pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None),
-        type(None),
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(
+                pd.Series([1, 2, 3]).rename("A", inplace=True), "pd.Series[int]"
+            ),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(pd.Series([1, 2, 3]).rename({1: 4, 2: 5}, inplace=True), None),
+            type(None),
+        )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(
+                pd.Series([1, 2, 3]).rename(index=None, inplace=True), "pd.Series[int]"
+            ),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(
+            assert_type(
+                pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None
+            ),
+            type(None),
+        )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-assignment] # ty: ignore[invalid-argument-type]
         # copy argument is deprecated from 3.0
         _s8 = pd.Series([1, 2, 3]).rename("A", copy=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
@@ -1741,7 +1780,13 @@ def test_reset_index() -> None:
     check(assert_type(r5, "pd.Series[int]"), pd.Series, np.integer)
     r6 = s.reset_index(["ab"], drop=True, allow_duplicates=True)
     check(assert_type(r6, "pd.Series[int]"), pd.Series, np.integer)
-    assert assert_type(s.reset_index(inplace=True, drop=True), None) is None
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in Series",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        assert assert_type(s.reset_index(inplace=True, drop=True), None) is None
 
 
 def test_series_dtype() -> None:
@@ -1779,8 +1824,13 @@ def test_series_replace() -> None:
     check(assert_type(s.replace(replace_dict), "pd.Series[str]"), pd.Series, str)
     # pandas-dev/pandas-stubs#1861
     check(assert_type(s.replace({"": pd.NA}), "pd.Series[str]"), pd.Series, str)
+    # TODO: https://github.com/facebook/pyrefly/issues/4913
     check(
-        assert_type(s.replace(pd.Series({"a": "z"})), "pd.Series[str]"), pd.Series, str
+        assert_type(  # pyrefly: ignore[assert-type]
+            s.replace(pd.Series({"a": "z"})), "pd.Series[str]"
+        ),
+        pd.Series,
+        str,
     )
     check(
         assert_type(s.replace({pattern: "z"}, regex=True), "pd.Series[str]"),
@@ -3332,8 +3382,9 @@ def test_series_new_empty() -> None:
 
 def test_series_mapping() -> None:
     # GH 831
+    # TODO: https://github.com/facebook/pyrefly/issues/4913
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[assert-type]
             pd.Series(
                 {
                     pd.Timestamp(2023, 1, 2): "b",
@@ -3345,8 +3396,9 @@ def test_series_mapping() -> None:
         str,
     )
 
+    # TODO: https://github.com/facebook/pyrefly/issues/4913
     check(
-        assert_type(
+        assert_type(  # pyrefly: ignore[assert-type]
             pd.Series(
                 {
                     ("a", "b"): "c",
@@ -3653,9 +3705,11 @@ def test_map() -> None:
 
     unknown_series = pd.Series([1, 0, None])
     check(
-        # TODO: facebook/pyrefly#3268
-        # pyrefly: ignore[assert-type]
-        assert_type(unknown_series.map({1: True, 0: False, None: None}), pd.Series),
+        # pyrefly now infers Series[bool | None] here (mypy/pyright still infer
+        # Series[Any], matching pd.Series below)
+        assert_type(  # pyrefly: ignore[assert-type]
+            unknown_series.map({1: True, 0: False, None: None}), pd.Series
+        ),
         pd.Series,
     )
 

@@ -48,7 +48,9 @@ class StyleExportDict(TypedDict, total=False):
     css: dict[str, str | int]
 
 CSSStyles: TypeAlias = list[CSSDict]
-Subset: TypeAlias = _IndexSlice | slice | tuple[slice, ...] | list[HashableT] | Index
+Subset: TypeAlias = (
+    _IndexSlice | slice | tuple[slice, ...] | list[HashableT] | Index | tuple[Any, Any]
+)
 
 class StylerRenderer:
     loader: FileSystemLoader

@@ -6,6 +6,7 @@
 
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     TypeAlias,
     assert_type,
 )
@@ -16,24 +17,49 @@ import pandas as pd
 from pandas import read_json
 from pandas.api.typing import (
     DataFrameGroupBy,
-    DatetimeIndexResamplerGroupby,
     Expanding,
-    ExpandingGroupby,
     ExponentialMovingWindow,
-    ExponentialMovingWindowGroupby,
     JsonReader,
     NaTType,
     NAType,
-    PeriodIndexResamplerGroupby,
     Resampler,
     Rolling,
-    RollingGroupby,
     SeriesGroupBy,
     StataReader,
-    TimedeltaIndexResamplerGroupby,
     TimeGrouper,
     Window,
 )
+
+if TYPE_CHECKING:
+    # The stubs still use the pre-3.1 *Groupby spellings, which pandas
+    # renames to *GroupBy in 3.1 (pandas-dev/pandas#49578).
+    from pandas.api.typing import (
+        DatetimeIndexResamplerGroupby,
+        ExpandingGroupby,
+        ExponentialMovingWindowGroupby,
+        PeriodIndexResamplerGroupby,
+        RollingGroupby,
+        TimedeltaIndexResamplerGroupby,
+    )
+else:
+    try:
+        from pandas.api.typing import (
+            DatetimeIndexResamplerGroupBy as DatetimeIndexResamplerGroupby,
+            ExpandingGroupBy as ExpandingGroupby,
+            ExponentialMovingWindowGroupBy as ExponentialMovingWindowGroupby,
+            PeriodIndexResamplerGroupBy as PeriodIndexResamplerGroupby,
+            RollingGroupBy as RollingGroupby,
+            TimedeltaIndexResamplerGroupBy as TimedeltaIndexResamplerGroupby,
+        )
+    except ImportError:  # pandas < 3.1
+        from pandas.api.typing import (
+            DatetimeIndexResamplerGroupby,
+            ExpandingGroupby,
+            ExponentialMovingWindowGroupby,
+            PeriodIndexResamplerGroupby,
+            RollingGroupby,
+            TimedeltaIndexResamplerGroupby,
+        )
 
 from tests import check
 

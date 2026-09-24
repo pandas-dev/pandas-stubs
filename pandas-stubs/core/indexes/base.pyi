@@ -652,14 +652,31 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __add__(self, other: Index[Never], /) -> Index: ...
     @overload
     def __add__(
+        self: Index[_str],
+        other: (
+            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
+        ),
+        /,
+    ) -> Never: ...
+    @overload
+    def __add__(
+        self: Index[_str],
+        other: _str | SequenceNotStr[_str] | np_ndarray_str | Index[_str],
+        /,
+    ) -> Index[_str]: ...
+    @overload
+    def __add__(
         self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
     ) -> Index[S2]: ...
     @overload
     def __add__(
         self: Index[S2_contra],
-        other: SupportsRAdd[S2_contra, S2] | Sequence[SupportsRAdd[S2_contra, S2]],
+        other: (
+            SupportsRAdd[S2_contra, S2_NSDT]
+            | Sequence[SupportsRAdd[S2_contra, S2_NSDT]]
+        ),
         /,
-    ) -> Index[S2]: ...
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __add__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
@@ -684,18 +701,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __add__(
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
     ) -> Index[complex]: ...
-    @overload
-    def __add__(
-        self: Index[_str],
-        other: (
-            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
-        ),
-        /,
-    ) -> Never: ...
-    @overload
-    def __add__(
-        self: Index[_str], other: np_ndarray_str | Index[_str], /
-    ) -> Index[_str]: ...
     @overload
     def __radd__(self: Index[Never], other: _str, /) -> Index[_str]: ...
     @overload
@@ -705,15 +710,33 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         /,
     ) -> Index: ...
     @overload
+    def __radd__(self, other: Index[Never], /) -> Index: ...
+    @overload
+    def __radd__(
+        self: Index[_str],
+        other: (
+            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
+        ),
+        /,
+    ) -> Never: ...
+    @overload
+    def __radd__(
+        self: Index[_str],
+        other: _str | SequenceNotStr[_str] | np_ndarray_str | Index[_str],
+        /,
+    ) -> Index[_str]: ...
+    @overload
     def __radd__(
         self: Supports_ProtoRAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
     ) -> Index[S2]: ...
     @overload
     def __radd__(
         self: Index[S2_contra],
-        other: SupportsAdd[S2_contra, S2] | Sequence[SupportsAdd[S2_contra, S2]],
+        other: (
+            SupportsAdd[S2_contra, S2_NSDT] | Sequence[SupportsAdd[S2_contra, S2_NSDT]]
+        ),
         /,
-    ) -> Index[S2]: ...
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __radd__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
@@ -738,18 +761,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __radd__(
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
     ) -> Index[complex]: ...
-    @overload
-    def __radd__(
-        self: Index[_str],
-        other: (
-            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
-        ),
-        /,
-    ) -> Never: ...
-    @overload
-    def __radd__(
-        self: Index[_str], other: np_ndarray_str | Index[_str], /
-    ) -> Index[_str]: ...
     @overload
     def __sub__(self: Index[Never], other: DatetimeIndex, /) -> Never: ...
     @overload

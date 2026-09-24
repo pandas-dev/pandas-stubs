@@ -2,4 +2,4 @@ from typing import Literal
 
 version_json: str = ...
 
-_stub_version: Literal["3.0.5.260730"]
+_stub_version: Literal["3.0.5.260914"]

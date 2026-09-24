@@ -2,6 +2,7 @@ from datetime import (
     datetime,
     timedelta,
 )
+import sys
 from typing import assert_type
 
 import numpy as np
@@ -25,7 +26,9 @@ def test_add_py_scalar(left: pd.Period) -> None:
     """Test pd.Period + Python native scalars"""
     d = timedelta(days=1)
     i = 1
+    f = 1.5
     s = datetime(2025, 8, 20)
+    st = "str"
 
     check(assert_type(left + d, pd.Period), pd.Period)
     check(assert_type(d + left, pd.Period), pd.Period)
@@ -35,11 +38,13 @@ def test_add_py_scalar(left: pd.Period) -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _2 = left + "str"  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _3 = "str" + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _4 = left + 1.5  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _5 = 1.5 + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _1 = left + st  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _2 = left + f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _3 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _4 = st + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _5 = f + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_add_numpy_scalar(left: pd.Period) -> None:
@@ -52,7 +57,13 @@ def test_add_numpy_scalar(left: pd.Period) -> None:
     check(assert_type(d + left, pd.Period), pd.Period)
 
     check(assert_type(left + i, pd.Period), pd.Period)
-    check(assert_type(i + left, pd.Period), pd.Period)
+    if sys.version_info >= (3, 12):
+        check(assert_type(i + left, pd.Period), pd.Period)
+    else:
+        check(
+            assert_type(i + left, pd.Period),  # pyrefly: ignore[assert-type]
+            pd.Period,
+        )
 
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
