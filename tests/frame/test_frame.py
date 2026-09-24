@@ -533,7 +533,13 @@ def test_types_set_index() -> None:
     check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.set_index("col1", inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
     check(
         assert_type(df.set_index(pd.Index(["w", "x", "y", "z"])), pd.DataFrame),
@@ -3649,7 +3655,13 @@ def test_reset_index_150_changes() -> None:
     check(assert_type(df4, pd.DataFrame), pd.DataFrame)
     check(assert_type(df4[["num"]], pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(frame.reset_index(inplace=True), None), type(None))
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The inplace keyword in DataFrame",
+        lower="3.0.99",
+        upper="3.99",
+    ):
+        check(assert_type(frame.reset_index(inplace=True), None), type(None))
 
 
 def test_compare_150_changes() -> None:
@@ -4011,18 +4023,6 @@ def test_select_dtypes() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        r"Passing 'datetimetz' to select_dtypes is deprecated and will raise",
-        "3.0.99",
-    ):
-        check(
-            assert_type(
-                df.select_dtypes(exclude=["datetimetz"]),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
     check(
         assert_type(
             df.select_dtypes(
@@ -4034,6 +4034,7 @@ def test_select_dtypes() -> None:
                     "timedelta",
                     "timedelta64",
                     "category",
+                    "datetimetz",
                     pd.DatetimeTZDtype(tz=ZoneInfo("UTC")),
                     "datetime64[ns]",
                 ]

@@ -64,6 +64,7 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
     ) -> DataFrame: ...
     agg = aggregate  # type: ignore[assignment]
 
+# TODO: rename to ExponentialMovingWindowGroupBy (pandas-dev/pandas-stubs#1948)
 class ExponentialMovingWindowGroupby(
     BaseWindowGroupby[NDFrameT], ExponentialMovingWindow[NDFrameT]
 ): ...

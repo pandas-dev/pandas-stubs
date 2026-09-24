@@ -4566,6 +4566,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> float: ...
+    # TODO: pandas-dev/pandas#66909 after pandas 3.1, median() keeps the complex
+    # dtype (no float64 cast); add a dedicated complex overload returning complex
     @overload
     def median(
         self: Series[complex],
