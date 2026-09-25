@@ -1791,7 +1791,12 @@ def test_sqlalchemy_selectable(tmp_path: Path) -> None:
 
         Session = sqlalchemy.orm.sessionmaker(engine)
         with Session() as session:
-            pd.read_sql(session.query(Temp.quantity).statement, session.connection())
+            pd.read_sql(
+                session.query(
+                    Temp.quantity
+                ).statement,  # pyright: ignore[reportUnknownMemberType]
+                session.connection(),
+            )
 
 
 def test_sqlalchemy_text(tmp_path: Path) -> None:

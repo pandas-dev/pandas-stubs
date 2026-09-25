@@ -71,7 +71,13 @@ BY = Series(np.random.choice([1, 2], 365), index=DR)
 S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S, "col3": BY})
 GB_DF = DF.groupby("col3")
-GB_S = cast("SeriesGroupBy[float, int]", GB_DF.col1)
+# GB_DF.col1 infers as SeriesGroupBy[Any, Scalar]; the cast recovers the precise
+# SeriesGroupBy[float, int]. `disjoint-cast` is a ty false positive on invariant
+# generic params: int is a member of Scalar, so the instantiations overlap.
+# TODO: remove the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+GB_S = cast(
+    "SeriesGroupBy[float, int]", GB_DF.col1
+)  # ty: ignore[disjoint-cast,unused-ignore-comment,unused-ignore-comment]
 
 
 def s2scalar(val: Series) -> float:
