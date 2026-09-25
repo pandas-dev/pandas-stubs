@@ -2991,6 +2991,16 @@ def test_dataframe_pct_change() -> None:
     check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
 
 
+def test_dataframe_first_last_valid_index() -> None:
+    df = pd.DataFrame({"x": [np.nan, 1.0, 2.0, np.nan]})
+    check(assert_type(df.first_valid_index(), Scalar | None), int)
+    check(assert_type(df.last_valid_index(), Scalar | None), int)
+
+    df_all_na = pd.DataFrame({"x": [np.nan, np.nan]})
+    check(assert_type(df_all_na.first_valid_index(), Scalar | None), type(None))
+    check(assert_type(df_all_na.last_valid_index(), Scalar | None), type(None))
+
+
 def test_compute_values() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4]})
     s: pd.Series = pd.Series([10, 20, 30, 40])
