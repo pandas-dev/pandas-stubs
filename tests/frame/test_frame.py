@@ -2295,8 +2295,8 @@ def test_types_aggregate() -> None:
     check(assert_type(df.aggregate({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        df.aggregate("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        df.aggregate({"A": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.aggregate("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
+        df.aggregate({"A": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
 
 
 def test_types_transform() -> None:
@@ -2314,8 +2314,8 @@ def test_types_transform() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        df.transform("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        df.transform({"A": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
+        df.transform("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type] # pyrefly: ignore[bad-argument-type]
+        df.transform({"A": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type] # pyrefly: ignore[bad-assignment]
 
 
 def test_types_describe() -> None:

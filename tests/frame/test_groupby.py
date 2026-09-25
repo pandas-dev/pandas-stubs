@@ -341,8 +341,8 @@ def test_types_groupby_agg() -> None:
     check(assert_type(df.groupby("col1").agg({0: "sum"}), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        df.groupby("col1").agg("random_func")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
-        df.groupby("col1").agg({"col2": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.groupby("col1").agg("random_func")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
+        df.groupby("col1").agg({"col2": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
 
     named_agg = pd.NamedAgg(column="col2", aggfunc="max")
     check(
