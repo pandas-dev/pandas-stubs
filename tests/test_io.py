@@ -1789,16 +1789,7 @@ def test_sqlalchemy_selectable(tmp_path: Path) -> None:
             __tablename__ = "part"
             quantity = sqlalchemy.Column(sqlalchemy.Integer)
 
-        Session = sqlalchemy.orm.sessionmaker(engine)
-        with Session() as session:
-            # TODO: drop the pyright ignore once sqlalchemy/sqlalchemy#13612 is fixed
-            # (Query.statement -> Select[_T] | ... leaves _T unknown for a bare-Column query)
-            pd.read_sql(
-                session.query(
-                    Temp.quantity
-                ).statement,  # pyright: ignore[reportUnknownMemberType]
-                session.connection(),
-            )
+        pd.read_sql(sqlalchemy.select(Temp.quantity), engine)
 
 
 def test_sqlalchemy_text(tmp_path: Path) -> None:
