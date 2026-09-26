@@ -1791,6 +1791,8 @@ def test_sqlalchemy_selectable(tmp_path: Path) -> None:
 
         Session = sqlalchemy.orm.sessionmaker(engine)
         with Session() as session:
+            # TODO: drop the pyright ignore once sqlalchemy/sqlalchemy#13612 is fixed
+            # (Query.statement -> Select[_T] | ... leaves _T unknown for a bare-Column query)
             pd.read_sql(
                 session.query(
                     Temp.quantity
