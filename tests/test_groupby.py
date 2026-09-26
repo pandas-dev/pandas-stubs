@@ -72,8 +72,9 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S, "col3": BY})
 GB_DF = DF.groupby("col3")
 # GB_DF.col1 infers as SeriesGroupBy[Any, Scalar]; the cast recovers the precise
-# SeriesGroupBy[float, int]. `disjoint-cast` is a ty false positive on invariant
-# generic params: int is a member of Scalar, so the instantiations overlap.
+# SeriesGroupBy[float, int]. ty 0.0.84 enables disjoint-cast by default
+# (astral-sh/ruff#28783), which flags this legitimate narrowing cast as disjoint
+# on the invariant ByT param even though int ⊂ Scalar (the instantiations overlap).
 # TODO: remove the double unused-ignore-comment when astral-sh/ty#2681 is resolved
 GB_S = cast(
     "SeriesGroupBy[float, int]", GB_DF.col1
