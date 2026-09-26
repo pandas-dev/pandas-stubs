@@ -105,25 +105,15 @@ def test_types_arithmetic() -> None:
     check(assert_type(ts + delta, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - delta, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - dt.datetime(2021, 1, 3), pd.Timedelta), pd.Timedelta)
-    # TODO: pandas-dev/pandas-stubs#1511 for numpy >= 2.5, numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
+    # TODO: pandas-dev/pandas-stubs#1511 numpy >= 2.5 numpy.datetime64.__sub__ claims
+    # datetime.timedelta with higher priority, so mypy/pyright/pyrefly infer
+    # dt.timedelta here; the Timestamp.__rsub__ -> Timedelta stub (and ty) is right.
     if sys.version_info >= (3, 12):
-        check(assert_type(ts_np - ts, dt.timedelta), pd.Timedelta)
-        check(assert_type(ts_np_time - ts, dt.timedelta), pd.Timedelta)
+        check(assert_type(ts_np - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        check(assert_type(ts_np_time - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
     else:
-        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-        check(
-            assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
-                ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
-            ),
-            pd.Timedelta,
-        )
-        check(
-            assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
-                ts_np_time - ts,  # pyright: ignore[reportAssertTypeFailure]
-                dt.timedelta,
-            ),
-            pd.Timedelta,
-        )
+        check(assert_type(ts_np - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
+        check(assert_type(ts_np_time - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
 
 
 def test_types_comparison() -> None:
@@ -408,18 +398,10 @@ def test_series_dt_accessors() -> None:
         assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
     )
 
-    check(
-        assert_type(s0.dt.to_pydatetime(), "pd.Series"),
-        pd.Series,
-        dt.datetime,
-    )
+    check(assert_type(s0.dt.to_pydatetime(), "pd.Series"), pd.Series, dt.datetime)
     s0_local = s0.dt.tz_localize("UTC")
     check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(
-        assert_type(s0_local, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
+    check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(
         assert_type(s0.dt.tz_localize(None), "pd.Series[pd.Timestamp]"),
         pd.Series,
