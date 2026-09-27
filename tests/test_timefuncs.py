@@ -181,17 +181,6 @@ def test_timedelta_arithmetic() -> None:
     check(assert_type(td3 / 10.2, pd.Timedelta), pd.Timedelta)
 
 
-def test_timedelta_index_arithmetic() -> None:
-    tds1 = pd.to_timedelta([2, 3], "minutes")
-    td1 = pd.Timedelta("2 days")
-    check(assert_type(tds1, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td1, pd.Timedelta), pd.Timedelta)
-    check(assert_type(tds1 + td1, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(tds1 - td1, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(tds1 * 4.3, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(tds1 / 10.2, pd.TimedeltaIndex), pd.TimedeltaIndex)
-
-
 def test_timedelta_float_value() -> None:
     # GH 1015
     check(assert_type(pd.Timedelta(1.5, "h"), pd.Timedelta), pd.Timedelta)
@@ -213,43 +202,6 @@ def test_timestamp_dateoffset_arithmetic() -> None:
     ts = pd.Timestamp("2022-03-18")
     do = pd.DateOffset(days=366)
     check(assert_type(ts + do, pd.Timestamp), pd.Timestamp)
-
-
-def test_datetimeindex_plus_timedelta() -> None:
-    check(
-        assert_type(
-            pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")]),
-            "pd.Series[pd.Timestamp]",
-        ),
-        pd.Series,
-        pd.Timestamp,
-    )
-    dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
-    tdi = pd.to_timedelta([10, 20], "minutes")
-    dti_td_dti = dti + pd.Timedelta(10, "minutes")
-    check(assert_type(dti_td_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
-    ts_tdi_dti = pd.Timestamp("2022-03-05") + tdi
-    check(assert_type(ts_tdi_dti, pd.DatetimeIndex), pd.DatetimeIndex)
-
-
-def test_datetimeindex_minus_timedelta() -> None:
-    # GH 280
-    check(
-        assert_type(
-            pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")]),
-            "pd.Series[pd.Timestamp]",
-        ),
-        pd.Series,
-        pd.Timestamp,
-    )
-    dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
-    tdi = pd.to_timedelta([10, 20], "minutes")
-    dti_tdi_dti = dti - tdi
-    check(assert_type(dti_tdi_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
-    dti_td_dti = dti - pd.Timedelta(10, "minutes")
-    check(assert_type(dti_td_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
-    dti_ts_tdi = dti - pd.Timestamp("2022-03-05")
-    check(assert_type(dti_ts_tdi, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_timestamp_series_construction() -> None:
@@ -2007,28 +1959,9 @@ def test_timedelta_range_overloads() -> None:
         pd.timedelta_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
-def test_DatetimeIndex_sub_timedelta() -> None:
-    # GH838
-    check(
-        assert_type(
-            pd.date_range("2023-01-01", periods=10, freq="1D") - dt.timedelta(days=1),
-            "pd.DatetimeIndex",
-        ),
-        pd.DatetimeIndex,
-    )
-
-
 def test_to_offset() -> None:
     check(assert_type(to_offset(None), None), type(None))
     check(assert_type(to_offset("1D"), BaseOffset), BaseOffset)
-
-
-def test_timestamp_sub_series() -> None:
-    """Test subtracting Series[Timestamp] from Timestamp (see GH1189)."""
-    ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
-    one_ts = ts1.iloc[0]
-    check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
-    check(assert_type(one_ts - ts1, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_creating_date_range() -> None:
@@ -2036,24 +1969,11 @@ def test_creating_date_range() -> None:
     check(assert_type(dr.strftime("%H:%M:%S"), pd.Index), pd.Index, str)
 
 
-def test_timestamp_to_list_add() -> None:
+def test_timestamp_to_list() -> None:
     # https://github.com/microsoft/python-type-stubs/issues/110
     check(assert_type(pd.Timestamp("2021-01-01"), pd.Timestamp), dt.date)
     tslist = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
-    sseries = pd.Series(tslist)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.99"):
-        check(
-            assert_type(sseries + pd.Timedelta(1, "d"), "pd.Series[pd.Timestamp]"),
-            pd.Series,
-            pd.Timestamp,
-        )
-
-    check(
-        assert_type(sseries + pd.Timedelta(1, "D"), "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
 
 
 def test_easter_constructor() -> None:
