@@ -9,6 +9,10 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import (
+    np_ndarray_int64,
+    np_ndarray_td,
+)
 
 
 @pytest.fixture
@@ -85,6 +89,27 @@ def test_add_numpy_scalar(left: "pd.Series[pd.Period]") -> None:
         _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
         left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
         left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+
+
+def test_add_numpy_array(left: "pd.Series[pd.Period]") -> None:
+    """Test pd.Series[pd.Period] + numpy arrays"""
+    d = np.array([np.timedelta64(1, "D")], np.timedelta64)
+    i = np.array([1], np.int64)
+
+    check(assert_type(left + d, "pd.Series[pd.Period]"), pd.Series, pd.Period)
+    check(assert_type(left + i, "pd.Series[pd.Period]"), pd.Series, pd.Period)
+
+    # `numpy` typing gives the corresponding `ndarray`s in the static type
+    # checking, where our `__radd__` cannot override. At runtime, they return
+    # `Series`.
+    check(assert_type(d + left, np_ndarray_td), pd.Series, pd.Period)
+    check(assert_type(i + left, np_ndarray_int64), pd.Series, pd.Period)
+
+    check(assert_type(left.add(d), "pd.Series[pd.Period]"), pd.Series, pd.Period)
+    check(assert_type(left.add(i), "pd.Series[pd.Period]"), pd.Series, pd.Period)
+
+    check(assert_type(left.radd(d), "pd.Series[pd.Period]"), pd.Series, pd.Period)
+    check(assert_type(left.radd(i), "pd.Series[pd.Period]"), pd.Series, pd.Period)
 
 
 def test_add_pd_scalar(left: "pd.Series[pd.Period]") -> None:
