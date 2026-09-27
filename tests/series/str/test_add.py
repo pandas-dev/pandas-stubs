@@ -1,7 +1,6 @@
 from typing import (
     Never,
     assert_type,
-    cast,
 )
 
 import numpy as np
@@ -169,15 +168,3 @@ def test_add_pd_series(left: "pd.Series[str]") -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[no-matching-overload]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
-
-
-def test_add_never_str_kwargs() -> None:
-    """Test the keyword arguments of the ``Never``/``str`` overloads"""
-    s = cast("pd.Series[Never]", pd.Series(["a"]))
-    check(assert_type(s.add("b", level=0), "pd.Series[str]"), pd.Series, str)
-    check(
-        assert_type(s.add("b", fill_value=None, axis=0), "pd.Series[str]"),
-        pd.Series,
-        str,
-    )
-    check(assert_type(s.radd("b", level=0), "pd.Series[str]"), pd.Series, str)

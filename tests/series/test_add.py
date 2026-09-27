@@ -204,4 +204,11 @@ def test_series_add_str() -> None:
     check(assert_type(sr + "c1", "pd.Series[str]"), pd.Series, str)
     check(assert_type("c1" + sr, "pd.Series[str]"), pd.Series, str)
     check(assert_type(sr.add("c1"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(sr.add("c1", level=0), "pd.Series[str]"), pd.Series, str)
+    check(
+        assert_type(sr.add("c1", fill_value=None, axis=0), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
     check(assert_type(sr.radd("c1"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(sr.radd("c1", level=0), "pd.Series[str]"), pd.Series, str)
