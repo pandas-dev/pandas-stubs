@@ -307,6 +307,62 @@ class Timedelta:
     assert check_operand_hierarchy(stub_root, exceptions={})
 
 
+def test_rejects_a_registered_natype_higher_tier_operand(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Every registered scalar is enforced, not just the one a fixture spells out."""
+    stub_root = _write_stub_tree(
+        tmp_path,
+        files={
+            "_libs/missing.pyi": """
+class NAType:
+    def __add__(self, other: Index, /) -> None: ...
+""",
+        },
+    )
+
+    assert not check_operand_hierarchy(stub_root, exceptions={})
+    output = capsys.readouterr().err
+    assert "NAType.__add__ `other` operand references Index" in output
+    assert "higher tier than NAType (tier 0)" in output
+
+    assert check_operand_hierarchy(
+        stub_root,
+        exceptions={
+            ("NAType", "*", "Index"): HierarchyException(
+                rationale="rationale", documentation="documentation"
+            )
+        },
+    )
+
+
+def test_rejects_a_registry_entry_the_tree_never_exercises(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    stub_root = _write_stub_tree(
+        tmp_path,
+        files={
+            "_libs/tslibs/timedeltas.pyi": """
+class Timedelta:
+    def __add__(self, other: Timedelta, /) -> None: ...
+""",
+        },
+    )
+    dead = {
+        ("Timedelta", "*", "Index"): HierarchyException(
+            rationale="rationale", documentation="documentation"
+        )
+    }
+
+    assert check_operand_hierarchy(stub_root, exceptions=dead)
+    assert not check_operand_hierarchy(
+        stub_root, exceptions=dead, require_all_exercised=True
+    )
+    output = capsys.readouterr().err
+    assert "registry entry ('Timedelta', '*', 'Index') is never exercised" in output
+    assert "remove it, or add the stub site that justifies it" in output
+
+
 def test_rejects_a_scalar_index_subclass_operand(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:

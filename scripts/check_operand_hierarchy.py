@@ -31,6 +31,9 @@ The checks include direct and transitive references through ``TypeAlias`` defini
 every definition of an alias name is considered, and a qualified terminal name such as
 ``pd.DataFrame`` counts as a reference. Reflected dunders and tier-1 array-likes are
 deliberately outside this structural check.
+
+Run as a script, the checker also requires every exception registry entry to be
+exercised by the tree it scans.
 """
 
 from __future__ import annotations
@@ -65,7 +68,9 @@ _SCALAR_OVERLOADS_ANCHOR: Final[str] = (
 # ``(class, "*", forbidden)`` exempts every forward binary dunder of ``class``; an
 # exact ``(class, dunder, forbidden)`` key is looked up first and wins. ``forbidden``
 # is the tier's operand name, so the ``Index`` key covers the ``IntervalIndex``,
-# ``TimedeltaIndex`` and ``MultiIndex`` spellings alike.
+# ``TimedeltaIndex`` and ``MultiIndex`` spellings alike. Every entry must be exercised
+# by the scanned tree as well: strict mode fails on an entry no site matched, so an
+# exception cannot outlive the stub overload that justified it.
 FORWARD_DUNDER_EXCEPTIONS: Final[dict[ExceptionKey, HierarchyException]] = {
     ("Series", "__matmul__", "DataFrame"): HierarchyException(
         rationale="Series matrix multiplication with a DataFrame returns a Series.",
@@ -419,18 +424,23 @@ def check_forward_binary_dunders(
     tiers: Mapping[str, int],
     aliases: Mapping[str, tuple[ast.AST, ...]],
     exceptions: Mapping[ExceptionKey, HierarchyException],
-) -> bool:
-    """Check every direct forward binary dunder for a higher-tier ``other`` operand."""
+) -> tuple[bool, set[ExceptionKey]]:
+    """Check every direct forward binary dunder for a higher-tier ``other`` operand.
+
+    Also returns the registry key of every exception that permitted a site, so the
+    caller can tell which entries the tree still justifies.
+    """
     if class_node is None:
         print(
             f"ERROR: could not find class {class_name!r} in the required stub files; "
             "add the file that declares it to REQUIRED_STUB_FILES.",
             file=sys.stderr,
         )
-        return False
+        return False, set()
 
     tier = tiers[class_name]
     higher_tiers = _higher_tier_operands(tier, tiers)
+    consulted: set[ExceptionKey] = set()
     ok = True
     for node in class_node.body:
         if not isinstance(node, ast.FunctionDef) or not is_forward_binary_dunder(node):
@@ -455,8 +465,10 @@ def check_forward_binary_dunders(
             # is looked up as the operand name it stands for.
             forbidden = CANONICAL_OPERAND_BY_TIER[tiers[spelling]]
             if (class_name, node.name, forbidden) in exceptions:
+                consulted.add((class_name, node.name, forbidden))
                 continue
             if (class_name, "*", forbidden) in exceptions:
+                consulted.add((class_name, "*", forbidden))
                 continue
             described = (
                 spelling
@@ -470,7 +482,7 @@ def check_forward_binary_dunders(
                 file=sys.stderr,
             )
             ok = False
-    return ok
+    return ok, consulted
 
 
 def _read_required_trees(stub_root: Path) -> dict[Path, ast.Module] | None:
@@ -499,8 +511,15 @@ def check_operand_hierarchy(
     stub_root: Path,
     *,
     exceptions: Mapping[ExceptionKey, HierarchyException] = FORWARD_DUNDER_EXCEPTIONS,
+    require_all_exercised: bool = False,
 ) -> bool:
-    """Check the operand-hierarchy constraints in the ``pandas-stubs`` root directory."""
+    """Check the operand-hierarchy constraints in the ``pandas-stubs`` root directory.
+
+    ``require_all_exercised`` also fails when the scanned tree never needs one of the
+    ``exceptions``, so a registry entry cannot outlive the overload that justified it.
+    It is off by default because a synthetic fixture legitimately exercises almost none
+    of the global registry.
+    """
     trees = _read_required_trees(stub_root)
     if trees is None:
         return False
@@ -510,14 +529,28 @@ def check_operand_hierarchy(
 
     tiers = class_tiers(collect_class_bases(stub_root))
     classes = _class_index(trees)
+    consulted: set[ExceptionKey] = set()
     for class_name in sorted(tiers):
-        if not check_forward_binary_dunders(
+        class_ok, class_consulted = check_forward_binary_dunders(
             classes.get(class_name),
             class_name,
             tiers,
             aliases,
             exceptions,
-        ):
+        )
+        consulted |= class_consulted
+        if not class_ok:
+            ok = False
+
+    if require_all_exercised:
+        for key in sorted(exceptions):
+            if key in consulted:
+                continue
+            print(
+                f"ERROR: registry entry {key} is never exercised by the scanned tree — "
+                "remove it, or add the stub site that justifies it.",
+                file=sys.stderr,
+            )
             ok = False
 
     if ok:
@@ -527,4 +560,4 @@ def check_operand_hierarchy(
 
 if __name__ == "__main__":
     STUB_ROOT = Path(__file__).parents[1] / "pandas-stubs"
-    sys.exit(not check_operand_hierarchy(STUB_ROOT))
+    sys.exit(not check_operand_hierarchy(STUB_ROOT, require_all_exercised=True))
