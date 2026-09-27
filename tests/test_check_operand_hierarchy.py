@@ -307,6 +307,99 @@ class Timedelta:
     assert check_operand_hierarchy(stub_root, exceptions={})
 
 
+def test_rejects_a_scalar_index_subclass_operand(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A subclass spelling is a higher-tier operand, reported as the operand it is."""
+    stub_root = _write_stub_tree(
+        tmp_path,
+        files={
+            "_libs/tslibs/timedeltas.pyi": """
+class Timedelta:
+    def __sub__(self, other: TimedeltaIndex, /) -> None: ...
+""",
+        },
+    )
+
+    assert not check_operand_hierarchy(stub_root, exceptions={})
+    output = capsys.readouterr().err
+    assert "Timedelta.__sub__ `other` operand references TimedeltaIndex" in output
+    assert "(the tier-2 operand Index)" in output
+    assert "higher tier than Timedelta (tier 0)" in output
+
+    assert check_operand_hierarchy(
+        stub_root,
+        exceptions={
+            ("Timedelta", "*", "Index"): HierarchyException(
+                rationale="rationale", documentation="documentation"
+            )
+        },
+    )
+
+
+def test_rejects_an_interval_index_subclass_comparison(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    stub_root = _write_stub_tree(
+        tmp_path,
+        files={
+            "_libs/interval.pyi": """
+class Interval:
+    def __gt__(self, other: IntervalIndex, /) -> None: ...
+""",
+        },
+    )
+    series_only = {
+        ("Interval", "*", "Series"): HierarchyException(
+            rationale="rationale", documentation="documentation"
+        )
+    }
+
+    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert "references IntervalIndex (the tier-2 operand Index)" in (
+        capsys.readouterr().err
+    )
+
+    # The Series entry covers the sibling operand only; the Index entry covers this one.
+    assert not check_operand_hierarchy(stub_root, exceptions=series_only)
+    assert "references IntervalIndex" in capsys.readouterr().err
+    assert check_operand_hierarchy(
+        stub_root,
+        exceptions={
+            **series_only,
+            ("Interval", "*", "Index"): HierarchyException(
+                rationale="rationale", documentation="documentation"
+            ),
+        },
+    )
+
+
+def test_canonicalizes_multiindex_to_index(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A sibling spelling of a recognized tier resolves to the tier's operand name."""
+    stub_root = _write_stub_tree(
+        tmp_path,
+        files={
+            "_libs/tslibs/timedeltas.pyi": """
+class Timedelta:
+    def __eq__(self, other: MultiIndex, /) -> None: ...
+""",
+        },
+    )
+    index_entry = {
+        ("Timedelta", "*", "Index"): HierarchyException(
+            rationale="rationale", documentation="documentation"
+        )
+    }
+
+    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert "references MultiIndex (the tier-2 operand Index)" in (
+        capsys.readouterr().err
+    )
+    assert check_operand_hierarchy(stub_root, exceptions=index_entry)
+
+
 def test_ignores_an_unregistered_scalar_operand(tmp_path: Path) -> None:
     """A scalar outside ``TIER_0_CLASSES`` is not scanned."""
     stub_root = _write_stub_tree(

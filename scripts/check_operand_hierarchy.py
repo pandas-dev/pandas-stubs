@@ -23,7 +23,9 @@ It verifies that:
 * ``ScalarArrayIndexSeries*`` aliases do not reference ``DataFrame``; and
 * a forward binary dunder declared directly on a scanned class does not name an operand
   of a strictly higher tier in its ``other`` annotation, unless an explicit exception
-  permits it.
+  permits it. Any spelling the tier model knows counts, so ``TimedeltaIndex`` is a
+  tier-2 operand just as ``Index`` is, and the exception registry is keyed by the
+  tier's operand name rather than by the spelling.
 
 The checks include direct and transitive references through ``TypeAlias`` definitions;
 every definition of an alias name is considered, and a qualified terminal name such as
@@ -61,11 +63,21 @@ _SCALAR_OVERLOADS_ANCHOR: Final[str] = (
 # Adding an exception is a compatibility decision: update the linked documentation
 # and the anchor test in tests/test_check_operand_hierarchy.py as well. A key of
 # ``(class, "*", forbidden)`` exempts every forward binary dunder of ``class``; an
-# exact ``(class, dunder, forbidden)`` key is looked up first and wins.
+# exact ``(class, dunder, forbidden)`` key is looked up first and wins. ``forbidden``
+# is the tier's operand name, so the ``Index`` key covers the ``IntervalIndex``,
+# ``TimedeltaIndex`` and ``MultiIndex`` spellings alike.
 FORWARD_DUNDER_EXCEPTIONS: Final[dict[ExceptionKey, HierarchyException]] = {
     ("Series", "__matmul__", "DataFrame"): HierarchyException(
         rationale="Series matrix multiplication with a DataFrame returns a Series.",
         documentation=_MATRIX_MULTIPLICATION_ANCHOR,
+    ),
+    ("Interval", "*", "Index"): HierarchyException(
+        rationale=(
+            "Interval comparisons against an Index subclass such as IntervalIndex "
+            "return a NumPy bool array, declared on the scalar, the dispatch entry "
+            "point for the comparison."
+        ),
+        documentation=_SCALAR_OVERLOADS_ANCHOR,
     ),
     ("Interval", "*", "Series"): HierarchyException(
         rationale=(
@@ -175,6 +187,15 @@ TIER_OPERANDS: Final[dict[str, int]] = {
     "MultiIndex": 2,
     "Series": 3,
     "DataFrame": 4,
+}
+
+# The operand name a tier is registered under, so a site that spells its operand
+# ``TimedeltaIndex`` or ``MultiIndex`` is looked up as ``Index``. Keyed by tier, not by
+# spelling, so a spelling cannot drift out of the registry.
+CANONICAL_OPERAND_BY_TIER: Final[dict[int, str]] = {
+    TIER_OPERANDS["Index"]: "Index",
+    TIER_OPERANDS["Series"]: "Series",
+    TIER_OPERANDS["DataFrame"]: "DataFrame",
 }
 
 # Tier 0 is the scalars. Each is named together with the stub file that declares it, so
@@ -334,12 +355,15 @@ def class_tiers(bases: Mapping[str, tuple[str, ...]]) -> dict[str, int]:
     return tiers
 
 
-def _higher_tier_operands(tier: int) -> tuple[str, ...]:
-    """Return the operand names that are a strictly higher tier than ``tier``."""
+def _higher_tier_operands(tier: int, tiers: Mapping[str, int]) -> tuple[str, ...]:
+    """Return every spelling whose tier is strictly higher than ``tier``.
+
+    The spellings come from ``tiers`` rather than from ``TIER_OPERANDS``, because an
+    ``Index`` subclass that ``class_tiers`` discovered is a tier-2 operand whether or
+    not its own name is an operand name.
+    """
     return tuple(
-        sorted(
-            name for name, operand_tier in TIER_OPERANDS.items() if operand_tier > tier
-        )
+        sorted(name for name, operand_tier in tiers.items() if operand_tier > tier)
     )
 
 
@@ -392,7 +416,7 @@ def check_alias_level(aliases: Mapping[str, tuple[ast.AST, ...]]) -> bool:
 def check_forward_binary_dunders(
     class_node: ast.ClassDef | None,
     class_name: str,
-    tier: int,
+    tiers: Mapping[str, int],
     aliases: Mapping[str, tuple[ast.AST, ...]],
     exceptions: Mapping[ExceptionKey, HierarchyException],
 ) -> bool:
@@ -405,7 +429,8 @@ def check_forward_binary_dunders(
         )
         return False
 
-    higher_tiers = _higher_tier_operands(tier)
+    tier = tiers[class_name]
+    higher_tiers = _higher_tier_operands(tier, tiers)
     ok = True
     for node in class_node.body:
         if not isinstance(node, ast.FunctionDef) or not is_forward_binary_dunder(node):
@@ -423,16 +448,24 @@ def check_forward_binary_dunders(
             ok = False
             continue
 
-        for forbidden in higher_tiers:
-            if not references_name(annotation, forbidden, aliases):
+        for spelling in higher_tiers:
+            if not references_name(annotation, spelling, aliases):
                 continue
+            # The registry is keyed by the tier's operand name, so a subclass spelling
+            # is looked up as the operand name it stands for.
+            forbidden = CANONICAL_OPERAND_BY_TIER[tiers[spelling]]
             if (class_name, node.name, forbidden) in exceptions:
                 continue
             if (class_name, "*", forbidden) in exceptions:
                 continue
+            described = (
+                spelling
+                if spelling == forbidden
+                else f"{spelling} (the tier-{tiers[spelling]} operand {forbidden})"
+            )
             print(
                 f"ERROR: {class_name}.{node.name} `other` operand references "
-                f"{forbidden}, a higher tier than {class_name} (tier {tier}) — "
+                f"{described}, a higher tier than {class_name} (tier {tier}) — "
                 "violates the operand hierarchy.",
                 file=sys.stderr,
             )
@@ -481,7 +514,7 @@ def check_operand_hierarchy(
         if not check_forward_binary_dunders(
             classes.get(class_name),
             class_name,
-            tiers[class_name],
+            tiers,
             aliases,
             exceptions,
         ):
