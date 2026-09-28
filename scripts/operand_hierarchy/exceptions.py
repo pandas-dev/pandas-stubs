@@ -7,16 +7,25 @@ stub site matched, so a key cannot outlive its overload.
 
 The list lives apart from the checker so that it reads as the temporary list it is. It carries
 no per-key rationale and no per-key documentation: the reason is argued in the review and the
-commit that add a key, the policy lives in
+commit that adds the key, the policy lives in
 ``docs/type-architecture/operand-hierarchy.md``, and ``TEMPORARY_EXCEPTION_NOTE`` is the one
 wording the checker prints.
 """
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Final
 
 ExceptionKey = tuple[str, str, str]
+
+# The path this file is reached by, derived rather than written down twice, so the debt line
+# and the dead-key message cannot outlive a move of this file. The name is computed from the
+# module's own location: ``scripts/operand_hierarchy/exceptions.py``.
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+EXCEPTIONS_FILE: Final[str] = (
+    Path(__file__).resolve().relative_to(_REPO_ROOT).as_posix()
+)
 
 # The one shared wording for this list: the module docstring's first sentence and the
 # sentence the checker appends to its pass summary. Do not add per-key prose.

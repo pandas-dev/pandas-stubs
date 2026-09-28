@@ -6,15 +6,15 @@ import re
 
 import pytest
 
-from scripts.check_operand_hierarchy import (
-    FORWARD_BINARY_DUNDERS,
-    TIER_OPERANDS,
-    check_operand_hierarchy,
-)
-from scripts.operand_hierarchy_exceptions import (
+from scripts.operand_hierarchy.check import check_operand_hierarchy
+from scripts.operand_hierarchy.exceptions import (
     EXCEPTIONS_DOCUMENTATION,
     FORWARD_DUNDER_EXCEPTIONS,
     ExceptionKey,
+)
+from scripts.operand_hierarchy.model import (
+    FORWARD_BINARY_DUNDERS,
+    TIER_OPERANDS,
 )
 
 # The minimal content each required stub file needs for the checker to find the class it
@@ -352,7 +352,7 @@ class Timedelta:
     assert (
         "temporary exception ('Timedelta', '*', 'Index') is never exercised" in output
     )
-    assert "remove it from scripts/operand_hierarchy_exceptions.py" in output
+    assert "remove it from scripts/operand_hierarchy/exceptions.py" in output
     assert "add the stub overload that justifies it" in output
 
 
