@@ -1,38 +1,20 @@
 # ruff: noqa: T201
 """Check the operand-hierarchy constraints in a pandas-stubs tree.
 
-The checker reads the stubs as syntax trees. Every class it scans is given a tier from
-the operand hierarchy:
+Three rules, whose contract is ``docs/type-architecture/operand-hierarchy.md`` and whose
+tier model is ``model.py``:
 
-======  ===================================================================
-Tier    Scanned operands
-======  ===================================================================
-0       Scalars: ``Timedelta``, ``Timestamp``, ``Period``, ``Interval``, ``NAType``
-1       Array-likes: ``ExtensionArray``
-2       ``Index``, ``MultiIndex``, and every ``Index`` subclass
-3       ``Series``
-4       ``DataFrame``
-======  ===================================================================
+* a ``ScalarArrayIndex*`` alias that is not also a ``ScalarArrayIndexSeries*`` alias does
+  not reference ``Series`` or ``DataFrame``, and a ``ScalarArrayIndexSeries*`` alias does
+  not reference ``DataFrame``;
+* a forward binary dunder declared directly on a scanned class declares an ``other``
+  operand and does not reference an operand of a strictly higher tier in it, directly or
+  through a ``TypeAlias``, unless an exception key permits it; and
+* run as a script, it fails on a key the scanned tree never exercises.
 
-It verifies that:
-
-* ``ScalarArrayIndex*`` aliases that are not ``ScalarArrayIndexSeries*`` aliases do not
-  reference ``Series`` or ``DataFrame``;
-* ``ScalarArrayIndexSeries*`` aliases do not reference ``DataFrame``; and
-* a forward binary dunder declared directly on a scanned class does not name an operand
-  of a strictly higher tier in its ``other`` annotation, unless an explicit exception
-  permits it. Any spelling the tier model knows counts, so ``TimedeltaIndex`` is a
-  tier-2 operand just as ``Index`` is, and the exception list is keyed by the
-  tier's operand name rather than by the spelling.
-
-The checks include direct and transitive references through ``TypeAlias`` definitions;
-every definition of an alias name is considered, and a qualified name counts like a bare
-one, whether it names the target directly (``pd.DataFrame``) or names an alias of it
-(``types.Higher`` where ``Higher: TypeAlias = DataFrame``). Reflected dunders are
-deliberately outside this structural check.
-
-Run as a script, the checker also requires every exception key to be exercised by the
-tree it scans.
+The checks read syntax trees, so an operand reaches a class through a ``TypeAlias`` chain
+or a qualified name, and a string-literal annotation is not read at all. Reflected dunders
+are deliberately outside this check.
 """
 
 from __future__ import annotations
@@ -268,9 +250,8 @@ def check_operand_hierarchy(
     """Check the operand-hierarchy constraints in the ``pandas-stubs`` root directory.
 
     ``require_all_exercised`` also fails when the scanned tree never needs one of the
-    ``exceptions``, so an exception key cannot outlive the overload that justified it.
-    It is off by default because a synthetic fixture legitimately exercises almost none
-    of the global exception list.
+    ``exceptions``, so a key cannot outlive the overload that justified it. It is off by
+    default because a synthetic fixture legitimately exercises almost none of the list.
     """
     tree = StubTree.load(stub_root)
     if tree is None:
@@ -341,8 +322,8 @@ def _type_aliases(tree: ast.AST) -> dict[str, tuple[ast.AST, ...]]:
 def _collect_aliases(stub_root: Path) -> dict[str, tuple[ast.AST, ...]]:
     """Collect every alias definition from every stub file below ``stub_root``.
 
-    Every definition of a name is kept rather than letting the last parsed module win, so
-    a name that collides across modules cannot hide a violation behind the collision.
+    Every definition is kept rather than letting the last parsed module win, so a name that
+    collides across modules cannot hide a violation behind the collision.
     """
     aliases: dict[str, list[ast.AST]] = defaultdict(list)
     for path in sorted(stub_root.rglob("*.pyi")):
@@ -355,10 +336,9 @@ def _collect_aliases(stub_root: Path) -> dict[str, tuple[ast.AST, ...]]:
 def _parse(path: Path) -> ast.Module:
     """Parse one stub file, naming it in any ``SyntaxError`` the parse raises.
 
-    Otherwise ``ast.parse`` reports the placeholder ``'<unknown>'`` as
-    ``SyntaxError.filename``, so a syntax error anywhere below the stub root would name a
-    file the caller cannot identify. An unparsable stub stays loud: this raises, and the
-    caller reports the traceback rather than turning the file into a quiet pass.
+    Without ``filename``, ``ast.parse`` reports the placeholder ``'<unknown>'``, so a
+    syntax error below the stub root would name a file the caller cannot identify. An
+    unparsable stub stays loud: this raises rather than passing quietly.
     """
     return ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
@@ -491,8 +471,7 @@ def _class_index(
 
     Every definition is kept, like the alias collector above: these stubs do declare
     duplicate class names, and letting the last one parsed win would hide a violation
-    declared in the definition it shadowed. None of today's duplicates is a scanned name,
-    so this keeps the scan honest rather than changing a verdict.
+    declared in the definition it shadowed. None of today's duplicates is a scanned name.
     """
     classes: dict[str, list[ast.ClassDef]] = defaultdict(list)
     for tree in trees.values():

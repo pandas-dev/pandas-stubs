@@ -3,7 +3,7 @@
 The definition tables live here rather than in the checker so the model reads as data,
 and so a change to the tier system is a change to one file.
 
-The tier model itself is in the module docstring of ``check.py``.
+The tier model itself is documented in ``docs/type-architecture/operand-hierarchy.md``.
 """
 
 from __future__ import annotations

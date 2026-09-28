@@ -7,6 +7,7 @@ import re
 import pytest
 
 from scripts.operand_hierarchy.check import (
+    StubTree,
     check_operand_hierarchy,
     main,
 )
@@ -21,166 +22,194 @@ from scripts.operand_hierarchy.model import (
     TIER_OPERANDS,
 )
 
-# The minimal content each required stub file needs for the checker to find the class it
-# declares. ``IndexSubclassBase`` resolves ``Index`` by name, so a test tree does not have
-# to define ``Index`` for the derived subclasses to register.
-_DEFAULT_STUB_FILES: Mapping[str, str] = {
-    "core/arrays/base.pyi": "class ExtensionArray:\n    pass\n",
-    "core/base.pyi": "",
-    "core/frame.pyi": "class DataFrame:\n    pass\n",
-    "core/indexes/base.pyi": "class Index:\n    pass\n",
-    "core/indexes/category.pyi": "class CategoricalIndex(ExtensionIndex):\n    pass\n",
+_REPO_ROOT = Path(__file__).parents[1]
+
+# A class as the renderer needs it: its name, its base or ``None``, and its dunders.
+_Class = tuple[str, str | None, tuple[tuple[str, str], ...]]
+
+# The stub files the cases override, named once so a case's fixture fits on one line.
+_INDEX = "core/indexes/base.pyi"
+_INTERVAL_INDEX = "core/indexes/interval.pyi"
+_MULTI = "core/indexes/multi.pyi"
+_RANGE = "core/indexes/range.pyi"
+_SERIES = "core/series.pyi"
+_INTERVAL = "_libs/interval.pyi"
+_NATYPE = "_libs/missing.pyi"
+_TIMEDELTAS = "_libs/tslibs/timedeltas.pyi"
+_TIMESTAMPS = "_libs/tslibs/timestamps.pyi"
+
+# The smallest tree the checker requires, as data: every required stub file and the
+# ``(class, base)`` pairs it declares. ``IndexSubclassBase`` resolves ``Index`` by name, so
+# no test tree has to declare ``Index`` for the derived subclasses to register.
+_DEFAULT_FILES: Mapping[str, tuple[tuple[str, str | None], ...]] = {
+    "core/arrays/base.pyi": (("ExtensionArray", None),),
+    "core/base.pyi": (),
+    "core/frame.pyi": (("DataFrame", None),),
+    "core/indexes/base.pyi": (("Index", None),),
+    "core/indexes/category.pyi": (("CategoricalIndex", "ExtensionIndex"),),
     "core/indexes/datetimelike.pyi": (
-        "class DatetimeIndexOpsMixin(ExtensionIndex):\n"
-        "    pass\n"
-        "\n"
-        "\n"
-        "class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin):\n"
-        "    pass\n"
+        ("DatetimeIndexOpsMixin", "ExtensionIndex"),
+        ("DatetimeTimedeltaMixin", "DatetimeIndexOpsMixin"),
     ),
-    "core/indexes/datetimes.pyi": (
-        "class DatetimeIndex(DatetimeTimedeltaMixin):\n    pass\n"
-    ),
-    "core/indexes/extension.pyi": (
-        "class ExtensionIndex(IndexSubclassBase):\n    pass\n"
-    ),
-    "core/indexes/interval.pyi": "class IntervalIndex(ExtensionIndex):\n    pass\n",
-    "core/indexes/multi.pyi": "class MultiIndex:\n    pass\n",
-    "core/indexes/period.pyi": (
-        "class PeriodIndex(DatetimeIndexOpsMixin):\n    pass\n"
-    ),
-    "core/indexes/range.pyi": "class RangeIndex(IndexSubclassBase):\n    pass\n",
-    "core/indexes/timedeltas.pyi": (
-        "class TimedeltaIndex(DatetimeTimedeltaMixin):\n    pass\n"
-    ),
-    "core/series.pyi": "class Series:\n    pass\n",
-    "_libs/interval.pyi": "class Interval:\n    pass\n",
-    "_libs/missing.pyi": "class NAType:\n    pass\n",
-    "_libs/tslibs/period.pyi": "class Period:\n    pass\n",
-    "_libs/tslibs/timedeltas.pyi": "class Timedelta:\n    pass\n",
-    "_libs/tslibs/timestamps.pyi": "class Timestamp:\n    pass\n",
-    "_stubs_only/__init__.pyi": "class IndexSubclassBase(Index):\n    pass\n",
+    "core/indexes/datetimes.pyi": (("DatetimeIndex", "DatetimeTimedeltaMixin"),),
+    "core/indexes/extension.pyi": (("ExtensionIndex", "IndexSubclassBase"),),
+    "core/indexes/interval.pyi": (("IntervalIndex", "ExtensionIndex"),),
+    "core/indexes/multi.pyi": (("MultiIndex", None),),
+    "core/indexes/period.pyi": (("PeriodIndex", "DatetimeIndexOpsMixin"),),
+    "core/indexes/range.pyi": (("RangeIndex", "IndexSubclassBase"),),
+    "core/indexes/timedeltas.pyi": (("TimedeltaIndex", "DatetimeTimedeltaMixin"),),
+    "core/series.pyi": (("Series", None),),
+    "_libs/interval.pyi": (("Interval", None),),
+    "_libs/missing.pyi": (("NAType", None),),
+    "_libs/tslibs/period.pyi": (("Period", None),),
+    "_libs/tslibs/timedeltas.pyi": (("Timedelta", None),),
+    "_libs/tslibs/timestamps.pyi": (("Timestamp", None),),
+    "_stubs_only/__init__.pyi": (("IndexSubclassBase", "Index"),),
 }
 
 
-def _write_stub_tree(tmp_path: Path, *, files: Mapping[str, str]) -> Path:
-    """Create the smallest stub tree the hierarchy checker requires.
+def _render(classes: tuple[_Class, ...]) -> str:
+    """Render stub text: one class per entry, one ``def`` per dunder."""
+    blocks: list[str] = []
+    for name, base, members in classes:
+        head = f"class {name}({base}):" if base else f"class {name}:"
+        body = "".join(
+            f"\n    def {dunder}(self, other: {operand}, /) -> None: ..."
+            for dunder, operand in members
+        )
+        blocks.append(head + (body or "\n    pass"))
+    return "\n\n".join(blocks) + "\n"
 
-    ``files`` overrides any path relative to the stub root, so a case names only the
-    files it differs in.
+
+def _dunders(
+    path: str,
+    cls: str,
+    *members: tuple[str, str],
+    base: str | None = None,
+) -> dict[str, str]:
+    """Render ``path``, with ``cls`` carrying one ``def`` per ``(dunder, operand)``.
+
+    The file's other classes keep the defaults, so a case names one class and one
+    diagnostic; ``base`` overrides the class's default base, for the cases about how a base
+    is spelled.
     """
-    contents = {**_DEFAULT_STUB_FILES, **files}
+    classes = dict(_DEFAULT_FILES[path])
+    classes[cls] = base if base is not None else classes.get(cls)
+    text = _render(
+        tuple(
+            (name, default_base, members if name == cls else ())
+            for name, default_base in classes.items()
+        )
+    )
+    # Two cases render a class their file does not declare, and adding it here is what
+    # gives those rows their content, so both it and every dunder are asserted to have
+    # reached the text: a helper that stopped adding it would delete them without failing.
+    assert f"class {cls}(" in text or f"class {cls}:" in text, (path, cls)
+    assert all(f"def {dunder}(" in text for dunder, _ in members), (path, cls)
+    return {path: text}
+
+
+def _aliases(
+    *definitions: str,
+    path: str = "core/base.pyi",
+    header: str = "from typing import TypeAlias",
+) -> dict[str, str]:
+    """Render ``path``, where the alias cases declare their ``TypeAlias``\\ s."""
+    return {path: "\n".join((header, "", *definitions, ""))}
+
+
+def _write_tree(tmp_path: Path, *overrides: Mapping[str, str]) -> Path:
+    """Write the default stub tree, each ``overrides`` mapping replacing a whole file."""
+    contents = {
+        path: _render(tuple((name, base, ()) for name, base in classes))
+        for path, classes in _DEFAULT_FILES.items()
+    }
+    for override in overrides:
+        contents |= override
 
     stub_root = tmp_path / "pandas-stubs"
-    for relative_path, text in contents.items():
-        path = stub_root / relative_path
+    for relative, text in contents.items():
+        path = stub_root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
     return stub_root
 
 
-# Shared by the ``interval-comparison`` row below and the sibling-key test: the one
-# scanned site is ``Interval.__gt__`` against an ``IntervalIndex``, a tier-2 operand.
-_INTERVAL_COMPARISON: Mapping[str, str] = {
-    "_libs/interval.pyi": """\
-class Interval:
-    def __gt__(self, other: IntervalIndex, /) -> None: ...
-""",
-}
+# Shared by the ``interval-comparison`` row and the sibling-key test: one scanned site.
+_INTERVAL_COMPARISON = _dunders(_INTERVAL, "Interval", ("__gt__", "IntervalIndex"))
 
-# One higher-tier site per rule: the stub files it lives in, the message substrings the
+# One higher-tier site per row: the stub files it lives in, the message substrings the
 # verdict must name, and the key that permits exactly that site. The driver checks both
-# halves, so a row pins the rejection and its exception together.
+# halves, so a row pins the rejection and its key together.
 _SINGLE_SITE_REJECTIONS: Mapping[
-    str, tuple[Mapping[str, str], tuple[str, ...], ExceptionKey]
+    str, tuple[tuple[Mapping[str, str], ...], tuple[str, ...], ExceptionKey]
 ] = {
     "qualified-terminal-name": (
-        {
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: pd.DataFrame, /) -> None: ...
-""",
-        },
+        (_dunders(_SERIES, "Series", ("__add__", "pd.DataFrame")),),
         ("Series.__add__ `other` operand references DataFrame",),
         ("Series", "*", "DataFrame"),
     ),
     "qualified-alias": (
-        {
-            "core/base.pyi": """\
-from typing import TypeAlias
-
-Higher: TypeAlias = DataFrame
-""",
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: types.Higher, /) -> None: ...
-""",
-        },
+        (
+            _aliases("Higher: TypeAlias = DataFrame"),
+            _dunders(_SERIES, "Series", ("__add__", "types.Higher")),
+        ),
         ("Series.__add__ `other` operand references DataFrame",),
         ("Series", "*", "DataFrame"),
     ),
+    "qualified-type-alias": (
+        (
+            _aliases("Higher: typing.TypeAlias = DataFrame", header="import typing"),
+            _dunders(_SERIES, "Series", ("__add__", "Higher")),
+        ),
+        ("Series.__add__ `other` operand references DataFrame",),
+        ("Series", "*", "DataFrame"),
+    ),
+    "comparison-dunder": (
+        (_dunders(_SERIES, "Series", ("__lt__", "DataFrame")),),
+        ("Series.__lt__ `other` operand references DataFrame",),
+        ("Series", "*", "DataFrame"),
+    ),
+    "undeclared-matmul": (
+        (_dunders(_SERIES, "Series", ("__matmul__", "DataFrame")),),
+        ("Series.__matmul__ `other` operand references DataFrame",),
+        ("Series", "__matmul__", "DataFrame"),
+    ),
     "index-subclass-operand": (
-        {
-            "core/indexes/interval.pyi": """\
-class IntervalIndex(ExtensionIndex):
-    def __eq__(self, other: Series, /) -> None: ...
-""",
-        },
+        (_dunders(_INTERVAL_INDEX, "IntervalIndex", ("__eq__", "Series")),),
         (
             "IntervalIndex.__eq__ `other` operand references Series",
             "higher tier than IntervalIndex (tier 2)",
         ),
         ("IntervalIndex", "*", "Series"),
     ),
+    "interval-comparison": (
+        (_INTERVAL_COMPARISON,),
+        ("references IntervalIndex (the tier-2 operand Index)",),
+        ("Interval", "*", "Index"),
+    ),
+    # ``Interval`` is declared in both of these files: the violating one sorts first, and
+    # the clean definition must not hide it, since these stubs do reuse class names.
+    "duplicate-class-definition": (
+        (
+            _dunders(_INTERVAL, "Interval", ("__gt__", "Series")),
+            _dunders(_TIMESTAMPS, "Interval"),
+        ),
+        ("Interval.__gt__ `other` operand references Series",),
+        ("Interval", "*", "Series"),
+    ),
+    # Every registered scalar is enforced, not just the one a case spells out.
     "registered-scalar-operand": (
-        {
-            "_libs/tslibs/timedeltas.pyi": """\
-class Timedelta:
-    def __eq__(self, other: Index, /) -> None: ...
-""",
-        },
+        (_dunders(_TIMEDELTAS, "Timedelta", ("__eq__", "Index")),),
         (
             "Timedelta.__eq__ `other` operand references Index",
             "higher tier than Timedelta (tier 0)",
         ),
         ("Timedelta", "*", "Index"),
     ),
-    # Every registered scalar is enforced, not just the one a case spells out.
-    "registered-natype-operand": (
-        {
-            "_libs/missing.pyi": """\
-class NAType:
-    def __add__(self, other: Index, /) -> None: ...
-""",
-        },
-        (
-            "NAType.__add__ `other` operand references Index",
-            "higher tier than NAType (tier 0)",
-        ),
-        ("NAType", "*", "Index"),
-    ),
-    # Tier 1 is scanned too: a tier-0 scalar may not claim an array-like as its operand.
-    "scalar-naming-an-array-like": (
-        {
-            "_libs/missing.pyi": """\
-class NAType:
-    def __eq__(self, other: ExtensionArray, /) -> None: ...
-""",
-        },
-        (
-            "NAType.__eq__ `other` operand references ExtensionArray",
-            "higher tier than NAType (tier 0)",
-        ),
-        ("NAType", "*", "ExtensionArray"),
-    ),
     # A subclass spelling is reported as the operand its tier registers.
     "subclass-spelling": (
-        {
-            "_libs/tslibs/timedeltas.pyi": """\
-class Timedelta:
-    def __sub__(self, other: TimedeltaIndex, /) -> None: ...
-""",
-        },
+        (_dunders(_TIMEDELTAS, "Timedelta", ("__sub__", "TimedeltaIndex")),),
         (
             "Timedelta.__sub__ `other` operand references TimedeltaIndex",
             "(the tier-2 operand Index)",
@@ -190,76 +219,57 @@ class Timedelta:
     ),
     # A sibling spelling of a recognized tier resolves to the tier's operand name.
     "sibling-spelling": (
-        {
-            "_libs/tslibs/timedeltas.pyi": """\
-class Timedelta:
-    def __eq__(self, other: MultiIndex, /) -> None: ...
-""",
-        },
+        (_dunders(_TIMEDELTAS, "Timedelta", ("__eq__", "MultiIndex")),),
         ("references MultiIndex (the tier-2 operand Index)",),
         ("Timedelta", "*", "Index"),
     ),
-    "interval-comparison": (
-        _INTERVAL_COMPARISON,
-        ("references IntervalIndex (the tier-2 operand Index)",),
-        ("Interval", "*", "Index"),
+    # Tier 1 is scanned too: a tier-0 scalar may not claim an array-like as its operand.
+    "scalar-naming-an-array-like": (
+        (_dunders(_NATYPE, "NAType", ("__eq__", "ExtensionArray")),),
+        (
+            "NAType.__eq__ `other` operand references ExtensionArray",
+            "higher tier than NAType (tier 0)",
+        ),
+        ("NAType", "*", "ExtensionArray"),
     ),
-    "undeclared-matmul": (
-        {
-            "core/series.pyi": """\
-class Series:
-    def __matmul__(self, other: DataFrame, /) -> Series: ...
-""",
-        },
-        ("Series.__matmul__ `other` operand references DataFrame",),
-        ("Series", "__matmul__", "DataFrame"),
+    "registered-natype-operand": (
+        (_dunders(_NATYPE, "NAType", ("__add__", "Index")),),
+        (
+            "NAType.__add__ `other` operand references Index",
+            "higher tier than NAType (tier 0)",
+        ),
+        ("NAType", "*", "Index"),
     ),
-    # ``typing.TypeAlias`` is the same declaration spelled through a module.
-    "qualified-type-alias": (
-        {
-            "core/base.pyi": """\
-import typing
-
-Higher: typing.TypeAlias = DataFrame
-""",
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: Higher, /) -> None: ...
-""",
-        },
-        ("Series.__add__ `other` operand references DataFrame",),
-        ("Series", "*", "DataFrame"),
+    # The scanned set is the operator set, not one spelling of it.
+    "bitwise-dunder": (
+        (_dunders(_INDEX, "Index", ("__or__", "Series")),),
+        ("Index.__or__ `other` operand references Series",),
+        ("Index", "*", "Series"),
     ),
-    # ``Interval`` is declared in both of these files, and the violating one sorts first;
-    # the clean definition must not hide it, since these stubs do reuse class names.
-    "duplicate-class-definition": (
-        {
-            "_libs/interval.pyi": """\
-class Interval:
-    def __gt__(self, other: Series, /) -> None: ...
-""",
-            "_libs/tslibs/timestamps.pyi": """\
-class Timestamp:
-    pass
-
-
-class Interval:
-    pass
-""",
-        },
-        ("Interval.__gt__ `other` operand references Series",),
-        ("Interval", "*", "Series"),
+    # ``MultiIndex`` is a tier-2 operand name in its own right, so it is scanned like
+    # ``Index`` rather than reached through the base walk.
+    "multiindex-series-operand": (
+        (_dunders(_MULTI, "MultiIndex", ("__add__", "Series")),),
+        ("MultiIndex.__add__ `other` operand references Series",),
+        ("MultiIndex", "*", "Series"),
+    ),
+    "multiindex-dataframe-operand": (
+        (_dunders(_MULTI, "MultiIndex", ("__add__", "DataFrame")),),
+        ("MultiIndex.__add__ `other` operand references DataFrame",),
+        ("MultiIndex", "*", "DataFrame"),
     ),
     # Every ``Index`` subclass the base walk discovers spells its base with arguments --
     # ``MultiIndex`` is an operand name in its own right, so the walk never has to find it
     # -- and only the unwrapping of a subscripted base reads those bases at all.
     "subscripted-base": (
-        {
-            "core/indexes/range.pyi": """\
-class RangeIndex(IndexSubclassBase[int, np.int64]):
-    def __add__(self, other: Series, /) -> None: ...
-""",
-        },
+        (
+            _dunders(
+                _RANGE,
+                "RangeIndex",
+                ("__add__", "Series"),
+                base="IndexSubclassBase[int, np.int64]",
+            ),
+        ),
         (
             "RangeIndex.__add__ `other` operand references Series",
             "higher tier than RangeIndex (tier 2)",
@@ -268,108 +278,40 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
     ),
 }
 
-# One passing rule per row: the stub files, and the exception set to run with. ``None`` is
-# the shipped registry, so such a row also asserts that the registry covers the case.
-_ACCEPTED_OPERANDS: Mapping[
-    str, tuple[Mapping[str, str], frozenset[ExceptionKey] | None]
-] = {
+# One passing rule per row, as the override mappings alone: every row runs against the empty
+# exception set, so nothing may be reported at all. That is strictly stronger than the
+# shipped registry, which the one case needing a key asserts separately below.
+_ACCEPTED_OPERANDS: Mapping[str, tuple[Mapping[str, str], ...]] = {
     # A lower-tier operand passes, and a reflected dunder is not scanned at all.
     "lower-tier-operands": (
-        {
-            "core/base.pyi": """\
-from typing import TypeAlias
-
-ScalarArrayIndexOperand: TypeAlias = int
-ScalarArrayIndexSeriesOperand: TypeAlias = int | Series
-""",
-            "core/indexes/base.pyi": """\
-class Index:
-    def __add__(self, other: int, /) -> None: ...
-    def __radd__(self, other: Series, /) -> None: ...
-""",
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: int | Series, /) -> None: ...
-    def __radd__(self, other: DataFrame, /) -> None: ...
-""",
-        },
-        None,
+        _aliases(
+            "ScalarArrayIndexOperand: TypeAlias = int",
+            "ScalarArrayIndexSeriesOperand: TypeAlias = int | Series",
+        ),
+        _dunders(_INDEX, "Index", ("__add__", "int"), ("__radd__", "Series")),
+        _dunders(
+            _SERIES, "Series", ("__add__", "int | Series"), ("__radd__", "DataFrame")
+        ),
     ),
     "qualified-alias-of-a-lower-tier-operand": (
-        {
-            "core/base.pyi": """\
-from typing import TypeAlias
-
-Lower: TypeAlias = Index
-""",
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: types.Lower, /) -> None: ...
-""",
-        },
-        None,
+        _aliases("Lower: TypeAlias = Index"),
+        _dunders(_SERIES, "Series", ("__add__", "types.Lower")),
     ),
     "same-tier-scalar-operand": (
-        {
-            "_libs/tslibs/timedeltas.pyi": """\
-class Timedelta:
-    def __add__(self, other: Timedelta, /) -> None: ...
-""",
-        },
-        frozenset(),
+        _dunders(_TIMEDELTAS, "Timedelta", ("__add__", "Timedelta")),
     ),
     # A scalar class the model does not name, such as ``IntervalLike``, is not scanned.
     "unregistered-scalar-class": (
-        {
-            "_libs/interval.pyi": """\
-class Interval:
-    pass
-
-
-class IntervalLike:
-    def __add__(self, other: Series, /) -> None: ...
-""",
-        },
-        None,
+        _dunders(_INTERVAL, "IntervalLike", ("__add__", "Series")),
     ),
     "non-binary-dunder": (
-        {
-            "core/indexes/base.pyi": """\
-class Index:
-    def __foo__(self, other: DataFrame, /) -> None: ...
-""",
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: int, /) -> None: ...
-""",
-        },
-        None,
+        _dunders(_INDEX, "Index", ("__foo__", "DataFrame")),
+        _dunders(_SERIES, "Series", ("__add__", "int")),
     ),
     "multiindex-lower-tier-operand": (
-        {
-            "core/indexes/base.pyi": """\
-class Index:
-    def __add__(self, other: int, /) -> None: ...
-""",
-            "core/indexes/multi.pyi": """\
-class MultiIndex:
-    def __add__(self, other: int, /) -> None: ...
-""",
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: int | Series, /) -> None: ...
-""",
-        },
-        None,
-    ),
-    "default-registry-matmul-key": (
-        {
-            "core/series.pyi": """\
-class Series:
-    def __matmul__(self, other: DataFrame, /) -> Series: ...
-""",
-        },
-        None,
+        _dunders(_INDEX, "Index", ("__add__", "int")),
+        _dunders(_MULTI, "MultiIndex", ("__add__", "int")),
+        _dunders(_SERIES, "Series", ("__add__", "int | Series")),
     ),
 }
 
@@ -379,8 +321,8 @@ def test_rejects_one_higher_tier_site_and_a_key_permits_it(
     case: str, tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """One rule per row: the site is reported, and the key covering it permits it."""
-    files, substrings, permitting_key = _SINGLE_SITE_REJECTIONS[case]
-    stub_root = _write_stub_tree(tmp_path, files=files)
+    overrides, substrings, permitting_key = _SINGLE_SITE_REJECTIONS[case]
+    stub_root = _write_tree(tmp_path, *overrides)
 
     assert not check_operand_hierarchy(stub_root, exceptions=set())
     output = capsys.readouterr().err
@@ -396,140 +338,101 @@ def test_accepts_a_permitted_or_invisible_operand(
     case: str, tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """One rule per row: the operand is permitted or invisible, so nothing is reported."""
-    files, exceptions = _ACCEPTED_OPERANDS[case]
-    stub_root = _write_stub_tree(tmp_path, files=files)
+    stub_root = _write_tree(tmp_path, *_ACCEPTED_OPERANDS[case])
 
-    if exceptions is None:
-        exceptions = FORWARD_DUNDER_EXCEPTIONS
-    assert check_operand_hierarchy(stub_root, exceptions=exceptions)
+    assert check_operand_hierarchy(stub_root, exceptions=frozenset())
     assert capsys.readouterr().err == ""
 
 
-def test_rejects_direct_alias_and_operand_violations(
+def test_accepts_a_matmul_site_the_shipped_registry_permits(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    stub_root = _write_stub_tree(
-        tmp_path,
-        files={
-            "core/base.pyi": """\
-from typing import TypeAlias
+    """The one case that needs the shipped registry: ``Series.__matmul__(DataFrame)``."""
+    stub_root = _write_tree(
+        tmp_path, _dunders(_SERIES, "Series", ("__matmul__", "DataFrame"))
+    )
 
-ScalarArrayIndexOperand: TypeAlias = Series | DataFrame
-ScalarArrayIndexSeriesOperand: TypeAlias = DataFrame
-""",
-            "core/indexes/base.pyi": """\
-class Index:
-    def __add__(self, other: Series | DataFrame, /) -> None: ...
-""",
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: DataFrame, /) -> None: ...
-""",
-        },
+    assert check_operand_hierarchy(stub_root)
+    assert capsys.readouterr().err == ""
+
+
+# The alias-violating trees, which report through ``check_aliases`` and so have a message
+# shape of their own: the aliases to declare and the operands to spell through them.
+_ALIAS_VIOLATIONS: Mapping[str, tuple[tuple[str, ...], str, str]] = {
+    "direct": (
+        (
+            "ScalarArrayIndexOperand: TypeAlias = Series | DataFrame",
+            "ScalarArrayIndexSeriesOperand: TypeAlias = DataFrame",
+        ),
+        "Series | DataFrame",
+        "DataFrame",
+    ),
+    "transitive": (
+        (
+            "SeriesAlias: TypeAlias = Series",
+            "DataFrameAlias: TypeAlias = DataFrame",
+            "ScalarArrayIndexOperand: TypeAlias = SeriesAlias | DataFrameAlias",
+            "ScalarArrayIndexSeriesOperand: TypeAlias = DataFrameAlias",
+            "IndexOperand: TypeAlias = SeriesAlias | DataFrameAlias",
+            "SeriesOperand: TypeAlias = DataFrameAlias",
+        ),
+        "IndexOperand",
+        "SeriesOperand",
+    ),
+}
+
+_ALIAS_VIOLATION_MESSAGES = (
+    "alias ScalarArrayIndexOperand references Series",
+    "alias ScalarArrayIndexOperand references DataFrame",
+    "alias ScalarArrayIndexSeriesOperand references DataFrame",
+    "Index.__add__ `other` operand references Series",
+    "Index.__add__ `other` operand references DataFrame",
+    "Series.__add__ `other` operand references DataFrame",
+)
+
+
+@pytest.mark.parametrize("case", _ALIAS_VIOLATIONS)
+def test_reports_alias_and_operand_violations(
+    case: str, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """An alias naming a higher tier fails, directly and through another alias."""
+    definitions, index_operand, series_operand = _ALIAS_VIOLATIONS[case]
+    stub_root = _write_tree(
+        tmp_path,
+        _aliases(*definitions),
+        _dunders(_INDEX, "Index", ("__add__", index_operand)),
+        _dunders(_SERIES, "Series", ("__add__", series_operand)),
     )
 
     assert not check_operand_hierarchy(stub_root)
     output = capsys.readouterr().err
-    assert "alias ScalarArrayIndexOperand references Series" in output
-    assert "alias ScalarArrayIndexOperand references DataFrame" in output
-    assert "alias ScalarArrayIndexSeriesOperand references DataFrame" in output
-    assert "Index.__add__ `other` operand references Series" in output
-    assert "Index.__add__ `other` operand references DataFrame" in output
-    assert "Series.__add__ `other` operand references DataFrame" in output
-
-
-def test_rejects_transitive_alias_violations(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    stub_root = _write_stub_tree(
-        tmp_path,
-        files={
-            "core/base.pyi": """\
-from typing import TypeAlias
-
-SeriesAlias: TypeAlias = Series
-DataFrameAlias: TypeAlias = DataFrame
-ScalarArrayIndexOperand: TypeAlias = SeriesAlias | DataFrameAlias
-ScalarArrayIndexSeriesOperand: TypeAlias = DataFrameAlias
-IndexOperand: TypeAlias = SeriesAlias | DataFrameAlias
-SeriesOperand: TypeAlias = DataFrameAlias
-""",
-            "core/indexes/base.pyi": """\
-class Index:
-    def __add__(self, other: IndexOperand, /) -> None: ...
-""",
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: SeriesOperand, /) -> None: ...
-""",
-        },
-    )
-
-    assert not check_operand_hierarchy(stub_root)
-    output = capsys.readouterr().err
-    assert "alias ScalarArrayIndexOperand references Series" in output
-    assert "alias ScalarArrayIndexOperand references DataFrame" in output
-    assert "alias ScalarArrayIndexSeriesOperand references DataFrame" in output
-    assert "Index.__add__ `other` operand references Series" in output
-    assert "Index.__add__ `other` operand references DataFrame" in output
-    assert "Series.__add__ `other` operand references DataFrame" in output
+    for message in _ALIAS_VIOLATION_MESSAGES:
+        assert message in output
 
 
 def test_detects_an_alias_collision_across_modules(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """A second, clean definition of a name must not hide a violating first one."""
-    stub_root = _write_stub_tree(
+    stub_root = _write_tree(
         tmp_path,
-        files={
-            "core/base.pyi": """\
-from typing import TypeAlias
-
-ScalarArrayIndexOperand: TypeAlias = int
-""",
-            "core/indexes/base.pyi": """\
-from typing import TypeAlias
-
-ScalarArrayIndexOperand: TypeAlias = Series
-
-class Index:
-    pass
-""",
-        },
+        # The violating definition sorts first, so a last-wins collector reports nothing.
+        _aliases(
+            "ScalarArrayIndexOperand: TypeAlias = Series",
+            path="_stubs_only/aliases.pyi",
+        ),
+        _aliases("ScalarArrayIndexOperand: TypeAlias = int"),
     )
 
     assert not check_operand_hierarchy(stub_root)
     assert "alias ScalarArrayIndexOperand references Series" in capsys.readouterr().err
 
 
-def test_checks_bitwise_and_comparison_dunders(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    stub_root = _write_stub_tree(
-        tmp_path,
-        files={
-            "core/indexes/base.pyi": """\
-class Index:
-    def __or__(self, other: Series, /) -> None: ...
-""",
-            "core/series.pyi": """\
-class Series:
-    def __lt__(self, other: DataFrame, /) -> None: ...
-""",
-        },
-    )
-
-    assert not check_operand_hierarchy(stub_root)
-    output = capsys.readouterr().err
-    assert "Index.__or__ `other` operand references Series" in output
-    assert "Series.__lt__ `other` operand references DataFrame" in output
-
-
 def test_rejects_a_sibling_key_for_an_interval_comparison(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """The sibling key covers the sibling operand only; the Index key covers this one."""
-    stub_root = _write_stub_tree(tmp_path, files=_INTERVAL_COMPARISON)
+    stub_root = _write_tree(tmp_path, _INTERVAL_COMPARISON)
     series_only = {("Interval", "*", "Series")}
 
     assert not check_operand_hierarchy(stub_root, exceptions=series_only)
@@ -543,14 +446,13 @@ def test_rejects_a_sibling_key_for_an_interval_comparison(
 def test_rejects_forward_binary_dunder_without_other(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    stub_root = _write_stub_tree(
+    """A scanned dunder whose operand is spelled differently is reported, not skipped."""
+    stub_root = _write_tree(
         tmp_path,
-        files={
-            "core/indexes/base.pyi": """\
+        {_INDEX: """\
 class Index:
     def __add__(self, right: int, /) -> None: ...
-""",
-        },
+"""},
     )
 
     assert not check_operand_hierarchy(stub_root)
@@ -558,15 +460,14 @@ class Index:
 
 
 def test_class_level_exception_covers_every_dunder(tmp_path: Path) -> None:
-    stub_root = _write_stub_tree(
+    stub_root = _write_tree(
         tmp_path,
-        files={
-            "core/series.pyi": """\
-class Series:
-    def __matmul__(self, other: DataFrame, /) -> Series: ...
-    def __add__(self, other: DataFrame, /) -> Series: ...
-""",
-        },
+        _dunders(
+            _SERIES,
+            "Series",
+            ("__matmul__", "DataFrame"),
+            ("__add__", "DataFrame"),
+        ),
     )
     exact = {("Series", "__matmul__", "DataFrame")}
 
@@ -578,25 +479,6 @@ class Series:
     )
 
 
-def test_rejects_multiindex_higher_tier_operands(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    stub_root = _write_stub_tree(
-        tmp_path,
-        files={
-            "core/indexes/multi.pyi": """\
-class MultiIndex:
-    def __add__(self, other: Series | DataFrame, /) -> None: ...
-""",
-        },
-    )
-
-    assert not check_operand_hierarchy(stub_root)
-    output = capsys.readouterr().err
-    assert "MultiIndex.__add__ `other` operand references Series" in output
-    assert "MultiIndex.__add__ `other` operand references DataFrame" in output
-
-
 @pytest.mark.parametrize(
     "relative_path",
     # One file the scan must read, and one only the tree walk reaches.
@@ -604,7 +486,7 @@ class MultiIndex:
 )
 def test_a_syntax_error_names_the_stub_file(relative_path: str, tmp_path: Path) -> None:
     """A malformed stub reports its own path, required or not, on any platform."""
-    stub_root = _write_stub_tree(tmp_path, files={relative_path: "class Broken(:\n"})
+    stub_root = _write_tree(tmp_path, {relative_path: "class Broken(:\n"})
 
     with pytest.raises(SyntaxError) as failure:
         check_operand_hierarchy(stub_root)
@@ -615,14 +497,8 @@ def test_a_syntax_error_names_the_stub_file(relative_path: str, tmp_path: Path) 
 def test_rejects_a_temporary_exception_the_tree_never_exercises(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    stub_root = _write_stub_tree(
-        tmp_path,
-        files={
-            "_libs/tslibs/timedeltas.pyi": """\
-class Timedelta:
-    def __add__(self, other: Timedelta, /) -> None: ...
-""",
-        },
+    stub_root = _write_tree(
+        tmp_path, _dunders(_TIMEDELTAS, "Timedelta", ("__add__", "Timedelta"))
     )
     dead: set[ExceptionKey] = {("Timedelta", "*", "Index")}
 
@@ -638,6 +514,27 @@ class Timedelta:
     assert "add the stub overload that justifies it" in output
 
 
+def test_two_registry_keys_each_cover_a_whole_class() -> None:
+    """The Interval and NAType keys are not formalities: each covers its class's dunders.
+
+    Measured against the shipped registry: ``("Interval", "*", "Index")`` alone permits all
+    6 Interval comparisons and ``("NAType", "*", "Series")`` alone the 15 NAType overloads
+    that name ``Series``, 21 of the 52 ``(class, dunder)`` slots the scan reports. These are
+    measurements, so update them when the stubs legitimately change, and read a collapse as
+    a reason to delete a key rather than to edit a number.
+    """
+    tree = StubTree.load(_REPO_ROOT / "pandas-stubs")
+    assert tree is not None
+
+    for class_name, key, expected in (
+        ("Interval", ("Interval", "*", "Index"), 6),
+        ("NAType", ("NAType", "*", "Series"), 15),
+    ):
+        _, consulted, sites = tree.check_class(class_name, {key})
+        assert consulted == {key}
+        assert len(sites) == expected
+
+
 def _document_anchors(document: Path) -> set[str]:
     """Return the GitHub heading anchors a markdown document exposes."""
     anchors: set[str] = set()
@@ -651,11 +548,11 @@ def _document_anchors(document: Path) -> set[str]:
 
 
 def test_temporary_exception_keys_are_well_formed() -> None:
-    """Every key names a scanned class, dunder and operand, and resolves to the guide.
+    """Every key names a class, dunder and operand, and resolves to the guide.
 
-    A key that can never be consulted is already failed as dead by ``require_all_exercised``
-    in CI; this test names the same faults locally, without building a stub tree, and keeps
-    the mechanical code-to-guide link.
+    A key whose class is never scanned, or that can never be consulted, is already failed as
+    dead by ``require_all_exercised`` in CI; this test names the faults it can name without
+    building a stub tree, and keeps the mechanical code-to-guide link.
     """
     # Every tier has exactly one canonical operand name, because a site that spells the
     # operand indexes this table by tier, and a missing entry is a ``KeyError`` out of a
@@ -675,8 +572,7 @@ def test_temporary_exception_keys_are_well_formed() -> None:
 
     relative_path, _, anchor = EXCEPTIONS_DOCUMENTATION.partition("#")
     assert anchor, "the exception list documents no anchor"
-
-    document = Path(__file__).parents[1] / relative_path
+    document = _REPO_ROOT / relative_path
     if not document.is_file():
         # The guide is documentation, so it can land after the checker it documents.
         # Once it is in the tree, this assertion keeps the anchor resolving.
@@ -684,9 +580,9 @@ def test_temporary_exception_keys_are_well_formed() -> None:
     assert anchor in _document_anchors(document), "the anchor does not resolve"
 
 
-# The two lines CI, the guide and every review round quote, spelled out rather than
-# assembled from the constants that produce them: the summary is the only report of the
-# debt still on the books, so its path, its wording and its counts are all pinned.
+# The two lines CI and every review round quote, spelled out rather than assembled from the
+# constants that produce them: the summary is the only report of the debt still on the
+# books, so its path, its wording and its counts are all pinned.
 _EXPECTED_SUMMARY = (
     "Operand hierarchy invariant holds.\n"
     "scripts/operand_hierarchy/exceptions.py -- 12 of 12 applied at 52 sites. "
@@ -699,14 +595,12 @@ def test_this_repository_passes_and_prints_the_expected_summary(
 ) -> None:
     """The shipped stub tree is clean and its two-line summary is byte-identical.
 
-    Apart from the well-formedness test, which scans nothing, every other test drives a
-    synthetic tree under ``tmp_path``. So this is the one place the registry in
-    ``exceptions.py`` is run with ``require_all_exercised`` over the real tree: a key
-    dropped from it, or a key that has gone dead, would otherwise leave this suite green
-    while only the ``architecture`` CI job noticed. The counts pin the aggregate the
-    non-vacuity checks are measured against -- 52 ``(class, dunder)`` slots in all, of
-    which six are Interval comparisons and fifteen are NAType overloads -- and ``main`` is
-    the process CI runs, so its exit status is asserted here too.
+    Apart from the well-formedness test, which scans nothing, and the key-coverage test
+    above, the other tests drive synthetic trees under ``tmp_path``. So this is the one
+    place the registry in ``exceptions.py`` is run with ``require_all_exercised`` over
+    the real tree: a key dropped from it, or gone dead, would otherwise leave this suite
+    green while only the ``architecture`` CI job noticed. ``main`` is the process CI
+    runs, so its exit status is asserted here too.
     """
     assert main() == 0
     captured = capsys.readouterr()
