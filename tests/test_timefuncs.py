@@ -401,7 +401,6 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.to_pydatetime(), "pd.Series"), pd.Series, dt.datetime)
     s0_local = s0.dt.tz_localize("UTC")
     check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(
         assert_type(s0.dt.tz_localize(None), "pd.Series[pd.Timestamp]"),
         pd.Series,
