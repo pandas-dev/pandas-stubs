@@ -24,7 +24,7 @@ It verifies that:
 * a forward binary dunder declared directly on a scanned class does not name an operand
   of a strictly higher tier in its ``other`` annotation, unless an explicit exception
   permits it. Any spelling the tier model knows counts, so ``TimedeltaIndex`` is a
-  tier-2 operand just as ``Index`` is, and the exception registry is keyed by the
+  tier-2 operand just as ``Index`` is, and the exception list is keyed by the
   tier's operand name rather than by the spelling.
 
 The checks include direct and transitive references through ``TypeAlias`` definitions;
@@ -32,130 +32,47 @@ every definition of an alias name is considered, and a qualified terminal name s
 ``pd.DataFrame`` counts as a reference. Reflected dunders and tier-1 array-likes are
 deliberately outside this structural check.
 
-Run as a script, the checker also requires every exception registry entry to be
-exercised by the tree it scans.
+Run as a script, the checker also requires every exception key to be exercised by the
+tree it scans.
 """
 
 from __future__ import annotations
 
 import ast
-from collections.abc import Mapping  # noqa: TC003
-from dataclasses import dataclass
+from collections.abc import (  # noqa: TC003
+    Mapping,
+    Set as AbstractSet,
+)
 from pathlib import Path
 import sys
 from typing import Final
 
-ExceptionKey = tuple[str, str, str]
+# The checker runs both as a package module (imported by the tests) and as a script:
+# `.github/workflows/test.yml` runs `python scripts/check_operand_hierarchy.py`. Script
+# mode fails the relative import because ``__package__`` is empty, so the bare branch is
+# the one a script takes; the bare name resolves through ``sys.path[0]``, which is
+# ``scripts/``. Going through ``scripts.operand_hierarchy_exceptions`` instead would
+# execute ``scripts/__init__.py`` and drag in loguru, which the stdlib-only script path
+# must not need.
+#
+# mypy reports the bare branch of this idiom as `no-redef`. `if __package__:` is reported
+# the same way, and binding the module rather than its names does not help either. Both
+# branches import the same names by design, so the redefinition is the intent.
+try:
+    from .operand_hierarchy_exceptions import (
+        FORWARD_DUNDER_EXCEPTIONS,
+        TEMPORARY_EXCEPTION_NOTE,
+        ExceptionKey,
+    )
+except ImportError:
+    from operand_hierarchy_exceptions import (  # type: ignore[no-redef]
+        FORWARD_DUNDER_EXCEPTIONS,
+        TEMPORARY_EXCEPTION_NOTE,
+        ExceptionKey,
+    )
 
-
-@dataclass(frozen=True)
-class HierarchyException:
-    """A deliberate higher-tier reference in a forward binary dunder."""
-
-    rationale: str
-    documentation: str
-
-
-_MATRIX_MULTIPLICATION_ANCHOR: Final[str] = (
-    "docs/type-architecture/operand-hierarchy.md#matrix-multiplication"
-)
-_SCALAR_OVERLOADS_ANCHOR: Final[str] = (
-    "docs/type-architecture/operand-hierarchy.md#scalar-and-index-subclass-overloads"
-)
-
-# Adding an exception is a compatibility decision: update the linked documentation
-# and the anchor test in tests/test_check_operand_hierarchy.py as well. A key of
-# ``(class, "*", forbidden)`` exempts every forward binary dunder of ``class``; an
-# exact ``(class, dunder, forbidden)`` key is looked up first and wins. ``forbidden``
-# is the tier's operand name, so the ``Index`` key covers the ``IntervalIndex``,
-# ``TimedeltaIndex`` and ``MultiIndex`` spellings alike. Every entry must be exercised
-# by the scanned tree as well: strict mode fails on an entry no site matched, so an
-# exception cannot outlive the stub overload that justified it.
-FORWARD_DUNDER_EXCEPTIONS: Final[dict[ExceptionKey, HierarchyException]] = {
-    ("Series", "__matmul__", "DataFrame"): HierarchyException(
-        rationale="Series matrix multiplication with a DataFrame returns a Series.",
-        documentation=_MATRIX_MULTIPLICATION_ANCHOR,
-    ),
-    ("Interval", "*", "Index"): HierarchyException(
-        rationale=(
-            "Interval comparisons against an Index subclass such as IntervalIndex "
-            "return a NumPy bool array, declared on the scalar, the dispatch entry "
-            "point for the comparison."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("Interval", "*", "Series"): HierarchyException(
-        rationale=(
-            "Interval is the dispatch entry point for interval comparisons against a "
-            "Series; the stub declares the Series[bool] result on the scalar side."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("IntervalIndex", "*", "Series"): HierarchyException(
-        rationale=(
-            "IntervalIndex comparisons against a Series broadcast over the index and "
-            "declare the Series[bool] result on the Index side."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("NAType", "*", "Index"): HierarchyException(
-        rationale=(
-            "A missing value propagates the Index operand's shape, which the stub "
-            "declares on the scalar side so that `NAType op Index` type-checks."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("NAType", "*", "Series"): HierarchyException(
-        rationale=(
-            "A missing value propagates the Series operand's shape, which the stub "
-            "declares on the scalar side so that `NAType op Series` type-checks."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("Period", "*", "Index"): HierarchyException(
-        rationale=(
-            "Period comparisons against an Index return a NumPy bool array and are "
-            "declared on the scalar, the dispatch entry point for the comparison."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("Period", "*", "Series"): HierarchyException(
-        rationale=(
-            "Period arithmetic and comparison against a Series return Series results "
-            "declared on the scalar dispatch entry point."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("Timedelta", "*", "Index"): HierarchyException(
-        rationale=(
-            "Timedelta arithmetic and comparison against an Index return a "
-            "TimedeltaIndex or a NumPy bool array, declared on the scalar dispatch "
-            "entry point."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("Timedelta", "*", "Series"): HierarchyException(
-        rationale=(
-            "Timedelta arithmetic and comparison against a Series broadcast over it and "
-            "return Series results, declared on the scalar dispatch entry point."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("Timestamp", "*", "Index"): HierarchyException(
-        rationale=(
-            "Timestamp comparisons against an Index return a NumPy bool array and are "
-            "declared on the scalar, the dispatch entry point for the comparison."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-    ("Timestamp", "*", "Series"): HierarchyException(
-        rationale=(
-            "Timestamp comparisons against a Series broadcast over it and return "
-            "Series[bool], declared on the scalar dispatch entry point."
-        ),
-        documentation=_SCALAR_OVERLOADS_ANCHOR,
-    ),
-}
+# The file the pass summary and the dead-key message name, spelled as a reader would.
+_EXCEPTIONS_FILE: Final[str] = "scripts/operand_hierarchy_exceptions.py"
 
 # The scanned set is enumerated explicitly. Name heuristics cannot separate forward
 # from reflected operations (a forward dunder can itself start with ``__r``, as
@@ -196,7 +113,7 @@ TIER_OPERANDS: Final[dict[str, int]] = {
 
 # The operand name a tier is registered under, so a site that spells its operand
 # ``TimedeltaIndex`` or ``MultiIndex`` is looked up as ``Index``. Keyed by tier, not by
-# spelling, so a spelling cannot drift out of the registry.
+# spelling, so a spelling cannot drift out of the exception list.
 CANONICAL_OPERAND_BY_TIER: Final[dict[int, str]] = {
     TIER_OPERANDS["Index"]: "Index",
     TIER_OPERANDS["Series"]: "Series",
@@ -423,12 +340,13 @@ def check_forward_binary_dunders(
     class_name: str,
     tiers: Mapping[str, int],
     aliases: Mapping[str, tuple[ast.AST, ...]],
-    exceptions: Mapping[ExceptionKey, HierarchyException],
-) -> tuple[bool, set[ExceptionKey]]:
+    exceptions: AbstractSet[ExceptionKey],
+) -> tuple[bool, set[ExceptionKey], set[tuple[str, str]]]:
     """Check every direct forward binary dunder for a higher-tier ``other`` operand.
 
-    Also returns the registry key of every exception that permitted a site, so the
-    caller can tell which entries the tree still justifies.
+    Also returns the exception key of every exception that permitted a site and the
+    ``(class, dunder)`` slot each one permitted, so the caller can tell which keys the
+    tree still justifies and how many distinct slots they cover.
     """
     if class_node is None:
         print(
@@ -436,11 +354,12 @@ def check_forward_binary_dunders(
             "add the file that declares it to REQUIRED_STUB_FILES.",
             file=sys.stderr,
         )
-        return False, set()
+        return False, set(), set()
 
     tier = tiers[class_name]
     higher_tiers = _higher_tier_operands(tier, tiers)
     consulted: set[ExceptionKey] = set()
+    sites: set[tuple[str, str]] = set()
     ok = True
     for node in class_node.body:
         if not isinstance(node, ast.FunctionDef) or not is_forward_binary_dunder(node):
@@ -461,14 +380,16 @@ def check_forward_binary_dunders(
         for spelling in higher_tiers:
             if not references_name(annotation, spelling, aliases):
                 continue
-            # The registry is keyed by the tier's operand name, so a subclass spelling
-            # is looked up as the operand name it stands for.
+            # The exception list is keyed by the tier's operand name, so a subclass
+            # spelling is looked up as the operand name it stands for.
             forbidden = CANONICAL_OPERAND_BY_TIER[tiers[spelling]]
             if (class_name, node.name, forbidden) in exceptions:
                 consulted.add((class_name, node.name, forbidden))
+                sites.add((class_name, node.name))
                 continue
             if (class_name, "*", forbidden) in exceptions:
                 consulted.add((class_name, "*", forbidden))
+                sites.add((class_name, node.name))
                 continue
             described = (
                 spelling
@@ -482,7 +403,7 @@ def check_forward_binary_dunders(
                 file=sys.stderr,
             )
             ok = False
-    return ok, consulted
+    return ok, consulted, sites
 
 
 def _read_required_trees(stub_root: Path) -> dict[Path, ast.Module] | None:
@@ -510,15 +431,15 @@ def _class_index(trees: Mapping[Path, ast.Module]) -> dict[str, ast.ClassDef]:
 def check_operand_hierarchy(
     stub_root: Path,
     *,
-    exceptions: Mapping[ExceptionKey, HierarchyException] = FORWARD_DUNDER_EXCEPTIONS,
+    exceptions: AbstractSet[ExceptionKey] = FORWARD_DUNDER_EXCEPTIONS,
     require_all_exercised: bool = False,
 ) -> bool:
     """Check the operand-hierarchy constraints in the ``pandas-stubs`` root directory.
 
     ``require_all_exercised`` also fails when the scanned tree never needs one of the
-    ``exceptions``, so a registry entry cannot outlive the overload that justified it.
+    ``exceptions``, so an exception key cannot outlive the overload that justified it.
     It is off by default because a synthetic fixture legitimately exercises almost none
-    of the global registry.
+    of the global exception list.
     """
     trees = _read_required_trees(stub_root)
     if trees is None:
@@ -530,8 +451,9 @@ def check_operand_hierarchy(
     tiers = class_tiers(collect_class_bases(stub_root))
     classes = _class_index(trees)
     consulted: set[ExceptionKey] = set()
+    sites: set[tuple[str, str]] = set()
     for class_name in sorted(tiers):
-        class_ok, class_consulted = check_forward_binary_dunders(
+        class_ok, class_consulted, class_sites = check_forward_binary_dunders(
             classes.get(class_name),
             class_name,
             tiers,
@@ -539,6 +461,7 @@ def check_operand_hierarchy(
             exceptions,
         )
         consulted |= class_consulted
+        sites |= class_sites
         if not class_ok:
             ok = False
 
@@ -547,15 +470,22 @@ def check_operand_hierarchy(
             if key in consulted:
                 continue
             print(
-                f"ERROR: registry entry {key} is never exercised by the scanned tree — "
-                "remove it, or add the stub site that justifies it.",
+                f"ERROR: temporary exception {key} is never exercised by the scanned "
+                "tree — remove it from scripts/operand_hierarchy_exceptions.py, or add "
+                "the stub overload that justifies it.",
                 file=sys.stderr,
             )
             ok = False
 
-    if ok:
-        print("Operand hierarchy invariant holds.")
-    return ok
+    if not ok:
+        return False
+    print("Operand hierarchy invariant holds.")
+    if exceptions:
+        print(
+            f"{_EXCEPTIONS_FILE} -- {len(consulted)} of {len(exceptions)} applied at "
+            f"{len(sites)} sites. {TEMPORARY_EXCEPTION_NOTE}."
+        )
+    return True
 
 
 if __name__ == "__main__":

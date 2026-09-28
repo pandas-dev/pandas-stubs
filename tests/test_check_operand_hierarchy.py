@@ -8,11 +8,13 @@ import pytest
 
 from scripts.check_operand_hierarchy import (
     FORWARD_BINARY_DUNDERS,
-    FORWARD_DUNDER_EXCEPTIONS,
     TIER_OPERANDS,
-    ExceptionKey,
-    HierarchyException,
     check_operand_hierarchy,
+)
+from scripts.operand_hierarchy_exceptions import (
+    EXCEPTIONS_DOCUMENTATION,
+    FORWARD_DUNDER_EXCEPTIONS,
+    ExceptionKey,
 )
 
 # The minimal content each required stub file needs for the checker to find the class it
@@ -259,7 +261,7 @@ class IntervalIndex(ExtensionIndex):
         },
     )
 
-    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert not check_operand_hierarchy(stub_root, exceptions=set())
     output = capsys.readouterr().err
     assert "IntervalIndex.__eq__ `other` operand references Series" in output
     assert "higher tier than IntervalIndex (tier 2)" in output
@@ -278,18 +280,14 @@ class Timedelta:
         },
     )
 
-    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert not check_operand_hierarchy(stub_root, exceptions=set())
     output = capsys.readouterr().err
     assert "Timedelta.__eq__ `other` operand references Index" in output
     assert "higher tier than Timedelta (tier 0)" in output
 
     assert check_operand_hierarchy(
         stub_root,
-        exceptions={
-            ("Timedelta", "*", "Index"): HierarchyException(
-                rationale="rationale", documentation="documentation"
-            )
-        },
+        exceptions={("Timedelta", "*", "Index")},
     )
 
 
@@ -304,7 +302,7 @@ class Timedelta:
         },
     )
 
-    assert check_operand_hierarchy(stub_root, exceptions={})
+    assert check_operand_hierarchy(stub_root, exceptions=set())
 
 
 def test_rejects_a_registered_natype_higher_tier_operand(
@@ -321,22 +319,18 @@ class NAType:
         },
     )
 
-    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert not check_operand_hierarchy(stub_root, exceptions=set())
     output = capsys.readouterr().err
     assert "NAType.__add__ `other` operand references Index" in output
     assert "higher tier than NAType (tier 0)" in output
 
     assert check_operand_hierarchy(
         stub_root,
-        exceptions={
-            ("NAType", "*", "Index"): HierarchyException(
-                rationale="rationale", documentation="documentation"
-            )
-        },
+        exceptions={("NAType", "*", "Index")},
     )
 
 
-def test_rejects_a_registry_entry_the_tree_never_exercises(
+def test_rejects_a_temporary_exception_the_tree_never_exercises(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     stub_root = _write_stub_tree(
@@ -348,19 +342,18 @@ class Timedelta:
 """,
         },
     )
-    dead = {
-        ("Timedelta", "*", "Index"): HierarchyException(
-            rationale="rationale", documentation="documentation"
-        )
-    }
+    dead: set[ExceptionKey] = {("Timedelta", "*", "Index")}
 
     assert check_operand_hierarchy(stub_root, exceptions=dead)
     assert not check_operand_hierarchy(
         stub_root, exceptions=dead, require_all_exercised=True
     )
     output = capsys.readouterr().err
-    assert "registry entry ('Timedelta', '*', 'Index') is never exercised" in output
-    assert "remove it, or add the stub site that justifies it" in output
+    assert (
+        "temporary exception ('Timedelta', '*', 'Index') is never exercised" in output
+    )
+    assert "remove it from scripts/operand_hierarchy_exceptions.py" in output
+    assert "add the stub overload that justifies it" in output
 
 
 def test_rejects_a_scalar_index_subclass_operand(
@@ -377,7 +370,7 @@ class Timedelta:
         },
     )
 
-    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert not check_operand_hierarchy(stub_root, exceptions=set())
     output = capsys.readouterr().err
     assert "Timedelta.__sub__ `other` operand references TimedeltaIndex" in output
     assert "(the tier-2 operand Index)" in output
@@ -385,11 +378,7 @@ class Timedelta:
 
     assert check_operand_hierarchy(
         stub_root,
-        exceptions={
-            ("Timedelta", "*", "Index"): HierarchyException(
-                rationale="rationale", documentation="documentation"
-            )
-        },
+        exceptions={("Timedelta", "*", "Index")},
     )
 
 
@@ -405,28 +394,19 @@ class Interval:
 """,
         },
     )
-    series_only = {
-        ("Interval", "*", "Series"): HierarchyException(
-            rationale="rationale", documentation="documentation"
-        )
-    }
+    series_only = {("Interval", "*", "Series")}
 
-    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert not check_operand_hierarchy(stub_root, exceptions=set())
     assert "references IntervalIndex (the tier-2 operand Index)" in (
         capsys.readouterr().err
     )
 
-    # The Series entry covers the sibling operand only; the Index entry covers this one.
+    # The Series key covers the sibling operand only; the Index key covers this one.
     assert not check_operand_hierarchy(stub_root, exceptions=series_only)
     assert "references IntervalIndex" in capsys.readouterr().err
     assert check_operand_hierarchy(
         stub_root,
-        exceptions={
-            **series_only,
-            ("Interval", "*", "Index"): HierarchyException(
-                rationale="rationale", documentation="documentation"
-            ),
-        },
+        exceptions={*series_only, ("Interval", "*", "Index")},
     )
 
 
@@ -443,13 +423,9 @@ class Timedelta:
 """,
         },
     )
-    index_entry = {
-        ("Timedelta", "*", "Index"): HierarchyException(
-            rationale="rationale", documentation="documentation"
-        )
-    }
+    index_entry = {("Timedelta", "*", "Index")}
 
-    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert not check_operand_hierarchy(stub_root, exceptions=set())
     assert "references MultiIndex (the tier-2 operand Index)" in (
         capsys.readouterr().err
     )
@@ -490,7 +466,7 @@ class Series:
 """,
     )
 
-    assert not check_operand_hierarchy(stub_root, exceptions={})
+    assert not check_operand_hierarchy(stub_root, exceptions=set())
     assert (
         "Series.__matmul__ `other` operand references DataFrame"
         in capsys.readouterr().err
@@ -513,7 +489,7 @@ class Series:
     assert check_operand_hierarchy(stub_root)
 
 
-def test_class_level_registry_entry_covers_every_dunder(tmp_path: Path) -> None:
+def test_class_level_exception_covers_every_dunder(tmp_path: Path) -> None:
     stub_root = _write_stub_tree(
         tmp_path,
         index="""
@@ -526,22 +502,13 @@ class Series:
     def __add__(self, other: DataFrame, /) -> Series: ...
 """,
     )
-    exact = {
-        ("Series", "__matmul__", "DataFrame"): HierarchyException(
-            rationale="rationale", documentation="documentation"
-        )
-    }
+    exact = {("Series", "__matmul__", "DataFrame")}
 
-    # An exact entry covers its own dunder only; the class-level entry covers both.
+    # An exact key covers its own dunder only; the class-level key covers both.
     assert not check_operand_hierarchy(stub_root, exceptions=exact)
     assert check_operand_hierarchy(
         stub_root,
-        exceptions={
-            **exact,
-            ("Series", "*", "DataFrame"): HierarchyException(
-                rationale="rationale", documentation="documentation"
-            ),
-        },
+        exceptions={*exact, ("Series", "*", "DataFrame")},
     )
 
 
@@ -637,22 +604,25 @@ def _document_anchors(document: Path) -> set[str]:
     return anchors
 
 
-@pytest.mark.parametrize("key", sorted(FORWARD_DUNDER_EXCEPTIONS))
-def test_every_registry_entry_documents_a_resolving_anchor(key: ExceptionKey) -> None:
-    class_name, dunder, forbidden = key
-    exception = FORWARD_DUNDER_EXCEPTIONS[key]
+def test_temporary_exception_keys_are_well_formed() -> None:
+    """Every key names a scanned class, dunder and operand, and resolves to the guide.
 
-    assert class_name
-    assert dunder == "*" or dunder in FORWARD_BINARY_DUNDERS
-    assert forbidden in TIER_OPERANDS
-    assert exception.rationale.endswith(".")
+    A mis-shaped key can never be consulted, so ``require_all_exercised`` already fails
+    on it as a dead key in CI; this test keeps the mechanical code-to-guide link and
+    catches a key that would be consulted but names an unscanned dunder.
+    """
+    for key in FORWARD_DUNDER_EXCEPTIONS:
+        class_name, dunder, forbidden = key
+        assert class_name
+        assert dunder == "*" or dunder in FORWARD_BINARY_DUNDERS, key
+        assert forbidden in TIER_OPERANDS, key
 
-    relative_path, _, anchor = exception.documentation.partition("#")
-    assert anchor, f"{key} documents no anchor"
+    relative_path, _, anchor = EXCEPTIONS_DOCUMENTATION.partition("#")
+    assert anchor, "the exception list documents no anchor"
 
     document = Path(__file__).parents[1] / relative_path
     if not document.is_file():
         # The guide is documentation, so it can land after the checker it documents.
-        # Once it is in the tree, this assertion keeps the anchors resolving.
+        # Once it is in the tree, this assertion keeps the anchor resolving.
         pytest.skip(f"{relative_path} is not in the tree")
-    assert anchor in _document_anchors(document), f"{key} documents a missing anchor"
+    assert anchor in _document_anchors(document), "the anchor does not resolve"
