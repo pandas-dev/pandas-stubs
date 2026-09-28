@@ -16,7 +16,8 @@ Tier    Scanned operands
 
 It verifies that:
 
-* ``ScalarArrayIndex*`` aliases do not reference ``Series`` or ``DataFrame``;
+* ``ScalarArrayIndex*`` aliases that are not ``ScalarArrayIndexSeries*`` aliases do not
+  reference ``Series`` or ``DataFrame``;
 * ``ScalarArrayIndexSeries*`` aliases do not reference ``DataFrame``; and
 * a forward binary dunder declared directly on a scanned class does not name an operand
   of a strictly higher tier in its ``other`` annotation, unless an explicit exception
@@ -39,6 +40,7 @@ from __future__ import annotations
 import ast
 from collections import defaultdict
 from collections.abc import (  # noqa: TC003
+    Iterator,
     Mapping,
     Set as AbstractSet,
 )
@@ -63,10 +65,11 @@ from .model import (
 class StubTree:
     """One parsed stub tree: what the checks query, and the parse products behind it.
 
-    ``load`` is the only place that parses, so it is also the only place the missing-file
-    error can come from. A plain class, not a dataclass: the state is containers, so
-    ``frozen`` would only make the immutability cosmetic while the generated ``__hash__``
-    raised, and neither equality nor hashing is a question anyone asks of a parsed tree.
+    ``load`` is the only caller of the parsing helpers at the foot of this module, so it is
+    also the only place the missing-file error can come from. A plain class, not a
+    dataclass: the state is containers, so ``frozen`` would only make the immutability
+    cosmetic while the generated ``__hash__`` raised, and neither equality nor hashing is a
+    question anyone asks of a parsed tree.
     """
 
     def __init__(
@@ -75,7 +78,7 @@ class StubTree:
         aliases: Mapping[str, tuple[ast.AST, ...]],
         bases: Mapping[str, tuple[str, ...]],
         tiers: Mapping[str, int],
-        classes: Mapping[str, ast.ClassDef],
+        classes: Mapping[str, tuple[ast.ClassDef, ...]],
     ) -> None:
         self.root = root
         self.aliases = aliases
@@ -106,8 +109,9 @@ class StubTree:
         ``node`` may be one expression or every definition of an alias name. Both node
         kinds are reduced to a terminal name before the lookup, so ``pd.DataFrame``
         references ``DataFrame``, and ``types.Higher`` references whatever ``Higher``
-        stands for. Alias resolution is by name, not by module scope, like the rest of
-        the checker.
+        stands for. A quoted annotation reads like the spelling it quotes, so
+        ``other: "DataFrame"`` references ``DataFrame``. Alias resolution is by name, not
+        by module scope, like the rest of the checker.
         """
         if node is None:
             return False
@@ -116,7 +120,7 @@ class StubTree:
         expanded: set[str] = set()
         while to_expand:
             current = to_expand.pop()
-            for child in ast.walk(current):
+            for child in _reference_walk(current):
                 terminal = _terminal_name(child)
                 if terminal is None:
                     continue
@@ -172,8 +176,8 @@ class StubTree:
         ``(class, dunder)`` slot each one permitted, so the caller can tell which keys the
         tree still justifies and how many distinct slots they cover.
         """
-        class_node = self.classes.get(class_name)
-        if class_node is None:
+        class_nodes = self.classes.get(class_name)
+        if class_nodes is None:
             print(
                 f"ERROR: could not find class {class_name!r} in the required stub files; "
                 "add the file that declares it to REQUIRED_STUB_FILES.",
@@ -186,16 +190,17 @@ class StubTree:
         consulted: set[ExceptionKey] = set()
         sites: set[tuple[str, str]] = set()
         ok = True
-        for node in class_node.body:
-            if not isinstance(node, ast.FunctionDef):
-                continue
-            method_ok, method_consulted, method_sites = self._check_dunder(
-                node, class_name, tier, higher_tiers, exceptions
-            )
-            consulted |= method_consulted
-            sites |= method_sites
-            if not method_ok:
-                ok = False
+        for class_node in class_nodes:
+            for node in class_node.body:
+                if not isinstance(node, ast.FunctionDef):
+                    continue
+                method_ok, method_consulted, method_sites = self._check_dunder(
+                    node, class_name, tier, higher_tiers, exceptions
+                )
+                consulted |= method_consulted
+                sites |= method_sites
+                if not method_ok:
+                    ok = False
         return ok, consulted, sites
 
     def _check_dunder(
@@ -318,15 +323,15 @@ def _type_aliases(tree: ast.AST) -> dict[str, tuple[ast.AST, ...]]:
     """Return ``TypeAlias`` right-hand sides from ``tree``, keyed by alias name.
 
     Every definition of a name is kept: a redefinition inside a version branch must not
-    hide the definition it shadows.
+    hide the definition it shadows. The annotation is read by its terminal name, so a
+    qualified ``typing.TypeAlias`` is collected like the bare spelling.
     """
     aliases: dict[str, list[ast.AST]] = defaultdict(list)
     for node in ast.walk(tree):
         if (
             isinstance(node, ast.AnnAssign)
             and isinstance(node.target, ast.Name)
-            and isinstance(node.annotation, ast.Name)
-            and node.annotation.id == "TypeAlias"
+            and _terminal_name(node.annotation) == "TypeAlias"
             and node.value is not None
         ):
             aliases[node.target.id].append(node.value)
@@ -341,10 +346,19 @@ def _collect_aliases(stub_root: Path) -> dict[str, tuple[ast.AST, ...]]:
     """
     aliases: dict[str, list[ast.AST]] = defaultdict(list)
     for path in sorted(stub_root.rglob("*.pyi")):
-        parsed = ast.parse(path.read_text(encoding="utf-8"))
+        parsed = _parse(path)
         for name, values in _type_aliases(parsed).items():
             aliases[name].extend(values)
     return {name: tuple(values) for name, values in aliases.items()}
+
+
+def _parse(path: Path) -> ast.Module:
+    """Parse one stub file, naming it in any ``SyntaxError`` the parse raises.
+
+    ``ast.parse`` leaves ``SyntaxError.filename`` unset otherwise, so a syntax error
+    anywhere below the stub root would report a file the caller cannot identify.
+    """
+    return ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
 
 def _terminal_name(node: ast.AST) -> str | None:
@@ -358,11 +372,38 @@ def _terminal_name(node: ast.AST) -> str | None:
     return None
 
 
+def _quoted_expression(node: ast.AST) -> ast.AST | None:
+    """Return the expression a quoted annotation spells, or ``None`` for any other node.
+
+    A stub may quote an annotation — ``other: "DataFrame"``, a legal forward reference —
+    which parses as a string constant rather than as the expression it spells. Reading the
+    constant alone would leave the reference scan blind to the operand actually named.
+    """
+    if not (isinstance(node, ast.Constant) and isinstance(node.value, str)):
+        return None
+    try:
+        return ast.parse(node.value, mode="eval").body
+    except SyntaxError:
+        return None
+
+
+def _reference_walk(node: ast.AST) -> Iterator[ast.AST]:
+    """Walk ``node`` as ``ast.walk`` does, descending into any quoted annotation."""
+    stack = [node]
+    while stack:
+        current = stack.pop()
+        yield current
+        quoted = _quoted_expression(current)
+        if quoted is not None:
+            stack.append(quoted)
+        stack.extend(ast.iter_child_nodes(current))
+
+
 def _collect_class_bases(stub_root: Path) -> dict[str, tuple[str, ...]]:
     """Map every class name below ``stub_root`` to its terminal base-class names."""
     bases: dict[str, list[str]] = defaultdict(list)
     for path in sorted(stub_root.rglob("*.pyi")):
-        parsed = ast.parse(path.read_text(encoding="utf-8"))
+        parsed = _parse(path)
         for node in ast.walk(parsed):
             if not isinstance(node, ast.ClassDef):
                 continue
@@ -465,17 +506,21 @@ def _read_required_trees(stub_root: Path) -> dict[Path, ast.Module] | None:
         if not path.exists():
             print(f"ERROR: missing required stub file {path}.", file=sys.stderr)
             return None
-    return {
-        path.relative_to(stub_root): ast.parse(path.read_text(encoding="utf-8"))
-        for path in paths
-    }
+    return {path.relative_to(stub_root): _parse(path) for path in paths}
 
 
-def _class_index(trees: Mapping[Path, ast.Module]) -> dict[str, ast.ClassDef]:
-    """Map every class name in the required trees to its class definition."""
-    return {
-        node.name: node
-        for tree in trees.values()
-        for node in ast.walk(tree)
-        if isinstance(node, ast.ClassDef)
-    }
+def _class_index(
+    trees: Mapping[Path, ast.Module],
+) -> dict[str, tuple[ast.ClassDef, ...]]:
+    """Map every class name in the required trees to every definition of it.
+
+    Every definition is kept, like the alias collector above: these stubs do declare
+    duplicate class names, and letting the last one parsed win would hide a violation
+    declared in the definition it shadowed.
+    """
+    classes: dict[str, list[ast.ClassDef]] = defaultdict(list)
+    for tree in trees.values():
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                classes[node.name].append(node)
+    return {name: tuple(nodes) for name, nodes in classes.items()}

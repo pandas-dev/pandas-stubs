@@ -68,9 +68,12 @@ CANONICAL_OPERAND_BY_TIER: Final[dict[int, str]] = {
     TIER_OPERANDS["DataFrame"]: "DataFrame",
 }
 
-# Every class these tables name, mapped to the stub file that declares it, so the class
-# scan resolves a class through the registry and can require that file rather than
-# silently skipping the class. A name absent from ``TIER_OPERANDS`` is a tier-0 scalar.
+# Every tier-0 scalar and the array-like, mapped to the stub file that declares it, so the
+# class scan resolves a class through the registry and can require that file rather than
+# silently skipping the class. A name in this table that is absent from ``TIER_OPERANDS``
+# is a tier-0 scalar. ``Index``, ``MultiIndex``, ``Series`` and ``DataFrame`` are tiered by
+# ``TIER_OPERANDS`` directly; the files declaring them are the literal entries of
+# ``REQUIRED_STUB_FILES`` below rather than keys here.
 CLASS_STUB_FILES: Final[dict[str, Path]] = {
     "Timedelta": Path("_libs/tslibs/timedeltas.pyi"),
     "Timestamp": Path("_libs/tslibs/timestamps.pyi"),

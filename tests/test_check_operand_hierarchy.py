@@ -6,13 +6,19 @@ import re
 
 import pytest
 
-from scripts.operand_hierarchy.check import check_operand_hierarchy
+from scripts.operand_hierarchy.check import (
+    check_operand_hierarchy,
+    main,
+)
 from scripts.operand_hierarchy.exceptions import (
     EXCEPTIONS_DOCUMENTATION,
+    EXCEPTIONS_FILE,
     FORWARD_DUNDER_EXCEPTIONS,
+    TEMPORARY_EXCEPTION_NOTE,
     ExceptionKey,
 )
 from scripts.operand_hierarchy.model import (
+    CANONICAL_OPERAND_BY_TIER,
     FORWARD_BINARY_DUNDERS,
     TIER_OPERANDS,
 )
@@ -209,6 +215,69 @@ class Series:
         },
         ("Series.__matmul__ `other` operand references DataFrame",),
         ("Series", "__matmul__", "DataFrame"),
+    ),
+    # A quoted annotation is a legal forward reference, so it must read like the spelling
+    # it quotes rather than as a constant that names nothing.
+    "quoted-annotation": (
+        {
+            "core/series.pyi": """\
+class Series:
+    def __add__(self, other: "DataFrame", /) -> None: ...
+""",
+        },
+        ("Series.__add__ `other` operand references DataFrame",),
+        ("Series", "*", "DataFrame"),
+    ),
+    # ``typing.TypeAlias`` is the same declaration spelled through a module.
+    "qualified-type-alias": (
+        {
+            "core/base.pyi": """\
+import typing
+
+Higher: typing.TypeAlias = DataFrame
+""",
+            "core/series.pyi": """\
+class Series:
+    def __add__(self, other: Higher, /) -> None: ...
+""",
+        },
+        ("Series.__add__ `other` operand references DataFrame",),
+        ("Series", "*", "DataFrame"),
+    ),
+    # ``Interval`` is declared in both of these files, and the violating one sorts first;
+    # the clean definition must not hide it, since these stubs do reuse class names.
+    "duplicate-class-definition": (
+        {
+            "_libs/interval.pyi": """\
+class Interval:
+    def __gt__(self, other: Series, /) -> None: ...
+""",
+            "_libs/tslibs/timestamps.pyi": """\
+class Timestamp:
+    pass
+
+
+class Interval:
+    pass
+""",
+        },
+        ("Interval.__gt__ `other` operand references Series",),
+        ("Interval", "*", "Series"),
+    ),
+    # Every real ``Index`` subclass spells its base with arguments, so only the unwrapping
+    # of a subscripted base discovers them.
+    "subscripted-base": (
+        {
+            "core/indexes/range.pyi": """\
+class RangeIndex(IndexSubclassBase[int, np.int64]):
+    def __add__(self, other: Series, /) -> None: ...
+""",
+        },
+        (
+            "RangeIndex.__add__ `other` operand references Series",
+            "higher tier than RangeIndex (tier 2)",
+        ),
+        ("RangeIndex", "*", "Series"),
     ),
 }
 
@@ -541,6 +610,19 @@ class MultiIndex:
     assert "MultiIndex.__add__ `other` operand references DataFrame" in output
 
 
+def test_a_syntax_error_names_the_stub_file(tmp_path: Path) -> None:
+    """A malformed stub reports the file, not an anonymous ``SyntaxError``."""
+    stub_root = _write_stub_tree(
+        tmp_path, files={"core/indexes/range.pyi": "class RangeIndex(:\n"}
+    )
+
+    with pytest.raises(SyntaxError) as failure:
+        check_operand_hierarchy(stub_root)
+
+    assert failure.value.filename is not None
+    assert failure.value.filename.endswith("core/indexes/range.pyi")
+
+
 def test_rejects_a_temporary_exception_the_tree_never_exercises(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -582,15 +664,22 @@ def _document_anchors(document: Path) -> set[str]:
 def test_temporary_exception_keys_are_well_formed() -> None:
     """Every key names a scanned class, dunder and operand, and resolves to the guide.
 
-    A mis-shaped key can never be consulted, so ``require_all_exercised`` already fails
-    on it as a dead key in CI; this test keeps the mechanical code-to-guide link and
-    catches a key that would be consulted but names an unscanned dunder.
+    A key that can never be consulted is already failed as dead by ``require_all_exercised``
+    in CI; this test names the same faults locally, without building a stub tree, and keeps
+    the mechanical code-to-guide link.
     """
+    # Every tier has exactly one canonical operand name, because the checker indexes this
+    # table by tier at the first site that spells the operand; a missing entry is a
+    # ``KeyError`` out of a scan, not a diagnostic.
+    assert sorted(CANONICAL_OPERAND_BY_TIER) == sorted(set(TIER_OPERANDS.values()))
+
     for key in FORWARD_DUNDER_EXCEPTIONS:
         class_name, dunder, forbidden = key
         assert class_name
         assert dunder == "*" or dunder in FORWARD_BINARY_DUNDERS, key
-        assert forbidden in TIER_OPERANDS, key
+        # The lookup canonicalizes the spelling first, so a key naming a bare spelling
+        # such as ``MultiIndex`` could never be consulted.
+        assert forbidden in CANONICAL_OPERAND_BY_TIER.values(), key
 
     relative_path, _, anchor = EXCEPTIONS_DOCUMENTATION.partition("#")
     assert anchor, "the exception list documents no anchor"
@@ -601,3 +690,29 @@ def test_temporary_exception_keys_are_well_formed() -> None:
         # Once it is in the tree, this assertion keeps the anchor resolving.
         pytest.skip(f"{relative_path} is not in the tree")
     assert anchor in _document_anchors(document), "the anchor does not resolve"
+
+
+# The two lines CI, the guide and every review round quote. They are pinned byte-for-byte
+# because the summary is the only report of the debt still on the books, and its counts are
+# what make the registry's non-vacuity measurable.
+_EXPECTED_SUMMARY = (
+    "Operand hierarchy invariant holds.\n"
+    f"{EXCEPTIONS_FILE} -- 12 of 12 applied at 52 sites. "
+    f"{TEMPORARY_EXCEPTION_NOTE}.\n"
+)
+
+
+def test_this_repository_passes_and_prints_the_expected_summary(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """The shipped stub tree is clean and its two-line summary is byte-identical.
+
+    Every other test drives a synthetic tree under ``tmp_path``, so without this one the
+    registry in ``exceptions.py`` is never scanned: a key dropped from it, or a key that
+    has gone dead, would leave this suite green while only the ``architecture`` CI job
+    noticed. The counts also pin what the non-vacuity checks rely on — six Interval
+    comparisons and fifteen NAType overloads are what make twelve keys apply at 52 sites —
+    and ``main`` is the process CI runs, so its exit status is asserted here too.
+    """
+    assert main() == 0
+    assert capsys.readouterr().out == _EXPECTED_SUMMARY
