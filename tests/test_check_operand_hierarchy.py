@@ -12,9 +12,7 @@ from scripts.operand_hierarchy.check import (
 )
 from scripts.operand_hierarchy.exceptions import (
     EXCEPTIONS_DOCUMENTATION,
-    EXCEPTIONS_FILE,
     FORWARD_DUNDER_EXCEPTIONS,
-    TEMPORARY_EXCEPTION_NOTE,
     ExceptionKey,
 )
 from scripts.operand_hierarchy.model import (
@@ -264,8 +262,9 @@ class Interval:
         ("Interval.__gt__ `other` operand references Series",),
         ("Interval", "*", "Series"),
     ),
-    # Every real ``Index`` subclass spells its base with arguments, so only the unwrapping
-    # of a subscripted base discovers them.
+    # Every ``Index`` subclass the base walk discovers spells its base with arguments --
+    # ``MultiIndex`` is an operand name in its own right, so the walk never has to find it
+    # -- and only the unwrapping of a subscripted base reads those bases at all.
     "subscripted-base": (
         {
             "core/indexes/range.pyi": """\
@@ -383,6 +382,17 @@ class Series:
 """,
         },
         None,
+    ),
+    # A string inside a subscript is an argument, not a quoted annotation: the value of
+    # ``Literal`` names a value, so it is not the operand it happens to spell.
+    "literal-string-operand": (
+        {
+            "_libs/missing.pyi": """\
+class NAType:
+    def __eq__(self, other: Literal["DataFrame"], /) -> None: ...
+""",
+        },
+        frozenset(),
     ),
 }
 
@@ -610,17 +620,19 @@ class MultiIndex:
     assert "MultiIndex.__add__ `other` operand references DataFrame" in output
 
 
-def test_a_syntax_error_names_the_stub_file(tmp_path: Path) -> None:
-    """A malformed stub reports the file, not an anonymous ``SyntaxError``."""
-    stub_root = _write_stub_tree(
-        tmp_path, files={"core/indexes/range.pyi": "class RangeIndex(:\n"}
-    )
+@pytest.mark.parametrize(
+    "relative_path",
+    # One file the scan must read, and one only the tree walk reaches.
+    ["core/indexes/range.pyi", "core/arrays/masked.pyi"],
+)
+def test_a_syntax_error_names_the_stub_file(relative_path: str, tmp_path: Path) -> None:
+    """A malformed stub reports its own path, required or not, on any platform."""
+    stub_root = _write_stub_tree(tmp_path, files={relative_path: "class Broken(:\n"})
 
     with pytest.raises(SyntaxError) as failure:
         check_operand_hierarchy(stub_root)
 
-    assert failure.value.filename is not None
-    assert failure.value.filename.endswith("core/indexes/range.pyi")
+    assert failure.value.filename == str(stub_root / relative_path)
 
 
 def test_rejects_a_temporary_exception_the_tree_never_exercises(
@@ -668,10 +680,13 @@ def test_temporary_exception_keys_are_well_formed() -> None:
     in CI; this test names the same faults locally, without building a stub tree, and keeps
     the mechanical code-to-guide link.
     """
-    # Every tier has exactly one canonical operand name, because the checker indexes this
-    # table by tier at the first site that spells the operand; a missing entry is a
-    # ``KeyError`` out of a scan, not a diagnostic.
+    # Every tier has exactly one canonical operand name, because a site that spells the
+    # operand indexes this table by tier, and a missing entry is a ``KeyError`` out of a
+    # scan rather than a diagnostic. Each name must also name its own tier, so a
+    # transposed pair of entries cannot pass by covering the same set of tiers.
     assert sorted(CANONICAL_OPERAND_BY_TIER) == sorted(set(TIER_OPERANDS.values()))
+    for tier, operand in CANONICAL_OPERAND_BY_TIER.items():
+        assert TIER_OPERANDS[operand] == tier
 
     for key in FORWARD_DUNDER_EXCEPTIONS:
         class_name, dunder, forbidden = key
@@ -692,13 +707,13 @@ def test_temporary_exception_keys_are_well_formed() -> None:
     assert anchor in _document_anchors(document), "the anchor does not resolve"
 
 
-# The two lines CI, the guide and every review round quote. They are pinned byte-for-byte
-# because the summary is the only report of the debt still on the books, and its counts are
-# what make the registry's non-vacuity measurable.
+# The two lines CI, the guide and every review round quote, spelled out rather than
+# assembled from the constants that produce them: the summary is the only report of the
+# debt still on the books, so its path, its wording and its counts are all pinned.
 _EXPECTED_SUMMARY = (
     "Operand hierarchy invariant holds.\n"
-    f"{EXCEPTIONS_FILE} -- 12 of 12 applied at 52 sites. "
-    f"{TEMPORARY_EXCEPTION_NOTE}.\n"
+    "scripts/operand_hierarchy/exceptions.py -- 12 of 12 applied at 52 sites. "
+    "Temporary exceptions; the target is an empty set.\n"
 )
 
 
@@ -707,12 +722,16 @@ def test_this_repository_passes_and_prints_the_expected_summary(
 ) -> None:
     """The shipped stub tree is clean and its two-line summary is byte-identical.
 
-    Every other test drives a synthetic tree under ``tmp_path``, so without this one the
-    registry in ``exceptions.py`` is never scanned: a key dropped from it, or a key that
-    has gone dead, would leave this suite green while only the ``architecture`` CI job
-    noticed. The counts also pin what the non-vacuity checks rely on — six Interval
-    comparisons and fifteen NAType overloads are what make twelve keys apply at 52 sites —
-    and ``main`` is the process CI runs, so its exit status is asserted here too.
+    Apart from the well-formedness test, which scans nothing, every other test drives a
+    synthetic tree under ``tmp_path``. So this is the one place the registry in
+    ``exceptions.py`` is run with ``require_all_exercised`` over the real tree: a key
+    dropped from it, or a key that has gone dead, would otherwise leave this suite green
+    while only the ``architecture`` CI job noticed. The counts pin the aggregate the
+    non-vacuity checks are measured against -- 52 ``(class, dunder)`` slots in all, of
+    which six are Interval comparisons and fifteen are NAType overloads -- and ``main`` is
+    the process CI runs, so its exit status is asserted here too.
     """
     assert main() == 0
-    assert capsys.readouterr().out == _EXPECTED_SUMMARY
+    captured = capsys.readouterr()
+    assert captured.out == _EXPECTED_SUMMARY
+    assert captured.err == ""

@@ -40,7 +40,6 @@ from __future__ import annotations
 import ast
 from collections import defaultdict
 from collections.abc import (  # noqa: TC003
-    Iterator,
     Mapping,
     Set as AbstractSet,
 )
@@ -65,8 +64,8 @@ from .model import (
 class StubTree:
     """One parsed stub tree: what the checks query, and the parse products behind it.
 
-    ``load`` is the only caller of the parsing helpers at the foot of this module, so it is
-    also the only place the missing-file error can come from. A plain class, not a
+    ``load`` is the only caller of the tree-building helpers at the foot of this module, so
+    it is also the only place the missing-file error can come from. A plain class, not a
     dataclass: the state is containers, so ``frozen`` would only make the immutability
     cosmetic while the generated ``__hash__`` raised, and neither equality nor hashing is a
     question anyone asks of a parsed tree.
@@ -120,7 +119,10 @@ class StubTree:
         expanded: set[str] = set()
         while to_expand:
             current = to_expand.pop()
-            for child in _reference_walk(current):
+            quoted = _quoted_expression(current)
+            if quoted is not None:
+                current = quoted
+            for child in ast.walk(current):
                 terminal = _terminal_name(child)
                 if terminal is None:
                     continue
@@ -177,7 +179,9 @@ class StubTree:
         tree still justifies and how many distinct slots they cover.
         """
         class_nodes = self.classes.get(class_name)
-        if class_nodes is None:
+        if not class_nodes:
+            # Falsy, not merely absent: an empty tuple would otherwise scan nothing and
+            # pass, which is a worse outcome than the missing class this reports.
             print(
                 f"ERROR: could not find class {class_name!r} in the required stub files; "
                 "add the file that declares it to REQUIRED_STUB_FILES.",
@@ -355,8 +359,10 @@ def _collect_aliases(stub_root: Path) -> dict[str, tuple[ast.AST, ...]]:
 def _parse(path: Path) -> ast.Module:
     """Parse one stub file, naming it in any ``SyntaxError`` the parse raises.
 
-    ``ast.parse`` leaves ``SyntaxError.filename`` unset otherwise, so a syntax error
-    anywhere below the stub root would report a file the caller cannot identify.
+    Otherwise ``ast.parse`` reports the placeholder ``'<unknown>'`` as
+    ``SyntaxError.filename``, so a syntax error anywhere below the stub root would name a
+    file the caller cannot identify. An unparsable stub stays loud: this raises, and the
+    caller reports the traceback rather than turning the file into a quiet pass.
     """
     return ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
@@ -378,6 +384,15 @@ def _quoted_expression(node: ast.AST) -> ast.AST | None:
     A stub may quote an annotation — ``other: "DataFrame"``, a legal forward reference —
     which parses as a string constant rather than as the expression it spells. Reading the
     constant alone would leave the reference scan blind to the operand actually named.
+
+    Only a constant that *is* the annotation is read this way, because only there is a
+    string a spelling. A string nested inside a subscript is an argument instead — the
+    ``"DataFrame"`` of ``Literal["DataFrame"]``, or the metadata of
+    ``Annotated[int, "DataFrame"]`` — so it is left alone rather than reported as an
+    operand reference.
+
+    ``None`` also covers a string that does not parse: a quoted ``int or str`` names no
+    operand, and guessing at one is not this checker's job.
     """
     if not (isinstance(node, ast.Constant) and isinstance(node.value, str)):
         return None
@@ -385,18 +400,6 @@ def _quoted_expression(node: ast.AST) -> ast.AST | None:
         return ast.parse(node.value, mode="eval").body
     except SyntaxError:
         return None
-
-
-def _reference_walk(node: ast.AST) -> Iterator[ast.AST]:
-    """Walk ``node`` as ``ast.walk`` does, descending into any quoted annotation."""
-    stack = [node]
-    while stack:
-        current = stack.pop()
-        yield current
-        quoted = _quoted_expression(current)
-        if quoted is not None:
-            stack.append(quoted)
-        stack.extend(ast.iter_child_nodes(current))
 
 
 def _collect_class_bases(stub_root: Path) -> dict[str, tuple[str, ...]]:
@@ -516,7 +519,8 @@ def _class_index(
 
     Every definition is kept, like the alias collector above: these stubs do declare
     duplicate class names, and letting the last one parsed win would hide a violation
-    declared in the definition it shadowed.
+    declared in the definition it shadowed. None of today's duplicates is a scanned name,
+    so this keeps the scan honest rather than changing a verdict.
     """
     classes: dict[str, list[ast.ClassDef]] = defaultdict(list)
     for tree in trees.values():
