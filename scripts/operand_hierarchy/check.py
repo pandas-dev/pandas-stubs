@@ -40,6 +40,7 @@ from __future__ import annotations
 import ast
 from collections import defaultdict
 from collections.abc import (  # noqa: TC003
+    Iterator,
     Mapping,
     Set as AbstractSet,
 )
@@ -108,9 +109,10 @@ class StubTree:
         ``node`` may be one expression or every definition of an alias name. Both node
         kinds are reduced to a terminal name before the lookup, so ``pd.DataFrame``
         references ``DataFrame``, and ``types.Higher`` references whatever ``Higher``
-        stands for. A quoted annotation reads like the spelling it quotes, so
-        ``other: "DataFrame"`` references ``DataFrame``. Alias resolution is by name, not
-        by module scope, like the rest of the checker.
+        stands for. A quoted annotation reads like the spelling it quotes wherever a type
+        can stand, so ``other: "DataFrame"`` and ``other: Optional["DataFrame"]`` both
+        reference ``DataFrame``, while a string in a value position does not. Alias
+        resolution is by name, not by module scope, like the rest of the checker.
         """
         if node is None:
             return False
@@ -119,10 +121,7 @@ class StubTree:
         expanded: set[str] = set()
         while to_expand:
             current = to_expand.pop()
-            quoted = _quoted_expression(current)
-            if quoted is not None:
-                current = quoted
-            for child in ast.walk(current):
+            for child in _reference_walk(current):
                 terminal = _terminal_name(child)
                 if terminal is None:
                     continue
@@ -385,14 +384,11 @@ def _quoted_expression(node: ast.AST) -> ast.AST | None:
     which parses as a string constant rather than as the expression it spells. Reading the
     constant alone would leave the reference scan blind to the operand actually named.
 
-    Only a constant that *is* the annotation is read this way, because only there is a
-    string a spelling. A string nested inside a subscript is an argument instead — the
-    ``"DataFrame"`` of ``Literal["DataFrame"]``, or the metadata of
-    ``Annotated[int, "DataFrame"]`` — so it is left alone rather than reported as an
-    operand reference.
+    Comparing the constant to the node itself is not enough to decide whether to read it;
+    which positions hold a spelling is ``_reference_walk``'s rule, not this helper's.
 
-    ``None`` also covers a string that does not parse: a quoted ``int or str`` names no
-    operand, and guessing at one is not this checker's job.
+    ``None`` also covers a string that does not parse, such as a quoted ``"DataFrame["``:
+    it names no operand, and guessing at one is not this checker's job.
     """
     if not (isinstance(node, ast.Constant) and isinstance(node.value, str)):
         return None
@@ -400,6 +396,52 @@ def _quoted_expression(node: ast.AST) -> ast.AST | None:
         return ast.parse(node.value, mode="eval").body
     except SyntaxError:
         return None
+
+
+# The subscripts whose arguments are values rather than types, so a string inside one is
+# not a spelled type. ``Annotated`` is only half of one: its first argument is the type
+# annotated and the rest is metadata, so it is split by position below.
+_VALUE_ARGUMENT_SUBSCRIPTS = frozenset({"Literal", "Annotated"})
+
+
+def _type_position_children(node: ast.AST) -> list[ast.AST]:
+    """Return the children of ``node`` that hold a type rather than a value.
+
+    Every node's children are type positions except those of the two subscripts whose
+    arguments are values: ``Literal["DataFrame"]`` names the value ``"DataFrame"`` rather
+    than the operand, and only the first argument of ``Annotated`` is the annotated type.
+    Reading those as types is what made a value look like an operand reference; skipping
+    them is what lets a spelling inside any other subscript -- ``Optional["DataFrame"]``,
+    ``Union[int, "DataFrame"]``, ``list["DataFrame"]`` -- still read as the type it quotes.
+    """
+    if not isinstance(node, ast.Subscript):
+        return list(ast.iter_child_nodes(node))
+    head = _terminal_name(node.value)
+    if head == "Literal":
+        return [node.value]
+    if head == "Annotated":
+        elements = (
+            node.slice.elts if isinstance(node.slice, ast.Tuple) else [node.slice]
+        )
+        return [node.value, *elements[:1]]
+    return list(ast.iter_child_nodes(node))
+
+
+def _reference_walk(node: ast.AST) -> Iterator[ast.AST]:
+    """Walk ``node``, reading a quoted annotation as the spelling it quotes.
+
+    A stub may quote a type -- ``other: "DataFrame"``, or ``Optional["DataFrame"]`` -- and a
+    quoted spelling is a spelling wherever a type can stand, so every string this walk meets
+    is read that way unless it sits in a value position (see ``_type_position_children``).
+    """
+    stack = [node]
+    while stack:
+        current = stack.pop()
+        yield current
+        quoted = _quoted_expression(current)
+        if quoted is not None:
+            stack.append(quoted)
+        stack.extend(_type_position_children(current))
 
 
 def _collect_class_bases(stub_root: Path) -> dict[str, tuple[str, ...]]:
