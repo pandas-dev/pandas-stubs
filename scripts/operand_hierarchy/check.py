@@ -37,6 +37,7 @@ tree it scans.
 from __future__ import annotations
 
 import ast
+from collections import defaultdict
 from collections.abc import (  # noqa: TC003
     Mapping,
     Set as AbstractSet,
@@ -52,9 +53,9 @@ from .exceptions import (
 )
 from .model import (
     CANONICAL_OPERAND_BY_TIER,
+    CLASS_STUB_FILES,
     FORWARD_BINARY_DUNDERS,
     REQUIRED_STUB_FILES,
-    TIER_0_CLASSES,
     TIER_OPERANDS,
 )
 
@@ -62,8 +63,6 @@ from .model import (
 class StubTree:
     """One parsed stub tree: what the checks query, and the parse products behind it.
 
-    The helpers below parse and return plain values; this holds them together, so a check
-    is asked a question about the tree rather than handed each parse product it needs.
     ``load`` is the only place that parses, so it is also the only place the missing-file
     error can come from. A plain class, not a dataclass: the state is containers, so
     ``frozen`` would only make the immutability cosmetic while the generated ``__hash__``
@@ -235,12 +234,9 @@ class StubTree:
             # The exception list is keyed by the tier's operand name, so a subclass
             # spelling is looked up as the operand name it stands for.
             forbidden = CANONICAL_OPERAND_BY_TIER[self.tiers[spelling]]
-            if (class_name, node.name, forbidden) in exceptions:
-                consulted.add((class_name, node.name, forbidden))
-                sites.add((class_name, node.name))
-                continue
-            if (class_name, "*", forbidden) in exceptions:
-                consulted.add((class_name, "*", forbidden))
+            key = _permitting_key(class_name, node.name, forbidden, exceptions)
+            if key is not None:
+                consulted.add(key)
                 sites.add((class_name, node.name))
                 continue
             described = (
@@ -324,7 +320,7 @@ def _type_aliases(tree: ast.AST) -> dict[str, tuple[ast.AST, ...]]:
     Every definition of a name is kept: a redefinition inside a version branch must not
     hide the definition it shadows.
     """
-    aliases: dict[str, list[ast.AST]] = {}
+    aliases: dict[str, list[ast.AST]] = defaultdict(list)
     for node in ast.walk(tree):
         if (
             isinstance(node, ast.AnnAssign)
@@ -333,7 +329,7 @@ def _type_aliases(tree: ast.AST) -> dict[str, tuple[ast.AST, ...]]:
             and node.annotation.id == "TypeAlias"
             and node.value is not None
         ):
-            aliases.setdefault(node.target.id, []).append(node.value)
+            aliases[node.target.id].append(node.value)
     return {name: tuple(values) for name, values in aliases.items()}
 
 
@@ -343,11 +339,11 @@ def _collect_aliases(stub_root: Path) -> dict[str, tuple[ast.AST, ...]]:
     Every definition of a name is kept rather than letting the last parsed module win, so
     a name that collides across modules cannot hide a violation behind the collision.
     """
-    aliases: dict[str, list[ast.AST]] = {}
+    aliases: dict[str, list[ast.AST]] = defaultdict(list)
     for path in sorted(stub_root.rglob("*.pyi")):
         parsed = ast.parse(path.read_text(encoding="utf-8"))
         for name, values in _type_aliases(parsed).items():
-            aliases.setdefault(name, []).extend(values)
+            aliases[name].extend(values)
     return {name: tuple(values) for name, values in aliases.items()}
 
 
@@ -364,13 +360,13 @@ def _terminal_name(node: ast.AST) -> str | None:
 
 def _collect_class_bases(stub_root: Path) -> dict[str, tuple[str, ...]]:
     """Map every class name below ``stub_root`` to its terminal base-class names."""
-    bases: dict[str, list[str]] = {}
+    bases: dict[str, list[str]] = defaultdict(list)
     for path in sorted(stub_root.rglob("*.pyi")):
         parsed = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(parsed):
             if not isinstance(node, ast.ClassDef):
                 continue
-            names = bases.setdefault(node.name, [])
+            names = bases[node.name]
             for base in node.bases:
                 terminal = _terminal_name(base)
                 if terminal is not None:
@@ -398,18 +394,29 @@ def _descends_from(
 def _class_tiers(bases: Mapping[str, tuple[str, ...]]) -> dict[str, int]:
     """Assign a tier to every scanned class.
 
-    Explicit operand names win, then the tier-0 scalars, then every ``Index`` subclass
-    inherits tier 2. Base classes resolve by name, matching the rest of the checker.
+    ``TIER_OPERANDS`` is spread over ``CLASS_STUB_FILES`` last, so it, and not the tier-0
+    seed, decides the tier of a name both hold.
+
+    ``bases`` is needed only because ``Index`` has subclasses: the registry names
+    ``Index``, so a spelling such as ``TimedeltaIndex`` is a tier-2 operand only because
+    this walk resolves its base by name. It runs for ``Index`` alone, so an array-like
+    such as ``Categorical`` is deliberately not registered and is not read at tier 1; a
+    second walk is what registering an array-like subclass would take.
     """
-    tiers: dict[str, int] = {**TIER_OPERANDS, **dict.fromkeys(TIER_0_CLASSES, 0)}
+    tiers: dict[str, int] = {**dict.fromkeys(CLASS_STUB_FILES, 0), **TIER_OPERANDS}
     index_tier = TIER_OPERANDS["Index"]
-    for name in bases:
-        if name not in tiers and _descends_from(name, "Index", bases):
-            tiers[name] = index_tier
+    tiers.update(
+        {
+            name: index_tier
+            for name in bases
+            if name not in tiers and _descends_from(name, "Index", bases)
+        }
+    )
     return tiers
 
 
 def _other_parameter(function: ast.FunctionDef) -> ast.arg | None:
+    """Return the argument named ``other``, positional, keyword or variadic."""
     arguments = function.args
     all_args = arguments.posonlyargs + arguments.args + arguments.kwonlyargs
     if arguments.vararg is not None:
@@ -423,6 +430,7 @@ def _other_parameter(function: ast.FunctionDef) -> ast.arg | None:
 
 
 def _other_annotation(function: ast.FunctionDef) -> ast.AST | None:
+    """Return the annotation of that argument, or ``None`` if it has none."""
     parameter = _other_parameter(function)
     return None if parameter is None else parameter.annotation
 
@@ -432,7 +440,26 @@ def _is_forward_binary_dunder(function: ast.FunctionDef) -> bool:
     return function.name in FORWARD_BINARY_DUNDERS
 
 
+def _permitting_key(
+    class_name: str,
+    dunder: str,
+    forbidden: str,
+    exceptions: AbstractSet[ExceptionKey],
+) -> ExceptionKey | None:
+    """Return the key of the exception permitting ``forbidden`` here, if any.
+
+    The exact ``(class, dunder, forbidden)`` key wins; the ``(class, "*", forbidden)``
+    key covers every forward binary dunder of the class.
+    """
+    exact = (class_name, dunder, forbidden)
+    if exact in exceptions:
+        return exact
+    wildcard = (class_name, "*", forbidden)
+    return wildcard if wildcard in exceptions else None
+
+
 def _read_required_trees(stub_root: Path) -> dict[Path, ast.Module] | None:
+    """Parse every required stub file, or report the first missing one and give up."""
     paths = [stub_root / path for path in REQUIRED_STUB_FILES]
     for path in paths:
         if not path.exists():
@@ -446,9 +473,9 @@ def _read_required_trees(stub_root: Path) -> dict[Path, ast.Module] | None:
 
 def _class_index(trees: Mapping[Path, ast.Module]) -> dict[str, ast.ClassDef]:
     """Map every class name in the required trees to its class definition."""
-    index: dict[str, ast.ClassDef] = {}
-    for tree in trees.values():
-        for node in ast.walk(tree):
-            if isinstance(node, ast.ClassDef):
-                index[node.name] = node
-    return index
+    return {
+        node.name: node
+        for tree in trees.values()
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ClassDef)
+    }

@@ -1,15 +1,14 @@
 """Temporary exceptions to the operand-hierarchy invariant.
 
 Temporary exceptions; the target is an empty set. Each key permits a higher-tier forward
-operand the checker otherwise rejects, and each is deleted once the overload it permits stops
+operand the checker otherwise rejects, and is deleted once the overload it permits stops
 naming that operand. The checker fails, in the ``architecture`` CI job, on a key no scanned
 stub site matched, so a key cannot outlive its overload.
 
-The list lives apart from the checker so that it reads as the temporary list it is. It carries
-no per-key rationale and no per-key documentation: the reason is argued in the review and the
-commit that adds the key, the policy lives in
-``docs/type-architecture/operand-hierarchy.md``, and ``TEMPORARY_EXCEPTION_NOTE`` is the one
-wording the checker prints.
+This module is the list alone: no per-key rationale and no per-key anchor. The policy lives
+in ``docs/type-architecture/operand-hierarchy.md``, the reason for a key is argued in the
+review and the commit that adds it, and ``TEMPORARY_EXCEPTION_NOTE`` is the one wording the
+checker prints.
 """
 
 from __future__ import annotations
@@ -27,8 +26,8 @@ EXCEPTIONS_FILE: Final[str] = (
     Path(__file__).resolve().relative_to(_REPO_ROOT).as_posix()
 )
 
-# The one shared wording for this list: the module docstring's first sentence and the
-# sentence the checker appends to its pass summary. Do not add per-key prose.
+# The one shared wording for this list: quoted by the module docstring above and appended
+# by the checker to its pass summary. Do not add per-key prose.
 TEMPORARY_EXCEPTION_NOTE: Final[str] = (
     "Temporary exceptions; the target is an empty set"
 )
