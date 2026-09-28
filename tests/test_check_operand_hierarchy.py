@@ -21,6 +21,7 @@ from scripts.operand_hierarchy.model import (
 # declares. ``IndexSubclassBase`` resolves ``Index`` by name, so a test tree does not have
 # to define ``Index`` for the derived subclasses to register.
 _DEFAULT_STUB_FILES: Mapping[str, str] = {
+    "core/arrays/base.pyi": "class ExtensionArray:\n    pass\n",
     "core/base.pyi": "",
     "core/frame.pyi": "class DataFrame:\n    pass\n",
     "core/indexes/base.pyi": "class Index:\n    pass\n",
@@ -327,6 +328,31 @@ class NAType:
     assert check_operand_hierarchy(
         stub_root,
         exceptions={("NAType", "*", "Index")},
+    )
+
+
+def test_rejects_a_scalar_naming_an_array_like(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Tier 1 is scanned too: a tier-0 scalar may not claim an array-like as its operand."""
+    stub_root = _write_stub_tree(
+        tmp_path,
+        files={
+            "_libs/missing.pyi": """
+class NAType:
+    def __eq__(self, other: ExtensionArray, /) -> None: ...
+""",
+        },
+    )
+
+    assert not check_operand_hierarchy(stub_root, exceptions=set())
+    output = capsys.readouterr().err
+    assert "NAType.__eq__ `other` operand references ExtensionArray" in output
+    assert "higher tier than NAType (tier 0)" in output
+
+    assert check_operand_hierarchy(
+        stub_root,
+        exceptions={("NAType", "*", "ExtensionArray")},
     )
 
 

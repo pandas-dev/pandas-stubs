@@ -43,26 +43,27 @@ FORWARD_BINARY_DUNDERS: Final[frozenset[str]] = frozenset(
 
 # Operand names that can appear in ``other``, mapped to their tier.
 TIER_OPERANDS: Final[dict[str, int]] = {
+    "ExtensionArray": 1,
     "Index": 2,
     "MultiIndex": 2,
     "Series": 3,
     "DataFrame": 4,
 }
 
-# Tier 1 -- array-likes such as ``ExtensionArray`` -- is deliberately not registered
-# here, and registering a class there is not a one-line addition: a live
-# ``"ExtensionArray": 1`` also needs ``core/arrays/base.pyi`` in ``REQUIRED_STUB_FILES``
-# (otherwise ``_class_index`` finds no node for the class and the checker fails with
-# "could not find class"), a ``1: "ExtensionArray"`` entry in
-# ``CANONICAL_OPERAND_BY_TIER`` (otherwise the ``CANONICAL_OPERAND_BY_TIER[...]`` lookup
-# in ``check.py`` raises an uncaught ``KeyError``), and an exception key for every tier-0
-# scalar whose forward dunders would then name a tier-1 operand. The tier-1 paragraph in
-# ``check.py`` states why it is not scanned at all.
+# Tier 1 is the array-likes, represented by the ``ExtensionArray`` ABC. Registering it
+# takes three entries -- the operand name above, its canonical name below, and the stub
+# file that declares it in ``REQUIRED_STUB_FILES``, which the class scan resolves the
+# class through -- and it took no exception key when it landed on 2026-09-28: the only
+# classes that can violate against tier 1 are the tier-0 scalars, and none of them names
+# an array-like in a forward dunder's ``other``. The first site that does needs a key,
+# and it is also the first site to read ``CANONICAL_OPERAND_BY_TIER[1]``, which is why a
+# tier may not be registered without one.
 
 # The operand name a tier is registered under, so a site that spells its operand
 # ``TimedeltaIndex`` or ``MultiIndex`` is looked up as ``Index``. Keyed by tier, not by
 # spelling, so a spelling cannot drift out of the exception list.
 CANONICAL_OPERAND_BY_TIER: Final[dict[int, str]] = {
+    TIER_OPERANDS["ExtensionArray"]: "ExtensionArray",
     TIER_OPERANDS["Index"]: "Index",
     TIER_OPERANDS["Series"]: "Series",
     TIER_OPERANDS["DataFrame"]: "DataFrame",
@@ -83,6 +84,7 @@ TIER_0_CLASSES: Final[dict[str, Path]] = {
 REQUIRED_STUB_FILES: Final[tuple[Path, ...]] = tuple(
     sorted(
         {
+            Path("core/arrays/base.pyi"),
             Path("core/base.pyi"),
             Path("core/frame.pyi"),
             Path("core/indexes/base.pyi"),
