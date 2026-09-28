@@ -25,9 +25,10 @@ It verifies that:
   tier's operand name rather than by the spelling.
 
 The checks include direct and transitive references through ``TypeAlias`` definitions;
-every definition of an alias name is considered, and a qualified terminal name such as
-``pd.DataFrame`` counts as a reference. Reflected dunders are deliberately outside this
-structural check.
+every definition of an alias name is considered, and a qualified name counts like a bare
+one, whether it names the target directly (``pd.DataFrame``) or names an alias of it
+(``types.Higher`` where ``Higher: TypeAlias = DataFrame``). Reflected dunders are
+deliberately outside this structural check.
 
 Run as a script, the checker also requires every exception key to be exercised by the
 tree it scans.
@@ -103,8 +104,11 @@ class StubTree:
     ) -> bool:
         """Return whether ``node`` references ``target`` directly or through aliases.
 
-        ``node`` may be one expression or every definition of an alias name. A qualified
-        terminal name counts, so ``pd.DataFrame`` references ``DataFrame``.
+        ``node`` may be one expression or every definition of an alias name. Both node
+        kinds are reduced to a terminal name before the lookup, so ``pd.DataFrame``
+        references ``DataFrame``, and ``types.Higher`` references whatever ``Higher``
+        stands for. Alias resolution is by name, not by module scope, like the rest of
+        the checker.
         """
         if node is None:
             return False
@@ -114,15 +118,14 @@ class StubTree:
         while to_expand:
             current = to_expand.pop()
             for child in ast.walk(current):
-                if isinstance(child, ast.Attribute) and child.attr == target:
-                    return True
-                if not isinstance(child, ast.Name):
+                terminal = _terminal_name(child)
+                if terminal is None:
                     continue
-                if child.id == target:
+                if terminal == target:
                     return True
-                alias = self.aliases.get(child.id)
-                if alias is not None and child.id not in expanded:
-                    expanded.add(child.id)
+                alias = self.aliases.get(terminal)
+                if alias is not None and terminal not in expanded:
+                    expanded.add(terminal)
                     to_expand.extend(alias)
         return False
 

@@ -249,6 +249,46 @@ class Series:
     )
 
 
+def test_rejects_an_operand_reached_through_a_qualified_alias(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A qualified name is a reference whether it names the operand or an alias of it."""
+    stub_root = _write_stub_tree(
+        tmp_path,
+        base="""
+from typing import TypeAlias
+
+Higher: TypeAlias = DataFrame
+""",
+        series="""
+class Series:
+    def __add__(self, other: types.Higher, /) -> None: ...
+""",
+    )
+
+    assert not check_operand_hierarchy(stub_root)
+    assert (
+        "Series.__add__ `other` operand references DataFrame" in capsys.readouterr().err
+    )
+
+
+def test_accepts_a_qualified_alias_of_a_lower_tier_operand(tmp_path: Path) -> None:
+    stub_root = _write_stub_tree(
+        tmp_path,
+        base="""
+from typing import TypeAlias
+
+Lower: TypeAlias = Index
+""",
+        series="""
+class Series:
+    def __add__(self, other: types.Lower, /) -> None: ...
+""",
+    )
+
+    assert check_operand_hierarchy(stub_root)
+
+
 def test_rejects_an_index_subclass_higher_tier_operand(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
