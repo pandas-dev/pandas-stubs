@@ -1789,7 +1789,12 @@ def test_sqlalchemy_selectable(tmp_path: Path) -> None:
             __tablename__ = "part"
             quantity = sqlalchemy.Column(sqlalchemy.Integer)
 
-        pd.read_sql(sqlalchemy.select(Temp.quantity), engine)
+        check(
+            assert_type(
+                pd.read_sql(sqlalchemy.select(Temp.quantity), engine), DataFrame
+            ),
+            DataFrame,
+        )
 
 
 def test_sqlalchemy_text(tmp_path: Path) -> None:
