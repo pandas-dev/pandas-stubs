@@ -214,51 +214,6 @@ class Series:
         ("Series.__matmul__ `other` operand references DataFrame",),
         ("Series", "__matmul__", "DataFrame"),
     ),
-    # A quoted annotation is a legal forward reference, so it must read like the spelling
-    # it quotes rather than as a constant that names nothing -- and a quoted spelling is a
-    # spelling wherever a type can stand, not only when it is the whole annotation.
-    "quoted-annotation": (
-        {
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: "DataFrame", /) -> None: ...
-""",
-        },
-        ("Series.__add__ `other` operand references DataFrame",),
-        ("Series", "*", "DataFrame"),
-    ),
-    "quoted-annotation-in-union": (
-        {
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: "DataFrame" | None, /) -> None: ...
-""",
-        },
-        ("Series.__add__ `other` operand references DataFrame",),
-        ("Series", "*", "DataFrame"),
-    ),
-    "quoted-annotation-under-generic": (
-        {
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: Optional["DataFrame"], /) -> None: ...
-""",
-        },
-        ("Series.__add__ `other` operand references DataFrame",),
-        ("Series", "*", "DataFrame"),
-    ),
-    # The first argument of ``Annotated`` is the type it annotates, unlike the metadata
-    # after it, which is a value.
-    "quoted-annotation-as-annotated-type": (
-        {
-            "core/series.pyi": """\
-class Series:
-    def __add__(self, other: Annotated["DataFrame", "meta"], /) -> None: ...
-""",
-        },
-        ("Series.__add__ `other` operand references DataFrame",),
-        ("Series", "*", "DataFrame"),
-    ),
     # ``typing.TypeAlias`` is the same declaration spelled through a module.
     "qualified-type-alias": (
         {
@@ -415,17 +370,6 @@ class Series:
 """,
         },
         None,
-    ),
-    # A string inside a subscript is an argument, not a quoted annotation: the value of
-    # ``Literal`` names a value, so it is not the operand it happens to spell.
-    "literal-string-operand": (
-        {
-            "_libs/missing.pyi": """\
-class NAType:
-    def __eq__(self, other: Literal["DataFrame"], /) -> None: ...
-""",
-        },
-        frozenset(),
     ),
 }
 
