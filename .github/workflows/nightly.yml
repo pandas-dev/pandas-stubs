@@ -2,10 +2,11 @@ name: Nightly
 
 on:
   schedule:
-  # 00:23 / 08:23 / 16:23 UTC. The nightly version carries no date, so a slow
-  # build cannot be told apart from an absent one: repeating the cron is what
-  # covers it. The :23 offset avoids the top-of-hour congestion.
-  - cron: "23 */8 * * *"
+  # 08:23 UTC, a few hours after pandas' Wheel builder cron (03:27 UTC). The
+  # nightly lands at roughly 05:00-06:30, once the sdist and 57-cell wheel
+  # matrix have built and uploaded to the scientific-python index. The :23
+  # offset keeps clear of the top of the hour and pandas' own crons.
+  - cron: "23 8 * * *"
   workflow_dispatch:
 
 env:
