@@ -2771,20 +2771,40 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[int]: ...
+    @overload  # type: ignore[override]
     @override
-    def __ge__(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __ge__(  # pyrefly: ignore[bad-override]
+        self: Series[int], other: float, /
+    ) -> Series[_bool]: ...
+    @overload
+    def __ge__(  # ty: ignore[invalid-method-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date, /
     ) -> Series[_bool]: ...
+    @overload  # type: ignore[override]
     @override
-    def __gt__(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __gt__(  # pyrefly: ignore[bad-override]
+        self: Series[int], other: float, /
+    ) -> Series[_bool]: ...
+    @overload
+    def __gt__(  # ty: ignore[invalid-method-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date, /
     ) -> Series[_bool]: ...
+    @overload  # type: ignore[override]
     @override
-    def __le__(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __le__(  # pyrefly: ignore[bad-override]
+        self: Series[int], other: float, /
+    ) -> Series[_bool]: ...
+    @overload
+    def __le__(  # ty: ignore[invalid-method-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date, /
     ) -> Series[_bool]: ...
+    @overload  # type: ignore[override]
     @override
-    def __lt__(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __lt__(  # pyrefly: ignore[bad-override]
+        self: Series[int], other: float, /
+    ) -> Series[_bool]: ...
+    @overload
+    def __lt__(  # ty: ignore[invalid-method-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date, /
     ) -> Series[_bool]: ...
     @overload

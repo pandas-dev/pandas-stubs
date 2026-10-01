@@ -2064,6 +2064,17 @@ def test_relops() -> None:
     check(assert_type(pd.Series([af]) <= af, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(pd.Series([af]) >= af, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    # GH 1903
+    check(assert_type(pd.Series([ai]) > af, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(pd.Series([ai]) < af, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(pd.Series([ai]) <= af, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(pd.Series([ai]) >= af, "pd.Series[bool]"), pd.Series, np.bool_)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = pd.Series([s]) < af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _1 = pd.Series([s]) > af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _2 = pd.Series([s]) <= af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _3 = pd.Series([s]) >= af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+
     ac: complex = 1 + 2j
     check(assert_type(pd.Series([ac]) > ac, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(pd.Series([ac]) < ac, "pd.Series[bool]"), pd.Series, np.bool_)
