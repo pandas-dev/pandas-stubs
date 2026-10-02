@@ -174,7 +174,8 @@ def test_period_array_dayofweek() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(arr.dayofweek, np_1darray_int64), np_1darray_int64)
 
@@ -188,7 +189,8 @@ def test_period_array_weekday() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(arr.weekday, np_1darray_int64), np_1darray_int64)
 
@@ -202,7 +204,8 @@ def test_period_array_dayofyear() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(arr.dayofyear, np_1darray_int64), np_1darray_int64)
 
@@ -244,7 +247,8 @@ def test_period_array_daysinmonth() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(arr.daysinmonth, np_1darray_int64), np_1darray_int64)
 
