@@ -180,6 +180,13 @@ def test_period_array_dayofweek() -> None:
         check(assert_type(arr.dayofweek, np_1darray_int64), np_1darray_int64)
 
 
+def test_period_array_day_of_week() -> None:
+    """Test day_of_week property for PeriodArray."""
+    idx = PeriodIndex(["2020-01-01", "2020-01-02", "2020-01-03"], freq="D")
+    arr = PeriodArray(idx)
+    check(assert_type(arr.day_of_week, np_1darray_int64), np_1darray_int64, np.int64)
+
+
 def test_period_array_weekday() -> None:
     """Test weekday property for PeriodArray."""
     idx = PeriodIndex(["2020-01-01", "2020-01-02", "2020-01-03"], freq="D")

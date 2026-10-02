@@ -303,6 +303,9 @@ def test_properties() -> None:
     ):
         check(assert_type(arr.dayofyear, np_1darray_int32), np_1darray_int32, np.int32)
 
+    check(assert_type(arr.day_of_week, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.day_of_year, np_1darray_int32), np_1darray_int32, np.int32)
+
     check(assert_type(arr.quarter, np_1darray_int32), np_1darray_int32, np.int32)
     check(assert_type(arr.days_in_month, np_1darray_int32), np_1darray_int32, np.int32)
 
