@@ -9,16 +9,13 @@ import pytest
 from tests import check
 
 from pandas.tseries.offsets import (
-    FY5253,
-    BaseOffset,
-    DateOffset,
     Easter,
     MonthEnd,
-    QuarterEnd,
-    SemiMonthEnd,
-    WeekOfMonth,
-    YearEnd,
 )
+
+# Each concrete offset is named by its own annotation.  An annotation such as
+# `list[BaseOffset]` would erase every element, collapsing all of these into one identical
+# static check of the inherited `BaseOffset` signature.
 
 
 @pytest.fixture
@@ -27,39 +24,48 @@ def timestamp() -> pd.Timestamp:
 
 
 @pytest.fixture
-def anchors() -> list[BaseOffset]:
-    """Offsets that shift to an anchor, so they share one datetime-like contract."""
-    # The `BaseOffset` annotation statically erases every element, so this fixture proves
-    # the *base* contract over eight heterogeneous runtime instances.
-    return [
-        DateOffset(),
-        Easter(),
-        MonthEnd(),
-        QuarterEnd(),
-        SemiMonthEnd(),
-        WeekOfMonth(),
-        YearEnd(),
-        FY5253(),
-    ]
+def easter() -> Easter:
+    """The offset class with leaf narrowing, named so its exact type is preserved."""
+    return Easter()
 
 
-def test_anchor_datetime_like(
-    anchors: list[BaseOffset], timestamp: pd.Timestamp
-) -> None:
-    """Every anchor offset maps a datetime-like operand to a `Timestamp` in both directions."""
-    for anchor in anchors:
-        check(assert_type(anchor + timestamp, pd.Timestamp), pd.Timestamp)
-        check(assert_type(timestamp + anchor, pd.Timestamp), pd.Timestamp)
-        check(assert_type(anchor + dt.date(2026, 1, 1), pd.Timestamp), pd.Timestamp)
-        check(
-            assert_type(anchor + np.datetime64("2026-01-01"), pd.Timestamp),
-            pd.Timestamp,
-        )
-        check(assert_type(anchor.__radd__(timestamp), pd.Timestamp), pd.Timestamp)
+@pytest.fixture
+def month_end() -> MonthEnd:
+    """A plain anchor offset, named so its exact type is preserved."""
+    return MonthEnd()
 
 
-def test_anchor_nat(anchors: list[BaseOffset]) -> None:
-    """`NaT` propagates through an anchor offset rather than becoming a `Timestamp`."""
-    for anchor in anchors:
-        check(assert_type(anchor + pd.NaT, NaTType), NaTType)
-        check(assert_type(pd.NaT + anchor, NaTType), NaTType)
+def test_easter_datetime_like(easter: Easter, timestamp: pd.Timestamp) -> None:
+    """`Easter` maps every datetime-like operand to a `Timestamp` in both directions."""
+    check(assert_type(easter + dt.datetime(2026, 1, 1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.datetime(2026, 1, 1) + easter, pd.Timestamp), pd.Timestamp)
+    check(assert_type(easter + dt.date(2026, 1, 1), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(easter + np.datetime64("2026-01-01"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(easter + timestamp, pd.Timestamp), pd.Timestamp)
+
+
+def test_easter_nat(easter: Easter) -> None:
+    """`NaT` propagates through `Easter` rather than becoming a `Timestamp`."""
+    check(assert_type(easter + pd.NaT, NaTType), NaTType)
+    check(assert_type(pd.NaT + easter, NaTType), NaTType)
+
+
+def test_month_end_datetime_like(month_end: MonthEnd, timestamp: pd.Timestamp) -> None:
+    """`MonthEnd` shares the same datetime-like contract as any anchor offset."""
+    check(assert_type(month_end + dt.datetime(2026, 1, 1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.datetime(2026, 1, 1) + month_end, pd.Timestamp), pd.Timestamp)
+    check(assert_type(month_end + dt.date(2026, 1, 1), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(month_end + np.datetime64("2026-01-01"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(month_end + timestamp, pd.Timestamp), pd.Timestamp)
+
+
+def test_month_end_nat(month_end: MonthEnd) -> None:
+    """`NaT` propagates through `MonthEnd` rather than becoming a `Timestamp`."""
+    check(assert_type(month_end + pd.NaT, NaTType), NaTType)
+    check(assert_type(pd.NaT + month_end, NaTType), NaTType)

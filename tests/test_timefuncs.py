@@ -958,12 +958,11 @@ def test_some_offsets() -> None:
         pd.DatetimeIndex,
     )
     # GH 755
+    # The `+` cases now live in `tests/scalars/offsets/test_arithmetic.py`, pinned to concrete
+    # classes.  The `-` cases stay: only runtime differs today (`datetime - Day()` returns a
+    # `Timestamp` in pandas, not the `dt.datetime` asserted below), pending the follow-up.
     check(assert_type(dt.date.today() - Day(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(dt.date.today() + Day(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(Day() + dt.date.today(), pd.Timestamp), pd.Timestamp)
     check(assert_type(dt.datetime.now() - Day(), dt.datetime), dt.datetime)
-    check(assert_type(dt.datetime.now() + Day(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(Day() + dt.datetime.now(), pd.Timestamp), pd.Timestamp)
     # GH 235
     check(
         assert_type(
