@@ -1,0 +1,34 @@
+name: Nightly
+
+on:
+  schedule:
+  # 08:23 UTC, a few hours after pandas' Wheel builder cron (03:27 UTC). The
+  # nightly lands at roughly 05:00-06:30, once the sdist and 57-cell wheel
+  # matrix have built and uploaded to the scientific-python index. The :23
+  # offset keeps clear of the top of the hour and pandas' own crons.
+  - cron: "23 8 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  nightly:
+    if: github.repository == 'pandas-dev/pandas-stubs' || github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.14'
+
+    - name: Run pytest (against pandas nightly)
+      run: poetry run poe pytest --nightly
