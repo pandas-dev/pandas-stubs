@@ -92,7 +92,7 @@ def test_period_dtype() -> None:
         Pandas4Warning,
         "is deprecated for offsets that are not DateOffse",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
     ):
         check(
             assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),

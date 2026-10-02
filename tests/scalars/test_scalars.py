@@ -370,11 +370,11 @@ def test_timedelta_construction() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
         "'w' is deprecated and will",
-        upper="3.1.99",
+        upper="3.99.99",
     ):
         check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", upper="3.1.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", upper="3.99.99"):
         check(assert_type(pd.Timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
@@ -408,10 +408,10 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
 
     check(assert_type(pd.Timedelta("1 W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", upper="3.1.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", upper="3.99.99"):
         check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", upper="3.1.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", upper="3.99.99"):
         check(assert_type(pd.Timedelta("1 d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
@@ -1046,7 +1046,8 @@ def test_timestamp_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(ts.dayofweek, int), int)
 
@@ -1054,7 +1055,8 @@ def test_timestamp_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(ts.dayofyear, int), int)
 
@@ -1064,7 +1066,8 @@ def test_timestamp_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(ts.daysinmonth, int), int)
 
@@ -1658,7 +1661,8 @@ def test_period_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(p.dayofweek, int), int)
 
@@ -1666,7 +1670,8 @@ def test_period_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(p.dayofyear, int), int)
 
@@ -1676,7 +1681,8 @@ def test_period_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(p.daysinmonth, int), int)
 
@@ -1696,7 +1702,8 @@ def test_period_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(p.weekday, int), int)
 
