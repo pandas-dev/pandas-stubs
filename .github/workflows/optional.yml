@@ -60,3 +60,19 @@ jobs:
 
     - name: Run ty tests with all rules raising errors
       run: poetry run poe ty_all
+
+  stubtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.14'
+
+    - name: Run stubtest against the committed allowlist
+      run: poetry run poe stubtest

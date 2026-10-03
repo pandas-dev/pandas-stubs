@@ -29,7 +29,7 @@ def style() -> None:
     subprocess.run(cmd, check=True)
 
 
-def stubtest(allowlist: str = "", check_missing: bool = False) -> None:
+def stubtest(allowlist: str = "", *, check_missing: bool = False) -> None:
     cmd = [
         sys.executable,
         "-m",
