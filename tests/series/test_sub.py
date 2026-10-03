@@ -215,27 +215,16 @@ def test_sub_ts_py_datetime(left_ts: pd.Series, left_td: pd.Series) -> None:
     a = [s + timedelta(minutes=m) for m in range(3)]
 
     check(assert_type(left_ts - s, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-    if TYPE_CHECKING_INVALID_USAGE:
-        # Series[Any] (Timestamp) - Sequence[datetime] should work, see pandas-dev/pandas#62353
-        _1 = left_ts - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-    # Series[Any] (Timedelta) - datetime fails at runtime,
+    check(assert_type(left_ts - a, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    # Series[Any] (Timedelta) - datetime or Sequence[datetime] fails at runtime,
     # which cannot be revealed by our static type checking
     # _2 = left_td - s
-    if TYPE_CHECKING_INVALID_USAGE:
-        # Series[Any] (Timedelta) - Sequence[datetime] is not supported by Pandas,
-        # see pandas-dev/pandas#62353. Even if such __sub__ is supported
-        # it will fail at runtime here,
-        # which cannot be revealed by our static type checking
-        _3 = left_td - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+    # _3 = left_td - a
 
     check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
-    if TYPE_CHECKING_INVALID_USAGE:
-        # Sequence[datetime] - Series[Any] (Timestamp) should work, see pandas-dev/pandas#62353
-        _5 = a - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+    check(assert_type(a - left_ts, pd.Series), pd.Series, pd.Timedelta)
     check(assert_type(s - left_td, pd.Series), pd.Series, pd.Timestamp)
-    if TYPE_CHECKING_INVALID_USAGE:
-        # Sequence[datetime] - Series[Any] (Timedelta) should work, see pandas-dev/pandas#62353
-        _7 = a - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+    check(assert_type(a - left_td, pd.Series), pd.Series, pd.Timestamp)
 
     check(
         assert_type(left_ts.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
