@@ -78,6 +78,14 @@ resolves the forward method. `Series.__rmatmul__` therefore has no `DataFrame` o
 because `DataFrame.__matmul__(Series)` already resolves `df @ s`, and no `Series` overload,
 because both operands have the same type and Python never tries the reflected method.
 
+A class may still mirror its forward overloads in the reflected dunder where no checker
+resolves them through an operator, so the two dunders read as a pair; `Tick`, `Day`,
+`Week` and `BusinessDay` in `offsets.pyi` do this. The mirror leaves out operands for
+which the runtime reflected method returns `NotImplemented`. Their offset operands are
+tested in the forward direction only. A direct `__radd__` call covers the case where the
+runtime reaches the reflected method but checkers resolve the other operand's forward
+method, as for an object array, which defers to an offset's `__array_priority__`.
+
 The stubs also use reflected signatures to restrict the receiver through an annotated
 `self`, as in `def __radd__(self: Series[Never], other: _str, /) -> Series[_str]: ...`.
 
