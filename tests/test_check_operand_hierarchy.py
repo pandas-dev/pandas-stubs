@@ -114,7 +114,7 @@ def _aliases(
     path: str = "core/base.pyi",
     header: str = "from typing import TypeAlias",
 ) -> dict[str, str]:
-    """Render ``path``, where the alias cases declare their ``TypeAlias``\\ s."""
+    """Render ``path``, where the alias cases declare their ``TypeAlias`` aliases."""
     return {path: "\n".join((header, "", *definitions, ""))}
 
 
