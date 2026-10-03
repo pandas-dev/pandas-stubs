@@ -498,6 +498,16 @@ def test_series_pct_change() -> None:
     )
 
 
+def test_series_first_last_valid_index() -> None:
+    s = pd.Series([np.nan, 1.0, 2.0, np.nan])
+    check(assert_type(s.first_valid_index(), Scalar | None), int)
+    check(assert_type(s.last_valid_index(), Scalar | None), int)
+
+    s_all_na = pd.Series([np.nan, np.nan])
+    check(assert_type(s_all_na.first_valid_index(), Scalar | None), type(None))
+    check(assert_type(s_all_na.last_valid_index(), Scalar | None), type(None))
+
+
 def test_types_rank() -> None:
     s = pd.Series([1, 1, 2, 5, 6, np.nan])
     check(assert_type(s.rank(), "pd.Series[float]"), pd.Series, np.float64)
