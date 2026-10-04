@@ -157,9 +157,13 @@ SeriesComplex: TypeAlias = SeriesReal | Series[complex]
 ScalarArrayIndexSeriesComplex: TypeAlias = ScalarArrayIndexComplex | SeriesComplex
 
 ArrayIndexBoolNoSeq: TypeAlias = np_ndarray_bool | Index[bool]
+ArrayIndexSeriesBoolNoSeq: TypeAlias = ArrayIndexBoolNoSeq | Series[bool]
 
 ArrayIndexBoolIntNoSeq: TypeAlias = (
     np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int]
+)
+ArrayIndexSeriesBoolIntNoSeq: TypeAlias = (
+    ArrayIndexBoolIntNoSeq | Series[bool] | Series[int]
 )
 
 ArrayIndexTimedeltaNoSeq: TypeAlias = np_ndarray_td | TimedeltaArray | TimedeltaIndex
@@ -174,6 +178,9 @@ ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = ArrayIndexTimedeltaNoSeq | Series[Ti
 ScalarArrayIndexSeriesTimedelta: TypeAlias = (
     ScalarArrayIndexTimedelta | Series[Timedelta]
 )
+ScalarArrayIndexSeriesTimedeltaOffset: TypeAlias = (
+    ScalarArrayIndexSeriesTimedelta | BaseOffset
+)
 
 ArrayIndexDatetimeNoSeq: TypeAlias = np_ndarray_dt | DatetimeArray | DatetimeIndex
 ScalarArrayIndexDatetime: TypeAlias = (
@@ -182,6 +189,8 @@ ScalarArrayIndexDatetime: TypeAlias = (
     | Sequence[datetime | np.datetime64]
     | ArrayIndexDatetimeNoSeq
 )
+ArrayIndexSeriesDatetimeNoSeq: TypeAlias = ArrayIndexDatetimeNoSeq | Series[Timestamp]
+ScalarArrayIndexSeriesDatetime: TypeAlias = ScalarArrayIndexDatetime | Series[Timestamp]
 
 ArrayIndexPeriodNoSeq: TypeAlias = (
     np_ndarray_td

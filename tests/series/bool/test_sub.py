@@ -27,25 +27,29 @@ def test_sub_py_scalar(left: "pd.Series[bool]") -> None:
     b, i, f, c = True, 1, 1.0, 1j
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
+        _0 = left - b  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left - f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left - c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = b - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
+        _1 = b - left  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i - left, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(f - left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.sub(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
+        left.sub(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.sub(i), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left.sub(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.sub(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rsub(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
+        left.rsub(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rsub(i), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left.rsub(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
@@ -58,25 +62,29 @@ def test_sub_py_sequence(left: "pd.Series[bool]") -> None:
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
+        _0 = left - b  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left - f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left - c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = b - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
+        _1 = b - left  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i - left, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(f - left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.sub(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
+        left.sub(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.sub(i), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left.sub(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.sub(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rsub(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
+        left.rsub(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rsub(i), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left.rsub(f), "pd.Series[float]"), pd.Series, np.floating)
     check(

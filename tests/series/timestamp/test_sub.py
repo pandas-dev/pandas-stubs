@@ -2,7 +2,10 @@ from datetime import (
     datetime,
     timedelta,
 )
-from typing import assert_type
+from typing import (
+    Never,
+    assert_type,
+)
 
 import numpy as np
 import pandas as pd
@@ -35,7 +38,7 @@ def test_sub_py_scalar(left: "pd.Series[pd.Timestamp]") -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(d - left, Never)
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
@@ -47,7 +50,7 @@ def test_sub_py_scalar(left: "pd.Series[pd.Timestamp]") -> None:
 
 def test_sub_numpy_scalar(left: "pd.Series[pd.Timestamp]") -> None:
     """Test pd.Series[pd.Timestamp] - numpy scalars"""
-    s = np.datetime64("2025-08-20")
+    s = np.datetime64("2025-08-20", "D")
     d = np.timedelta64(1, "s")
 
     check(assert_type(left - s, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
@@ -55,7 +58,7 @@ def test_sub_numpy_scalar(left: "pd.Series[pd.Timestamp]") -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(d - left, Never)
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
@@ -75,7 +78,7 @@ def test_sub_pd_scalar(left: "pd.Series[pd.Timestamp]") -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(d - left, Never)
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
@@ -90,17 +93,15 @@ def test_sub_py_sequence(left: "pd.Series[pd.Timestamp]") -> None:
     s = [datetime(2025, 8, 20)]
     d = [timedelta(seconds=1)]
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        # Series[Timestamp] - Sequence[timestamp] should work, see pandas-dev/pandas#62353
-        _0 = left - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        # Series[Timestamp] - Sequence[timedelta] should work, see pandas-dev/pandas#62353
-        _a = left - d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+    check(assert_type(left - s, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
-        _1 = s - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _b = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+    check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(d - left, Never)
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-    check(assert_type(left.sub(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
+    check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     check(assert_type(left.rsub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
@@ -140,7 +141,7 @@ def test_sub_pd_index(left: "pd.Series[pd.Timestamp]") -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        assert_type(d - left, Never)
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
@@ -160,7 +161,7 @@ def test_sub_pd_series(left: "pd.Series[pd.Timestamp]") -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        _0 = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
