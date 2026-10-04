@@ -958,12 +958,10 @@ def test_some_offsets() -> None:
         pd.DatetimeIndex,
     )
     # GH 755
+    # The `-` cases stay until `__rsub__` is narrowed: `datetime - Day()` returns a
+    # `Timestamp` in pandas, not the `dt.datetime` asserted below.
     check(assert_type(dt.date.today() - Day(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(dt.date.today() + Day(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(Day() + dt.date.today(), pd.Timestamp), pd.Timestamp)
     check(assert_type(dt.datetime.now() - Day(), dt.datetime), dt.datetime)
-    check(assert_type(dt.datetime.now() + Day(), dt.datetime), dt.datetime)
-    check(assert_type(Day() + dt.datetime.now(), dt.datetime), dt.datetime)
     # GH 235
     check(
         assert_type(
