@@ -9,16 +9,14 @@
 # Regenerate (then re-add this header):
 #   python -m mypy.stubtest pandas \
 #     --mypy-config-file pyproject.toml \
-#     --ignore-missing-stub --generate-allowlist
+#     --ignore-missing-stub --ignore-disjoint-bases \
+#     --ignore-positional-only --strict-type-check-only --generate-allowlist
 #
 # Tracking: pandas-dev/pandas-stubs#1964
 pandas._config.config.describe_option
 pandas._config.config.option_context
-pandas._libs.arrays.NDArrayBacked
 pandas._libs.arrays.NDArrayBacked.__init__
 pandas._libs.arrays.NDArrayBacked.repeat
-pandas._libs.indexing.NDFrameIndexerBase
-pandas._libs.interval.Interval
 pandas._libs.interval.Interval.__init__
 pandas._libs.lib.NoDefault
 pandas._libs.lib.is_bool
@@ -28,36 +26,19 @@ pandas._libs.lib.is_integer
 pandas._libs.properties.cache_readonly.deleter
 pandas._libs.properties.cache_readonly.getter
 pandas._libs.properties.cache_readonly.setter
-pandas._libs.sparse.BlockIndex
 pandas._libs.sparse.BlockIndex.__init__
-pandas._libs.sparse.IntIndex
 pandas._libs.sparse.IntIndex.__init__
 pandas._libs.sparse.SparseIndex.__init__
 pandas._libs.tslibs.conversion.OutOfBoundsTimedelta
 pandas._libs.tslibs.nattype.NaTType.asm8
 pandas._libs.tslibs.nattype.NaTType.unit
 pandas._libs.tslibs.nattype.NaTType.value
-pandas._libs.tslibs.offsets.BaseOffset
-pandas._libs.tslibs.offsets.BusinessHour
+pandas._libs.tslibs.nattype._NatComparison
 pandas._libs.tslibs.offsets.BusinessHour.rollback
 pandas._libs.tslibs.offsets.BusinessHour.rollforward
 pandas._libs.tslibs.offsets.DateOffset
 pandas._libs.tslibs.offsets.DateOffset.__init__
-pandas._libs.tslibs.offsets.Easter
-pandas._libs.tslibs.offsets.FY5253Mixin
-pandas._libs.tslibs.offsets.FY5253Quarter
-pandas._libs.tslibs.offsets.HalfYearOffset
-pandas._libs.tslibs.offsets.LastWeekOfMonth
-pandas._libs.tslibs.offsets.MonthOffset
-pandas._libs.tslibs.offsets.QuarterEnd
-pandas._libs.tslibs.offsets.QuarterOffset
-pandas._libs.tslibs.offsets.SemiMonthOffset
-pandas._libs.tslibs.offsets.Tick
-pandas._libs.tslibs.offsets.Week
-pandas._libs.tslibs.offsets.WeekOfMonth
-pandas._libs.tslibs.offsets.WeekOfMonthMixin
 pandas._libs.tslibs.offsets.YearEnd.__new__
-pandas._libs.tslibs.offsets.YearOffset
 pandas._libs.tslibs.period.Period.__init__
 pandas._libs.tslibs.period.Period.__new__
 pandas._libs.tslibs.period.Period.asfreq
@@ -69,7 +50,6 @@ pandas._libs.tslibs.timestamps.TimeZones
 pandas._libs.tslibs.timestamps.Timestamp.__index__
 pandas._libs.tslibs.timestamps.Timestamp.__new__
 pandas._libs.tslibs.timestamps.Timestamp.astimezone
-pandas._libs.tslibs.timestamps.Timestamp.fromisoformat
 pandas._libs.tslibs.timestamps.Timestamp.fromtimestamp
 pandas._libs.tslibs.timestamps.Timestamp.replace
 pandas._libs.tslibs.timestamps.Timestamp.to_numpy
@@ -112,7 +92,6 @@ pandas._typing.CalculationMethod
 pandas._typing.CategoryDtypeArg
 pandas._typing.ColumnValue
 pandas._typing.ComplexDtypeArg
-pandas._typing.ConvertersArg
 pandas._typing.ConvertersArg.__init__
 pandas._typing.ConvertersArg.get
 pandas._typing.CovariantList
@@ -257,6 +236,7 @@ pandas._typing.WindowingEngine
 pandas._typing.WindowingEngineKwargs
 pandas._typing.WindowingRankType
 pandas._typing.XMLParsers
+pandas._typing._WindowingNumbaKwargs
 pandas._typing.np_1darray
 pandas._typing.np_1darray_anyint
 pandas._typing.np_1darray_bool
@@ -480,6 +460,11 @@ pandas.core.frame.DataFrame.truncate
 pandas.core.frame.DataFrame.tz_convert
 pandas.core.frame.DataFrame.tz_localize
 pandas.core.frame.DataFrame.where
+pandas.core.frame._AtIndexerFrame
+pandas.core.frame._GetItemHack
+pandas.core.frame._LocIndexerFrame
+pandas.core.frame._iAtIndexerFrame
+pandas.core.frame._iLocIndexerFrame
 pandas.core.generic.NDFrame.__abs__
 pandas.core.generic.NDFrame.__array__
 pandas.core.generic.NDFrame.__init__
@@ -532,6 +517,21 @@ pandas.core.indexes.accessors.PeriodIndexFieldOps
 pandas.core.indexes.accessors.Properties.__init__
 pandas.core.indexes.accessors.TimedeltaIndexProperties
 pandas.core.indexes.accessors.TimedeltaProperties.as_unit
+pandas.core.indexes.accessors._DatetimeBoolOps
+pandas.core.indexes.accessors._DatetimeFieldOps
+pandas.core.indexes.accessors._DatetimeLikeNoTZMethods
+pandas.core.indexes.accessors._DatetimeLikeOps
+pandas.core.indexes.accessors._DatetimeNoTZProperties
+pandas.core.indexes.accessors._DatetimeObjectOps
+pandas.core.indexes.accessors._DatetimeOtherOps
+pandas.core.indexes.accessors._DatetimeRoundingMethods
+pandas.core.indexes.accessors._DayLikeFieldOps
+pandas.core.indexes.accessors._FreqProperty
+pandas.core.indexes.accessors._IsLeapYearProperty
+pandas.core.indexes.accessors._MiniSeconds
+pandas.core.indexes.accessors._PeriodProperties
+pandas.core.indexes.accessors._TZProperty
+pandas.core.indexes.accessors._TimedeltaPropertiesNoRounding
 pandas.core.indexes.base.FloatNotNumpy16DtypeArg
 pandas.core.indexes.base.Index.__bool__
 pandas.core.indexes.base.Index.__new__
@@ -600,6 +600,7 @@ pandas.core.indexes.timedeltas.TimedeltaIndex
 pandas.core.indexes.timedeltas.TimedeltaIndex.__new__
 pandas.core.indexes.timedeltas.TimedeltaIndex.diff
 pandas.core.indexes.timedeltas.timedelta_range
+pandas.core.indexing._NDFrameIndexer
 pandas.core.resample.Resampler.__getattr__
 pandas.core.resample.Resampler.__init__
 pandas.core.resample.Resampler.__str__
@@ -607,6 +608,7 @@ pandas.core.resample.Resampler.first
 pandas.core.resample.Resampler.last
 pandas.core.resample.TimeGrouper.__init__
 pandas.core.resample._GroupByMixin.__init__
+pandas.core.resample._InterpolateMixin
 pandas.core.reshape.concat.DataFrameT0
 pandas.core.reshape.concat.concat
 pandas.core.reshape.merge.merge
@@ -655,6 +657,8 @@ pandas.core.series.Series.truncate
 pandas.core.series.Series.tz_convert
 pandas.core.series.Series.tz_localize
 pandas.core.series.Series.where
+pandas.core.series._LocIndexerSeries
+pandas.core.series._iLocIndexerSeries
 pandas.core.strings.accessor.StringMethods.__init__
 pandas.core.tools.datetimes.to_datetime
 pandas.core.window.ewm.ExponentialMovingWindow.__init__
