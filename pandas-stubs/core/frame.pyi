@@ -399,8 +399,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Iterable[ListLikeU | tuple[Hashable, ListLikeU] | dict[Any, Any]]
             | None
         ) = None,
-        index: Axes | None = None,
-        columns: Axes | None = None,
+        index: Axes | Mapping[HashableT1, Any] | None = None,
+        columns: Axes | Mapping[HashableT2, Any] | None = None,
         dtype: Dtype | None = None,
         copy: _bool | None = None,
     ) -> Self: ...
@@ -408,8 +408,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __new__(
         cls,
         data: Scalar,
-        index: Axes,
-        columns: Axes,
+        index: Axes | Mapping[HashableT1, Any],
+        columns: Axes | Mapping[HashableT2, Any],
         dtype: Dtype | None = None,
         copy: _bool | None = None,
     ) -> Self: ...

@@ -173,6 +173,23 @@ def test_types_init() -> None:
         pd.DataFrame,
     )
 
+    # A mapping is accepted for index and columns, its keys are used (GH1876)
+    schema = {"id": int, "value": float}
+    check(
+        assert_type(pd.DataFrame([(1, 1.2), (2, 2.3)], columns=schema), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame([(1, 1.2)], index={"r": 0}, columns=schema), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.DataFrame(0, index={1: "a"}, columns=schema), pd.DataFrame),
+        pd.DataFrame,
+    )
+
 
 def test_types_all() -> None:
     df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
