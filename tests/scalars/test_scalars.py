@@ -1462,10 +1462,12 @@ def test_timestamp_misc_methods() -> None:
         minute=21,
         second=21,
         microsecond=12,
+        nanosecond=5,
         tzinfo=dateutil.tz.UTC,
         fold=0,
     )
     check(assert_type(ts2, pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts.replace(nanosecond=5), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts.tz_localize("US/Pacific", False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts.tz_localize("US/Pacific", True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts.tz_localize(1, True), pd.Timestamp), pd.Timestamp)
