@@ -152,7 +152,7 @@ def test_iloc_getitem_list() -> None:
     check(assert_type(values_s.iloc[indices], pd.Series), pd.Series)
 
 
-def test_iloc_setitem_ndarray() -> None:
+def test_iloc_setitem_list() -> None:
     # GH 1971
     indices = [0, 1, 2, 3]
 
