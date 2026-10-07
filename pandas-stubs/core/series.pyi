@@ -182,6 +182,7 @@ from pandas._typing import (
     IndexingInt,
     IndexKeyFunc,
     IndexLabel,
+    IndexType,
     IntDtypeArg,
     InterpolateOptions,
     IntervalClosedType,
@@ -294,9 +295,7 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     @overload
     def __getitem__(self, idx: IndexingInt, /) -> S1: ...
     @overload
-    def __getitem__(
-        self, key: Index | Series | slice | np_ndarray_anyint, /
-    ) -> Series[S1]: ...
+    def __getitem__(self, key: IndexType | MaskType, /) -> Series[S1]: ...
 
     # set item
     # Keep in sync with `Series.__setitem__`
