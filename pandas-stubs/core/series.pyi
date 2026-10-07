@@ -225,6 +225,7 @@ from pandas._typing import (
     SequenceNotStr,
     SeriesByT,
     SortKind,
+    StorageOptions,
     StrDtypeArg,
     Suffixes,
     SupportsDType,
@@ -855,6 +856,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
+        storage_options: StorageOptions = ...,
         mode: Literal["a"],
     ) -> None: ...
     @overload
@@ -872,6 +874,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
+        storage_options: StorageOptions = ...,
         mode: Literal["a"],
     ) -> _str: ...
     @overload
@@ -889,6 +892,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
+        storage_options: StorageOptions = ...,
         mode: Literal["w"] = ...,
     ) -> None: ...
     @overload
@@ -906,6 +910,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
+        storage_options: StorageOptions = ...,
         mode: Literal["w"] = ...,
     ) -> _str: ...
     @final
