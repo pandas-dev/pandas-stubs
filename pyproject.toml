@@ -117,7 +117,10 @@ script = "scripts.test.run:ty_src_all"
 
 [tool.poe.tasks.pyrefly]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test.run:pyrefly_src"
+args = [
+  { name = "pyrefly_pre_release", positional = false, default = false, type = "boolean", required = false, help = "Use the latest pyrefly pre-release (off by default)" },
+]
+script = "scripts.test:pyrefly_src(pyrefly_pre_release)"
 
 [tool.poe.tasks.pyrefly_dist]
 help = "Run pyrefly on 'tests' using the installed stubs"

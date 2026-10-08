@@ -180,6 +180,17 @@ def released_mypy() -> None:
     )
 
 
+def pre_release_pyrefly() -> None:
+    cmd = [sys.executable, "-m", "pip", "install", "--pre", "--upgrade", "pyrefly"]
+    subprocess.run(cmd, check=True)
+
+
+def released_pyrefly() -> None:
+    version = _get_version_from_pyproject("pyrefly")
+    cmd = [sys.executable, "-m", "pip", "install", f"pyrefly=={version}"]
+    subprocess.run(cmd, check=True)
+
+
 def ty_src() -> None:
     cmd = ["ty", "check", "pandas-stubs", "tests", "--python-version", _PYTHON_VERSION]
     subprocess.run(cmd, check=True)
