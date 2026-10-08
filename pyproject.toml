@@ -118,7 +118,7 @@ script = "scripts.test.run:checker_src(checker='ty', all_rules=True)"
 [tool.poe.tasks.pyrefly]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
 args = [
-  { name = "pyrefly_pre_release", positional = false, default = false, type = "boolean", required = false, help = "Use the latest pyrefly pre-release (off by default)" },
+  { name = "pyrefly_pre_release", positional = false, default = false, type = "boolean", required = false, help = "Use the newest pyrefly on PyPI, pre-releases included (off by default)" },
 ]
 script = "scripts.test:pyrefly_src(pyrefly_pre_release)"
 

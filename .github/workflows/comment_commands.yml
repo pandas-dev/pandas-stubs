@@ -35,7 +35,7 @@ jobs:
               ;;
             /pyrefly_pre_release)
               echo "poe_command=pyrefly --pyrefly_pre_release" >> "${GITHUB_OUTPUT}"
-              echo "check_name=Pyrefly pre-release tests" >> "${GITHUB_OUTPUT}"
+              echo "check_name=Pyrefly latest tests" >> "${GITHUB_OUTPUT}"
               ;;
             /pyrefly_all)
               echo "poe_command=pyrefly_all" >> "${GITHUB_OUTPUT}"

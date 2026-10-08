@@ -74,5 +74,5 @@ jobs:
         os: ubuntu-latest
         python-version: '3.14'
 
-    - name: Run pyrefly tests with the latest pyrefly pre-release
+    - name: Run pyrefly tests with the newest pyrefly (pre-releases included)
       run: poetry run poe pyrefly --pyrefly_pre_release

@@ -70,7 +70,7 @@ mypy_nightly = Step(
     name="Install mypy nightly", run=run.nightly_mypy, rollback=run.released_mypy
 )
 pyrefly_pre_release = Step(
-    name="Install pyrefly pre-release",
+    name="Install the newest pyrefly (pre-releases included)",
     run=partial(run.install_latest, "pyrefly"),
     rollback=partial(run.install_floor, "pyrefly"),
 )
