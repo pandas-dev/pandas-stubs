@@ -6,6 +6,8 @@ on:
   # nightly lands at roughly 05:00-06:30, once the sdist and 57-cell wheel
   # matrix have built and uploaded to the scientific-python index. The :23
   # offset keeps clear of the top of the hour and pandas' own crons.
+  # mypy dev wheels and pyrefly pre-releases have no fixed publication time,
+  # so their jobs share this schedule.
   - cron: "23 8 * * *"
   workflow_dispatch:
 
@@ -32,3 +34,45 @@ jobs:
 
     - name: Run pytest (against pandas nightly)
       run: poetry run poe pytest --nightly
+
+  mypy_nightly:
+    if: github.repository == 'pandas-dev/pandas-stubs' || github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.14'
+
+    - name: Run mypy tests with mypy nightly
+      run: poetry run poe mypy --mypy_nightly
+
+  pyrefly_pre_release:
+    if: github.repository == 'pandas-dev/pandas-stubs' || github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.14'
+
+    - name: Run pyrefly tests with the newest pyrefly (pre-releases included)
+      run: poetry run poe pyrefly --pyrefly_pre_release

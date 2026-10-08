@@ -8,14 +8,74 @@ from typing import Final
 
 _PYTHON_VERSION: Final = "{}.{}".format(*sys.version_info[:2])
 
+_SRC: Final = {
+    "mypy": ["mypy", "pandas-stubs", "tests", "--no-incremental", "--strict"],
+    "pyright": ["pyright", "--warnings", "--pythonversion", _PYTHON_VERSION],
+    "pyrefly": [
+        "pyrefly",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--preset",
+        "strict",
+    ],
+    "ty": [
+        "ty",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+    ],
+}
 
-def mypy_src() -> None:
-    cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental", "--strict"]
+_SRC_ALL: Final = {
+    "pyrefly": [
+        "pyrefly",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--preset",
+        "all",
+    ],
+    "ty": [
+        "ty",
+        "check",
+        "pandas-stubs",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--error",
+        "all",
+    ],
+}
+
+_DIST: Final = {
+    "mypy": [
+        "mypy",
+        "tests",
+        "--no-incremental",
+        "--strict",
+        "--python-version",
+        _PYTHON_VERSION,
+    ],
+    "pyright": ["pyright", "tests", "--warnings", "--pythonversion", _PYTHON_VERSION],
+    "pyrefly": ["pyrefly", "check", "tests", "--python-version", _PYTHON_VERSION],
+    "ty": ["ty", "check", "tests", "--python-version", _PYTHON_VERSION],
+}
+
+
+def checker_src(checker: str, *, all_rules: bool = False) -> None:
+    cmd = (_SRC_ALL if all_rules else _SRC)[checker]
     subprocess.run(cmd, check=True)
 
 
-def pyright_src() -> None:
-    cmd = ["pyright", "--warnings", "--pythonversion", _PYTHON_VERSION]
+def checker_dist(checker: str) -> None:
+    cmd = _DIST[checker]
     subprocess.run(cmd, check=True)
 
 
@@ -74,33 +134,6 @@ def rename_src() -> None:
         raise FileNotFoundError("'pandas-stubs' folder does not exists.")
 
 
-def mypy_dist() -> None:
-    cmd = [
-        "mypy",
-        "tests",
-        "--no-incremental",
-        "--strict",
-        "--python-version",
-        _PYTHON_VERSION,
-    ]
-    subprocess.run(cmd, check=True)
-
-
-def pyright_dist() -> None:
-    cmd = ["pyright", "tests", "--warnings", "--pythonversion", _PYTHON_VERSION]
-    subprocess.run(cmd, check=True)
-
-
-def pyrefly_dist() -> None:
-    cmd = ["pyrefly", "check", "tests", "--python-version", _PYTHON_VERSION]
-    subprocess.run(cmd, check=True)
-
-
-def ty_dist() -> None:
-    cmd = ["ty", "check", "tests", "--python-version", _PYTHON_VERSION]
-    subprocess.run(cmd, check=True)
-
-
 def uninstall_dist() -> None:
     cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd, check=True)
@@ -113,21 +146,6 @@ def restore_src() -> None:
         raise FileNotFoundError("'_pandas-stubs' folder does not exists.")
 
 
-def nightly_pandas() -> None:
-    cmd = [
-        sys.executable,
-        "-m",
-        "pip",
-        "install",
-        "--pre",
-        "--upgrade",
-        "--extra-index-url",
-        "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
-        "pandas",
-    ]
-    subprocess.run(cmd, check=True)
-
-
 def _get_version_from_pyproject(program: str) -> str:
     """Find version of a package from the pyproject.toml file."""
     text = Path("pyproject.toml").read_text()
@@ -138,9 +156,17 @@ def _get_version_from_pyproject(program: str) -> str:
     return match.group(1)
 
 
-def released_pandas() -> None:
-    version = _get_version_from_pyproject("pandas")
-    cmd = [sys.executable, "-m", "pip", "install", f"pandas=={version}"]
+def install_floor(pkg: str) -> None:
+    version = _get_version_from_pyproject(pkg)
+    cmd = [sys.executable, "-m", "pip", "install", f"{pkg}=={version}"]
+    subprocess.run(cmd, check=True)
+
+
+def install_latest(pkg: str, *, extra_index_url: str = "") -> None:
+    cmd = [sys.executable, "-m", "pip", "install", "--pre", "--upgrade"]
+    if extra_index_url:
+        cmd += ["--extra-index-url", extra_index_url]
+    cmd.append(pkg)
     subprocess.run(cmd, check=True)
 
 
@@ -167,9 +193,7 @@ def nightly_mypy() -> None:
 
 
 def released_mypy() -> None:
-    version = _get_version_from_pyproject("mypy")
-    cmd = [sys.executable, "-m", "pip", "install", f"mypy=={version}"]
-    subprocess.run(cmd, check=True)
+    install_floor("mypy")
 
     # check for unused ignores again
     config_file = Path("pyproject.toml")
@@ -178,53 +202,6 @@ def released_mypy() -> None:
             "warn_unused_ignores = false", "warn_unused_ignores = true"
         )
     )
-
-
-def ty_src() -> None:
-    cmd = ["ty", "check", "pandas-stubs", "tests", "--python-version", _PYTHON_VERSION]
-    subprocess.run(cmd, check=True)
-
-
-def ty_src_all() -> None:
-    cmd = [
-        "ty",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
-        "--error",
-        "all",
-    ]
-    subprocess.run(cmd, check=True)
-
-
-def pyrefly_src() -> None:
-    cmd = [
-        "pyrefly",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
-        "--preset",
-        "strict",
-    ]
-    subprocess.run(cmd, check=True)
-
-
-def pyrefly_src_all() -> None:
-    cmd = [
-        "pyrefly",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
-        "--preset",
-        "all",
-    ]
-    subprocess.run(cmd, check=True)
 
 
 def type_completeness() -> None:
