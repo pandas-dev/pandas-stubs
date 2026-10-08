@@ -188,7 +188,7 @@ def test_indexslice_getitem_multiindex_columns() -> None:
         [list(range(6)), [k * 10 + 1 for k in range(6)]], columns=mic
     )
 
-    # astral-sh/ty#4695: remove when ty accepts the slice-tuple alternative on Python 3.11.
+    # TODO: astral-sh/ty#4695 remove when ty fixes the slice-tuple alternative on Python 3.11
     check(
         assert_type(  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
             df.loc[  # ty: ignore[invalid-argument-type,unused-ignore-comment,unused-ignore-comment]
