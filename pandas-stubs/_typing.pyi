@@ -138,7 +138,14 @@ _IndexIterScalar: TypeAlias = (
 )
 # This is wider than what is in pandas
 Scalar: TypeAlias = (
-    _IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
+    _IndexIterScalar
+    | complex
+    | np.bool_
+    | np.integer
+    | np.floating
+    | np.complexfloating
+    | Period
+    | Interval
 )
 ScalarOrNA: TypeAlias = Scalar | NAType | NaTType | None
 IntStrT = TypeVar("IntStrT", int, str)

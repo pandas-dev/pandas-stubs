@@ -22,7 +22,7 @@ from pandas._typing import (
 _Downcast: TypeAlias = Literal["integer", "signed", "unsigned", "float"] | None
 
 @overload
-def to_numeric(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+def to_numeric(  # type: ignore[overload-overlap]
     arg: Scalar,
     errors: RaiseCoerce = "raise",
     downcast: _Downcast = None,
