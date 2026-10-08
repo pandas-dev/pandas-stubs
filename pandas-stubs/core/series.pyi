@@ -2470,6 +2470,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Never: ...
     @overload
     def __floordiv__(
+        self: Series[Never], other: timedelta | np.timedelta64, /
+    ) -> Series[int]: ...
+    @overload
+    def __floordiv__(
         self: Series[int] | Series[float], other: np_ndarray_complex | np_ndarray_td, /
     ) -> Never: ...
     @overload
@@ -2538,6 +2542,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = 0,
     ) -> Never: ...
+    @overload
+    def floordiv(
+        self: Series[Never],
+        other: timedelta | np.timedelta64,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
+    ) -> Series[int]: ...
     @overload
     def floordiv(
         self: Series[Never],
