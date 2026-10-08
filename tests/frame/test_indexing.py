@@ -188,8 +188,25 @@ def test_indexslice_getitem_multiindex_columns() -> None:
         [list(range(6)), [k * 10 + 1 for k in range(6)]], columns=mic
     )
 
-    check(assert_type(df.loc[:, pd.IndexSlice["a", :]], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.loc[:, pd.IndexSlice[:, 1]], pd.DataFrame), pd.DataFrame)
+    # TODO: astral-sh/ty#4695 remove when ty fixes the slice-tuple alternative on Python 3.11
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+            df.loc[  # ty: ignore[invalid-argument-type,unused-ignore-comment,unused-ignore-comment]
+                :, pd.IndexSlice["a", :]
+            ],
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+            df.loc[  # ty: ignore[invalid-argument-type,unused-ignore-comment,unused-ignore-comment]
+                :, pd.IndexSlice[:, 1]
+            ],
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(df.loc[:, pd.IndexSlice["a", 3]], pd.DataFrame | pd.Series),
         pd.Series,
