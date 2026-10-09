@@ -7,6 +7,7 @@ from typing import (
     Literal,
     assert_type,
 )
+from zoneinfo import ZoneInfo
 
 import dateutil.tz
 import numpy as np
@@ -1467,7 +1468,13 @@ def test_timestamp_misc_methods() -> None:
         fold=0,
     )
     check(assert_type(ts2, pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts.replace(nanosecond=5), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(
+            ts.replace(2027, 2, 2, 12, 21, 21, 12, 5, ZoneInfo("Antarctica/Palmer"), 0),
+            pd.Timestamp,
+        ),
+        pd.Timestamp,
+    )
     check(assert_type(ts.tz_localize("US/Pacific", False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts.tz_localize("US/Pacific", True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts.tz_localize(1, True), pd.Timestamp), pd.Timestamp)
