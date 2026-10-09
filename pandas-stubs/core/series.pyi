@@ -30,7 +30,6 @@ from typing import (
     Literal,
     Never,
     NoReturn,
-    Protocol,
     Self,
     TypeAlias,
     final,
@@ -78,7 +77,10 @@ from pandas._stubs_only import (
     Supports_ProtoRMul,
     Supports_ProtoRTrueDiv,
     Supports_ProtoTrueDiv,
-    T_co,
+    SupportsSelfAdd,
+    SupportsSelfMul,
+    SupportsSelfSub,
+    SupportsTruedivInt,
     T_contra,
 )
 from pandas.core.api import (
@@ -272,22 +274,6 @@ from pandas.core.dtypes.dtypes import (
 from pandas.plotting import PlotAccessor
 
 MaskTypeNoList: TypeAlias = Series[bool] | np_ndarray_bool
-
-@type_check_only
-class _SupportsAdd(Protocol[T_co]):
-    def __add__(self, value: Self, /) -> T_co: ...
-
-@type_check_only
-class SupportsSelfSub(Protocol[T_co]):
-    def __sub__(self, x: Self, /) -> T_co: ...
-
-@type_check_only
-class SupportsSelfMul(Protocol[T_co]):
-    def __mul__(self, value: Self, /) -> T_co: ...
-
-@type_check_only
-class SupportsTruedivInt(Protocol[T_co]):
-    def __truediv__(self, value: int, /) -> T_co: ...
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -4783,7 +4769,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> float: ...
     @overload
     def sum(
-        self: Iterable[_SupportsAdd[_T]],
+        self: Iterable[SupportsSelfAdd[_T]],
         *,
         axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
