@@ -34,6 +34,7 @@ TypeChecker = Literal["mypy", "pyright", "pyrefly", "ty"]
 
 
 def run_tests(
+    *,
     src: bool = False,
     dist: bool = False,
     type_checker: TypeChecker | None = None,
@@ -56,7 +57,15 @@ def run_tests(
     run_job(steps)
 
 
-def stubtest(allowlist: str, check_missing: bool, nightly: bool) -> None:
+def stubtest(
+    allowlist: str = "",
+    *,
+    check_missing: bool = False,
+    nightly: bool = False,
+    no_allowlist: bool = False,
+) -> None:
+    if no_allowlist:
+        allowlist = ""
     stubtest = dataclasses.replace(
         _step.stubtest,
         run=partial(
@@ -69,7 +78,7 @@ def stubtest(allowlist: str, check_missing: bool, nightly: bool) -> None:
     run_job([*steps, stubtest])
 
 
-def pytest(nightly: bool) -> None:
+def pytest(*, nightly: bool) -> None:
     setup_steps = []
     pytest_step = _step.pytest
     if nightly:
@@ -77,6 +86,6 @@ def pytest(nightly: bool) -> None:
     run_job([*setup_steps, pytest_step])
 
 
-def mypy_src(mypy_nightly: bool) -> None:
+def mypy_src(*, mypy_nightly: bool) -> None:
     steps = [_step.mypy_nightly] if mypy_nightly else []
     run_job([*steps, _step.mypy_src])

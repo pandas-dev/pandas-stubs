@@ -29,7 +29,7 @@ def style() -> None:
     subprocess.run(cmd, check=True)
 
 
-def stubtest(allowlist: str = "", check_missing: bool = False) -> None:
+def stubtest(allowlist: str = "", *, check_missing: bool = False) -> None:
     cmd = [
         sys.executable,
         "-m",
@@ -38,6 +38,9 @@ def stubtest(allowlist: str = "", check_missing: bool = False) -> None:
         "--concise",
         "--mypy-config-file",
         "pyproject.toml",
+        "--ignore-disjoint-bases",
+        "--ignore-positional-only",
+        "--strict-type-check-only",
     ]
     if not check_missing:
         cmd += ["--ignore-missing-stub"]

@@ -10,7 +10,6 @@ from typing import (
     Concatenate,
     Generic,
     Self,
-    TypeAlias,
     overload,
 )
 
@@ -85,8 +84,6 @@ class Window(BaseWindow[NDFrameT]):
     def std(
         self, ddof: int = ..., numeric_only: bool = False, **kwargs: Any
     ) -> NDFrameT: ...
-
-_PipeCallable: TypeAlias = Callable[Concatenate[NDFrameT, P], Any]
 
 class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def count(self, numeric_only: bool = ...) -> NDFrameT: ...
@@ -179,12 +176,15 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def nunique(self, numeric_only: bool = False) -> NDFrameT: ...
     @overload
     def pipe(
-        self, func: _PipeCallable[NDFrameT, P], *args: P.args, **kwargs: P.kwargs
+        self,
+        func: Callable[Concatenate[NDFrameT, P], Any],
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> NDFrameT: ...
     @overload
     def pipe(
         self,
-        func: tuple[_PipeCallable[NDFrameT, P], str],
+        func: tuple[Callable[Concatenate[NDFrameT, P], Any], str],
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> NDFrameT: ...

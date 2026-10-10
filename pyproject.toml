@@ -94,7 +94,7 @@ script = "scripts.test:run_tests(dist=True)"
 
 [tool.poe.tasks.pytest]
 help = "Run pytest"
-script = "scripts.test:pytest(nightly)"
+script = "scripts.test:pytest(nightly=nightly)"
 args = [
   { name = "nightly", positional = false, default = false, type = "boolean", required = false, help = "Use pandas nightly (off by default)" },
 ]
@@ -140,19 +140,20 @@ help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
 args = [
   { name = "mypy_nightly", positional = false, default = false, type = "boolean", required = false, help = "Use mypy nightly (off by default)" },
 ]
-script = "scripts.test:mypy_src(mypy_nightly)"
+script = "scripts.test:mypy_src(mypy_nightly=mypy_nightly)"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='mypy')"
 
 [tool.poe.tasks.stubtest]
-script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
+script = "scripts.test:stubtest(allowlist, check_missing=check_missing, nightly=nightly, no_allowlist=no_allowlist)"
 help = "Run stubtest to compare the installed stubs against pandas"
 args = [
-  { name = "allowlist", positional = true, default = "", required = false, help = "Path to an allowlist (optional)" },
+  { name = "allowlist", positional = true, default = "scripts/test/stubtest-allowlist.txt", required = false, help = "Path to an allowlist (defaults to the committed burn-down baseline in this repository)" },
   { name = "check_missing", positional = false, default = false, type = "boolean", required = false, help = "Report errors when the stubs are incomplete (off by default)" },
   { name = "nightly", positional = false, default = false, type = "boolean", required = false, help = "Compare against pandas nightly (off by default)" },
+  { name = "no_allowlist", positional = false, default = false, type = "boolean", required = false, help = "Run without an allowlist: report every mismatch (off by default)" },
 ]
 
 [tool.poe.tasks.type_completeness]
@@ -200,7 +201,6 @@ ignore = [
   "CPY001", # https://docs.astral.sh/ruff/rules/missing-copyright-notice/
   "D",      # https://docs.astral.sh/ruff/rules/#pydocstyle-d
   "E501",   # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
-  "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
   "I",      # handled by isort
   "TRY003", # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
 ]
@@ -211,6 +211,7 @@ ignore = [
   # The following rules are ignored permanently for good reasons
   "A002",   # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
   "ANN401", # https://docs.astral.sh/ruff/rules/any-type/
+  "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
   "FIX002", # https://docs.astral.sh/ruff/rules/line-contains-todo/
   "N",      # https://docs.astral.sh/ruff/rules/#pep8-naming-n
   "TD002",  # https://docs.astral.sh/ruff/rules/missing-todo-author/
@@ -234,6 +235,7 @@ ignore = [
   "B905",    # https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/
   "E731",    # https://docs.astral.sh/ruff/rules/lambda-assignment/
   "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
+  "FBT",     # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
   "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
   "PD",      # Pandas is here
   "PLC0415", # https://docs.astral.sh/ruff/rules/import-outside-top-level/
