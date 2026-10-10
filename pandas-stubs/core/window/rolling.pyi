@@ -23,15 +23,15 @@ from pandas.core.indexers import BaseIndexer
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
-    AggFuncTypeBase,
-    AggFuncTypeFrame,
-    AggFuncTypeSeriesToFrame,
     AxisInt,
     CalculationMethod,
     IntervalClosedType,
     NDFrameT,
     P,
     QuantileInterpolation,
+    WindowAggFuncTypeBase,
+    WindowAggFuncTypeFrame,
+    WindowAggFuncTypeSeriesToFrame,
     WindowingEngine,
     WindowingEngineKwargs,
     WindowingRankType,
@@ -51,23 +51,23 @@ class BaseWindow(Generic[NDFrameT]):
     def __getattr__(self, attr: str, /) -> Self: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
     @overload
-    def aggregate(  # pyright: ignore[reportOverlappingOverload]
+    def aggregate(
         self: BaseWindow[Series],
-        func: AggFuncTypeBase[...],
+        func: WindowAggFuncTypeBase[...],
         *args: Any,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self: BaseWindow[Series],
-        func: AggFuncTypeSeriesToFrame[..., Any],
+        func: WindowAggFuncTypeSeriesToFrame[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: BaseWindow[DataFrame],
-        func: AggFuncTypeFrame[..., Any],
+        func: WindowAggFuncTypeFrame[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
