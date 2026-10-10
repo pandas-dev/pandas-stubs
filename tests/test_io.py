@@ -372,13 +372,9 @@ def test_hdfstore(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
     store = HDFStore(path_str, model="w")
     check(assert_type(store, HDFStore), HDFStore)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        r"The default value of 'track_times' in HDFStore.put will change from True to False in a future version. Pass track_times=False explicitly to silence this warning and get deterministic HDF5 files.",
-        lower="3.0.99",
-        upper="3.1.99",
-    ):
-        check(assert_type(store.put("df", DF, "table"), None), type(None))
+    check(
+        assert_type(store.put("df", DF, "table", track_times=False), None), type(None)
+    )
     check(assert_type(store.append("df2", DF, "table"), None), type(None))
     check(assert_type(store.keys(), list[str]), list)
     check(assert_type(store.info(), str), str)
@@ -1789,9 +1785,12 @@ def test_sqlalchemy_selectable(tmp_path: Path) -> None:
             __tablename__ = "part"
             quantity = sqlalchemy.Column(sqlalchemy.Integer)
 
-        Session = sqlalchemy.orm.sessionmaker(engine)
-        with Session() as session:
-            pd.read_sql(session.query(Temp.quantity).statement, session.connection())
+        check(
+            assert_type(
+                pd.read_sql(sqlalchemy.select(Temp.quantity), engine), DataFrame
+            ),
+            DataFrame,
+        )
 
 
 def test_sqlalchemy_text(tmp_path: Path) -> None:

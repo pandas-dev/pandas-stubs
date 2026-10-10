@@ -143,6 +143,24 @@ def test_series_multiindex_getitem() -> None:
     _s1: pd.Series = s["a", :]
 
 
+def test_iloc_getitem_list() -> None:
+    # GH 1971
+    indices = [0, 1, 2, 3]
+
+    values_s = pd.Series(np.arange(10), name="a")
+
+    check(assert_type(values_s.iloc[indices], pd.Series), pd.Series)
+
+
+def test_iloc_setitem_list() -> None:
+    # GH 1971
+    indices = [0, 1, 2, 3]
+
+    values_s = pd.Series(np.arange(10), name="a")
+
+    values_s.iloc[indices] = -1
+
+
 def test_iloc_getitem_ndarray() -> None:
     # GH 85
     # GH 86

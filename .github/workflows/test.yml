@@ -26,7 +26,6 @@ jobs:
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
     permissions:
       contents: read
-      actions: write
 
     steps:
       - uses: actions/checkout@v7

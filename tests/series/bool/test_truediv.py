@@ -26,21 +26,21 @@ def test_truediv_py_scalar(left: "pd.Series[bool]") -> None:
     b, i, f, c = True, 1, 1.0, 1j
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: python/mypy#20061
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
         _00 = left / b  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left / i, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: python/mypy#20061
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
         _10 = b / left  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: python/mypy#20061
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
         left.truediv(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(f), "pd.Series[float]"), pd.Series, np.floating)
@@ -51,14 +51,14 @@ def test_truediv_py_scalar(left: "pd.Series[bool]") -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: python/mypy#20061
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
         left.div(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.div(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: python/mypy#20061
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
         left.rtruediv(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rtruediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(f), "pd.Series[float]"), pd.Series, np.floating)
@@ -69,7 +69,7 @@ def test_truediv_py_scalar(left: "pd.Series[bool]") -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: python/mypy#20061
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
         left.rdiv(b)  # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rdiv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rdiv(f), "pd.Series[float]"), pd.Series, np.floating)
@@ -83,14 +83,14 @@ def test_truediv_py_sequence(left: "pd.Series[bool]") -> None:
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: python/mypy#20061
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
         _00 = left / b  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left / i, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # TODO: python/mypy#20061
+        # TODO: python/mypy#20061, facebook/pyrefly#5089
         _10 = b / left  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)

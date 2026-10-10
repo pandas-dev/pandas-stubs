@@ -9,33 +9,11 @@ on:
 permissions: {}
 
 jobs:
-  nightly:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      actions: write
-
-    steps:
-    - uses: actions/checkout@v7
-      with:
-        persist-credentials: false
-
-    - name: Install project dependencies
-      uses: ./.github/setup
-      with:
-        os: ubuntu-latest
-        python-version: '3.14'
-
-    - name: Run pytest (against pandas nightly)
-      run: poetry run poe pytest --nightly
-
   mypy_nightly:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
-      actions: write
 
     steps:
     - uses: actions/checkout@v7

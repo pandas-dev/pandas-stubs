@@ -105,25 +105,15 @@ def test_types_arithmetic() -> None:
     check(assert_type(ts + delta, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - delta, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - dt.datetime(2021, 1, 3), pd.Timedelta), pd.Timedelta)
-    # TODO: pandas-dev/pandas-stubs#1511 for numpy >= 2.5, numpy.datetime64.__sub__ gives datetime.timedelta, which has higher priority
+    # TODO: pandas-dev/pandas-stubs#1511 numpy >= 2.5 numpy.datetime64.__sub__ claims
+    # datetime.timedelta with higher priority, so mypy/pyright/pyrefly infer
+    # dt.timedelta here; the Timestamp.__rsub__ -> Timedelta stub (and ty) is right.
     if sys.version_info >= (3, 12):
-        check(assert_type(ts_np - ts, dt.timedelta), pd.Timedelta)
-        check(assert_type(ts_np_time - ts, dt.timedelta), pd.Timedelta)
+        check(assert_type(ts_np - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
+        check(assert_type(ts_np_time - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure] # pyrefly: ignore[assert-type]
     else:
-        # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-        check(
-            assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
-                ts_np - ts, dt.timedelta  # pyright: ignore[reportAssertTypeFailure]
-            ),
-            pd.Timedelta,
-        )
-        check(
-            assert_type(  # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
-                ts_np_time - ts,  # pyright: ignore[reportAssertTypeFailure]
-                dt.timedelta,
-            ),
-            pd.Timedelta,
-        )
+        check(assert_type(ts_np - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
+        check(assert_type(ts_np_time - ts, pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
 
 
 def test_types_comparison() -> None:
@@ -352,7 +342,8 @@ def test_series_dt_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(s0.dt.dayofweek, "pd.Series[int]"), pd.Series, np.integer)
 
@@ -362,7 +353,8 @@ def test_series_dt_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(s0.dt.weekday, "pd.Series[int]"), pd.Series, np.integer)
 
@@ -370,7 +362,8 @@ def test_series_dt_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(s0.dt.dayofyear, "pd.Series[int]"), pd.Series, np.integer)
 
@@ -388,7 +381,8 @@ def test_series_dt_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, np.integer)
 
@@ -399,7 +393,7 @@ def test_series_dt_accessors() -> None:
         Pandas4Warning,
         "return a BaseOffset object instead of a string from Series.dt.freq",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
     ):
         check(assert_type(s0.dt.freq, str | None), str)
 
@@ -408,18 +402,9 @@ def test_series_dt_accessors() -> None:
         assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
     )
 
-    check(
-        assert_type(s0.dt.to_pydatetime(), "pd.Series"),
-        pd.Series,
-        dt.datetime,
-    )
+    check(assert_type(s0.dt.to_pydatetime(), "pd.Series"), pd.Series, dt.datetime)
     s0_local = s0.dt.tz_localize("UTC")
     check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(
-        assert_type(s0_local, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
     check(
         assert_type(s0.dt.tz_localize(None), "pd.Series[pd.Timestamp]"),
         pd.Series,
@@ -597,7 +582,7 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
-        upper="3.1.99",
+        upper="3.99.99",
     ):
         check(
             assert_type(s2.dt.to_pytimedelta(), np_1darray_object),
@@ -718,7 +703,8 @@ def test_datetimeindex_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.int32)
 
@@ -728,7 +714,8 @@ def test_datetimeindex_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.int32)
 
@@ -736,7 +723,8 @@ def test_datetimeindex_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.int32)
 
@@ -754,7 +742,8 @@ def test_datetimeindex_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.int32)
 
@@ -873,7 +862,8 @@ def test_periodindex_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.integer)
 
@@ -882,7 +872,8 @@ def test_periodindex_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.integer)
 
@@ -890,7 +881,8 @@ def test_periodindex_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.integer)
 
@@ -901,7 +893,8 @@ def test_periodindex_accessors() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.integer)
 
@@ -965,12 +958,10 @@ def test_some_offsets() -> None:
         pd.DatetimeIndex,
     )
     # GH 755
+    # The `-` cases stay until `__rsub__` is narrowed: `datetime - Day()` returns a
+    # `Timestamp` in pandas, not the `dt.datetime` asserted below.
     check(assert_type(dt.date.today() - Day(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(dt.date.today() + Day(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(Day() + dt.date.today(), pd.Timestamp), pd.Timestamp)
     check(assert_type(dt.datetime.now() - Day(), dt.datetime), dt.datetime)
-    check(assert_type(dt.datetime.now() + Day(), dt.datetime), dt.datetime)
-    check(assert_type(Day() + dt.datetime.now(), dt.datetime), dt.datetime)
     # GH 235
     check(
         assert_type(

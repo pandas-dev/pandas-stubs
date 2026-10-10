@@ -280,7 +280,8 @@ def test_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(arr.dayofweek, np_1darray_int32), np_1darray_int32, np.int32)
 
@@ -288,7 +289,8 @@ def test_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(arr.weekday, np_1darray_int32), np_1darray_int32, np.int32)
 
@@ -296,9 +298,13 @@ def test_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(assert_type(arr.dayofyear, np_1darray_int32), np_1darray_int32, np.int32)
+
+    check(assert_type(arr.day_of_week, np_1darray_int32), np_1darray_int32, np.int32)
+    check(assert_type(arr.day_of_year, np_1darray_int32), np_1darray_int32, np.int32)
 
     check(assert_type(arr.quarter, np_1darray_int32), np_1darray_int32, np.int32)
     check(assert_type(arr.days_in_month, np_1darray_int32), np_1darray_int32, np.int32)
@@ -307,7 +313,8 @@ def test_properties() -> None:
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
         lower="3.0.99",
-        upper="3.1.99",
+        upper="3.99.99",
+        upper_exception=AttributeError,
     ):
         check(
             assert_type(arr.daysinmonth, np_1darray_int32), np_1darray_int32, np.int32
