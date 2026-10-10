@@ -4634,3 +4634,39 @@ def test_frame_pipe() -> None:
         pd.DataFrame,
     )
     check(assert_type(df.expanding().pipe(func_e, k=2), pd.DataFrame), pd.DataFrame)
+
+
+def test_flexible_comparisons_scalar() -> None:
+    """Test DataFrame flexible comparison methods accept scalar values."""
+    df_str = pd.DataFrame({"A": ["foo", "bar"]})
+    check(assert_type(df_str.eq("foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.ne("foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.lt("m"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.le("m"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.gt("m"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.ge("m"), pd.DataFrame), pd.DataFrame)
+
+    df_num = pd.DataFrame({"A": [1, 2], "B": [3, 4]})
+    check(assert_type(df_num.eq(1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_num.gt(1.5), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_num.le(True), pd.DataFrame), pd.DataFrame)
+
+    ts = pd.Timestamp("2026-01-01")
+    df_ts = pd.DataFrame({"t": [ts]})
+    check(assert_type(df_ts.lt(ts), pd.DataFrame), pd.DataFrame)
+
+    td = pd.Timedelta(days=1)
+    df_td = pd.DataFrame({"d": [td]})
+    check(assert_type(df_td.ge(td), pd.DataFrame), pd.DataFrame)
+
+    dt = datetime.datetime(2026, 1, 1)
+    check(assert_type(df_ts.ne(dt), pd.DataFrame), pd.DataFrame)
+
+    # list-like and DataFrame operands remain supported
+    df = pd.DataFrame({"A": ["foo", "bar"], "B": [1, 2]})
+    check(assert_type(df.eq(["foo", 1]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.eq(df), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.ne(pd.Series(["x", "y"])), pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = df_num.eq(object())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
