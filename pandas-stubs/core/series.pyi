@@ -1486,25 +1486,47 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def shift(
         self,
-        periods: int | Sequence[int] = ...,
+        periods: int = ...,
         freq: BaseOffset | timedelta | _str | None = None,
         axis: Axis = 0,
     ) -> Series: ...
     @overload
     def shift(
         self,
-        periods: int | Sequence[int] = ...,
+        periods: int = ...,
         axis: Axis = 0,
         fill_value: Scalar | NAType | None = ...,
     ) -> Series: ...
     @overload
     def shift(
         self,
-        periods: int | Sequence[int] = ...,
+        periods: int = ...,
         freq: None = None,
         axis: Axis = 0,
         fill_value: None = None,
     ) -> Series: ...
+    @overload
+    def shift(
+        self,
+        periods: Sequence[int],
+        freq: BaseOffset | timedelta | _str | None = None,
+        axis: Axis = 0,
+    ) -> DataFrame: ...
+    @overload
+    def shift(
+        self,
+        periods: Sequence[int],
+        axis: Axis = 0,
+        fill_value: Scalar | NAType | None = ...,
+    ) -> DataFrame: ...
+    @overload
+    def shift(
+        self,
+        periods: Sequence[int],
+        freq: None = None,
+        axis: Axis = 0,
+        fill_value: None = None,
+    ) -> DataFrame: ...
     def info(
         self,
         verbose: bool | None = ...,
