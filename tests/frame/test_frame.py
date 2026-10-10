@@ -2294,9 +2294,9 @@ def test_types_aggregate() -> None:
     check(assert_type(df.aggregate({"A": "mean"}), pd.Series), pd.Series)
     check(assert_type(df.aggregate({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        df.aggregate("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
-        df.aggregate({"A": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
+    # aggregate resolves a string `func` via getattr, so the set of valid
+    # strings is open-ended and not limited to reduction kernels.
+    check(assert_type(df.aggregate("memory_usage"), pd.Series), pd.Series)
 
 
 def test_types_transform() -> None:
@@ -2313,9 +2313,13 @@ def test_types_transform() -> None:
         assert_type(df.transform({"A": [abs, np.sqrt], "B": abs}), pd.DataFrame),
         pd.DataFrame,
     )
-    if TYPE_CHECKING_INVALID_USAGE:
-        df.transform("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type] # pyrefly: ignore[bad-argument-type]
-        df.transform({"A": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type] # pyrefly: ignore[bad-assignment]
+    # transform resolves a string `func` via getattr, like aggregate, so
+    # these are not restricted to a closed set of kernels.
+    check(assert_type(df.transform("round"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform("clip"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform("astype", 0, "float64"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform("add", 0, 1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform("interpolate"), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_describe() -> None:

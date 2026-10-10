@@ -340,9 +340,10 @@ def test_types_groupby_agg() -> None:
     )
     check(assert_type(df.groupby("col1").agg({0: "sum"}), pd.DataFrame), pd.DataFrame)
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        df.groupby("col1").agg("random_func")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
-        df.groupby("col1").agg({"col2": "random_func"})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
+    # GroupBy.aggregate resolves a string `func` via getattr, so the set of
+    # valid strings is open-ended, unlike GroupBy.transform which validates
+    # against a closed list (see TransformReductionListType below).
+    check(assert_type(df.groupby("col1").agg("describe"), pd.DataFrame), pd.DataFrame)
 
     named_agg = pd.NamedAgg(column="col2", aggfunc="max")
     check(
