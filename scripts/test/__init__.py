@@ -80,3 +80,8 @@ def pytest(nightly: bool) -> None:
 def mypy_src(mypy_nightly: bool) -> None:
     steps = [_step.mypy_nightly] if mypy_nightly else []
     run_job([*steps, _step.mypy_src])
+
+
+def pyrefly_src(pyrefly_pre_release: bool) -> None:
+    steps = [_step.pyrefly_pre_release] if pyrefly_pre_release else []
+    run_job([*steps, _step.pyrefly_src])
