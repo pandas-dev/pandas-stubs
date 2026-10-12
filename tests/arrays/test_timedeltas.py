@@ -11,7 +11,6 @@ import pandas as pd
 from pandas.api.typing.aliases import TimeUnit
 from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
-import pytest
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs.offsets import BaseOffset
@@ -351,25 +350,33 @@ def test_timedelta_array_size() -> None:
     check(assert_type(result, int), int)
 
 
-@pytest.mark.parametrize("freq", ["D", Day(), None])
-def test_timedelta_array_freq(freq: str | BaseOffset | None) -> None:
+def test_timedelta_array_freq() -> None:
     """Test freq property for TimedeltaArray."""
     idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
     arr = pd.array(idx)
 
     if PD_LTE_31:
+
+        def get_freq(array: TimedeltaArray) -> BaseOffset | None:
+            return assert_type(array.freq, BaseOffset | None)
+
         result = arr.freq
         check(assert_type(result, BaseOffset | None), Day)
         assert result == Day()
 
-        arr.freq = freq
-        result = arr.freq
-        assert_type(result, BaseOffset | None)
-        if freq is None:
-            assert result is None
-        else:
-            check(result, Day)
-            assert result == Day()
+        arr.freq = "D"
+        result = get_freq(arr)
+        check(result, Day)
+        assert result == Day()
+
+        arr.freq = Day()
+        result = get_freq(arr)
+        check(result, Day)
+        assert result == Day()
+
+        arr.freq = None
+        result = get_freq(arr)
+        assert result is None
 
 
 def test_timedelta_array_freqstr() -> None:
