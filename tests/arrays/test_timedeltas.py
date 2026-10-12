@@ -360,8 +360,7 @@ def test_timedelta_array_freq() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="D"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, BaseOffset | None), Day)
+        check(assert_type(arr.freq, BaseOffset | None), Day)
 
 
 def test_timedelta_array_freq_two_hours() -> None:
@@ -369,8 +368,7 @@ def test_timedelta_array_freq_two_hours() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="2h"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, BaseOffset | None), Hour)
+        check(assert_type(arr.freq, BaseOffset | None), Hour)
 
 
 def test_timedelta_array_freq_hour() -> None:
@@ -378,8 +376,7 @@ def test_timedelta_array_freq_hour() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="h"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, BaseOffset | None), Hour)
+        check(assert_type(arr.freq, BaseOffset | None), Hour)
 
 
 def test_timedelta_array_freq_minute() -> None:
@@ -387,8 +384,7 @@ def test_timedelta_array_freq_minute() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="min"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, BaseOffset | None), Minute)
+        check(assert_type(arr.freq, BaseOffset | None), Minute)
 
 
 def test_timedelta_array_freq_second() -> None:
@@ -396,8 +392,7 @@ def test_timedelta_array_freq_second() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="s"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, BaseOffset | None), Second)
+        check(assert_type(arr.freq, BaseOffset | None), Second)
 
 
 def test_timedelta_array_freq_millisecond() -> None:
@@ -405,8 +400,7 @@ def test_timedelta_array_freq_millisecond() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="ms"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, BaseOffset | None), Milli)
+        check(assert_type(arr.freq, BaseOffset | None), Milli)
 
 
 def test_timedelta_array_freq_microsecond() -> None:
@@ -414,8 +408,7 @@ def test_timedelta_array_freq_microsecond() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="us"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, BaseOffset | None), Micro)
+        check(assert_type(arr.freq, BaseOffset | None), Micro)
 
 
 def test_timedelta_array_freq_nanosecond() -> None:
@@ -423,8 +416,7 @@ def test_timedelta_array_freq_nanosecond() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="ns"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, BaseOffset | None), Nano)
+        check(assert_type(arr.freq, BaseOffset | None), Nano)
 
 
 def test_timedelta_array_freq_setter() -> None:
@@ -435,16 +427,13 @@ def test_timedelta_array_freq_setter() -> None:
         alias = arr
 
         arr.freq = "D"
-        result = alias.freq
-        check(assert_type(result, BaseOffset | None), Day)
+        check(assert_type(alias.freq, BaseOffset | None), Day)
 
         arr.freq = Day()
-        result = alias.freq
-        check(assert_type(result, BaseOffset | None), Day)
+        check(assert_type(alias.freq, BaseOffset | None), Day)
 
         arr.freq = None
-        result = alias.freq
-        check(assert_type(result, BaseOffset | None), type(None))
+        check(assert_type(alias.freq, BaseOffset | None), type(None))
 
 
 def test_timedelta_array_freqstr() -> None:
@@ -452,8 +441,7 @@ def test_timedelta_array_freqstr() -> None:
     arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="D"))
 
     if PD_LTE_31:
-        result = arr.freqstr
-        check(assert_type(result, str | None), str)
+        check(assert_type(arr.freqstr, str | None), str)
 
 
 def test_timedelta_array_min() -> None:
