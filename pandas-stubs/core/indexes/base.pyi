@@ -53,6 +53,7 @@ from pandas._stubs_only import (
     Supports_ProtoRTrueDiv,
     Supports_ProtoSub,
     Supports_ProtoTrueDiv,
+    SupportsSelfSub,
     T_contra,
 )
 from pandas.core.arrays.boolean import (
@@ -69,10 +70,7 @@ from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.series import (
-    Series,
-    SupportsSelfSub,
-)
+from pandas.core.series import Series
 from pandas.core.strings.accessor import StrDescriptor
 from typing_extensions import override
 

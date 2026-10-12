@@ -15,6 +15,7 @@ from typing import (
     Generic,
     Literal,
     Protocol,
+    Self,
     TypeAlias,
     overload,
     type_check_only,
@@ -211,6 +212,22 @@ Orderables: TypeAlias = OrderableScalars | OrderableTimes
 OrderableScalarT = TypeVar("OrderableScalarT", bound=OrderableScalars)
 OrderableTimesT = TypeVar("OrderableTimesT", bound=OrderableTimes)
 OrderableT = TypeVar("OrderableT", bound=Orderables, default=Any)
+
+@type_check_only
+class SupportsSelfAdd(Protocol[T_co]):
+    def __add__(self, value: Self, /) -> T_co: ...
+
+@type_check_only
+class SupportsSelfSub(Protocol[T_co]):
+    def __sub__(self, x: Self, /) -> T_co: ...
+
+@type_check_only
+class SupportsSelfMul(Protocol[T_co]):
+    def __mul__(self, value: Self, /) -> T_co: ...
+
+@type_check_only
+class SupportsTruedivInt(Protocol[T_co]):
+    def __truediv__(self, value: int, /) -> T_co: ...
 
 @type_check_only
 class ElementOpsMixin(Generic[S2]):

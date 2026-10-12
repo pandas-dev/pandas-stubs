@@ -46,6 +46,7 @@ from pandas._stubs_only import (
     PivotTableColumnsTypes,
     PivotTableIndexTypes,
     PivotTableValuesTypes,
+    SupportsSelfMul,
 )
 from pandas.core.arraylike import OpsMixin
 from pandas.core.base import IndexOpsMixin
@@ -67,10 +68,7 @@ from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPriva
 from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
-from pandas.core.series import (
-    Series,
-    SupportsSelfMul,
-)
+from pandas.core.series import Series
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
