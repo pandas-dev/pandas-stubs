@@ -167,6 +167,7 @@ class Timestamp(datetime, SupportsIndex):
         minute: int | None = None,
         second: int | None = None,
         microsecond: int | None = None,
+        nanosecond: int | None = None,
         tzinfo: _tzinfo | None = None,
         fold: Literal[0, 1] | None = None,
     ) -> Timestamp: ...
