@@ -6,6 +6,8 @@ from typing import (
 import numpy as np
 import pandas as pd
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
@@ -67,10 +69,17 @@ def test_agg_complex() -> None:
     check(assert_type(series, "pd.Series[complex]"), pd.Series, np.complex128)
 
     check(assert_type(series.mean(), complex), np.complex128)
-    with pytest_warns_bounded(
-        np.exceptions.ComplexWarning,
-        r"Casting complex values to real discards the imaginary part",
-        upper="3.0.99",
+    with (
+        pytest_warns_bounded(
+            np.exceptions.ComplexWarning,
+            r"Casting complex values to real discards the imaginary part",
+            upper="3.0.99",
+        ),
+        pytest_warns_bounded(
+            Pandas4Warning,
+            r"The median of complex data is deprecated",
+            lower="3.1.99",
+        ),
     ):
         check(
             assert_type(series.median(), float),
