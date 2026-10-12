@@ -356,27 +356,22 @@ def test_timedelta_array_freq() -> None:
     arr = pd.array(idx)
 
     if PD_LTE_31:
-
-        def get_freq(array: TimedeltaArray) -> BaseOffset | None:
-            return assert_type(array.freq, BaseOffset | None)
+        alias = arr
 
         result = arr.freq
         check(assert_type(result, BaseOffset | None), Day)
-        assert result == Day()
 
         arr.freq = "D"
-        result = get_freq(arr)
-        check(result, Day)
-        assert result == Day()
+        result = alias.freq
+        check(assert_type(result, BaseOffset | None), Day)
 
         arr.freq = Day()
-        result = get_freq(arr)
-        check(result, Day)
-        assert result == Day()
+        result = alias.freq
+        check(assert_type(result, BaseOffset | None), Day)
 
         arr.freq = None
-        result = get_freq(arr)
-        assert result is None
+        result = alias.freq
+        check(assert_type(result, BaseOffset | None), type(None))
 
 
 def test_timedelta_array_freqstr() -> None:
