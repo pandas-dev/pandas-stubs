@@ -13,6 +13,7 @@ from pandas.core.arrays.datetimelike import DTScalarOrNaT
 from pandas.core.arrays.timedeltas import TimedeltaArray
 
 from pandas._libs import NaTType
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timedeltas import Timedelta
 
 from tests import (
@@ -28,7 +29,15 @@ from tests._typing import (
     np_1darray_td,
 )
 
-from pandas.tseries.offsets import Minute
+from pandas.tseries.offsets import (
+    Day,
+    Hour,
+    Micro,
+    Milli,
+    Minute,
+    Nano,
+    Second,
+)
 
 
 def test_construction() -> None:
@@ -348,22 +357,91 @@ def test_timedelta_array_size() -> None:
 
 def test_timedelta_array_freq() -> None:
     """Test freq property for TimedeltaArray."""
-    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
-    arr = pd.array(idx)
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="D"))
 
     if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, pd.DateOffset | None), pd.DateOffset)
+        check(assert_type(arr.freq, BaseOffset | None), Day)
+
+
+def test_timedelta_array_freq_two_hours() -> None:
+    """Test two-hour freq property for TimedeltaArray."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="2h"))
+
+    if PD_LTE_31:
+        check(assert_type(arr.freq, BaseOffset | None), Hour)
+
+
+def test_timedelta_array_freq_hour() -> None:
+    """Test hourly freq property for TimedeltaArray."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="h"))
+
+    if PD_LTE_31:
+        check(assert_type(arr.freq, BaseOffset | None), Hour)
+
+
+def test_timedelta_array_freq_minute() -> None:
+    """Test minute freq property for TimedeltaArray."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="min"))
+
+    if PD_LTE_31:
+        check(assert_type(arr.freq, BaseOffset | None), Minute)
+
+
+def test_timedelta_array_freq_second() -> None:
+    """Test second freq property for TimedeltaArray."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="s"))
+
+    if PD_LTE_31:
+        check(assert_type(arr.freq, BaseOffset | None), Second)
+
+
+def test_timedelta_array_freq_millisecond() -> None:
+    """Test millisecond freq property for TimedeltaArray."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="ms"))
+
+    if PD_LTE_31:
+        check(assert_type(arr.freq, BaseOffset | None), Milli)
+
+
+def test_timedelta_array_freq_microsecond() -> None:
+    """Test microsecond freq property for TimedeltaArray."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="us"))
+
+    if PD_LTE_31:
+        check(assert_type(arr.freq, BaseOffset | None), Micro)
+
+
+def test_timedelta_array_freq_nanosecond() -> None:
+    """Test nanosecond freq property for TimedeltaArray."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="ns"))
+
+    if PD_LTE_31:
+        check(assert_type(arr.freq, BaseOffset | None), Nano)
+
+
+def test_timedelta_array_freq_setter() -> None:
+    """Test freq setter for TimedeltaArray."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="D"))
+
+    if PD_LTE_31:
+        alias = arr
+
+        arr.freq = "D"
+        check(assert_type(alias.freq, BaseOffset | None), Day)
+
+        arr.freq = Day()
+        check(assert_type(alias.freq, BaseOffset | None), Day)
+
+        arr.freq = None
+        check(assert_type(alias.freq, BaseOffset | None), type(None))
 
 
 def test_timedelta_array_freqstr() -> None:
     """Test freqstr property for TimedeltaArray."""
-    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
-    arr = pd.array(idx)
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="D"))
 
     if PD_LTE_31:
-        result = arr.freqstr
-        check(assert_type(result, str | None), str)
+        check(assert_type(arr.freqstr, str | None), str)
 
 
 def test_timedelta_array_min() -> None:
