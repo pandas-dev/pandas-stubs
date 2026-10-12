@@ -3267,6 +3267,13 @@ def test_to_json_mode() -> None:
         _1 = s.to_json(date_format="epoch")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
 
 
+def test_to_json_storage_options(tmp_path: Path) -> None:
+    s = pd.Series([1, 2, 3, 4])
+    path = tmp_path / "series.json"
+    check(assert_type(s.to_json(path, storage_options={}), None), type(None))
+    check(assert_type(s.to_json(storage_options=None), str), str)
+
+
 def test_interpolate() -> None:
     s = pd.Series(range(3))
     check(
