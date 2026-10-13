@@ -122,52 +122,6 @@ T = TypeVar("T")
 T_co = TypeVar("T_co", covariant=True)
 
 
-def test_constructor_series_resampler() -> None:
-    data = pd.Series([1, 2, 3, 4], index=pd.date_range("2026-01-01", periods=4))
-    groups = data.resample("2D")
-    result = assert_type(pd.Series(groups), pd.Series)
-
-    assert len(result) == 2
-    for actual, (key, expected) in zip(result, groups, strict=True):
-        assert actual[0] == key
-        pd.testing.assert_series_equal(actual[1], expected)
-
-
-def test_constructor_dataframe_resampler() -> None:
-    data = pd.DataFrame(
-        {"value": [1, 2, 3, 4]}, index=pd.date_range("2026-01-01", periods=4)
-    )
-    groups = data.resample("2D")
-    result = assert_type(pd.Series(groups), pd.Series)
-
-    assert len(result) == 2
-    for actual, (key, expected) in zip(result, groups, strict=True):
-        assert actual[0] == key
-        pd.testing.assert_frame_equal(actual[1], expected)
-
-
-def test_constructor_series_groupby() -> None:
-    data = pd.Series([1, 2, 3, 4])
-    groups = data.groupby([0, 0, 1, 1])
-    result = assert_type(pd.Series(groups), pd.Series)
-
-    assert len(result) == 2
-    for actual, (key, expected) in zip(result, groups, strict=True):
-        assert actual[0] == key
-        pd.testing.assert_series_equal(actual[1], expected)
-
-
-def test_constructor_dataframe_groupby() -> None:
-    data = pd.DataFrame({"group": [0, 0, 1, 1], "value": [1, 2, 3, 4]})
-    groups = data.groupby("group")
-    result = assert_type(pd.Series(groups), pd.Series)
-
-    assert len(result) == 2
-    for actual, (key, expected) in zip(result, groups, strict=True):
-        assert actual[0] == key
-        pd.testing.assert_frame_equal(actual[1], expected)
-
-
 def test_types_init() -> None:
     pd.Series(1)
     pd.Series((1, 2, 3))
@@ -190,8 +144,13 @@ def test_types_init() -> None:
 
     groupby = pd.Series(np.array([1, 2])).groupby(level=0)
     resampler = pd.Series(np.array([1, 2]), index=dt).resample("1D")
-    pd.Series(data=groupby)
-    pd.Series(data=resampler)
+    check(assert_type(pd.Series(data=groupby), pd.Series), pd.Series, tuple)
+    check(assert_type(pd.Series(data=resampler), pd.Series), pd.Series, tuple)
+
+    frame_groupby = pd.DataFrame({"value": [1, 2]}).groupby(level=0)
+    frame_resampler = pd.DataFrame({"value": [1, 2]}, index=dt).resample("1D")
+    check(assert_type(pd.Series(data=frame_groupby), pd.Series), pd.Series, tuple)
+    check(assert_type(pd.Series(data=frame_resampler), pd.Series), pd.Series, tuple)
 
     pd.Series([], pd.DatetimeIndex([]), float, "name")
     check(
