@@ -39,6 +39,14 @@ When generating documentation or writing PR descriptions, format all GitHub refe
   - Humans read the rendered page: lead with a concise summary, checklist, and links.
   - AI agents read the raw body and can consume far more detail than a human reviewer wants to scroll through. Put a comprehensive implementation record at the bottom of the body inside a `<details><summary>AI Implementation Plan</summary>` block: motivation, experiments and attempts (including failures), caveats, outcome, out-of-scope items, and a to-do list. This information lives in a developer's head; an AI agent can write it down cheaply, and later agents (e.g. pandas-dev/pandas-stubs#1926 sub-PRs) can pick it up without re-deriving it.
   - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs. The `<details>` block stays visible when expanded, so both audiences keep full access.
+- **AI disclosure (required for AI-assisted PRs)**: state in the PR description, under the `### AI disclosure` heading defined by `.github/pull_request_template.md`, exactly what produced the PR, as four fields with one value each:
+  - `tool` — the harness or tool, e.g. `claude-code`.
+  - `model` — the identity the harness reports, written exactly as in the `Co-authored-by:` trailer; if the harness reports a model that is not in the canonical list above, keep one identity across the trailer and the disclosure.
+  - `model version` — the version the harness reports.
+  - `reasoning effort` — the effort level the harness reports.
+  Write `not surfaced` for any field the harness does not report. Never omit a field and never guess: `not surfaced` records a field that was asked for and not answered.
+- **Self-applying**: this file applies to the PR that edits it. A PR that adds or changes a rule must itself satisfy that rule — verify its own title, description (including the AI Implementation Plan block and the `### AI disclosure` section, if the PR used AI), and commit trailers before requesting review.
+- **Keep the PR in sync with its code**: after every push, re-read the title, the visible summary, and the `<details><summary>AI Implementation Plan</summary>` block, and correct anything that now describes a pre-change state. The PR must never lag its head commit.
 - **Commit messages**: do not add summaries or additional comments to individual commits. The single PR description is sufficient.
 - **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Prefer the exact model name when known; use the tool name only when the model is not disclosed. Use the provider's official no-reply address:
   - `Co-authored-by: deepseek-v4-pro <noreply@deepseek.com>`
@@ -48,6 +56,13 @@ When generating documentation or writing PR descriptions, format all GitHub refe
   - `Co-authored-by: Gemini 3.1 Pro <noreply@google.com>`
 - **Why a fixed list**: models cannot reliably report their own name or version (they frequently hallucinate or are unaware of their exact identifier), so a canonical list lets an agent choose the closest matching identity deterministically; when the model isn't listed, use the tool name.
 - **Splitting exceptionally large PRs**: If a PR is massive, split it into small, individually reviewable sub-PRs. Each sub-PR body should start with `- [x] Towards pandas-dev/pandas-stubs#<parent>`.
+
+## Comments on issues and pull requests
+
+- Writing code, tests, and documentation in a pull request is in scope, and so is updating a pull request's title, description, or labels (including your own). Posting comments, reviews, or replies on GitHub on the user's behalf is not: summarize the analysis in chat and let the user respond in their own words.
+- Do not write the user's side of a discussion for them to paste. Summarize the analysis in chat and let the user respond in their own words.
+- When quoting tool output (a traceback or a suggested diff) as evidence, mark it with `>` or a triple-backtick fence so readers can tell it apart from the user's words.
+- Translation and grammar editing are an exception, but must still be disclosed under **AI disclosure** above.
 
 ## Decision Heuristics
 
