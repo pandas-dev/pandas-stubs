@@ -363,7 +363,7 @@ def test_ewm_aggregate() -> None:
 
     # TODO: pandas-dev/pandas#63855, see if ewm.aggregate(any callable) is implemented
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
