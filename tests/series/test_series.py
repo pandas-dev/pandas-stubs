@@ -122,6 +122,52 @@ T = TypeVar("T")
 T_co = TypeVar("T_co", covariant=True)
 
 
+def test_constructor_series_resampler() -> None:
+    data = pd.Series([1, 2, 3, 4], index=pd.date_range("2026-01-01", periods=4))
+    groups = data.resample("2D")
+    result = assert_type(pd.Series(groups), pd.Series)
+
+    assert len(result) == 2
+    for actual, (key, expected) in zip(result, groups, strict=True):
+        assert actual[0] == key
+        pd.testing.assert_series_equal(actual[1], expected)
+
+
+def test_constructor_dataframe_resampler() -> None:
+    data = pd.DataFrame(
+        {"value": [1, 2, 3, 4]}, index=pd.date_range("2026-01-01", periods=4)
+    )
+    groups = data.resample("2D")
+    result = assert_type(pd.Series(groups), pd.Series)
+
+    assert len(result) == 2
+    for actual, (key, expected) in zip(result, groups, strict=True):
+        assert actual[0] == key
+        pd.testing.assert_frame_equal(actual[1], expected)
+
+
+def test_constructor_series_groupby() -> None:
+    data = pd.Series([1, 2, 3, 4])
+    groups = data.groupby([0, 0, 1, 1])
+    result = assert_type(pd.Series(groups), pd.Series)
+
+    assert len(result) == 2
+    for actual, (key, expected) in zip(result, groups, strict=True):
+        assert actual[0] == key
+        pd.testing.assert_series_equal(actual[1], expected)
+
+
+def test_constructor_dataframe_groupby() -> None:
+    data = pd.DataFrame({"group": [0, 0, 1, 1], "value": [1, 2, 3, 4]})
+    groups = data.groupby("group")
+    result = assert_type(pd.Series(groups), pd.Series)
+
+    assert len(result) == 2
+    for actual, (key, expected) in zip(result, groups, strict=True):
+        assert actual[0] == key
+        pd.testing.assert_frame_equal(actual[1], expected)
+
+
 def test_types_init() -> None:
     pd.Series(1)
     pd.Series((1, 2, 3))

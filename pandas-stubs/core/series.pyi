@@ -607,6 +607,15 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
+        data: BaseGroupBy[Any],
+        index: AxesData | None = None,
+        dtype: Dtype | None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series: ...
+    @overload
+    def __new__(
+        cls,
         data: Scalar | _DataLike | dict[HashableT1, Any] | None,
         index: AxesData | None = None,
         *,
@@ -656,13 +665,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: (
-            Scalar
-            | _DataLike
-            | Mapping[HashableT1, Any]
-            | BaseGroupBy[Any]
-            | NaTType
-            | NAType
-            | None
+            Scalar | _DataLike | Mapping[HashableT1, Any] | NaTType | NAType | None
         ) = None,
         index: AxesData | None = None,
         dtype: Dtype | None = None,
