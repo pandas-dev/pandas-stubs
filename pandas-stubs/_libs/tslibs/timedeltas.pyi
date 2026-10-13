@@ -88,9 +88,15 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
 ]
 
 class Timedelta(timedelta):
-    min: ClassVar[Timedelta]  # pyright: ignore[reportIncompatibleVariableOverride]
-    max: ClassVar[Timedelta]  # pyright: ignore[reportIncompatibleVariableOverride]
-    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride]
+    # invalid-mutable-override is only enabled by ty_all.
+    # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+    min: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+        Timedelta
+    ]
+    max: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+        Timedelta
+    ]
+    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
         Timedelta
     ]
     value: int

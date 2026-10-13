@@ -51,10 +51,16 @@ _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
 TimeZones: TypeAlias = str | _tzinfo | int | None
 
 class Timestamp(datetime, SupportsIndex):
-    min: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]
-    max: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]
+    # invalid-mutable-override is only enabled by ty_all.
+    # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
+    min: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+        Timestamp
+    ]
+    max: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+        Timestamp
+    ]
 
-    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride]
+    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
         Timedelta
     ]
     value: int
