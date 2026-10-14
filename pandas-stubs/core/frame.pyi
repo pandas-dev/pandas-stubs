@@ -429,7 +429,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def itertuples(
         self, index: _bool = ..., name: None = None
     ) -> Iterator[tuple[Any, ...]]: ...
-    def __len__(self) -> int: ...
     @overload
     def dot(
         self,
