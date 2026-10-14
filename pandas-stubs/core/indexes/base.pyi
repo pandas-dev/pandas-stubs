@@ -779,14 +779,18 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     # See ADR-0023.
     @overload
     def __sub__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
+    ) -> Index[int]: ...
+    @overload
+    def __sub__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
+    ) -> Index[float]: ...
+    @overload
+    def __sub__(
         self: Supports_ProtoSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
     ) -> Index[S2]: ...
     @overload
     def __sub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
-    @overload
-    def __sub__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
-    ) -> Index[int]: ...
     @overload
     def __sub__(
         self: Index[float], other: ArrayIndexBoolIntNoSeq, /
@@ -795,10 +799,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __sub__(
         self: Index[complex], other: ArrayIndexBoolIntNoSeq, /
     ) -> Index[complex]: ...
-    @overload
-    def __sub__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
-    ) -> Index[float]: ...
     @overload
     def __sub__(
         self: Index[T_COMPLEX], other: ScalarArrayIndexJustFloat, /
@@ -827,14 +827,18 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     # See ADR-0023.
     @overload
     def __rsub__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
+    ) -> Index[int]: ...
+    @overload
+    def __rsub__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
+    ) -> Index[float]: ...
+    @overload
+    def __rsub__(
         self: Supports_ProtoRSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
     ) -> Index[S2]: ...
     @overload
     def __rsub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
-    @overload
-    def __rsub__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
-    ) -> Index[int]: ...
     @overload
     def __rsub__(  # type: ignore[misc]
         self: Index[float], other: ArrayIndexBoolIntNoSeq, /
@@ -843,10 +847,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rsub__(
         self: Index[complex], other: ArrayIndexBoolIntNoSeq, /
     ) -> Index[complex]: ...
-    @overload
-    def __rsub__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
-    ) -> Index[float]: ...
     @overload
     def __rsub__(
         self: Index[T_COMPLEX], other: ScalarArrayIndexJustFloat, /
@@ -1014,6 +1014,14 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __truediv__(self: IndexComplex, other: Index[Never], /) -> Index: ...
     @overload
     def __truediv__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
         self: Supports_ProtoTrueDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         /,
@@ -1021,10 +1029,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __truediv__(
         self: Index[int], other: np_ndarray_bool | Index[bool], /
-    ) -> Index[float]: ...
-    @overload
-    def __truediv__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
     ) -> Index[float]: ...
     @overload
     def __truediv__(
@@ -1038,10 +1042,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
         /,
     ) -> Index[complex]: ...
-    @overload
-    def __truediv__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
-    ) -> Index[float]: ...
     @overload
     def __truediv__(
         self: Index[T_COMPLEX], other: ScalarArrayIndexJustFloat, /
@@ -1070,6 +1070,14 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __rtruediv__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(
         self: Supports_ProtoRTrueDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         /,
@@ -1077,10 +1085,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __rtruediv__(
         self: Index[int], other: np_ndarray_bool | Index[bool], /
-    ) -> Index[float]: ...
-    @overload
-    def __rtruediv__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt, /
     ) -> Index[float]: ...
     @overload
     def __rtruediv__(  # type: ignore[misc]
@@ -1094,10 +1098,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
         /,
     ) -> Index[complex]: ...
-    @overload
-    def __rtruediv__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat, /
-    ) -> Index[float]: ...
     @overload
     def __rtruediv__(
         self: Index[T_COMPLEX], other: ScalarArrayIndexJustFloat, /
@@ -1176,6 +1176,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __rfloordiv__(
+        self: Index[int] | Index[float],
+        other: timedelta | np.timedelta64 | ArrayIndexTimedeltaNoSeq,
+        /,
+    ) -> TimedeltaIndex: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int] | Index[float], other: Sequence[timedelta | np.timedelta64], /
+    ) -> Index: ...
+    @overload
+    def __rfloordiv__(
         self: Supports_ProtoRFloorDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         /,
@@ -1202,14 +1212,4 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         other: float | Sequence[float] | np_ndarray_float | Index[float],
         /,
     ) -> Index[float]: ...
-    @overload
-    def __rfloordiv__(
-        self: Index[int] | Index[float],
-        other: timedelta | np.timedelta64 | ArrayIndexTimedeltaNoSeq,
-        /,
-    ) -> TimedeltaIndex: ...
-    @overload
-    def __rfloordiv__(
-        self: Index[int] | Index[float], other: Sequence[timedelta | np.timedelta64], /
-    ) -> Index: ...
     def infer_objects(self, copy: bool = True) -> Self: ...

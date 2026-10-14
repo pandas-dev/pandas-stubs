@@ -2634,6 +2634,18 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def __rfloordiv__(
+        self: Series[int] | Series[float],
+        other: timedelta | np.timedelta64 | ArrayIndexSeriesTimedeltaNoSeq,
+        /,
+    ) -> Series[Timedelta]: ...
+    @overload
+    def __rfloordiv__(
+        self: Series[int] | Series[float],
+        other: Sequence[timedelta | np.timedelta64],
+        /,
+    ) -> Series: ...
+    @overload
+    def __rfloordiv__(
         self: Supports_ProtoRFloorDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         /,
@@ -2668,18 +2680,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __rfloordiv__(self: Series[Timedelta], other: np_ndarray_num, /) -> Never: ...
     @overload
     def __rfloordiv__(
-        self: Series[int] | Series[float],
-        other: timedelta | np.timedelta64 | ArrayIndexSeriesTimedeltaNoSeq,
-        /,
-    ) -> Series[Timedelta]: ...
-    @overload
-    def __rfloordiv__(
-        self: Series[int] | Series[float],
-        other: Sequence[timedelta | np.timedelta64],
-        /,
-    ) -> Series: ...
-    @overload
-    def __rfloordiv__(
         self: Series[Timedelta], other: ArrayIndexSeriesTimedeltaNoSeq, /
     ) -> Series[int]: ...
     @overload
@@ -2698,6 +2698,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series: ...
+    @overload
+    def rfloordiv(
+        self: Series[int] | Series[float],
+        other: ScalarArrayIndexSeriesTimedelta,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[Timedelta]: ...
     @overload
     def rfloordiv(
         self: Supports_ProtoRFloorDiv[T_contra, S2],
@@ -2748,14 +2756,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[float]: ...
-    @overload
-    def rfloordiv(
-        self: Series[int] | Series[float],
-        other: ScalarArrayIndexSeriesTimedelta,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-        axis: AxisIndex = ...,
-    ) -> Series[Timedelta]: ...
     @overload
     def rfloordiv(
         self: Series[Timedelta],
@@ -3977,6 +3977,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Never: ...
     @overload
     def __truediv__(
+        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustInt, /
+    ) -> Series[float]: ...
+    @overload
+    def __truediv__(
+        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustFloat, /
+    ) -> Series[float]: ...
+    @overload
+    def __truediv__(
         self: Supports_ProtoTrueDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         /,
@@ -3984,10 +3992,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __truediv__(
         self: Series[int], other: np_ndarray_bool | Index[bool] | Series[bool], /
-    ) -> Series[float]: ...
-    @overload
-    def __truediv__(
-        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustInt, /
     ) -> Series[float]: ...
     @overload
     def __truediv__(
@@ -4015,10 +4019,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         ),
         /,
     ) -> Series[complex]: ...
-    @overload
-    def __truediv__(
-        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustFloat, /
-    ) -> Series[float]: ...
     @overload
     def __truediv__(
         self: Series[T_COMPLEX], other: ScalarArrayIndexSeriesJustFloat, /
@@ -4065,6 +4065,22 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def truediv(
+        self: Series[bool] | Series[int],
+        other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
+    ) -> Series[float]: ...
+    @overload
+    def truediv(
+        self: Series[bool] | Series[int],
+        other: ScalarArrayIndexSeriesJustFloat,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
+    ) -> Series[float]: ...
+    @overload
+    def truediv(
         self: Supports_ProtoTrueDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         level: Level | None = None,
@@ -4074,15 +4090,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[int],
-        other: np_ndarray_bool | Index[bool] | Series[bool],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: AxisIndex = 0,
-    ) -> Series[float]: ...
-    @overload
-    def truediv(
-        self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
+        other: bool | np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -4117,14 +4125,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = 0,
     ) -> Series[complex]: ...
-    @overload
-    def truediv(
-        self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesJustFloat,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: AxisIndex = 0,
-    ) -> Series[float]: ...
     @overload
     def truediv(
         self: Series[T_COMPLEX],
@@ -4186,6 +4186,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def __rtruediv__(
+        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustInt, /
+    ) -> Series[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustFloat, /
+    ) -> Series[float]: ...
+    @overload
+    def __rtruediv__(
         self: Supports_ProtoRTrueDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         /,
@@ -4193,10 +4201,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __rtruediv__(
         self: Series[int], other: np_ndarray_bool | Index[bool] | Series[bool], /
-    ) -> Series[float]: ...
-    @overload
-    def __rtruediv__(
-        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustInt, /
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(  # type: ignore[misc]
@@ -4224,10 +4228,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         ),
         /,
     ) -> Series[complex]: ...
-    @overload
-    def __rtruediv__(
-        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustFloat, /
-    ) -> Series[float]: ...
     @overload
     def __rtruediv__(
         self: Series[T_COMPLEX], other: ScalarArrayIndexSeriesJustFloat, /
@@ -4264,6 +4264,22 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def rtruediv(
+        self: Series[bool] | Series[int],
+        other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
+    ) -> Series[float]: ...
+    @overload
+    def rtruediv(
+        self: Series[bool] | Series[int],
+        other: ScalarArrayIndexSeriesJustFloat,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
+    ) -> Series[float]: ...
+    @overload
+    def rtruediv(
         self: Supports_ProtoRTrueDiv[T_contra, S2],
         other: T_contra | Sequence[T_contra],
         level: Level | None = None,
@@ -4273,15 +4289,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[int],
-        other: np_ndarray_bool | Index[bool] | Series[bool],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: AxisIndex = 0,
-    ) -> Series[float]: ...
-    @overload
-    def rtruediv(
-        self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
+        other: bool | np_ndarray_bool | Index[bool] | Series[bool],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -4316,14 +4324,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = 0,
     ) -> Series[complex]: ...
-    @overload
-    def rtruediv(
-        self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesJustFloat,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: AxisIndex = 0,
-    ) -> Series[float]: ...
     @overload
     def rtruediv(
         self: Series[T_COMPLEX],
