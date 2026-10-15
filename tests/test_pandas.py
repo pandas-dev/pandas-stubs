@@ -23,6 +23,7 @@ from pandas.api.typing import (
 )
 from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays.integer import IntegerArray
+from pandas.core.generic import NDFrame
 import pandas.util as pdutil
 import pytest
 
@@ -2628,3 +2629,17 @@ def test_argmin_and_argmax_return() -> None:
     i1 = df.a.abs().argmax()
     check(assert_type(i, np.int64), np.int64)
     check(assert_type(i1, np.int64), np.int64)
+
+
+def _ndframe_len(obj: NDFrame) -> None:
+    check(assert_type(len(obj), int), int)
+
+
+def test_ndframe_len() -> None:
+    """`len()` works on `NDFrame`, the base of `Series` and `DataFrame` (#1986)."""
+    s = pd.Series([1, 2, 3])
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(assert_type(len(s), int), int)
+    check(assert_type(len(df), int), int)
+    _ndframe_len(s)
+    _ndframe_len(df)
