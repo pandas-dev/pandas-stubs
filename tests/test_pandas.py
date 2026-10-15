@@ -2612,5 +2612,9 @@ def _ndframe_len(obj: NDFrame) -> None:
 
 def test_ndframe_len() -> None:
     """`len()` works on `NDFrame`, the base of `Series` and `DataFrame` (#1986)."""
-    _ndframe_len(pd.Series([1, 2, 3]))
-    _ndframe_len(pd.DataFrame({"a": [1, 2, 3]}))
+    s = pd.Series([1, 2, 3])
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(assert_type(len(s), int), int)
+    check(assert_type(len(df), int), int)
+    _ndframe_len(s)
+    _ndframe_len(df)
