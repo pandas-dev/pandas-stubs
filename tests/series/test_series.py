@@ -1453,6 +1453,10 @@ def test_types_aggregate() -> None:
     check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series, np.integer)
     check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series, np.integer)
 
+    # aggregate resolves a string `func` via getattr, so the set of valid
+    # strings is open-ended and not limited to reduction kernels.
+    check(assert_type(s.aggregate("argmax"), int), np.integer)
+
 
 def test_types_transform() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
@@ -1468,6 +1472,11 @@ def test_types_transform() -> None:
     )
     check(assert_type(s.transform({"index": "abs"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.transform({"index": abs}), pd.DataFrame), pd.DataFrame)
+
+    # transform resolves a string `func` via getattr, like aggregate, so
+    # these are not restricted to a closed set of kernels.
+    check(assert_type(s.transform("round"), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.transform("clip"), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_describe() -> None:

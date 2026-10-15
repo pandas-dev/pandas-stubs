@@ -602,7 +602,12 @@ ValueKeyFunc: TypeAlias = Callable[[Series], Series | AnyArrayLike] | None
 IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
-# More specific than what is in pandas
+# NDFrame.aggregate/transform and GroupBy.aggregate resolve a string `func`
+# via getattr/hasattr (see pandas.core.apply._apply_str), so the set of valid
+# strings is open-ended (e.g. "describe", "value_counts", "nanmean" all work)
+# and cannot be narrowed to a Literal. GroupBy.transform uses
+# TransformReductionListType instead, since it validates against the closed
+# pandas.core.groupby.base.transformation_kernels/reduction_kernels lists.
 AggFuncTypeBase: TypeAlias = Callable[P, Any] | str | np.ufunc
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase[P]]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
@@ -621,6 +626,59 @@ AggFuncTypeDict: TypeAlias = (
 )
 AggFuncType: TypeAlias = (
     AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]] | AggFuncTypeDict[HashableT, P]
+)
+
+# type of `func` kwarg for Rolling/Expanding/EWM.aggregate, as a single
+# (non-list, non-dict) value. Unlike AggFuncTypeBase above, window strings
+# resolve against the window object's own methods, i.e. a closed set, so a
+# Literal is appropriate here. Rolling and Expanding share this list; EWM
+# supports only a subset of it, but since one list has to serve all three
+# window classes, over-accepting a few names on EWM (e.g. "median") is the
+# acceptable trade-off over maintaining a second, near-duplicate list.
+WindowAggFuncTypeBase: TypeAlias = (
+    Callable[P, Any]
+    | Literal[
+        "corr",
+        "count",
+        "cov",
+        "first",
+        "kurt",
+        "last",
+        "max",
+        "mean",
+        "median",
+        "min",
+        "nunique",
+        "quantile",
+        "rank",
+        "sem",
+        "skew",
+        "std",
+        "sum",
+        "var",
+    ]
+    | np.ufunc
+)
+# list form of the above, shared by Series- and DataFrame-returning
+# Rolling/Expanding/EWM.aggregate. `str` is itself a `Sequence[str]`, so a
+# plain `Sequence[AggFuncTypeBase[P]]` would let a bare string slip past the
+# closed WindowAggFuncTypeBase restriction above (it would structurally
+# match this "list" branch instead); SequenceNotStr closes that loophole
+# while still accepting a real `list`/`tuple` of (open) `str` elements, so a
+# list or dict held in a variable rather than passed inline keeps working.
+WindowAggFuncTypeSeriesToFrame: TypeAlias = (
+    SequenceNotStr[AggFuncTypeBase[P]] | AggFuncTypeDictSeries[HashableT, P]
+)
+# type of `func` kwarg for DataFrame-returning Rolling/Expanding/EWM.aggregate.
+# Only the top-level (non-list, non-dict) value is restricted to the closed
+# window-method set above; a list/dict's elements keep the open `str` type
+# of AggFuncTypeBase, otherwise a `dict` held in a variable rather than
+# passed inline would stop matching this overload (the type checker cannot
+# narrow a `dict[str, str]` back down to the Literal set after the fact).
+WindowAggFuncTypeFrame: TypeAlias = (
+    WindowAggFuncTypeBase[P]
+    | SequenceNotStr[AggFuncTypeBase[P]]
+    | AggFuncTypeDictFrame[HashableT, P]
 )
 
 # Not used in stubs
