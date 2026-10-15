@@ -3,6 +3,7 @@
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
+from contextlib import AbstractContextManager
 import datetime as dt
 import random
 from typing import (
@@ -25,9 +26,12 @@ from pandas.core.arrays.integer import IntegerArray
 import pandas.util as pdutil
 import pytest
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -110,34 +114,55 @@ def test_types_to_datetime() -> None:
     )
 
 
+def pytest_warns_concat_none() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        "Passing None in the objects to concat is deprecated",
+        lower="3.1.99",
+    )
+
+
 def test_types_concat_none() -> None:
     """Test concatenation with None values."""
     series = pd.Series([7, -5, 10])
     df = pd.DataFrame({"a": [7, -5, 10]})
 
-    check(
-        assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
-    )
-    check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
-    )
-    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat([None, series]), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame),
+            pd.DataFrame,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
-    check(
-        assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
-    check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(
+                pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
+            pd.DataFrame,
+        )
 
     def _0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(pd.concat({"a": None}), Never)
