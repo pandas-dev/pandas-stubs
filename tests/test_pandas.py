@@ -25,12 +25,10 @@ from pandas.core.arrays.integer import IntegerArray
 import pandas.util as pdutil
 import pytest
 
-from pandas.errors import Pandas4Warning
-
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
+    pytest_warns_concat_none,
 )
 from tests._typing import (
     np_1darray,
@@ -118,35 +116,38 @@ def test_types_concat_none() -> None:
     series = pd.Series([7, -5, 10])
     df = pd.DataFrame({"a": [7, -5, 10]})
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "Passing None in the objects to concat is deprecated",
-        lower="3.1.99",
-    ):
+    with pytest_warns_concat_none():
         check(
             assert_type(pd.concat([None, series]), "pd.Series[int]"),
             pd.Series,
             np.integer,
         )
+    with pytest_warns_concat_none():
         check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
         check(
             assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame),
             pd.DataFrame,
         )
+    with pytest_warns_concat_none():
         check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
+    with pytest_warns_concat_none():
         check(
             assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
             pd.Series,
             np.integer,
         )
+    with pytest_warns_concat_none():
         check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
         check(
             assert_type(
                 pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame
             ),
             pd.DataFrame,
         )
+    with pytest_warns_concat_none():
         check(
             assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
             pd.DataFrame,
