@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    TYPE_CHECKING,
     Any,
     assert_type,
 )
@@ -9,13 +8,11 @@ from typing import (
 import numpy as np
 import pandas as pd
 
-if TYPE_CHECKING:
-    from pandas._typing import ScalarOrNA  # noqa: F401
-
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import ScalarOrNA
 
 
 def test_types_select() -> None:
@@ -32,7 +29,7 @@ def test_types_iloc_iat() -> None:
     s = pd.Series(data={"row1": 1, "row2": 2})
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
-    s.iat[0]
+    check(assert_type(s.iat[0], ScalarOrNA), np.integer)
     s.iat[0] = 999
     s2.loc[0]
     s2.iat[0]
@@ -52,8 +49,7 @@ def test_types_loc_at() -> None:
     s2.at[1]
     s2.at[1] = 99
 
-    assert_type(s.at["row1"], "ScalarOrNA")
-    assert_type(s.iat[0], "ScalarOrNA")
+    check(assert_type(s.at["row1"], ScalarOrNA), np.integer)
 
 
 def test_types_getitem() -> None:
