@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from datetime import (
+    date,
     datetime,
     timedelta,
 )
@@ -14,6 +15,7 @@ from dateutil.relativedelta import (
 )
 import numpy as np
 import pandas as pd
+import pytest
 
 from tests import check
 
@@ -263,4 +265,37 @@ def test_rollforward_rollback_return_type() -> None:
             pd.offsets.DateOffset().rollback(datetime(2024, 1, 1)), pd.Timestamp
         ),
         pd.Timestamp,
+    )
+
+
+@pytest.mark.parametrize(
+    "start, end",
+    [
+        (date(2024, 1, 1), date(2024, 12, 31)),
+        (datetime(2024, 1, 1), datetime(2024, 12, 31)),
+        (pd.Timestamp("2024-01-01"), pd.Timestamp("2024-12-31")),
+        (np.datetime64("2024-01-01"), np.datetime64("2024-12-31")),
+        ("2024-01-01", "2024-12-31"),
+        (date(2024, 1, 1), "2024-12-31"),
+    ],
+)
+def test_calendar_holidays_date_boundaries(
+    start: date | datetime | pd.Timestamp | np.datetime64 | str,
+    end: date | datetime | pd.Timestamp | np.datetime64 | str,
+) -> None:
+    cal = AbstractHolidayCalendar(rules=[Holiday("New Year", month=1, day=1)])
+    expected = pd.DatetimeIndex(["2024-01-01"], freq=pd.DateOffset(years=1))
+
+    result = cal.holidays(start, end)
+    check(assert_type(result, pd.DatetimeIndex), pd.DatetimeIndex)
+    pd.testing.assert_index_equal(result, expected)
+
+    result_false = cal.holidays(start, end, False)
+    check(assert_type(result_false, pd.DatetimeIndex), pd.DatetimeIndex)
+    pd.testing.assert_index_equal(result_false, expected)
+
+    result_names = cal.holidays(start=start, end=end, return_name=True)
+    check(assert_type(result_names, pd.Series), pd.Series)
+    pd.testing.assert_series_equal(
+        result_names, pd.Series(["New Year"], index=expected)
     )
