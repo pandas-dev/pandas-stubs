@@ -3,6 +3,7 @@
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
+from contextlib import AbstractContextManager
 import datetime as dt
 import random
 from typing import (
@@ -25,10 +26,12 @@ from pandas.core.arrays.integer import IntegerArray
 import pandas.util as pdutil
 import pytest
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_concat_none,
+    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -108,6 +111,14 @@ def test_types_to_datetime() -> None:
         ),
         pd.Series,
         pd.Timestamp,
+    )
+
+
+def pytest_warns_concat_none() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        "Passing None in the objects to concat is deprecated",
+        lower="3.1.99",
     )
 
 
