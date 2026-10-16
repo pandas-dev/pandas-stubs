@@ -4021,7 +4021,14 @@ def test_unknown() -> None:
         pass
 
     foo(s)
-    check(assert_type(s + pd.Series([1]), pd.Series), pd.Series)
+    # ty infers Unknown because the Series[Period] overload of Series.__add__
+    # also matches a Series[Any] receiver; remove the ignore when fixed in ty.
+    check(
+        assert_type(
+            s + pd.Series([1]), pd.Series
+        ),  # ty: ignore[type-assertion-failure]
+        pd.Series,
+    )
 
 
 def test_series_items() -> None:
