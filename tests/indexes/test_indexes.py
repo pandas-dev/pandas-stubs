@@ -2051,27 +2051,24 @@ def test_diff() -> None:
     # Any -> Any
     s_o = ind.astype(object)
     assert_type(s_o, pd.Index)
-    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(s_o.diff(), pd.Index),  # ty: ignore[type-assertion-failure]
+        assert_type(s_o.diff(), pd.Index),
         pd.Index,
         float,
     )
     mi = pd.MultiIndex.from_arrays(
         [range(4), pd.date_range("2026-01-30", "2026-02-02")], names=["a", "b"]
     )
-    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
+        assert_type(
             mi.get_level_values("a").diff(),
             pd.Index,
         ),
         pd.Index,
         float,
     )
-    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
+        assert_type(
             mi.get_level_values("b").diff(),
             pd.Index,
         ),
