@@ -35,18 +35,18 @@ When generating documentation or writing PR descriptions, format all GitHub refe
   - TYP: Type annotations
   - CLN: Code cleanup
 - **PR descriptions**: follow the template; keep the visible text succinct (usually a few sentences). PRs resolving an existing issue should include a link to it in the description.
-- **PR body — concise for humans, comprehensive for agents**:
+- **PR body — concise for humans, an index for agents**:
   - Humans read the rendered page: lead with a concise summary, checklist, and links.
-  - AI agents read the raw body and can consume far more detail than a human reviewer wants to scroll through. Put a comprehensive implementation record at the bottom of the body inside a `<details><summary>AI Implementation Plan</summary>` block: motivation, experiments and attempts (including failures), caveats, outcome, out-of-scope items, and a to-do list. This information lives in a developer's head; an AI agent can write it down cheaply, and later agents (e.g. pandas-dev/pandas-stubs#1926 sub-PRs) can pick it up without re-deriving it.
-  - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs. The `<details>` block stays visible when expanded, so both audiences keep full access.
-- **Commit messages**: do not add summaries or additional comments to individual commits. The single PR description is sufficient.
-- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Prefer the exact model name when known; use the tool name only when the model is not disclosed. Use the provider's official no-reply address:
+  - Put a collapsible `<details><summary>Accountability Index</summary>` at the bottom. It is an index, not the record: a commit table (each commit with a one-line what and why), links to the discussion-thread comments where review decisions were made, and a short caveats note. The full rationale lives in commit message bodies and the discussion thread.
+  - Rules: never put machine-only detail in the visible text; never duplicate in the index a rationale that already exists in a commit body or thread comment — link to it instead. Update the index after each push and review round.
+- **Commit messages**: the subject line states what changed, using the prefix convention above. The body states why, for that commit: motivation, alternatives rejected, and evidence (tests run, verification). AI-authored commits must include this body. Do not write a body that merely restates the diff.
+- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Prefer the exact model name when known; use the tool name only when the model is not disclosed. Use the provider's official no-reply address. Examples:
   - `Co-authored-by: deepseek-v4-pro <noreply@deepseek.com>`
   - `Co-authored-by: gpt-5.6-terra <noreply@openai.com>`
   - `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`
   - `Co-authored-by: GitHub Copilot <noreply@github.com>`
   - `Co-authored-by: Gemini 3.1 Pro <noreply@google.com>`
-- **Why a fixed list**: models cannot reliably report their own name or version (they frequently hallucinate or are unaware of their exact identifier), so a canonical list lets an agent choose the closest matching identity deterministically; when the model isn't listed, use the tool name.
+- **Why these examples**: models cannot reliably report their own name or version (they frequently hallucinate or are unaware of their exact identifier), so representative examples let an agent pick the right provider address and naming convention. The list is not exhaustive — any model name that follows the same format (exact name + provider no-reply address) is valid. When the model name is genuinely unknown, use the tool name.
 - **Splitting exceptionally large PRs**: If a PR is massive, split it into small, individually reviewable sub-PRs. Each sub-PR body should start with `- [x] Towards pandas-dev/pandas-stubs#<parent>`.
 
 ## Decision Heuristics
