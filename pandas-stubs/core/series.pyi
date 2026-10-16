@@ -3314,12 +3314,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def __sub__(
-        self: Supports_ProtoSub[T_contra, S2],
-        other: T_contra | Sequence[T_contra],
-        /,
-    ) -> Series[S2]: ...
-    @overload
-    def __sub__(
         self: Series[int], other: ArrayIndexSeriesBoolNoSeq, /
     ) -> Series[int]: ...
     @overload
@@ -3370,6 +3364,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __sub__(
         self: Series[Period], other: Period | PeriodIndex | Series[Period], /
     ) -> Series[BaseOffset]: ...
+    @overload
+    def __sub__(
+        self: Supports_ProtoSub[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
+        /,
+    ) -> Series[S2]: ...
     @overload
     def sub(
         self: Series[Never],
