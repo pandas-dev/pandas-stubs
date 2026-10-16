@@ -55,27 +55,23 @@ def test_property_dt() -> None:
     )
 
     df = DataFrame({"ts": [Timestamp(2025, 12, 6)], "td": [Timedelta(1, "s")]})
-    # python/mypy#19952: mypy gives Any
-    # TODO: remove the ignore astral-sh/ty#4055
+    # TODO: resolve the four Series[Any].dt assertions in pandas-dev/pandas-stubs#1987.
     check(
-        assert_type(df["ts"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(df["ts"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
         DatetimeProperties,
     )
-    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(df["td"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(df["td"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
         TimedeltaProperties,
     )
 
-    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
         Series,
         np.integer,
     )
-    # TODO: remove the ignore astral-sh/ty#4055
     check(
-        assert_type(df["td"].dt.total_seconds(), "Series[float]"),  # type: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(df["td"].dt.total_seconds(), "Series[float]"),  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
         Series,
         np.floating,
     )

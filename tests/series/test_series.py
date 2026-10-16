@@ -144,8 +144,13 @@ def test_types_init() -> None:
 
     groupby = pd.Series(np.array([1, 2])).groupby(level=0)
     resampler = pd.Series(np.array([1, 2]), index=dt).resample("1D")
-    pd.Series(data=groupby)
-    pd.Series(data=resampler)
+    check(assert_type(pd.Series(data=groupby), pd.Series), pd.Series, tuple)
+    check(assert_type(pd.Series(data=resampler), pd.Series), pd.Series, tuple)
+
+    frame_groupby = pd.DataFrame({"value": [1, 2]}).groupby(level=0)
+    frame_resampler = pd.DataFrame({"value": [1, 2]}, index=dt).resample("1D")
+    check(assert_type(pd.Series(data=frame_groupby), pd.Series), pd.Series, tuple)
+    check(assert_type(pd.Series(data=frame_resampler), pd.Series), pd.Series, tuple)
 
     pd.Series([], pd.DatetimeIndex([]), float, "name")
     check(
