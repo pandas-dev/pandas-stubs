@@ -95,7 +95,7 @@ class AbstractHolidayCalendar:
         end: DateAndDatetimeLike | str | None = None,
         *,
         return_name: Literal[True],
-    ) -> Series: ...
+    ) -> Series[str]: ...
     @overload
     def holidays(
         self,
@@ -103,6 +103,13 @@ class AbstractHolidayCalendar:
         end: DateAndDatetimeLike | str | None = None,
         return_name: Literal[False] = False,
     ) -> DatetimeIndex: ...
+    @overload
+    def holidays(
+        self,
+        start: DateAndDatetimeLike | str | None,
+        end: DateAndDatetimeLike | str | None,
+        return_name: Literal[True],
+    ) -> Series[str]: ...
     @staticmethod
     def merge_class(
         base: AbstractHolidayCalendar | type[AbstractHolidayCalendar] | list[Holiday],

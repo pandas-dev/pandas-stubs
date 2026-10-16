@@ -45,9 +45,6 @@ def test_custom_calendar() -> None:
 
     cal = ExampleCalendar()
 
-    result = cal.holidays(datetime(2012, 1, 1), datetime(2012, 12, 31))
-    check(assert_type(result, pd.DatetimeIndex), pd.DatetimeIndex)
-
     check(
         assert_type(
             cal.holidays(date(2024, 1, 1), date(2024, 12, 31)), pd.DatetimeIndex
@@ -65,7 +62,7 @@ def test_custom_calendar() -> None:
     check(
         assert_type(
             cal.holidays(date(2024, 1, 1), date(2024, 12, 31), return_name=True),
-            pd.Series,
+            "pd.Series[str]",
         ),
         pd.Series,
     )
@@ -90,7 +87,7 @@ def test_custom_calendar() -> None:
             cal.holidays(
                 datetime(2024, 1, 1), datetime(2024, 12, 31), return_name=True
             ),
-            pd.Series,
+            "pd.Series[str]",
         ),
         pd.Series,
     )
@@ -116,7 +113,7 @@ def test_custom_calendar() -> None:
             cal.holidays(
                 pd.Timestamp("2024-01-01"), pd.Timestamp("2024-12-31"), return_name=True
             ),
-            pd.Series,
+            "pd.Series[str]",
         ),
         pd.Series,
     )
@@ -146,7 +143,7 @@ def test_custom_calendar() -> None:
                 np.datetime64("2024-12-31"),
                 return_name=True,
             ),
-            pd.Series,
+            "pd.Series[str]",
         ),
         pd.Series,
     )
@@ -163,7 +160,7 @@ def test_custom_calendar() -> None:
 
     check(
         assert_type(
-            cal.holidays("2024-01-01", "2024-12-31", return_name=True), pd.Series
+            cal.holidays("2024-01-01", "2024-12-31", return_name=True), "pd.Series[str]"
         ),
         pd.Series,
     )
@@ -182,7 +179,29 @@ def test_custom_calendar() -> None:
 
     check(
         assert_type(
-            cal.holidays(date(2024, 1, 1), "2024-12-31", return_name=True), pd.Series
+            cal.holidays(date(2024, 1, 1), "2024-12-31", return_name=True),
+            "pd.Series[str]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            cal.holidays(np.datetime64("2024-01-01"), "2024-12-31", False),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            cal.holidays(pd.Timestamp("2024-01-01"), "2024-12-31", return_name=True),
+            "pd.Series[str]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            cal.holidays(pd.Timestamp("2024-01-01"), datetime(2025, 1, 1, 1), True),
+            "pd.Series[str]",
         ),
         pd.Series,
     )
