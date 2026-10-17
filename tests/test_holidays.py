@@ -50,6 +50,7 @@ def test_custom_calendar() -> None:
             cal.holidays(date(2024, 1, 1), date(2024, 12, 31)), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -57,6 +58,7 @@ def test_custom_calendar() -> None:
             cal.holidays(date(2024, 1, 1), date(2024, 12, 31), False), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -65,6 +67,7 @@ def test_custom_calendar() -> None:
             "pd.Series[str]",
         ),
         pd.Series,
+        str,
     )
 
     check(
@@ -72,6 +75,7 @@ def test_custom_calendar() -> None:
             cal.holidays(datetime(2024, 1, 1), datetime(2024, 12, 31)), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -80,6 +84,7 @@ def test_custom_calendar() -> None:
             pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -90,6 +95,7 @@ def test_custom_calendar() -> None:
             "pd.Series[str]",
         ),
         pd.Series,
+        str,
     )
 
     check(
@@ -98,6 +104,7 @@ def test_custom_calendar() -> None:
             pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -106,6 +113,7 @@ def test_custom_calendar() -> None:
             pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -116,6 +124,7 @@ def test_custom_calendar() -> None:
             "pd.Series[str]",
         ),
         pd.Series,
+        str,
     )
 
     check(
@@ -124,6 +133,7 @@ def test_custom_calendar() -> None:
             pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -134,6 +144,7 @@ def test_custom_calendar() -> None:
             pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -146,16 +157,19 @@ def test_custom_calendar() -> None:
             "pd.Series[str]",
         ),
         pd.Series,
+        str,
     )
 
     check(
         assert_type(cal.holidays("2024-01-01", "2024-12-31"), pd.DatetimeIndex),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
         assert_type(cal.holidays("2024-01-01", "2024-12-31", False), pd.DatetimeIndex),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -163,11 +177,13 @@ def test_custom_calendar() -> None:
             cal.holidays("2024-01-01", "2024-12-31", return_name=True), "pd.Series[str]"
         ),
         pd.Series,
+        str,
     )
 
     check(
         assert_type(cal.holidays(date(2024, 1, 1), "2024-12-31"), pd.DatetimeIndex),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -175,6 +191,7 @@ def test_custom_calendar() -> None:
             cal.holidays(date(2024, 1, 1), "2024-12-31", False), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
     check(
@@ -183,6 +200,7 @@ def test_custom_calendar() -> None:
             "pd.Series[str]",
         ),
         pd.Series,
+        str,
     )
     check(
         assert_type(
@@ -190,6 +208,7 @@ def test_custom_calendar() -> None:
             pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
+        pd.Timestamp,
     )
     check(
         assert_type(
@@ -197,6 +216,7 @@ def test_custom_calendar() -> None:
             "pd.Series[str]",
         ),
         pd.Series,
+        str,
     )
     check(
         assert_type(
@@ -204,6 +224,7 @@ def test_custom_calendar() -> None:
             "pd.Series[str]",
         ),
         pd.Series,
+        str,
     )
 
 
