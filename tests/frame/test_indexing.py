@@ -22,13 +22,17 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from pandas.api.typing.aliases import Scalar
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
 import pytest
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import ScalarOrNA
 
 
 def test_types_getitem() -> None:
@@ -106,10 +110,10 @@ def test_types_setitem_mask() -> None:
 
 def test_types_iloc_iat() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    check(assert_type(df.iloc[1, 1], Scalar), np.integer)
+    check(assert_type(df.iloc[1, 1], ScalarOrNA), np.integer)
     check(assert_type(df.iloc[[1], [1]], pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(df.iat[0, 0], Scalar), np.integer)
+    check(assert_type(df.iat[0, 0], ScalarOrNA), np.integer)
 
     # https://github.com/microsoft/python-type-stubs/issues/31
     check(assert_type(df.iloc[:, [0]], pd.DataFrame), pd.DataFrame)
@@ -119,9 +123,25 @@ def test_types_iloc_iat() -> None:
 def test_types_loc_at() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df.loc[[0], "col1"], pd.Series), pd.Series)
-    check(assert_type(df.loc[0, "col1"], Scalar), np.integer)
+    check(assert_type(df.loc[0, "col1"], ScalarOrNA), np.integer)
 
-    check(assert_type(df.at[0, "col1"], Scalar), np.integer)
+    check(assert_type(df.at[0, "col1"], ScalarOrNA), np.integer)
+
+    df = pd.DataFrame(
+        {
+            "flag": [True],
+            "n": pd.array([None], dtype="Int64"),
+            "ts": [pd.NaT],
+            "p": [pd.Period("2020-01")],
+            "iv": [pd.Interval(0, 1)],
+        }
+    )
+
+    check(assert_type(df.loc[0, "flag"], ScalarOrNA), np.bool_)
+    check(assert_type(df.iloc[0, 1], ScalarOrNA), NAType)
+    check(assert_type(df.at[0, "ts"], ScalarOrNA), NaTType)
+    check(assert_type(df.iat[0, 3], ScalarOrNA), pd.Period)
+    check(assert_type(df.at[0, "iv"], ScalarOrNA), pd.Interval)
 
 
 def test_types_boolean_indexing() -> None:
@@ -170,7 +190,7 @@ def test_indexslice_getitem() -> None:
         assert_type(df.loc[pd.IndexSlice[:, df["z"] > 40], :], pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(df.loc[pd.IndexSlice[2, 30], "z"], Scalar), np.integer)
+    check(assert_type(df.loc[pd.IndexSlice[2, 30], "z"], ScalarOrNA), np.integer)
     check(
         assert_type(df.loc[pd.IndexSlice[[2, 4], [20, 40]], :], pd.DataFrame),
         pd.DataFrame,
@@ -423,7 +443,7 @@ def test_getsetitem_multiindex() -> None:
     budget = pd.DataFrame(index=rows, columns=cols)
     multi_index: tuple[str, str] = ("Year 1", "Q1")
     budget.loc["project A", multi_index] = 4700
-    check(assert_type(budget.loc["project A", multi_index], Scalar), int)
+    check(assert_type(budget.loc["project A", multi_index], ScalarOrNA), int)
 
 
 def test_getitem_generator() -> None:
@@ -560,7 +580,7 @@ def test_loc_callable() -> None:
     def select3(_: pd.DataFrame) -> int:
         return 1
 
-    check(assert_type(df.loc[select3, "x"], Scalar), np.integer)
+    check(assert_type(df.loc[select3, "x"], ScalarOrNA), np.integer)
 
     check(
         assert_type(
@@ -631,7 +651,7 @@ def test_frame_index_timestamp() -> None:
     check(assert_type(df.loc[dt1, :], pd.Series | pd.DataFrame), pd.Series)
     check(assert_type(df.loc[[dt1], :], pd.DataFrame), pd.DataFrame)
     df2 = pd.DataFrame({"x": s})
-    check(assert_type(df2.loc[dt1, "x"], Scalar), np.integer)
+    check(assert_type(df2.loc[dt1, "x"], ScalarOrNA), np.integer)
     check(assert_type(df2.loc[[dt1], "x"], pd.Series), pd.Series, np.integer)
 
 
@@ -673,14 +693,14 @@ def test_frame_ndarray_assignmment() -> None:
 def test_frame_at() -> None:
     df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]})
 
-    check(assert_type(df.at[0, "col1"], Scalar), float)
+    check(assert_type(df.at[0, "col1"], ScalarOrNA), float)
     df.at[0, "col1"] = 999
     df.at[0, "col1"] = float("nan")
 
     mi = pd.MultiIndex.from_arrays([[2, 3], [4, 5]])
     df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]}, index=mi)
 
-    check(assert_type(df.at[(2, 4), "col1"], Scalar), float)
+    check(assert_type(df.at[(2, 4), "col1"], ScalarOrNA), float)
     df.at[(2, 4), "col1"] = 999
     df.at[(2, 4), "col1"] = float("nan")
 
@@ -688,7 +708,7 @@ def test_frame_at() -> None:
 def test_frame_iat() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
-    check(assert_type(df.iat[0, 0], Scalar), np.integer)
+    check(assert_type(df.iat[0, 0], ScalarOrNA), np.integer)
     df.iat[0, 0] = 999
     df.iat[0, 0] = float("nan")
     if TYPE_CHECKING_INVALID_USAGE:

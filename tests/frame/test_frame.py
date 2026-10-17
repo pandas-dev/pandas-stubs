@@ -56,6 +56,7 @@ from tests import (
     pytest_warns_excel_pandas4,
 )
 from tests._typing import (
+    ScalarOrNA,
     np_1darray,
     np_2darray,
     np_ndarray,
@@ -744,9 +745,9 @@ def test_types_itertuples() -> None:
 
     for t1 in df.itertuples():
         check(assert_type(t1, PandasNamedTuple), tuple)
+        check(assert_type(t1.col1, ScalarOrNA), int)
         assert t1.__class__.__name__ == "Pandas"
         assert isinstance(t1.Index, int)
-        assert isinstance(t1.col1, int)
         assert isinstance(t1.col2, int)
         for k in [0, 1, 2]:
             assert isinstance(t1[k], int)
@@ -4101,7 +4102,7 @@ def test_itertuples() -> None:
 
     for item in df.itertuples():
         check(assert_type(item, PandasNamedTuple), tuple)
-        assert_type(item.a, Scalar)
+        check(assert_type(item.a, ScalarOrNA), int)
 
 
 @pytest.mark.parametrize("d", [1])
