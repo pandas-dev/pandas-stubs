@@ -750,6 +750,7 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.tz, dt.tzinfo | None), type(None))
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
+    check(assert_type(i0.asi8, np_1darray_int64), np_1darray_int64, np.int64)
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(
@@ -843,6 +844,7 @@ def test_timedeltaindex_accessors() -> None:
     check(assert_type(i0.as_unit("ms"), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(i0.as_unit("us"), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(i0.as_unit("ns"), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.asi8, np_1darray_int64), np_1darray_int64, np.int64)
 
 
 def test_periodindex_accessors() -> None:
@@ -900,6 +902,7 @@ def test_periodindex_accessors() -> None:
 
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
+    check(assert_type(i0.asi8, np_1darray_int64), np_1darray_int64, np.int64)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
     check(assert_type(i0.asfreq("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(assert_type(i0.end_time, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
