@@ -2051,27 +2051,13 @@ def test_diff() -> None:
     # Any -> Any
     s_o = ind.astype(object)
     assert_type(s_o, pd.Index)
-    check(
-        assert_type(s_o.diff(), pd.Index),
-        pd.Index,
-        float,
-    )
+    check(assert_type(s_o.diff(), pd.Index), pd.Index, float)
     mi = pd.MultiIndex.from_arrays(
         [range(4), pd.date_range("2026-01-30", "2026-02-02")], names=["a", "b"]
     )
+    check(assert_type(mi.get_level_values("a").diff(), pd.Index), pd.Index, float)
     check(
-        assert_type(
-            mi.get_level_values("a").diff(),
-            pd.Index,
-        ),
-        pd.Index,
-        float,
-    )
-    check(
-        assert_type(
-            mi.get_level_values("b").diff(),
-            pd.Index,
-        ),
+        assert_type(mi.get_level_values("b").diff(), pd.Index),
         pd.Index,
         pd.Timedelta,
         index_to_check_for_type=-1,
