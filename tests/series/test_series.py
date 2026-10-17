@@ -2197,13 +2197,7 @@ def test_types_to_numpy() -> None:
         np_1darray_object,
     )
 
-    # TODO: remove the ignore astral-sh/ty#4055
-    check(
-        assert_type(
-            pd.Series().to_numpy(), np_1darray
-        ),  # ty: ignore[type-assertion-failure]
-        np_1darray,
-    )
+    check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
 
     check(
         assert_type(
