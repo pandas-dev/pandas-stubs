@@ -2094,3 +2094,25 @@ def test_diff() -> None:
         def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
             # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
             assert_type(pd.Index([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
+
+
+def test_to_flat_index() -> None:
+    idx = pd.Index([1, 2, 3])
+    check(assert_type(idx.to_flat_index(), "pd.Index[int]"), pd.Index, np.integer)
+
+    dti = pd.date_range("2020-01-01", periods=3)
+    check(
+        assert_type(dti.to_flat_index(), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+        pd.Timestamp,
+    )
+
+    tdi = pd.timedelta_range("1D", periods=3)
+    check(
+        assert_type(tdi.to_flat_index(), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
+
+    mi = pd.MultiIndex.from_tuples([("a", 1), ("b", 2)])
+    check(assert_type(mi.to_flat_index(), pd.Index), pd.Index, tuple)
