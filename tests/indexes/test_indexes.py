@@ -70,6 +70,16 @@ def test_index_duplicated() -> None:
     check(assert_type(duplicated, np_1darray_bool), np_1darray_bool)
 
 
+def test_index_any_all() -> None:
+    ind = pd.Index([0, 1, 2])
+    check(assert_type(ind.any(), np.bool), np.bool)
+    check(assert_type(ind.all(), np.bool), np.bool)
+    check(assert_type(pd.Index([1.5, 0.0]).any(), np.bool), np.bool)
+    check(assert_type(pd.Index([True, False]).all(), np.bool), np.bool)
+    check(assert_type(pd.RangeIndex(3).any(), bool), bool)
+    check(assert_type(pd.RangeIndex(3).all(), bool), bool)
+
+
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
     check(assert_type(ind.isin([2, 4]), np_1darray_bool), np_1darray_bool)

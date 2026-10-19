@@ -53,8 +53,10 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
     def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
     ) -> tuple[np_1darray_intp, RangeIndex]: ...
-    def all(self, *args: Any, **kwargs: Any) -> bool: ...
-    def any(self, *args: Any, **kwargs: Any) -> bool: ...
+    @override
+    def all(self, *args: Any, **kwargs: Any) -> bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    @override
+    def any(self, *args: Any, **kwargs: Any) -> bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @overload  # type: ignore[override]
     @override
     def union(  # pyrefly: ignore[bad-override]
