@@ -1687,7 +1687,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = 0,
         numeric_only: _bool = False,
         dropna: _bool = True,
-    ) -> Series: ...
+    ) -> Self: ...
     @overload
     def quantile(
         self,

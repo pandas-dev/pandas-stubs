@@ -1123,6 +1123,16 @@ def test_types_std() -> None:
     check(assert_type(df.std(skipna=True, numeric_only=False), pd.Series), pd.Series)
 
 
+def test_types_mode() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1, 1], "col2": [1, 4, 4]})
+    check(assert_type(df.mode(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mode(axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.mode(numeric_only=True, dropna=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
 def test_types_idxmin() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.idxmin(), "pd.Series[int]"), pd.Series, np.integer)
