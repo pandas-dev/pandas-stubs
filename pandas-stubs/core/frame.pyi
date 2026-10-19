@@ -199,6 +199,10 @@ _LocSetItemKey: TypeAlias = (
     | MaskType
     | Hashable
     | _IndexSliceTuple
+    | tuple[
+        IndexOpsMixin | MaskType | Scalar | Sequence[Scalar] | slice,
+        Hashable | Iterable[Hashable],
+    ]
     | Iterable[Scalar]
     | IndexingInt
     | slice
