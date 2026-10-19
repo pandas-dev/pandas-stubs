@@ -8,6 +8,10 @@ from typing import (
     TypeVar,
 )
 
+from pandas import (
+    Interval,
+    Period,
+)
 from pandas.core.base import IndexOpsMixin
 
 from pandas._libs.indexing import NDFrameIndexerBase
@@ -42,13 +46,13 @@ class _LocIndexer(_NDFrameIndexer): ...
 class _iLocIndexer(_NDFrameIndexer): ...
 
 class _AtIndexer(NDFrameIndexerBase):
-    def __getitem__(self, key: Hashable, /) -> ScalarOrNA: ...
+    def __getitem__(self, key: Hashable, /) -> ScalarOrNA | Period | Interval: ...
     def __setitem__(
         self, key: Hashable, value: Scalar | NAType | NaTType | None, /
     ) -> None: ...
 
 class _iAtIndexer(NDFrameIndexerBase):
-    def __getitem__(self, key: int, /) -> ScalarOrNA: ...
+    def __getitem__(self, key: int, /) -> ScalarOrNA | Period | Interval: ...
     def __setitem__(
         self, key: int, value: Scalar | NAType | NaTType | None, /
     ) -> None: ...

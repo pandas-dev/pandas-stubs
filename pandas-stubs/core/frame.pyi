@@ -37,6 +37,7 @@ from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from numpy import typing as npt
 from pandas import (
+    Interval,
     Period,
     Timedelta,
     Timestamp,
@@ -216,7 +217,9 @@ _SetItemValueNotDataFrame: TypeAlias = (
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
-    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA: ...
+    def __getitem__(
+        self, key: tuple[int, int], /
+    ) -> ScalarOrNA | Period | Interval: ...
     @overload
     def __getitem__(self, key: IndexingInt, /) -> Series: ...
     @overload
@@ -262,7 +265,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             int | str | tuple[Scalar, ...],
         ],
         /,
-    ) -> ScalarOrNA: ...
+    ) -> ScalarOrNA | Period | Interval: ...
     @overload
     def __getitem__(
         self,
@@ -334,7 +337,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
 
 class _iAtIndexerFrame(_iAtIndexer):
     @override
-    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[int, int], value: ScalarOrNA, /
@@ -344,7 +347,7 @@ class _AtIndexerFrame(_AtIndexer):
     @override
     def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], /
-    ) -> ScalarOrNA: ...
+    ) -> ScalarOrNA | Period | Interval: ...
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA, /
@@ -354,7 +357,7 @@ class _GetItemHack:
     @overload
     def __getitem__(self, key: Expression, /) -> Self: ...
     @overload
-    def __getitem__(self, key: Scalar | tuple[Hashable, ...], /) -> Series: ...  # type: ignore[overload-overlap]
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...], /) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     # With python 3.12+, the second overload needs a type-ignore statement
     if sys.version_info >= (3, 12):
         @overload
@@ -2706,4 +2709,4 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
 @type_check_only
 class PandasNamedTuple(tuple[Any, ...]):
-    def __getattr__(self, field: str, /) -> ScalarOrNA: ...
+    def __getattr__(self, field: str, /) -> ScalarOrNA | Period | Interval: ...

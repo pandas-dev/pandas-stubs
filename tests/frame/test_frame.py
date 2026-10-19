@@ -739,7 +739,7 @@ def test_types_itertuples() -> None:
 
     for t1 in df.itertuples():
         check(assert_type(t1, PandasNamedTuple), tuple)
-        check(assert_type(t1.col1, ScalarOrNA), int)
+        check(assert_type(t1.col1, ScalarOrNA | pd.Period | pd.Interval), int)
         assert t1.__class__.__name__ == "Pandas"
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col2, int)
@@ -4101,7 +4101,17 @@ def test_itertuples() -> None:
 
     for item in df.itertuples():
         check(assert_type(item, PandasNamedTuple), tuple)
-        check(assert_type(item.a, ScalarOrNA), int)
+        check(assert_type(item.a, ScalarOrNA | pd.Period | pd.Interval), int)
+
+    df = pd.DataFrame(
+        {"period": [pd.Period("2020-01")], "interval": [pd.Interval(0, 1)]}
+    )
+    for item in df.itertuples():
+        check(assert_type(item.period, ScalarOrNA | pd.Period | pd.Interval), pd.Period)
+        check(
+            assert_type(item.interval, ScalarOrNA | pd.Period | pd.Interval),
+            pd.Interval,
+        )
 
 
 @pytest.mark.parametrize("d", [1])
