@@ -351,7 +351,7 @@ def interval_range(
     start: float | None = None,
     end: float | None = None,
     periods: int | None = None,
-    freq: int | None = None,
+    freq: float | None = None,
     name: Hashable = None,
     closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[float]]: ...
