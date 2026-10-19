@@ -925,6 +925,32 @@ def test_dataframe_value_counts() -> None:
         Series,
         np.int64,
     )
+    # GH 1999
+    check(
+        assert_type(
+            df.groupby("a")[["b", "c"]].value_counts(normalize=True), "Series[float]"
+        ),
+        Series,
+        np.float64,
+    )
+    check(
+        assert_type(df.groupby("a").value_counts(normalize=True), "Series[float]"),
+        Series,
+        np.float64,
+    )
+    check(
+        assert_type(
+            df.groupby("a").value_counts(subset=["b"], normalize=True), "Series[float]"
+        ),
+        Series,
+        np.float64,
+    )
+    check(
+        assert_type(
+            df.groupby("a", as_index=False).value_counts(normalize=True), DataFrame
+        ),
+        DataFrame,
+    )
 
 
 def test_dataframe_apply_kwargs() -> None:

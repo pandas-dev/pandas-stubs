@@ -370,7 +370,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def value_counts(
         self: DataFrameGroupBy[ByT, Literal[True]],
-        subset: ListLike | None,
+        subset: ListLike | None = ...,
+        *,
         normalize: Literal[True],
         sort: bool = ...,
         ascending: bool = ...,
@@ -388,7 +389,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def value_counts(
         self: DataFrameGroupBy[ByT, Literal[False]],
-        subset: ListLike | None,
+        subset: ListLike | None = ...,
+        *,
         normalize: Literal[True],
         sort: bool = ...,
         ascending: bool = ...,
