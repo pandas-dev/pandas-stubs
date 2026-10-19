@@ -2093,10 +2093,19 @@ def test_relops() -> None:
         _3 = pd.Series([s]) >= af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
     ac: complex = 1 + 2j
-    check(assert_type(pd.Series([ac]) > ac, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ac]) < ac, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ac]) <= ac, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ac]) >= ac, "pd.Series[bool]"), pd.Series, np.bool_)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"deprecated on complex data",
+        lower="3.1.99",
+    ):
+        check(assert_type(pd.Series([ac]) > ac, "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type(pd.Series([ac]) < ac, "pd.Series[bool]"), pd.Series, np.bool_)
+        check(
+            assert_type(pd.Series([ac]) <= ac, "pd.Series[bool]"), pd.Series, np.bool_
+        )
+        check(
+            assert_type(pd.Series([ac]) >= ac, "pd.Series[bool]"), pd.Series, np.bool_
+        )
 
     ts = pd.Timestamp("2022-07-31 08:35:12")
     check(assert_type(pd.Series([ts]) > ts, "pd.Series[bool]"), pd.Series, np.bool_)

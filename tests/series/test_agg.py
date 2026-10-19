@@ -77,7 +77,7 @@ def test_agg_complex() -> None:
         ),
         pytest_warns_bounded(
             Pandas4Warning,
-            r"median, idxmin, and similar methods are deprecated on complex data",
+            r"deprecated on complex data",
             lower="3.1.99",
         ),
     ):
