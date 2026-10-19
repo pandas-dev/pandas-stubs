@@ -12,8 +12,12 @@ from typing_extensions import override
 
 from pandas._typing import (
     S1,
+    AnyArrayLike,
     Dtype,
     ListLike,
+    Ordered,
+    Renamer,
+    SequenceNotStr,
     np_1darray_intp,
 )
 
@@ -32,6 +36,31 @@ class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
         copy: bool = False,
         name: Hashable | None = None,
     ) -> Self: ...
+    @property
+    def ordered(self) -> Ordered: ...
+    def as_ordered(self) -> Self: ...
+    def as_unordered(self) -> Self: ...
+    def set_categories(
+        self,
+        new_categories: AnyArrayLike | SequenceNotStr[Hashable],
+        ordered: bool | None = None,
+        rename: bool = False,
+    ) -> CategoricalIndex: ...
+    def rename_categories(
+        self, new_categories: ListLike | Renamer
+    ) -> CategoricalIndex: ...
+    def reorder_categories(
+        self,
+        new_categories: AnyArrayLike | SequenceNotStr[Hashable],
+        ordered: bool | None = None,
+    ) -> Self: ...
+    def add_categories(
+        self, new_categories: Hashable | AnyArrayLike | SequenceNotStr[Hashable]
+    ) -> Self: ...
+    def remove_categories(
+        self, removals: Hashable | AnyArrayLike | SequenceNotStr[Hashable]
+    ) -> Self: ...
+    def remove_unused_categories(self) -> Self: ...
     # `item` might be `S1` but not one of the categories, thus changing
     # the return type from `CategoricalIndex` to `Index`.
     @override
