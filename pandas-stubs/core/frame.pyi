@@ -1980,8 +1980,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: float | None = ...,
-        upper: float | None = ...,
+        lower: float | Sequence[float] | None = ...,
+        upper: float | Sequence[float] | None = ...,
         *,
         axis: Axis | None = ...,
         inplace: bool = False,
