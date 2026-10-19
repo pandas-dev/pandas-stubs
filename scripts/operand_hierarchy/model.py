@@ -49,18 +49,7 @@ TIER_OPERANDS: Final[dict[str, int]] = {
     "DataFrame": 4,
 }
 
-# Tier 1 is the array-likes, registered under the ``ExtensionArray`` ABC: the operand name
-# above, its canonical name below, and its stub file in ``CLASS_STUB_FILES``. It took no
-# exception key when it landed, because the only classes that can violate against tier 1
-# are the tier-0 scalars and none of them names an array-like in a forward dunder's
-# ``other``. The first one that does needs a key, and it is also the first site to read
-# ``CANONICAL_OPERAND_BY_TIER[1]``.
-
-# The operand name a tier is registered under, so a site that spells its operand
-# ``TimedeltaIndex`` or ``MultiIndex`` is looked up as ``Index``. Keyed by tier, not by
-# spelling, so a spelling cannot drift out of the exception list. Spelled out rather than
-# derived from ``TIER_OPERANDS`` because a tier's canonical name is a choice, not a
-# derivation: ``Index`` and ``MultiIndex`` share tier 2.
+# Index subclass spellings share the canonical operand Index.
 CANONICAL_OPERAND_BY_TIER: Final[dict[int, str]] = {
     TIER_OPERANDS["ExtensionArray"]: "ExtensionArray",
     TIER_OPERANDS["Index"]: "Index",

@@ -1,59 +1,107 @@
-"""Temporary exceptions to the operand-hierarchy invariant.
+"""Counted allowances for higher-tier operands; see EXCEPTIONS_DOCUMENTATION."""
 
-Temporary exceptions; the target is an empty set. Each key permits a higher-tier forward
-operand the checker otherwise rejects, and is deleted once the overload it permits stops
-naming that operand. The checker fails, in the ``architecture`` CI job, on a key no scanned
-stub site matched, so a key cannot outlive its overload.
-
-This module is the list alone: no per-key rationale and no per-key anchor. The policy lives
-in ``docs/type-architecture/operand-hierarchy.md``, the reason for a key is argued in the
-review and the commit that adds it, and ``TEMPORARY_EXCEPTION_NOTE`` is the one wording the
-checker prints.
-"""
-
-from __future__ import annotations
-
-from pathlib import Path
 from typing import Final
 
 ExceptionKey = tuple[str, str, str]
 
-# The path this file is reached by, derived rather than written down twice, so the debt line
-# and the dead-key message cannot outlive a move of this file. The name is computed from the
-# module's own location: ``scripts/operand_hierarchy/exceptions.py``.
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-EXCEPTIONS_FILE: Final[str] = (
-    Path(__file__).resolve().relative_to(_REPO_ROOT).as_posix()
-)
-
-# The one shared wording for this list: quoted by the module docstring above and appended
-# by the checker to its pass summary. Do not add per-key prose.
-TEMPORARY_EXCEPTION_NOTE: Final[str] = (
-    "Temporary exceptions; the target is an empty set"
-)
-
-# Where the policy and the target are documented. One anchor, not one per key.
-EXCEPTIONS_DOCUMENTATION: Final[str] = (
+EXCEPTIONS_FILE: Final = "scripts/operand_hierarchy/exceptions.py"
+EXCEPTIONS_DOCUMENTATION: Final = (
     "docs/type-architecture/operand-hierarchy.md#scalar-and-index-subclass-overloads"
 )
 
-# A key of (class, "*", forbidden) permits `forbidden` for every forward binary dunder of
-# `class`; an exact (class, dunder, forbidden) key is looked up first and wins. `forbidden` is
-# the tier's operand name, so the Index key covers the IntervalIndex, TimedeltaIndex and
-# MultiIndex spellings alike.
-FORWARD_DUNDER_EXCEPTIONS: Final[frozenset[ExceptionKey]] = frozenset(
-    {
-        ("Interval", "*", "Index"),
-        ("Interval", "*", "Series"),
-        ("IntervalIndex", "*", "Series"),
-        ("NAType", "*", "Index"),
-        ("NAType", "*", "Series"),
-        ("Period", "*", "Index"),
-        ("Period", "*", "Series"),
-        ("Series", "__matmul__", "DataFrame"),
-        ("Timedelta", "*", "Index"),
-        ("Timedelta", "*", "Series"),
-        ("Timestamp", "*", "Index"),
-        ("Timestamp", "*", "Series"),
-    }
-)
+# Each overload contributes once per canonical higher tier, regardless of alias spelling.
+FORWARD_DUNDER_EXCEPTIONS: Final[dict[ExceptionKey, int]] = {
+    ("Interval", "__eq__", "Index"): 1,
+    ("Interval", "__eq__", "Series"): 1,
+    ("Interval", "__ge__", "Index"): 1,
+    ("Interval", "__ge__", "Series"): 1,
+    ("Interval", "__gt__", "Index"): 1,
+    ("Interval", "__gt__", "Series"): 1,
+    ("Interval", "__le__", "Index"): 1,
+    ("Interval", "__lt__", "Index"): 1,
+    ("Interval", "__lt__", "Series"): 1,
+    ("Interval", "__ne__", "Index"): 1,
+    ("Interval", "__ne__", "Series"): 1,
+    ("IntervalIndex", "__eq__", "Series"): 1,
+    ("IntervalIndex", "__ge__", "Series"): 1,
+    ("IntervalIndex", "__gt__", "Series"): 1,
+    ("IntervalIndex", "__le__", "Series"): 1,
+    ("IntervalIndex", "__lt__", "Series"): 1,
+    ("IntervalIndex", "__ne__", "Series"): 1,
+    ("NAType", "__add__", "Index"): 1,
+    ("NAType", "__add__", "Series"): 1,
+    ("NAType", "__divmod__", "Index"): 1,
+    ("NAType", "__divmod__", "Series"): 1,
+    ("NAType", "__eq__", "Index"): 1,
+    ("NAType", "__eq__", "Series"): 1,
+    ("NAType", "__floordiv__", "Index"): 1,
+    ("NAType", "__floordiv__", "Series"): 1,
+    ("NAType", "__ge__", "Index"): 1,
+    ("NAType", "__ge__", "Series"): 1,
+    ("NAType", "__gt__", "Index"): 1,
+    ("NAType", "__gt__", "Series"): 1,
+    ("NAType", "__le__", "Index"): 1,
+    ("NAType", "__le__", "Series"): 1,
+    ("NAType", "__lt__", "Index"): 1,
+    ("NAType", "__lt__", "Series"): 1,
+    ("NAType", "__mod__", "Index"): 1,
+    ("NAType", "__mod__", "Series"): 1,
+    ("NAType", "__mul__", "Index"): 1,
+    ("NAType", "__mul__", "Series"): 1,
+    ("NAType", "__ne__", "Index"): 1,
+    ("NAType", "__ne__", "Series"): 1,
+    ("NAType", "__pow__", "Index"): 1,
+    ("NAType", "__pow__", "Series"): 1,
+    ("NAType", "__sub__", "Index"): 1,
+    ("NAType", "__sub__", "Series"): 1,
+    ("NAType", "__truediv__", "Index"): 1,
+    ("NAType", "__truediv__", "Series"): 1,
+    ("NAType", "__xor__", "Index"): 1,
+    ("NAType", "__xor__", "Series"): 1,
+    ("Period", "__eq__", "Index"): 1,
+    ("Period", "__eq__", "Series"): 1,
+    ("Period", "__ge__", "Index"): 1,
+    ("Period", "__ge__", "Series"): 1,
+    ("Period", "__gt__", "Index"): 1,
+    ("Period", "__gt__", "Series"): 1,
+    ("Period", "__le__", "Index"): 1,
+    ("Period", "__le__", "Series"): 1,
+    ("Period", "__lt__", "Index"): 1,
+    ("Period", "__lt__", "Series"): 1,
+    ("Period", "__ne__", "Index"): 1,
+    ("Period", "__ne__", "Series"): 1,
+    ("Period", "__sub__", "Index"): 2,
+    ("Period", "__sub__", "Series"): 1,
+    ("Series", "__matmul__", "DataFrame"): 1,
+    ("Timedelta", "__eq__", "Index"): 1,
+    ("Timedelta", "__eq__", "Series"): 1,
+    ("Timedelta", "__floordiv__", "Index"): 1,
+    ("Timedelta", "__floordiv__", "Series"): 3,
+    ("Timedelta", "__ge__", "Index"): 1,
+    ("Timedelta", "__ge__", "Series"): 1,
+    ("Timedelta", "__gt__", "Index"): 1,
+    ("Timedelta", "__gt__", "Series"): 1,
+    ("Timedelta", "__le__", "Index"): 1,
+    ("Timedelta", "__le__", "Series"): 1,
+    ("Timedelta", "__lt__", "Index"): 1,
+    ("Timedelta", "__lt__", "Series"): 1,
+    ("Timedelta", "__mod__", "Index"): 1,
+    ("Timedelta", "__mod__", "Series"): 2,
+    ("Timedelta", "__ne__", "Index"): 1,
+    ("Timedelta", "__ne__", "Series"): 1,
+    ("Timedelta", "__sub__", "Index"): 1,
+    ("Timestamp", "__add__", "Index"): 1,
+    ("Timestamp", "__eq__", "Index"): 1,
+    ("Timestamp", "__eq__", "Series"): 1,
+    ("Timestamp", "__ge__", "Index"): 1,
+    ("Timestamp", "__ge__", "Series"): 1,
+    ("Timestamp", "__gt__", "Index"): 1,
+    ("Timestamp", "__gt__", "Series"): 1,
+    ("Timestamp", "__le__", "Index"): 1,
+    ("Timestamp", "__le__", "Series"): 1,
+    ("Timestamp", "__lt__", "Index"): 1,
+    ("Timestamp", "__lt__", "Series"): 1,
+    ("Timestamp", "__ne__", "Index"): 1,
+    ("Timestamp", "__ne__", "Series"): 1,
+    ("Timestamp", "__sub__", "Index"): 1,
+}

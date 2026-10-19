@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Script entry point; CI and the guide run `python scripts/check_operand_hierarchy.py`."""
+"""Script entry point; CI and the guide run `python -S scripts/check_operand_hierarchy.py`."""
 
 import sys
 
