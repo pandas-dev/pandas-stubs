@@ -82,5 +82,12 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - name: Validate operand hierarchy invariant
-        run: python scripts/check_operand_hierarchy.py
+      - name: Install project dependencies
+        uses: ./.github/setup
+        with:
+          os: ubuntu-latest
+          python-version: "3.11"
+      - name: Test operand hierarchy contract
+        run: poetry run poe pytest_architecture
+      - name: Validate standalone operand hierarchy command
+        run: python -S scripts/check_operand_hierarchy.py
