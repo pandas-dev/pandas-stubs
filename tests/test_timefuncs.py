@@ -751,6 +751,8 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.tz, dt.tzinfo | None), type(None))
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
     check(assert_type(i0.asi8, np_1darray_int64), np_1darray_int64, np.int64)
+    check(assert_type(i0.mean(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(i0.mean(skipna=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(
@@ -845,6 +847,8 @@ def test_timedeltaindex_accessors() -> None:
     check(assert_type(i0.as_unit("us"), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(i0.as_unit("ns"), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(i0.asi8, np_1darray_int64), np_1darray_int64, np.int64)
+    check(assert_type(i0.mean(), pd.Timedelta), pd.Timedelta)
+    check(assert_type(i0.mean(skipna=False), pd.Timedelta), pd.Timedelta)
 
 
 def test_periodindex_accessors() -> None:
