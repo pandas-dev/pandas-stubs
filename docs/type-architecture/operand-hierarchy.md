@@ -22,9 +22,9 @@ bitwise (`__lshift__`, `__rshift__`, `__and__`, `__or__`, `__xor__`) and compari
 (`__lt__`, `__le__`, `__eq__`, `__ne__`, `__gt__`, `__ge__`). Reflected and in-place methods
 are not scanned, so `__radd__` is outside the check while `__rshift__` is scanned.
 
-`CLASS_TIERS` and `REQUIRED_STUB_FILES` in `scripts/operand_hierarchy/model.py` list every
-registered class and every file that may declare one. Moving a class to a new file requires
-updating `REQUIRED_STUB_FILES`.
+`CLASS_TIERS` in `scripts/operand_hierarchy/model.py` tiers every registered class; Index
+subclasses are discovered through their bases, not listed. `REQUIRED_STUB_FILES` lists every
+file that may declare a checked class, so moving a class to a new file requires updating it.
 
 ## A rejected signature, traced
 
@@ -45,6 +45,8 @@ class Series:
 ```text
 ERROR: Series.__sub__ higher-tier operand DataFrame: expected 0 overload(s), observed 1; review the signature or update scripts/operand_hierarchy/exceptions.py.
 ```
+
+`test_guide_traced_example` runs this example, so the trace above cannot drift from the checker.
 
 ## Scalar and Index subclass overloads
 

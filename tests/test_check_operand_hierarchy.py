@@ -435,6 +435,21 @@ def test_registry_and_documentation() -> None:
     ).read_text(encoding="utf-8")
 
 
+def test_guide_traced_example(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    guide = (_REPO_ROOT / EXCEPTIONS_DOCUMENTATION.partition("#")[0]).read_text(
+        encoding="utf-8"
+    )
+    section = guide.split("## A rejected signature, traced", 1)[1].split("\n## ", 1)[0]
+    source, diagnostic = re.findall(
+        r"```(?:python|text)\n(.*?)```", section, flags=re.DOTALL
+    )
+    root = _write_tree(tmp_path, {"core/series.pyi": source})
+    assert not check_operand_hierarchy(root, exceptions={})
+    assert capsys.readouterr().err == diagnostic
+
+
 def test_repository_matches_allowances(capsys: pytest.CaptureFixture[str]) -> None:
     assert main() == 0
     output = capsys.readouterr()
