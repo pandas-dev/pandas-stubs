@@ -64,7 +64,15 @@ _DIST: Final = {
         _PYTHON_VERSION,
     ],
     "pyright": ["pyright", "tests", "--warnings", "--pythonversion", _PYTHON_VERSION],
-    "pyrefly": ["pyrefly", "check", "tests", "--python-version", _PYTHON_VERSION],
+    "pyrefly": [
+        "pyrefly",
+        "check",
+        "tests",
+        "--python-version",
+        _PYTHON_VERSION,
+        "--preset",
+        "strict",
+    ],
     "ty": ["ty", "check", "tests", "--python-version", _PYTHON_VERSION],
 }
 
