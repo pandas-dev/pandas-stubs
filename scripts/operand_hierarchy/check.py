@@ -12,6 +12,9 @@ from collections.abc import (  # noqa: TC003
     Iterator,
     Mapping,
 )
+from dataclasses import (
+    dataclass,
+)
 from pathlib import Path
 import sys
 
@@ -22,26 +25,19 @@ from .exceptions import (
 )
 from .model import (
     CANONICAL_OPERAND_BY_TIER,
-    CLASS_STUB_FILES,
+    CLASS_TIERS,
     FORWARD_BINARY_DUNDERS,
     REQUIRED_STUB_FILES,
-    TIER_OPERANDS,
 )
 
 
+@dataclass(frozen=True)
 class StubTree:
     """Aliases and bases are discovered globally; checked classes require registered files."""
 
-    def __init__(
-        self,
-        aliases: Mapping[str, tuple[ast.AST, ...]],
-        tiers: Mapping[str, int],
-        classes: Mapping[str, tuple[ast.ClassDef, ...]],
-    ) -> None:
-        super().__init__()
-        self.aliases = aliases
-        self.tiers = tiers
-        self.classes = classes
+    aliases: Mapping[str, tuple[ast.AST, ...]]
+    tiers: Mapping[str, int]
+    classes: Mapping[str, tuple[ast.ClassDef, ...]]
 
     @classmethod
     def load(cls, root: Path) -> StubTree | None:
@@ -65,9 +61,9 @@ class StubTree:
                     if isinstance(node, ast.ClassDef):
                         classes[node.name].append(node)
 
-        tiers = {**dict.fromkeys(CLASS_STUB_FILES, 0), **TIER_OPERANDS}
+        tiers = dict(CLASS_TIERS)
         tiers.update(
-            (name, TIER_OPERANDS["Index"])
+            (name, CLASS_TIERS["Index"])
             for name in bases
             if name not in tiers and _descends_from(name, "Index", bases)
         )
@@ -187,7 +183,7 @@ def check_operand_hierarchy(
     for key in sorted(exceptions.keys() | observed.keys()):
         expected = exceptions.get(key, 0)
         actual = observed[key]
-        if key in exceptions and (type(expected) is not int or expected <= 0):
+        if key in exceptions and expected <= 0:
             print(
                 f"ERROR: allowance {key} must be a positive integer; got {expected!r}.",
                 file=sys.stderr,

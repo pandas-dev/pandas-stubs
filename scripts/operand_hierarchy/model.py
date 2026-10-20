@@ -40,8 +40,14 @@ FORWARD_BINARY_DUNDERS: Final[frozenset[str]] = frozenset(
     }
 )
 
-# Operand names that can appear in ``other``, mapped to their tier.
-TIER_OPERANDS: Final[dict[str, int]] = {
+# Every scanned class and its tier; Index subclasses are discovered through their
+# base chain.
+CLASS_TIERS: Final[dict[str, int]] = {
+    "Timedelta": 0,
+    "Timestamp": 0,
+    "Period": 0,
+    "Interval": 0,
+    "NAType": 0,
     "ExtensionArray": 1,
     "Index": 2,
     "MultiIndex": 2,
@@ -51,47 +57,33 @@ TIER_OPERANDS: Final[dict[str, int]] = {
 
 # Index subclass spellings share the canonical operand Index.
 CANONICAL_OPERAND_BY_TIER: Final[dict[int, str]] = {
-    TIER_OPERANDS["ExtensionArray"]: "ExtensionArray",
-    TIER_OPERANDS["Index"]: "Index",
-    TIER_OPERANDS["Series"]: "Series",
-    TIER_OPERANDS["DataFrame"]: "DataFrame",
-}
-
-# Every tier-0 scalar and the array-like, mapped to the stub file that declares it, so the
-# class scan resolves a class through the registry and can require that file rather than
-# silently skipping the class. A name in this table that is absent from ``TIER_OPERANDS``
-# is a tier-0 scalar. ``Index``, ``MultiIndex``, ``Series`` and ``DataFrame`` are tiered by
-# ``TIER_OPERANDS`` directly; the files declaring them are the literal entries of
-# ``REQUIRED_STUB_FILES`` below rather than keys here.
-CLASS_STUB_FILES: Final[dict[str, Path]] = {
-    "Timedelta": Path("_libs/tslibs/timedeltas.pyi"),
-    "Timestamp": Path("_libs/tslibs/timestamps.pyi"),
-    "Period": Path("_libs/tslibs/period.pyi"),
-    "Interval": Path("_libs/interval.pyi"),
-    "NAType": Path("_libs/missing.pyi"),
-    "ExtensionArray": Path("core/arrays/base.pyi"),
+    CLASS_TIERS["ExtensionArray"]: "ExtensionArray",
+    CLASS_TIERS["Index"]: "Index",
+    CLASS_TIERS["Series"]: "Series",
+    CLASS_TIERS["DataFrame"]: "DataFrame",
 }
 
 # Every file that declares a scanned class. The list is explicit so that moving a class
 # to a new file fails the scan loudly instead of silently dropping it.
-REQUIRED_STUB_FILES: Final[tuple[Path, ...]] = tuple(
-    sorted(
-        {
-            Path("core/base.pyi"),
-            Path("core/frame.pyi"),
-            Path("core/indexes/base.pyi"),
-            Path("core/indexes/category.pyi"),
-            Path("core/indexes/datetimelike.pyi"),
-            Path("core/indexes/datetimes.pyi"),
-            Path("core/indexes/extension.pyi"),
-            Path("core/indexes/interval.pyi"),
-            Path("core/indexes/multi.pyi"),
-            Path("core/indexes/period.pyi"),
-            Path("core/indexes/range.pyi"),
-            Path("core/indexes/timedeltas.pyi"),
-            Path("core/series.pyi"),
-            Path("_stubs_only/__init__.pyi"),
-            *CLASS_STUB_FILES.values(),
-        }
-    )
+REQUIRED_STUB_FILES: Final[tuple[Path, ...]] = (
+    Path("_libs/interval.pyi"),
+    Path("_libs/missing.pyi"),
+    Path("_libs/tslibs/period.pyi"),
+    Path("_libs/tslibs/timedeltas.pyi"),
+    Path("_libs/tslibs/timestamps.pyi"),
+    Path("_stubs_only/__init__.pyi"),
+    Path("core/arrays/base.pyi"),
+    Path("core/base.pyi"),
+    Path("core/frame.pyi"),
+    Path("core/indexes/base.pyi"),
+    Path("core/indexes/category.pyi"),
+    Path("core/indexes/datetimelike.pyi"),
+    Path("core/indexes/datetimes.pyi"),
+    Path("core/indexes/extension.pyi"),
+    Path("core/indexes/interval.pyi"),
+    Path("core/indexes/multi.pyi"),
+    Path("core/indexes/period.pyi"),
+    Path("core/indexes/range.pyi"),
+    Path("core/indexes/timedeltas.pyi"),
+    Path("core/series.pyi"),
 )

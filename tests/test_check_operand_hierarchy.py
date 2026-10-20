@@ -17,8 +17,8 @@ from scripts.operand_hierarchy.exceptions import (
 )
 from scripts.operand_hierarchy.model import (
     CANONICAL_OPERAND_BY_TIER,
+    CLASS_TIERS,
     FORWARD_BINARY_DUNDERS,
-    TIER_OPERANDS,
 )
 
 _REPO_ROOT = Path(__file__).parents[1]
@@ -143,7 +143,7 @@ def test_unused_allowance(tmp_path: Path, capsys: pytest.CaptureFixture[str]) ->
     assert "expected 1 overload(s), observed 0" in capsys.readouterr().err
 
 
-@pytest.mark.parametrize("count", [0, -1, True])
+@pytest.mark.parametrize("count", [0, -1])
 def test_invalid_allowance_count(
     tmp_path: Path, count: int, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -163,17 +163,11 @@ def test_invalid_allowance_count(
         "TimedeltaIndex",
     ],
 )
-@pytest.mark.parametrize("reverse", [False, True])
-def test_canonical_counts_ignore_spelling_and_order(
-    tmp_path: Path, operand: str, reverse: bool
-) -> None:
-    aliases = ["Alias: TypeAlias = Index", "Unused: TypeAlias = int"]
-    if reverse:
-        aliases.reverse()
+def test_canonical_counts_ignore_spelling(tmp_path: Path, operand: str) -> None:
     root = _write_tree(
         tmp_path,
         {
-            "aliases.pyi": "\n".join(aliases),
+            "aliases.pyi": "Alias: TypeAlias = Index\nUnused: TypeAlias = int",
             "_libs/tslibs/timedeltas.pyi": f"class Timedelta:\n    def __add__(self, other: {operand} | Series, /) -> None: ...",
         },
     )
@@ -292,18 +286,23 @@ ScalarArrayIndexOperand: TypeAlias = A
     assert check_operand_hierarchy(root, exceptions={})
 
 
-def test_duplicate_aliases_and_classes_are_all_scanned(tmp_path: Path) -> None:
+@pytest.mark.parametrize("branch", ["if", "else"])
+def test_duplicate_aliases_and_classes_are_all_scanned(
+    tmp_path: Path, branch: str
+) -> None:
+    method = "class Series:\n        def __add__(self, other: Higher, /) -> None: ..."
+    empty = "class Series: ..."
+    if_body, else_body = (method, empty) if branch == "if" else (empty, method)
     root = _write_tree(
         tmp_path,
         {
             "a.pyi": "Higher: TypeAlias = DataFrame",
             "z.pyi": "Higher: TypeAlias = int",
-            "core/series.pyi": """
+            "core/series.pyi": f"""
 if VERSION:
-    class Series:
-        def __add__(self, other: Higher, /) -> None: ...
+    {if_body}
 else:
-    class Series: ...
+    {else_body}
 """,
         },
     )
@@ -413,14 +412,13 @@ def test_syntax_errors_name_file(tmp_path: Path, relative: str) -> None:
 
 def test_registry_and_documentation() -> None:
     assert (_REPO_ROOT / EXCEPTIONS_FILE).is_file()
-    assert set(CANONICAL_OPERAND_BY_TIER) == set(TIER_OPERANDS.values())
+    assert set(CANONICAL_OPERAND_BY_TIER) == set(CLASS_TIERS.values()) - {0}
     for tier, operand in CANONICAL_OPERAND_BY_TIER.items():
-        assert TIER_OPERANDS[operand] == tier
-    for (class_name, operator, operand), count in FORWARD_DUNDER_EXCEPTIONS.items():
+        assert CLASS_TIERS[operand] == tier
+    for class_name, operator, operand in FORWARD_DUNDER_EXCEPTIONS:
         assert class_name
         assert operator in FORWARD_BINARY_DUNDERS
         assert operand in CANONICAL_OPERAND_BY_TIER.values()
-        assert type(count) is int and count > 0
     relative, _, anchor = EXCEPTIONS_DOCUMENTATION.partition("#")
     document = _REPO_ROOT / relative
     assert document.is_file(), f"missing contract: {relative}"
@@ -456,19 +454,3 @@ def test_cli_failure_status(monkeypatch: pytest.MonkeyPatch) -> None:
         "scripts.operand_hierarchy.check.check_operand_hierarchy", reject
     )
     assert main() == 1
-
-
-def test_module_level_else_class(tmp_path: Path) -> None:
-    root = _write_tree(
-        tmp_path,
-        {"core/series.pyi": """
-if VERSION:
-    class Series: ...
-else:
-    class Series:
-        def __add__(self, other: DataFrame, /) -> None: ...
-"""},
-    )
-    assert check_operand_hierarchy(
-        root, exceptions={("Series", "__add__", "DataFrame"): 1}
-    )

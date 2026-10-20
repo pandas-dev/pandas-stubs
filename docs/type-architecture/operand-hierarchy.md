@@ -1,116 +1,93 @@
 # Operand hierarchy
 
-The operand hierarchy is a structural convention for binary operator signatures:
-a class normally accepts operands at its own tier or below in its annotated `other`
-parameter. Counted allowances record signatures that intentionally depart from it.
-This check validates signature structure, not Python dispatch, runtime support,
-return types, or overload correctness. Type-checker and runtime tests remain necessary.
+## The rule
 
-## Tiers and scanned classes
+A class accepts operands at its own tier or below in the annotated `other` parameter of a
+forward binary dunder. Higher-tier operands are rejected unless a counted allowance records
+them. The check validates signature structure only, not Python dispatch, runtime behavior,
+return types or overload correctness; type-checker and runtime tests remain necessary.
+
+## Tiers and scanned methods
 
 | Tier | Classes |
 | --- | --- |
 | 0 | `Timedelta`, `Timestamp`, `Period`, `Interval`, `NAType` |
 | 1 | `ExtensionArray` |
-| 2 | `Index`, `MultiIndex`, and classes discovered through Index base chains |
+| 2 | `Index`, `MultiIndex`, and Index subclasses found through base chains |
 | 3 | `Series` |
 | 4 | `DataFrame` |
 
-The tables in `scripts/operand_hierarchy/model.py` define the registered classes,
-canonical operand names and required stub files. Base classes and aliases are discovered
-throughout the stub tree, but checked class declarations must occur in registered files.
-A missing required file or registered/discovered class is an error. Moving a class to a new file
-requires updating that registry. Other scalar or array families are not discovered.
+Scanned: arithmetic (`__add__` through `__pow__`, including `__matmul__` and `__divmod__`),
+bitwise (`__lshift__`, `__rshift__`, `__and__`, `__or__`, `__xor__`) and comparisons
+(`__lt__`, `__le__`, `__eq__`, `__ne__`, `__gt__`, `__ge__`). Reflected and in-place methods
+are not scanned, so `__radd__` is outside the check while `__rshift__` is scanned.
 
-The scanner checks these methods, including each overload declaration:
+`CLASS_TIERS` and `REQUIRED_STUB_FILES` in `scripts/operand_hierarchy/model.py` list every
+registered class and every file that may declare one. Moving a class to a new file requires
+updating `REQUIRED_STUB_FILES`.
 
-- Arithmetic: `__add__`, `__sub__`, `__mul__`, `__matmul__`, `__truediv__`,
-  `__floordiv__`, `__mod__`, `__divmod__`, `__pow__`.
-- Bitwise: `__lshift__`, `__rshift__`, `__and__`, `__or__`, `__xor__`.
-- Comparisons: `__lt__`, `__le__`, `__eq__`, `__ne__`, `__gt__`, `__ge__`.
-
-Reflected, in-place and other methods are outside the scan. In particular, `__rshift__`
-is a forward operator and is scanned; `__radd__` is reflected and is not.
-Both branches of class-level `if` statements are scanned recursively without evaluating
-conditions. Nested functions and nested classes are not entered when scanning methods.
-Inherited methods are not resolved. Module-level conditional class declarations are also
-collected from both branches.
-
-## Supported syntax
-
-Each scanned ordinary `def` method must have an annotated parameter named `other`, including positional,
-keyword-only and variadic spellings. Names, qualified names, unions and generic arguments
-are searched syntactically. A qualified name is matched by its terminal name:
-`pd.DataFrame` is treated as `DataFrame`.
+## A rejected signature, traced
 
 ```python
 class Series:
-    def __add__(self, other: int | Index | Series, /) -> Series: ...  # accepted
-    def __sub__(self, other: DataFrame, /) -> Series: ...  # rejected without allowance
-    def __mul__(self, right: int, /) -> Series: ...  # rejected: no annotated other
+    def __sub__(self, other: DataFrame, /) -> Series: ...
 ```
 
-Aliases explicitly annotated with `TypeAlias` (including `typing.TypeAlias`) are expanded
-transitively. All definitions of a name are retained, including duplicates across files
-or version branches. Alias cycles terminate. Names are resolved globally by terminal name,
-not by import or lexical scope, so unrelated aliases with the same name can contribute
-references. Base discovery also uses terminal names, including subscripted bases.
+1. `main()` calls `check_operand_hierarchy`, which calls `StubTree.load`. That parses every
+   stub, collecting aliases and bases everywhere and classes from the required files only.
+2. `check_operand_hierarchy` calls `check_class("Series", observed)`. `DataFrame` (tier 4)
+   is above `Series` (tier 3), so it is in the higher-tier map.
+3. `_other_parameter` returns `other`, and `StubTree.references` matches `DataFrame` by
+   terminal name. The counter records `("Series", "__sub__", "DataFrame")` once.
+4. With no allowance, expected is 0 and observed is 1. `check_operand_hierarchy` prints to
+   stderr and returns False; `main()` exits 1.
 
-```python
-Higher: TypeAlias = pd.DataFrame
-class Series:
-    def __add__(self, other: Higher, /) -> Series: ...  # rejected without allowance
+```text
+ERROR: Series.__sub__ higher-tier operand DataFrame: expected 0 overload(s), observed 1; review the signature or update scripts/operand_hierarchy/exceptions.py.
 ```
-
-Aliases whose names start with `ScalarArrayIndex` must not reference `Series` or
-`DataFrame`; the more specific `ScalarArrayIndexSeries` prefix permits `Series` but
-still forbids `DataFrame`. These alias rules have no exceptions.
-
-```python
-ScalarArrayIndexOperand: TypeAlias = int | Index  # accepted
-ScalarArrayIndexSeriesOperand: TypeAlias = int | Series  # accepted
-ScalarArrayIndexBad: TypeAlias = Series  # rejected
-ScalarArrayIndexSeriesBad: TypeAlias = DataFrame  # rejected
-```
-
-Quoted annotations are not parsed, including quoted portions of unions. Implicit aliases,
-PEP 695 `type` aliases, TypeVar bounds and constraints, import renaming, inherited methods
-and additional class-family discovery are unsupported. Async methods and callable class
-attributes are not scanned. The check does not infer semantic equivalence or validate
-whether generic nesting represents an actual binary operand. Passing this check is not
-proof that a signature is correct.
 
 ## Scalar and Index subclass overloads
 
 `FORWARD_DUNDER_EXCEPTIONS` in `scripts/operand_hierarchy/exceptions.py` maps
-`(class, operator, canonical higher-tier operand)` to a positive overload count.
-There are no wildcard keys. Each declaration counts once for each distinct higher tier
-it references. All Index subclasses canonicalize to `Index`, so an overload naming
-`Index | MultiIndex | TimedeltaIndex` counts once, even through repeated aliases.
-An overload naming `Index | Series` on a scalar counts once under each operand.
-Both conditional branches count, even when a type checker selects only one branch.
+`(class, operator, canonical higher-tier operand)` to a positive count. There are no wildcards.
 
-Observed and recorded counts must match exactly. New combinations, count increases,
-count decreases and unused entries all fail with expected-versus-observed diagnostics.
-For example, a single `Series.__matmul__(DataFrame)` declaration requires
-`("Series", "__matmul__", "DataFrame"): 1`; another declaration requires reviewing the
-signature and deliberately updating that count. Reordering declarations or using an
-equivalent alias does not change the count.
+- Each declaration counts once per distinct higher tier it references.
+- Index subclasses canonicalize to `Index`, so `Index | MultiIndex | TimedeltaIndex` counts
+  once, even through repeated aliases. `Index | Series` on a scalar counts once per operand.
+- Both branches of a conditional count, even when a type checker selects only one.
+- Reordering declarations or using an equivalent alias does not change a count.
+- Observed and recorded counts must match exactly. New combinations, increases, decreases
+  and unused entries all fail.
 
-Allowances include existing scalar/Index subclass overloads and legitimate signatures
-such as `Series.__matmul__(DataFrame)`. They are a review boundary, not a promise that
-every allowance can eventually disappear. When changing one, explain the signature's
-purpose in the PR, test its typing and runtime behavior as appropriate, and update the
-count to match. Do not raise a count merely to silence a failure.
+For example, one `Series.__matmul__(DataFrame)` declaration requires
+`("Series", "__matmul__", "DataFrame"): 1`.
+
+To change a count, explain the signature's purpose in the PR, test its typing and runtime
+behavior as appropriate, then update the count. Never raise a count merely to silence a
+failure. Allowances are a review boundary, not a promise that each will disappear.
+
+## Limits
+
+- `other` must be annotated, in positional, keyword-only or variadic form.
+- Names match by terminal name (`pd.DataFrame` is `DataFrame`). Unions, qualified names and
+  generic arguments are searched syntactically.
+- Only `TypeAlias`-annotated aliases are expanded, transitively. Aliases resolve globally by
+  terminal name, not by scope, so same-named aliases contribute. Duplicates are kept and
+  cycles terminate.
+- `ScalarArrayIndex*` aliases must not reference `Series` or `DataFrame`. `ScalarArrayIndexSeries*`
+  aliases may reference `Series` but not `DataFrame`. No exceptions.
+- Both branches of class-level and module-level `if` statements are scanned without
+  evaluating conditions. Nested functions and classes are not entered. Inherited methods
+  are not resolved.
+- Unsupported: quoted annotations, implicit aliases, PEP 695 `type` aliases, TypeVar bounds,
+  import renaming, async methods, callable class attributes and other class families.
+- Passing is not proof that a signature is correct.
 
 ## Running the checks
 
-Run `poetry run poe pytest_architecture` for the synthetic cases, documentation link
-validation and strict check of the real stub tree. The dedicated Ubuntu architecture
-job uses Python 3.11. Local `poe test` and `poe test_all` include it once; ordinary
-`poe pytest`, including nightly runs, excludes this test file.
-
-Run `python -S scripts/check_operand_hierarchy.py` for the standalone standard-library
-check. It reports the number of combinations and occurrences and exits with status 0
-on success or 1 on a contract violation. A missing required file is a contract violation; syntax errors and other read failures
-remain visible exceptions.
+- `poetry run poe pytest_architecture` runs the synthetic cases, anchor validation and a
+  strict check of the real stubs. CI runs it in a dedicated Ubuntu job on Python 3.11.
+  `poe test` and `poe test_all` include it once; ordinary `poe pytest` excludes it.
+- `python -S scripts/check_operand_hierarchy.py` is the stdlib-only check. It prints
+  combination and occurrence counts. Exit 0 is success, 1 is a contract violation. A missing
+  required file is a violation; syntax errors surface as exceptions.
