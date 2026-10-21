@@ -66,7 +66,12 @@ def checker_dist(checker: str) -> None:
 
 
 def pytest() -> None:
-    cmd = ["pytest", "--cache-clear"]
+    cmd = ["pytest", "--cache-clear", "--ignore=tests/test_check_operand_hierarchy.py"]
+    subprocess.run(cmd, check=True)
+
+
+def pytest_architecture() -> None:
+    cmd = ["pytest", "tests/test_check_operand_hierarchy.py"]
     subprocess.run(cmd, check=True)
 
 

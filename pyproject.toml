@@ -86,7 +86,7 @@ help = "Run all tests"
 script = "scripts.test:run_tests(src=True, dist=True)"
 
 [tool.poe.tasks.test]
-help = "Run local tests (includes 'mypy', 'pyright', 'pyrefly', 'ty', 'pytest', and 'style')"
+help = "Run local tests (includes 'mypy', 'pyright', 'pyrefly', 'ty', 'pytest', 'pytest_architecture', and 'style')"
 script = "scripts.test:run_tests(src=True)"
 
 [tool.poe.tasks.test_dist]
@@ -99,6 +99,10 @@ script = "scripts.test:pytest(nightly)"
 args = [
   { name = "nightly", positional = false, default = false, type = "boolean", required = false, help = "Use pandas nightly (off by default)" },
 ]
+
+[tool.poe.tasks.pytest_architecture]
+help = "Run operand hierarchy architecture tests"
+script = "scripts.test.run:pytest_architecture"
 
 [tool.poe.tasks.style]
 help = "Run pre-commit"
