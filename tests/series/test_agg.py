@@ -6,13 +6,12 @@ from typing import (
 import numpy as np
 import pandas as pd
 
-from pandas.errors import Pandas4Warning
-
 from tests import (
     PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_complex_pandas4,
 )
 
 
@@ -75,11 +74,7 @@ def test_agg_complex() -> None:
             r"Casting complex values to real discards the imaginary part",
             upper="3.0.99",
         ),
-        pytest_warns_bounded(
-            Pandas4Warning,
-            r"median, idxmin, and similar methods are deprecated on complex data",
-            lower="3.1.99",
-        ),
+        pytest_warns_complex_pandas4(),
     ):
         check(
             assert_type(series.median(), float),

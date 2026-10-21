@@ -214,6 +214,14 @@ def pytest_warns_excel_pandas4() -> AbstractContextManager[Any]:
     )
 
 
+def pytest_warns_complex_pandas4() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        r"deprecated on complex data",
+        lower="3.1.99",
+    )
+
+
 def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception] | None:
     if (WINDOWS or MAC) and dtype in {"f16", "float128", "c32", "complex256"}:
         return TypeError
