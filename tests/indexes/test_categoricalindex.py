@@ -39,7 +39,8 @@ def test_categoricalindex_insert() -> None:
 
 def test_categoricalindex_ordered() -> None:
     ci = pd.CategoricalIndex(["a", "b"])
-    check(assert_type(ci.ordered, bool | None), bool)
+    assert assert_type(ci.ordered, bool | None) is False
+    assert assert_type(pd.CategoricalIndex(["a"], ordered=True).ordered, bool | None)
     check(assert_type(ci.as_ordered(), "pd.CategoricalIndex[str]"), pd.CategoricalIndex)
     check(
         assert_type(ci.as_unordered(), "pd.CategoricalIndex[str]"), pd.CategoricalIndex
@@ -73,6 +74,33 @@ def test_categoricalindex_categories_methods() -> None:
     )
     check(
         assert_type(ci.set_categories(["a", "b", "c", "d"]), pd.CategoricalIndex),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(ci.set_categories(["a", "b", "c", "d"], True), pd.CategoricalIndex),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(
+            ci.set_categories(["x", "y", "z"], None, True), pd.CategoricalIndex
+        ),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(
+            ci.set_categories(["x", "y", "z"], ordered=False, rename=True),
+            pd.CategoricalIndex,
+        ),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(
+            ci.reorder_categories(["c", "b", "a"], True), "pd.CategoricalIndex[str]"
+        ),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(ci.add_categories("d"), "pd.CategoricalIndex[str]"),
         pd.CategoricalIndex,
     )
     check(
