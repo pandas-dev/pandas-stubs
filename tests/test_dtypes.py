@@ -22,7 +22,10 @@ from pandas.api.typing import (
     NaTType,
     NAType,
 )
-from pandas.api.typing.aliases import Scalar
+from pandas.api.typing.aliases import (
+    IntervalClosedType,
+    Scalar,
+)
 from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
@@ -120,6 +123,23 @@ def test_interval_dtype() -> None:
     check(
         assert_type(pd.IntervalDtype(np.datetime64), pd.IntervalDtype), pd.IntervalDtype
     )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed="both"), pd.IntervalDtype),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype(subtype="float64", closed="left"), pd.IntervalDtype
+        ),
+        pd.IntervalDtype,
+    )
+    assert (
+        assert_type(
+            pd.IntervalDtype("int64", "neither").closed, IntervalClosedType | None
+        )
+        == "neither"
+    )
+    check(assert_type(i_dt.closed, IntervalClosedType | None), type(None))
 
 
 def test_int64_dtype() -> None:
