@@ -451,9 +451,12 @@ def test_interval_range() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+    # TODO: facebook/pyrefly#5317
     check(
-        assert_type(
-            pd.interval_range(start=0, periods=4, freq=1.5),
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.interval_range(  # pyrefly: ignore[no-matching-overload]
+                start=0, periods=4, freq=1.5
+            ),
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
@@ -467,17 +470,21 @@ def test_interval_range() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+    # TODO: facebook/pyrefly#5317
     check(
-        assert_type(
-            pd.interval_range(end=6, periods=4, freq=1.5),
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.interval_range(  # pyrefly: ignore[no-matching-overload]
+                end=6, periods=4, freq=1.5
+            ),
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
         pd.Interval,
     )
+    # TODO: facebook/pyrefly#5317
     check(
-        assert_type(
-            pd.interval_range(0, None, 4, 1.5),
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.interval_range(0, None, 4, 1.5),  # pyrefly: ignore[no-matching-overload]
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,

@@ -66,7 +66,7 @@ _EdgesTimedelta: TypeAlias = (
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
-_IntOrFloatT = TypeVar("_IntOrFloatT", bound=float)
+_IntOrFloatT = TypeVar("_IntOrFloatT", int, float)
 
 @type_check_only
 class _LengthDescriptor:
