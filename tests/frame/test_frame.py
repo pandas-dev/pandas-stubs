@@ -990,6 +990,47 @@ def test_dataframe_clip() -> None:
     check(assert_type(df.clip([1, 2], 4, axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip([1, 2], axis="columns"), pd.DataFrame), pd.DataFrame)
 
+    # array-like bounds other than Series don't need an axis
+    check(assert_type(df.clip(np.array([1, 2]), [4, 5]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.clip(upper=np.array([[15, 13], [4, 5]])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.clip(pd.Index([1, 2])), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.clip(pd.Index([1, 2]), np.array([4, 5]), axis=1), pd.DataFrame),
+        pd.DataFrame,
+    )
+    # extension arrays need an axis at runtime until pandas 3.1
+    check(
+        assert_type(
+            df.clip(pd.array([1, 2], dtype="Int64"), upper=None, axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(upper=pd.Index([4, 5], dtype="Int64"), axis="columns"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    # a Series bound with an axis can be mixed with other bounds
+    check(
+        assert_type(df.clip(pd.Series([1, 2]), 15, axis=0), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.clip([1, 2], pd.Series([14, 15]), axis=0), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(np.array([1, 2]), upper=pd.Series([14, 15]), axis="index"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
     # without lower
     check(assert_type(df.clip(upper=None, axis=None), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(upper=15, axis=None), pd.DataFrame), pd.DataFrame)

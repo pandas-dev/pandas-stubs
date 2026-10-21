@@ -1980,18 +1980,19 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: float | Sequence[float] | None = None,
-        upper: float | Sequence[float] | None = None,
+        lower: float | Sequence[float] | ArrayLike | Index | None = None,
+        upper: float | Sequence[float] | ArrayLike | Index | None = None,
         *,
         axis: Axis | None = None,
         inplace: bool = False,
         **kwargs: Any,
     ) -> Self: ...
+    # A Series bound needs an explicit axis
     @overload
     def clip(
         self,
-        lower: AnyArrayLike = ...,
-        upper: AnyArrayLike | None = ...,
+        lower: Series,
+        upper: float | Sequence[float] | AnyArrayLike | None = None,
         *,
         axis: Axis,
         inplace: bool = False,
@@ -2000,8 +2001,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: AnyArrayLike | None = ...,
-        upper: AnyArrayLike = ...,
+        lower: float | Sequence[float] | AnyArrayLike | None = None,
+        upper: Series = ...,
         *,
         axis: Axis,
         inplace: bool = False,
