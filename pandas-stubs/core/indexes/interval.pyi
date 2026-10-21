@@ -7,6 +7,7 @@ from typing import (
     Literal,
     Never,
     TypeAlias,
+    TypeVar,
     overload,
     type_check_only,
 )
@@ -65,6 +66,7 @@ _EdgesTimedelta: TypeAlias = (
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
+_IntOrFloatT = TypeVar("_IntOrFloatT", int, float)
 
 @type_check_only
 class _LengthDescriptor:
@@ -335,26 +337,15 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     @override
     def diff(self, periods: int = 1) -> Never: ...
 
-# misc here because int and float overlap but interval has distinct types
-# int gets hit first and so the correct type is returned
-@overload
-def interval_range(  # pyright: ignore[reportOverlappingOverload]
-    start: int | None = None,
-    end: int | None = None,
-    periods: int | None = None,
-    freq: int | None = None,
-    name: Hashable = None,
-    closed: IntervalClosedType = "right",
-) -> IntervalIndex[Interval[int]]: ...
 @overload
 def interval_range(
-    start: float | None = None,
-    end: float | None = None,
+    start: _IntOrFloatT | None = None,
+    end: _IntOrFloatT | None = None,
     periods: int | None = None,
-    freq: int | None = None,
+    freq: _IntOrFloatT | None = None,
     name: Hashable = None,
     closed: IntervalClosedType = "right",
-) -> IntervalIndex[Interval[float]]: ...
+) -> IntervalIndex[Interval[_IntOrFloatT]]: ...
 @overload
 def interval_range(
     start: _TimestampLike,
