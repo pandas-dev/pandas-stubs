@@ -18,6 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
@@ -49,7 +50,7 @@ dev = [
   "openpyxl>=3.0.10",
   "numexpr>=2.13.1",
   "lxml>=4.9.1",
-  "pyreadstat>=1.2.0",
+  "pyreadstat>=1.2.0;python_version<'3.15'",  # TODO: no cp315 wheels; the sdist does not build on Windows
   "xlrd>=2.0.1",
   "xlsxwriter>=3.0.3",
   "pyxlsb>=1.0.10",
