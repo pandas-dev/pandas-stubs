@@ -48,6 +48,14 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 class DatetimeIndex(
     DatetimeTimedeltaMixin[Timestamp, np.datetime64], DatetimeIndexProperties
 ):
+    @override
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
     def __new__(
         cls,
         data: AxesData,

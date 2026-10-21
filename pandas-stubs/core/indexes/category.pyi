@@ -2,7 +2,11 @@ from collections.abc import (
     Hashable,
     Iterable,
 )
-from typing import Self
+from typing import (
+    Literal,
+    Never,
+    Self,
+)
 
 from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays.categorical import Categorical
@@ -20,6 +24,14 @@ from pandas._typing import (
 class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
     codes: np_1darray_intp = ...
     categories: Index[S1] = ...
+    @override
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
     @property
     @override
     def array(self) -> Categorical: ...  # type: ignore[override] # pyrefly: ignore[bad-override]

@@ -76,12 +76,39 @@ def test_index_any_all() -> None:
     assert not check(assert_type(ind.all(), np.bool), np.bool)
     assert check(assert_type(pd.Index([1.5, 0.0]).any(), np.bool), np.bool)
     assert not check(assert_type(pd.Index([True, False]).all(), np.bool), np.bool)
-    # numpy-compatible arguments are accepted positionally and by keyword
+    assert check(assert_type(pd.to_timedelta(["1D", "0D"]).any(), np.bool), np.bool)
+    assert not check(
+        assert_type(pd.Index(["a", ""], dtype=object).all(), np.bool), np.bool
+    )
+    # numpy-compatible arguments are accepted positionally and by keyword,
+    # but only with their default values
     assert check(assert_type(ind.any(None), np.bool), np.bool)
+    assert check(assert_type(ind.any(None, None, False), np.bool), np.bool)
     assert not check(assert_type(ind.all(axis=None), np.bool), np.bool)
+    assert not check(
+        assert_type(ind.all(axis=None, out=None, keepdims=False), np.bool), np.bool
+    )
 
     assert check(assert_type(pd.RangeIndex(3).any(), bool), bool)
     assert not check(assert_type(pd.RangeIndex(3).all(), bool), bool)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # ValueError: the 'axis' parameter is not supported in the pandas implementation of any()
+        ind.any(axis=0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        # ValueError: the 'keepdims' parameter is not supported in the pandas implementation of all()
+        ind.all(keepdims=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+        def _any_all_invalid() -> None:  # pyright: ignore[reportUnusedFunction]
+            # TypeError: cannot perform any with MultiIndex
+            assert_type(pd.MultiIndex.from_tuples([(0, 1)]).any(), Never)
+            # TypeError: datetime64 type does not support operation 'all'
+            assert_type(pd.DatetimeIndex(["2024-01-01"]).all(), Never)
+            # TypeError: 'PeriodArray' with dtype period[D] does not support operation 'any'
+            assert_type(pd.period_range("2024", periods=1, freq="D").any(), Never)
+            # TypeError: 'Categorical' with dtype category does not support operation 'all'
+            assert_type(pd.CategoricalIndex(["a"]).all(), Never)
+            # TypeError: 'IntervalArray' with dtype interval[int64, right] does not support operation 'any'
+            assert_type(pd.interval_range(0, 2).any(), Never)
 
 
 def test_index_isin() -> None:
