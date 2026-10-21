@@ -33,7 +33,7 @@ Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 [dependency-groups]
 dev = [
   "mypy>=2.2.0",
-  "pandas==3.0.5",
+  "pandas==3.0.6",
   "numpy>=2.5.2;python_version>='3.12'",
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
@@ -50,7 +50,7 @@ dev = [
   "openpyxl>=3.0.10",
   "numexpr>=2.13.1",
   "lxml>=4.9.1",
-  "pyreadstat>=1.2.0;python_version<'3.15'",  # TODO: no cp315 wheels; the sdist does not build on Windows
+  "pyreadstat>=1.2.0",
   "xlrd>=2.0.1",
   "xlsxwriter>=3.0.3",
   "pyxlsb>=1.0.10",
@@ -70,7 +70,7 @@ dev = [
   "tables>=3.10.2",
   "pytz>=2025.2",
   "types-pytz>=2022.1.1",
-  "pyiceberg>=0.10.0",
+  "pyiceberg>=0.10.0",  # TODO: bump apache/iceberg-python#4128
   "optype[numpy]"
 ]
 

@@ -6,7 +6,6 @@ import io
 import os
 from pathlib import Path
 import sqlite3
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -434,11 +433,6 @@ def test_hdf_series(tmp_path: Path) -> None:
     check(assert_type(read_hdf(path_str, "s"), DataFrame | Series), Series)
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 15),
-    reason="pyreadstat is not installed on Python 3.15: no cp315 wheels yet",
-    raises=ImportError,
-)
 def test_spss() -> None:
     path_str = Path(CWD, "data", "labelled-num.sav")
     check(
@@ -451,11 +445,6 @@ def test_spss() -> None:
     )
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 15),
-    reason="pyreadstat is not installed on Python 3.15: no cp315 wheels yet",
-    raises=ImportError,
-)
 def test_spss_kwargs() -> None:
     """Test passing kwargs to read_spss."""
     path_str = Path(CWD, "data", "labelled-num.sav")
