@@ -72,12 +72,16 @@ def test_index_duplicated() -> None:
 
 def test_index_any_all() -> None:
     ind = pd.Index([0, 1, 2])
-    check(assert_type(ind.any(), np.bool), np.bool)
-    check(assert_type(ind.all(), np.bool), np.bool)
-    check(assert_type(pd.Index([1.5, 0.0]).any(), np.bool), np.bool)
-    check(assert_type(pd.Index([True, False]).all(), np.bool), np.bool)
-    check(assert_type(pd.RangeIndex(3).any(), bool), bool)
-    check(assert_type(pd.RangeIndex(3).all(), bool), bool)
+    assert check(assert_type(ind.any(), np.bool), np.bool)
+    assert not check(assert_type(ind.all(), np.bool), np.bool)
+    assert check(assert_type(pd.Index([1.5, 0.0]).any(), np.bool), np.bool)
+    assert not check(assert_type(pd.Index([True, False]).all(), np.bool), np.bool)
+    # numpy-compatible arguments are accepted positionally and by keyword
+    assert check(assert_type(ind.any(None), np.bool), np.bool)
+    assert not check(assert_type(ind.all(axis=None), np.bool), np.bool)
+
+    assert check(assert_type(pd.RangeIndex(3).any(), bool), bool)
+    assert not check(assert_type(pd.RangeIndex(3).all(), bool), bool)
 
 
 def test_index_isin() -> None:
