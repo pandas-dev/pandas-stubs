@@ -98,7 +98,7 @@ class PeriodDtype(PandasExtensionDtype):
 class IntervalDtype(PandasExtensionDtype):
     def __init__(
         self,
-        subtype: str | npt.DTypeLike | None = ...,
+        subtype: str | npt.DTypeLike | None = None,
         closed: IntervalClosedType | None = None,
     ) -> None: ...
     @property

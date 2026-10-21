@@ -133,11 +133,11 @@ def test_interval_dtype() -> None:
         ),
         pd.IntervalDtype,
     )
-    check(
+    assert (
         assert_type(
             pd.IntervalDtype("int64", "neither").closed, IntervalClosedType | None
-        ),
-        str,
+        )
+        == "neither"
     )
     check(assert_type(i_dt.closed, IntervalClosedType | None), type(None))
 
