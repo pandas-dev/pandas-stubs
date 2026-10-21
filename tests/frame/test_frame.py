@@ -984,7 +984,11 @@ def test_dataframe_clip() -> None:
     check(assert_type(df.clip([1, 2], [4, 5]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(lower=[1, 2]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(upper=[4.5, 5.5]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(None, [4, 5]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip((1, 2), (4, 5)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(range(2)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip([1, 2], 4, axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip([1, 2], axis="columns"), pd.DataFrame), pd.DataFrame)
 
     # without lower
     check(assert_type(df.clip(upper=None, axis=None), pd.DataFrame), pd.DataFrame)
