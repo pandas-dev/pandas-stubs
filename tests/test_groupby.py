@@ -951,6 +951,28 @@ def test_dataframe_value_counts() -> None:
         ),
         DataFrame,
     )
+    # normalize can also be passed positionally
+    check(
+        assert_type(df.groupby("a").value_counts(None, True), "Series[float]"),
+        Series,
+        np.float64,
+    )
+    check(
+        assert_type(df.groupby("a").value_counts(None, True, False), "Series[float]"),
+        Series,
+        np.float64,
+    )
+    check(
+        assert_type(df.groupby("a").value_counts(None, False), "Series[int]"),
+        Series,
+        np.int64,
+    )
+    check(
+        assert_type(
+            df.groupby("a", as_index=False).value_counts(None, True), DataFrame
+        ),
+        DataFrame,
+    )
 
 
 def test_dataframe_apply_kwargs() -> None:
