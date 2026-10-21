@@ -477,6 +477,22 @@ def test_interval_range() -> None:
     )
     check(
         assert_type(
+            pd.interval_range(0, None, 4, 1.5),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(0.0, 3.0, None, 0.5, "x", "left"),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
             pd.interval_range(dt.datetime(2000, 1, 1), dt.datetime(2010, 1, 1), 5),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
