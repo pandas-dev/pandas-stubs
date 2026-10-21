@@ -57,6 +57,7 @@ from tests import (
     WINDOWS,
     check,
     pytest_warns_bounded,
+    pytest_warns_complex_pandas4,
     pytest_warns_conditioned,
 )
 from tests._typing import (
@@ -2093,16 +2094,15 @@ def test_relops() -> None:
         _3 = pd.Series([s]) >= af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
     ac: complex = 1 + 2j
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        r"deprecated on complex data",
-        lower="3.1.99",
-    ):
+    with pytest_warns_complex_pandas4():
         check(assert_type(pd.Series([ac]) > ac, "pd.Series[bool]"), pd.Series, np.bool_)
+    with pytest_warns_complex_pandas4():
         check(assert_type(pd.Series([ac]) < ac, "pd.Series[bool]"), pd.Series, np.bool_)
+    with pytest_warns_complex_pandas4():
         check(
             assert_type(pd.Series([ac]) <= ac, "pd.Series[bool]"), pd.Series, np.bool_
         )
+    with pytest_warns_complex_pandas4():
         check(
             assert_type(pd.Series([ac]) >= ac, "pd.Series[bool]"), pd.Series, np.bool_
         )
