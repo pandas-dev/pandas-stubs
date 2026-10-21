@@ -8,82 +8,54 @@ from typing import Final
 
 _PYTHON_VERSION: Final = "{}.{}".format(*sys.version_info[:2])
 
-_SRC: Final = {
-    "mypy": ["mypy", "pandas-stubs", "tests", "--no-incremental", "--strict"],
-    "pyright": ["pyright", "--warnings", "--pythonversion", _PYTHON_VERSION],
-    "pyrefly": [
-        "pyrefly",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
-        "--preset",
-        "strict",
-    ],
-    "ty": [
-        "ty",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
-    ],
-}
-
-_SRC_ALL: Final = {
-    "pyrefly": [
-        "pyrefly",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
-        "--preset",
-        "all",
-    ],
-    "ty": [
-        "ty",
-        "check",
-        "pandas-stubs",
-        "tests",
-        "--python-version",
-        _PYTHON_VERSION,
-        "--error",
-        "all",
-    ],
-}
-
-_DIST: Final = {
+_CHECKER_COMMANDS: Final = {
     "mypy": [
         "mypy",
-        "tests",
         "--no-incremental",
         "--strict",
         "--python-version",
         _PYTHON_VERSION,
     ],
-    "pyright": ["pyright", "tests", "--warnings", "--pythonversion", _PYTHON_VERSION],
+    "pyright": [
+        "pyright",
+        "--warnings",
+        "--pythonversion",
+        _PYTHON_VERSION,
+    ],
     "pyrefly": [
         "pyrefly",
         "check",
-        "tests",
         "--python-version",
         _PYTHON_VERSION,
-        "--preset",
-        "strict",
     ],
-    "ty": ["ty", "check", "tests", "--python-version", _PYTHON_VERSION],
+    "ty": ["ty", "check", "--python-version", _PYTHON_VERSION],
 }
 
 
+def _checker_command(
+    checker: str, *, installed: bool, all_rules: bool = False
+) -> list[str]:
+    if all_rules and (installed or checker not in {"pyrefly", "ty"}):
+        raise ValueError("All-rules checks require local stubs and pyrefly or ty")
+
+    cmd = [*_CHECKER_COMMANDS[checker]]
+
+    if checker == "pyrefly":
+        cmd += ["--preset", "all" if all_rules else "strict"]
+    elif checker == "ty" and all_rules:
+        cmd += ["--error", "all"]
+
+    cmd += ["tests"] if installed else ["pandas-stubs", "tests"]
+    return cmd
+
+
 def checker_src(checker: str, *, all_rules: bool = False) -> None:
-    cmd = (_SRC_ALL if all_rules else _SRC)[checker]
+    cmd = _checker_command(checker, installed=False, all_rules=all_rules)
     subprocess.run(cmd, check=True)
 
 
 def checker_dist(checker: str) -> None:
-    cmd = _DIST[checker]
+    cmd = _checker_command(checker, installed=True)
     subprocess.run(cmd, check=True)
 
 
