@@ -39,6 +39,10 @@ from typing import (
 
 from _typeshed import (
     SupportsAdd,
+    SupportsDunderGE,
+    SupportsDunderGT,
+    SupportsDunderLE,
+    SupportsDunderLT,
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
@@ -61,6 +65,7 @@ from pandas._stubs_only import (
     ElementOpsMixin,
     NumListLike,
     OrderableT,
+    ScalarArrayIndexSeriesComparison,
     ScalarArrayIndexSeriesComplex,
     ScalarArrayIndexSeriesJustComplex,
     ScalarArrayIndexSeriesJustFloat,
@@ -2766,38 +2771,46 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload  # type: ignore[override]
     @override
     def __ge__(  # pyrefly: ignore[bad-override]
-        self: Series[int], other: float, /
+        self: Iterable[float], other: ScalarArrayIndexSeriesReal, /
     ) -> Series[_bool]: ...
     @overload
     def __ge__(  # ty: ignore[invalid-method-override]
-        self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date, /
+        self: Iterable[SupportsDunderGE[S1]],
+        other: ScalarArrayIndexSeriesComparison[S1],
+        /,
     ) -> Series[_bool]: ...
     @overload  # type: ignore[override]
     @override
     def __gt__(  # pyrefly: ignore[bad-override]
-        self: Series[int], other: float, /
+        self: Iterable[float], other: ScalarArrayIndexSeriesReal, /
     ) -> Series[_bool]: ...
     @overload
     def __gt__(  # ty: ignore[invalid-method-override]
-        self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date, /
+        self: Iterable[SupportsDunderGT[S1]],
+        other: ScalarArrayIndexSeriesComparison[S1],
+        /,
     ) -> Series[_bool]: ...
     @overload  # type: ignore[override]
     @override
     def __le__(  # pyrefly: ignore[bad-override]
-        self: Series[int], other: float, /
+        self: Iterable[float], other: ScalarArrayIndexSeriesReal, /
     ) -> Series[_bool]: ...
     @overload
     def __le__(  # ty: ignore[invalid-method-override]
-        self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date, /
+        self: Iterable[SupportsDunderLE[S1]],
+        other: ScalarArrayIndexSeriesComparison[S1],
+        /,
     ) -> Series[_bool]: ...
     @overload  # type: ignore[override]
     @override
     def __lt__(  # pyrefly: ignore[bad-override]
-        self: Series[int], other: float, /
+        self: Iterable[float], other: ScalarArrayIndexSeriesReal, /
     ) -> Series[_bool]: ...
     @overload
     def __lt__(  # ty: ignore[invalid-method-override]
-        self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date, /
+        self: Iterable[SupportsDunderLT[S1]],
+        other: ScalarArrayIndexSeriesComparison[S1],
+        /,
     ) -> Series[_bool]: ...
     @overload
     def __mul__(  # type: ignore[overload-overlap]
@@ -4482,16 +4495,34 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: Literal[0] = 0,
         method: CalculationMethod = "single",
     ) -> Expanding[Series]: ...
+    @overload
     def ge(
-        self,
-        other: Scalar | Series[S1],
+        self: Iterable[float],
+        other: ScalarArrayIndexSeriesReal,
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
+    @overload
+    def ge(
+        self: Iterable[SupportsDunderGE[S1]],
+        other: ScalarArrayIndexSeriesComparison[S1],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
     def gt(
-        self,
-        other: Scalar | Series[S1],
+        self: Iterable[float],
+        other: ScalarArrayIndexSeriesReal,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def gt(
+        self: Iterable[SupportsDunderGT[S1]],
+        other: ScalarArrayIndexSeriesComparison[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -4514,16 +4545,34 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Scalar: ...
+    @overload
     def le(
-        self,
-        other: Scalar | Series[S1],
+        self: Iterable[float],
+        other: ScalarArrayIndexSeriesReal,
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
+    @overload
+    def le(
+        self: Iterable[SupportsDunderLE[S1]],
+        other: ScalarArrayIndexSeriesComparison[S1],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
     def lt(
-        self,
-        other: Scalar | Series[S1],
+        self: Iterable[float],
+        other: ScalarArrayIndexSeriesReal,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def lt(
+        self: Iterable[SupportsDunderLT[S1]],
+        other: ScalarArrayIndexSeriesComparison[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,

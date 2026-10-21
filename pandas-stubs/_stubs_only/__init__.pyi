@@ -22,7 +22,6 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.floating import FloatingArray
@@ -54,6 +53,7 @@ from pandas._typing import (
     Label,
     Scalar,
     ScalarT,
+    ShapeT,
     SupportsDType,
     np_1darray,
     np_ndarray,
@@ -137,7 +137,7 @@ ScalarArrayIndexReal: TypeAlias = (
     float
     | Sequence[float | NumpyRealScalar]
     | NumpyRealScalar
-    | npt.NDArray[NumpyRealScalar]
+    | np_ndarray[ShapeT, NumpyRealScalar]
     | ExtensionArray
     | IndexReal
 )
@@ -150,7 +150,7 @@ ScalarArrayIndexComplex: TypeAlias = (
     complex
     | Sequence[complex | NumpyComplexScalar]
     | NumpyComplexScalar
-    | npt.NDArray[NumpyComplexScalar]
+    | np_ndarray[ShapeT, NumpyComplexScalar]
     | ExtensionArray
     | IndexComplex
 )
@@ -182,6 +182,28 @@ ScalarArrayIndexDatetime: TypeAlias = (
     | np.datetime64
     | Sequence[datetime | np.datetime64]
     | ArrayIndexDatetimeNoSeq
+)
+
+OrderableArrayLike: TypeAlias = (
+    ExtensionArray
+    | np_ndarray[
+        ShapeT,
+        NumpyRealScalar
+        | np.str_
+        | np.bytes_
+        | np.datetime64
+        | np.timedelta64
+        | np.object_,
+    ]
+)
+ScalarArrayIndexSeriesComparison: TypeAlias = (
+    S2
+    | Sequence[S2]
+    | OrderableArrayLike
+    | Index[S2]
+    | Series[S2]
+    | ScalarArrayIndexDatetime
+    | ScalarArrayIndexTimedelta
 )
 
 ArrayIndexPeriodNoSeq: TypeAlias = (
