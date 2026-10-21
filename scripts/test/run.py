@@ -45,7 +45,13 @@ def _checker_command(
     elif checker == "ty" and all_rules:
         cmd += ["--error", "all"]
 
-    cmd += ["tests"] if installed else ["pandas-stubs", "tests"]
+    if installed:
+        cmd += ["tests"]
+    elif checker != "pyright":
+        # pyright results depend on file order (microsoft/pyright#11644),
+        # so let it use the `include` order from pyproject.toml
+        # it can be removed after pyright 1.1.414
+        cmd += ["pandas-stubs", "tests"]
     return cmd
 
 
