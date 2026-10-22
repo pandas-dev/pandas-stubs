@@ -793,6 +793,10 @@ def test_to_numeric_scalar() -> None:
     check(assert_type(pd.to_numeric(1, downcast="float"), float), int)
     check(assert_type(pd.to_numeric(1, downcast="integer"), float), int)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = pd.to_numeric(pd.Period("2020-01"))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = pd.to_numeric(pd.Interval(0, 1))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
 
 def test_to_numeric_array_like() -> None:
     check(
