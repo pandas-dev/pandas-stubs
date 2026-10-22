@@ -26,6 +26,29 @@ are not scanned, so `__radd__` is outside the check while `__rshift__` is scanne
 subclasses are discovered through their bases, not listed. `REQUIRED_STUB_FILES` lists every
 file that may declare a checked class, so moving a class to a new file requires updating it.
 
+## Cross-tier lookup examples
+
+When reviewing a cross-tier expression, start with the operand type whose result shape is
+being represented, then inspect its forward and reflected overloads and a focused test.
+
+| Expression to review | Relevant stub surface |
+| --- | --- |
+| Scalar and `Index` | `Index` operator overloads, plus the scalar's own forward overloads |
+| Scalar and `Series` | `Series` operator overloads, plus the scalar's own forward overloads |
+| `Index` and `Series` | `Series` operator overloads, plus `IntervalIndex`'s comparison overloads |
+| `Series` and `DataFrame` | `DataFrame` operator overloads |
+
+The scalar rows are not one-sided: a scalar such as `Timedelta` declares its own forward
+overloads for the array-like operands it broadcasts over, and those overloads are part of
+the surface to review. [Scalar and Index subclass overloads](#scalar-and-index-subclass-overloads)
+states why the checker permits them and where the temporary list that records them lives.
+
+For example, `IntervalIndex`'s comparison overloads against `Series` return `Series[bool]`,
+so the result shape belongs to `Series`.
+
+These are lookup examples for the stubs, not a claim about the exact runtime dispatch
+sequence for every operand pair.
+
 ## A rejected signature, traced
 
 ```python
@@ -61,13 +84,43 @@ ERROR: Series.__sub__ higher-tier operand DataFrame: expected 0 overload(s), obs
 - Observed and recorded counts must match exactly. New combinations, increases, decreases
   and unused entries all fail.
 
-For example, one `Series.__matmul__(DataFrame)` declaration requires
-`("Series", "__matmul__", "DataFrame"): 1`.
-
 The goal is to shrink this registry towards empty; pandas-dev/pandas-stubs#2023 tracks the
 steps. A PR may remove a key or lower a count. Adding a key or raising a count needs the
-signature's purpose explained in the PR and its typing and runtime behavior tested. Never
-raise a count merely to silence a failure.
+signature's purpose explained in the PR and its typing and runtime behavior tested as
+appropriate. Never raise a count merely to silence a failure.
+
+### Why the allowances exist
+
+The allowances are not a claim that the lower tier owns dispatch. At runtime the tier-0
+scalars and `IntervalIndex` return `NotImplemented` for a `Series` or `Index` operand, and
+the higher tier's reflected dunder produces the result. Each key therefore records a
+cross-tier declaration the stubs currently carry, not a runtime entry point.
+
+The measured four-checker fallback is recorded in pandas-dev/pandas-stubs#2023. Deleting
+`Timedelta.__lt__(Series[Timedelta])` and `Timedelta.__floordiv__(Series[Timedelta])`
+keeps `Series[bool]` and `Series[int]` in mypy, pyright, pyrefly and ty through the
+reflected dunder; that issue runs the same experiment for the remaining keys, one class at
+a time.
+
+`__eq__` and `__ne__` are different. Every `__eq__` accepts `object`, so the `object`
+catch-all wins and the reflected method does not produce the result. Deleting
+`Timedelta.__eq__(Series[Timedelta])` was measured to produce `Literal[False]` in all four
+checkers, so the lower tier must keep declaring the higher-tier result for these two names.
+
+This rationale is scoped to the operand pairs measured in pandas-dev/pandas-stubs#2023. It
+is not a general claim that the higher tier's reflected dunder suffices for every pair.
+
+## Matrix multiplication
+
+`Series.__matmul__(DataFrame)` is the one `Series` operand the registry permits above its
+tier. The stubs return a `Series` for this matrix-multiplication overload, pandas supports
+the expression at runtime, and `tests/series/test_series.py::test_types_dot` exercises the
+forward operation, so removing the overload would regress valid code.
+
+The measured exit is to add a `DataFrame.__rmatmul__(Series)` overload and remove the
+`Series` key, moving the result shape to the tier that owns it.
+`pandas-stubs/core/frame.pyi` does not declare that overload today;
+pandas-dev/pandas-stubs#2023 tracks the step.
 
 ## Limits
 
@@ -77,6 +130,12 @@ raise a count merely to silence a failure.
 - Only `TypeAlias`-annotated aliases are expanded, transitively. Aliases resolve globally by
   terminal name, not by scope, so same-named aliases contribute. Duplicates are kept and
   cycles terminate.
+- Tier 1 is registered through the `ExtensionArray` ABC, so an operand is read at tier 1
+  when the annotation spells `ExtensionArray`, or a `TypeAlias` chain such as `ArrayLike`
+  or `ListLike` that reaches it. A concrete array-like such as `Categorical` is not read
+  at tier 1: the checker inherits through base classes for `Index` subclasses only, so an
+  annotation that names `Categorical` without an alias chain to `ExtensionArray` is an
+  unknown spelling.
 - `ScalarArrayIndex*` aliases must not reference `Series` or `DataFrame`. `ScalarArrayIndexSeries*`
   aliases may reference `Series` but not `DataFrame`. No exceptions.
 - Both branches of class-level and module-level `if` statements are scanned without
@@ -85,6 +144,8 @@ raise a count merely to silence a failure.
 - Unsupported: quoted annotations, implicit aliases, PEP 695 `type` aliases, TypeVar bounds,
   import renaming, async methods, callable class attributes and other class families.
 - Passing is not proof that a signature is correct.
+
+See [Validation](validation.md) for when a change needs the check.
 
 ## Running the checks
 
