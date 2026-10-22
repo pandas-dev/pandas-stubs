@@ -4,6 +4,8 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    Literal,
+    Never,
     Self,
 )
 
@@ -32,6 +34,14 @@ class CategoricalIndex(
     @property
     @override
     def categories(self) -> Index[S1]: ...
+    @override
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
     @property
     @override
     def array(self) -> Categorical: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
