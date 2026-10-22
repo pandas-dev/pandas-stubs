@@ -65,7 +65,6 @@ from pandas._stubs_only import (
     ElementOpsMixin,
     NumListLike,
     OrderableT,
-    ScalarArrayIndexSeriesComparison,
     ScalarArrayIndexSeriesComplex,
     ScalarArrayIndexSeriesJustComplex,
     ScalarArrayIndexSeriesJustFloat,
@@ -2771,45 +2770,173 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload  # type: ignore[override]
     @override
     def __ge__(  # pyrefly: ignore[bad-override]
-        self: Iterable[float], other: ScalarArrayIndexSeriesReal, /
+        self: Iterable[float],
+        other: ScalarArrayIndexSeriesReal,
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __ge__(
+        self: Iterable[SupportsDunderGE[S1]],
+        other: S1 | Sequence[S1] | Index[S1] | Series[S1],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __ge__(
+        self: Series[_str],
+        other: np_ndarray_str,
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __ge__(
+        self: Series[bytes],
+        other: np_ndarray[tuple[Any, ...], np.bytes_],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __ge__(
+        self: Iterable[datetime],
+        other: datetime | Sequence[datetime],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __ge__(
+        self: Iterable[timedelta],
+        other: timedelta | Sequence[timedelta],
+        /,
     ) -> Series[_bool]: ...
     @overload
     def __ge__(  # ty: ignore[invalid-method-override]
-        self: Iterable[SupportsDunderGE[S1]],
-        other: ScalarArrayIndexSeriesComparison[S1],
+        self: Iterable[SupportsDunderGE[GenericT]],
+        other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         /,
     ) -> Series[_bool]: ...
     @overload  # type: ignore[override]
     @override
     def __gt__(  # pyrefly: ignore[bad-override]
-        self: Iterable[float], other: ScalarArrayIndexSeriesReal, /
+        self: Iterable[float],
+        other: ScalarArrayIndexSeriesReal,
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __gt__(
+        self: Iterable[SupportsDunderGT[S1]],
+        other: S1 | Sequence[S1] | Index[S1] | Series[S1],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __gt__(
+        self: Series[_str],
+        other: np_ndarray_str,
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __gt__(
+        self: Series[bytes],
+        other: np_ndarray[tuple[Any, ...], np.bytes_],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __gt__(
+        self: Iterable[datetime],
+        other: datetime | Sequence[datetime],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __gt__(
+        self: Iterable[timedelta],
+        other: timedelta | Sequence[timedelta],
+        /,
     ) -> Series[_bool]: ...
     @overload
     def __gt__(  # ty: ignore[invalid-method-override]
-        self: Iterable[SupportsDunderGT[S1]],
-        other: ScalarArrayIndexSeriesComparison[S1],
+        self: Iterable[SupportsDunderGT[GenericT]],
+        other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         /,
     ) -> Series[_bool]: ...
     @overload  # type: ignore[override]
     @override
     def __le__(  # pyrefly: ignore[bad-override]
-        self: Iterable[float], other: ScalarArrayIndexSeriesReal, /
+        self: Iterable[float],
+        other: ScalarArrayIndexSeriesReal,
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __le__(
+        self: Iterable[SupportsDunderLE[S1]],
+        other: S1 | Sequence[S1] | Index[S1] | Series[S1],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __le__(
+        self: Series[_str],
+        other: np_ndarray_str,
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __le__(
+        self: Series[bytes],
+        other: np_ndarray[tuple[Any, ...], np.bytes_],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __le__(
+        self: Iterable[datetime],
+        other: datetime | Sequence[datetime],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __le__(
+        self: Iterable[timedelta],
+        other: timedelta | Sequence[timedelta],
+        /,
     ) -> Series[_bool]: ...
     @overload
     def __le__(  # ty: ignore[invalid-method-override]
-        self: Iterable[SupportsDunderLE[S1]],
-        other: ScalarArrayIndexSeriesComparison[S1],
+        self: Iterable[SupportsDunderLE[GenericT]],
+        other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         /,
     ) -> Series[_bool]: ...
     @overload  # type: ignore[override]
     @override
     def __lt__(  # pyrefly: ignore[bad-override]
-        self: Iterable[float], other: ScalarArrayIndexSeriesReal, /
+        self: Iterable[float],
+        other: ScalarArrayIndexSeriesReal,
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __lt__(
+        self: Iterable[SupportsDunderLT[S1]],
+        other: S1 | Sequence[S1] | Index[S1] | Series[S1],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __lt__(
+        self: Series[_str],
+        other: np_ndarray_str,
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __lt__(
+        self: Series[bytes],
+        other: np_ndarray[tuple[Any, ...], np.bytes_],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __lt__(
+        self: Iterable[datetime],
+        other: datetime | Sequence[datetime],
+        /,
+    ) -> Series[_bool]: ...
+    @overload
+    def __lt__(
+        self: Iterable[timedelta],
+        other: timedelta | Sequence[timedelta],
+        /,
     ) -> Series[_bool]: ...
     @overload
     def __lt__(  # ty: ignore[invalid-method-override]
-        self: Iterable[SupportsDunderLT[S1]],
-        other: ScalarArrayIndexSeriesComparison[S1],
+        self: Iterable[SupportsDunderLT[GenericT]],
+        other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         /,
     ) -> Series[_bool]: ...
     @overload
@@ -4529,6 +4656,22 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_bool]: ...
     @overload
     def ge(
+        self: Iterable[datetime],
+        other: datetime | Sequence[datetime],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def ge(
+        self: Iterable[timedelta],
+        other: timedelta | Sequence[timedelta],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def ge(
         self: Iterable[SupportsDunderGE[GenericT]],
         other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         level: Level | None = ...,
@@ -4563,6 +4706,22 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def gt(
         self: Series[bytes],
         other: np_ndarray[tuple[Any, ...], np.bytes_],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def gt(
+        self: Iterable[datetime],
+        other: datetime | Sequence[datetime],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def gt(
+        self: Iterable[timedelta],
+        other: timedelta | Sequence[timedelta],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -4627,6 +4786,22 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_bool]: ...
     @overload
     def le(
+        self: Iterable[datetime],
+        other: datetime | Sequence[datetime],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def le(
+        self: Iterable[timedelta],
+        other: timedelta | Sequence[timedelta],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def le(
         self: Iterable[SupportsDunderLE[GenericT]],
         other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         level: Level | None = ...,
@@ -4661,6 +4836,22 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def lt(
         self: Series[bytes],
         other: np_ndarray[tuple[Any, ...], np.bytes_],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def lt(
+        self: Iterable[datetime],
+        other: datetime | Sequence[datetime],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def lt(
+        self: Iterable[timedelta],
+        other: timedelta | Sequence[timedelta],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,

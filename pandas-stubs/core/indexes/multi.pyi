@@ -7,6 +7,7 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    Literal,
     Never,
     Self,
     overload,
@@ -40,6 +41,14 @@ from pandas._typing import (
 )
 
 class MultiIndex(Index):
+    @override
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
     def __new__(
         cls,
         levels: Sequence[SequenceNotStr[Hashable]],

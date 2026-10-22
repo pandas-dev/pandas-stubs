@@ -26,9 +26,24 @@ def test_relops_py_scalar(left: pd.Series[bytes]) -> None:
     check(assert_type(left > b, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= b, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.lt(b), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(b), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(b), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(b), "pd.Series[bool]"), pd.Series, np.bool_)
+
 
 def test_relops_numpy_array(left: pd.Series[bytes]) -> None:
     other = np.array([b"a", b"b", b"c"], dtype=np.bytes_)
+
+    check(assert_type(left < other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.__lt__(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.__le__(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.__gt__(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.__ge__(other), "pd.Series[bool]"), pd.Series, np.bool_)
 
     check(assert_type(left.lt(other), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.le(other), "pd.Series[bool]"), pd.Series, np.bool_)
@@ -49,6 +64,11 @@ def test_relops_pd_index(left: pd.Series[bytes]) -> None:
     check(assert_type(index > left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.lt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(index), "pd.Series[bool]"), pd.Series, np.bool_)
+
 
 def test_relops_pd_series(left: pd.Series[bytes]) -> None:
     other = left.copy()
@@ -57,3 +77,8 @@ def test_relops_pd_series(left: pd.Series[bytes]) -> None:
     check(assert_type(left <= other, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(other), "pd.Series[bool]"), pd.Series, np.bool_)

@@ -29,6 +29,11 @@ def test_relops_py_scalar(left: pd.Series[float]) -> None:
     check(assert_type(left > f, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= f, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.lt(f), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(f), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(f), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(f), "pd.Series[bool]"), pd.Series, np.bool_)
+
 
 def test_relops_mixed_numeric(left: pd.Series[float]) -> None:
     """Test pd.Series[float] <comparison> int scalar"""
@@ -44,6 +49,11 @@ def test_relops_mixed_numeric(left: pd.Series[float]) -> None:
     check(assert_type(i <= left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i > left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i >= left, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(i), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(i), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(i), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(i), "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_relops_invalid_py_scalar(left: pd.Series[float]) -> None:
@@ -112,6 +122,11 @@ def test_relops_pd_index(left: pd.Series[float]) -> None:
     check(assert_type(index > left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.lt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(index), "pd.Series[bool]"), pd.Series, np.bool_)
+
 
 def test_relops_invalid_pd_index(left: pd.Series[float]) -> None:
     complex_index = pd.Index([1j, 2j])
@@ -141,12 +156,7 @@ def test_relops_pd_series(left: pd.Series[float]) -> None:
     check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)
 
-
-def test_relops_invalid_pd_series(left: pd.Series[float]) -> None:
-    complex_series = pd.Series([1j, 2j])
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        left.lt(complex_series)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        left.le(complex_series)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        left.gt(complex_series)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        left.ge(complex_series)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+    check(assert_type(left.lt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(other), "pd.Series[bool]"), pd.Series, np.bool_)

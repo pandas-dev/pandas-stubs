@@ -18,6 +18,7 @@ _SRC_STEPS = [
     _step.mypy_src,
     _step.pyright_src,
     _step.pytest,
+    _step.pytest_architecture,
     _step.style,
 ]
 _DIST_STEPS = [

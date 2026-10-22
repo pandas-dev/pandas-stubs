@@ -34,6 +34,16 @@ def test_relops_py_scalar(left: pd.Series[pd.Timestamp]) -> None:
     check(assert_type(left > ts, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= ts, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.lt(dtdt), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(dtdt), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(dtdt), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(dtdt), "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(ts), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(ts), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(ts), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(ts), "pd.Series[bool]"), pd.Series, np.bool_)
+
 
 def test_relops_py_sequence(left: pd.Series[pd.Timestamp]) -> None:
     values = [pd.Timestamp("2022-08-01")]
@@ -44,7 +54,23 @@ def test_relops_py_sequence(left: pd.Series[pd.Timestamp]) -> None:
     check(assert_type(left >= values, "pd.Series[bool]"), pd.Series, np.bool_)
 
     check(assert_type(left.lt(values), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(values), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.gt(values), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(values), "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_datetime_sequence(left: pd.Series[pd.Timestamp]) -> None:
+    values = [datetime(2022, 8, 1)]
+
+    check(assert_type(left < values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= values, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(values), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(values), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(values), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(values), "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_relops_numpy_array(left: pd.Series[pd.Timestamp]) -> None:
@@ -55,7 +81,14 @@ def test_relops_numpy_array(left: pd.Series[pd.Timestamp]) -> None:
     check(assert_type(left > array, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= array, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.__lt__(array), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.__le__(array), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.__gt__(array), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.__ge__(array), "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(array), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.le(array), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(array), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.ge(array), "pd.Series[bool]"), pd.Series, np.bool_)
 
 
@@ -82,6 +115,16 @@ def test_relops_pd_index(left: pd.Series[pd.Timestamp]) -> None:
     check(assert_type(datetime_index > left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(datetime_index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.lt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(index), "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(datetime_index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(datetime_index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(datetime_index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(datetime_index), "pd.Series[bool]"), pd.Series, np.bool_)
+
 
 def test_relops_pd_series(left: pd.Series[pd.Timestamp]) -> None:
     other = left.copy()
@@ -89,3 +132,8 @@ def test_relops_pd_series(left: pd.Series[pd.Timestamp]) -> None:
     check(assert_type(left <= other, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(other), "pd.Series[bool]"), pd.Series, np.bool_)

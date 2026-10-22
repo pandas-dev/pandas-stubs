@@ -27,6 +27,11 @@ def test_relops_py_scalar(left: pd.Series[date]) -> None:
     check(assert_type(left > dtd, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= dtd, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.lt(dtd), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(dtd), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(dtd), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(dtd), "pd.Series[bool]"), pd.Series, np.bool_)
+
 
 def test_relops_pd_index(left: pd.Series[date]) -> None:
     index = pd.Index(left)
@@ -41,6 +46,11 @@ def test_relops_pd_index(left: pd.Series[date]) -> None:
     check(assert_type(index > left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
 
+    check(assert_type(left.lt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(index), "pd.Series[bool]"), pd.Series, np.bool_)
+
 
 def test_relops_pd_series(left: pd.Series[date]) -> None:
     other = left.copy()
@@ -49,3 +59,8 @@ def test_relops_pd_series(left: pd.Series[date]) -> None:
     check(assert_type(left <= other, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(other), "pd.Series[bool]"), pd.Series, np.bool_)

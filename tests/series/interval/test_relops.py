@@ -28,3 +28,8 @@ def test_relops_pd_index(left: pd.Series[pd.Interval[int]]) -> None:
     check(assert_type(index <= left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(index > left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(index), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(index), "pd.Series[bool]"), pd.Series, np.bool_)

@@ -184,28 +184,6 @@ ScalarArrayIndexDatetime: TypeAlias = (
     | ArrayIndexDatetimeNoSeq
 )
 
-OrderableArrayLike: TypeAlias = (
-    ExtensionArray
-    | np_ndarray[
-        ShapeT,
-        NumpyRealScalar
-        | np.str_
-        | np.bytes_
-        | np.datetime64
-        | np.timedelta64
-        | np.object_,
-    ]
-)
-ScalarArrayIndexSeriesComparison: TypeAlias = (
-    S2
-    | Sequence[S2]
-    | OrderableArrayLike
-    | Index[S2]
-    | Series[S2]
-    | ScalarArrayIndexDatetime
-    | ScalarArrayIndexTimedelta
-)
-
 ArrayIndexPeriodNoSeq: TypeAlias = (
     np_ndarray_td
     | np_ndarray_anyint

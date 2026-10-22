@@ -50,6 +50,11 @@ def test_relops_invalid_py_scalar(left: pd.Series[complex]) -> None:
         left.gt(1.0)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         left.ge(1.0)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
+        left.lt(1j)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(1j)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(1j)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(1j)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
 
 def test_relops_invalid_py_sequence(left: pd.Series[complex]) -> None:
     """Test invalid pd.Series[complex] comparisons with py sequences"""
@@ -67,6 +72,16 @@ def test_relops_invalid_py_sequence(left: pd.Series[complex]) -> None:
         _gt_cseq = left > complex_values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _ge_cseq = left >= complex_values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
+        left.lt(real_values)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(real_values)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(real_values)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(real_values)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+        left.lt(complex_values)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(complex_values)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(complex_values)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(complex_values)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
 
 def test_relops_invalid_numpy_array(left: pd.Series[complex]) -> None:
     """Test invalid pd.Series[complex] comparisons with numpy arrays"""
@@ -79,10 +94,20 @@ def test_relops_invalid_numpy_array(left: pd.Series[complex]) -> None:
         left.__gt__(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         left.__ge__(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
+        left.lt(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
         left.__lt__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         left.__le__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         left.__gt__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         left.__ge__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+        left.lt(complex_array)  # type: ignore[arg-type,misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(complex_array)  # type: ignore[arg-type,misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(complex_array)  # type: ignore[arg-type,misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(complex_array)  # type: ignore[arg-type,misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_relops_invalid_pd_index(left: pd.Series[complex]) -> None:
@@ -106,6 +131,16 @@ def test_relops_invalid_pd_index(left: pd.Series[complex]) -> None:
         _ridx_gt = real_index > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _ridx_ge = real_index >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
+        left.lt(real_index)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(real_index)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(real_index)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(real_index)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+        left.lt(complex_index)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(complex_index)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(complex_index)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(complex_index)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
 
 def test_relops_invalid_pd_series(left: pd.Series[complex]) -> None:
     """Test invalid pd.Series[complex] comparisons with pandas Series"""
@@ -127,3 +162,18 @@ def test_relops_invalid_pd_series(left: pd.Series[complex]) -> None:
         _rser_le = real_series <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _rser_gt = real_series > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
         _rser_ge = real_series >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+
+        left.lt(real_series)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(real_series)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(real_series)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(real_series)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+        left.lt(complex_series)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.le(complex_series)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.gt(complex_series)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.ge(complex_series)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+        real_series.lt(left)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        real_series.le(left)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        real_series.gt(left)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        real_series.ge(left)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
