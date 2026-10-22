@@ -855,6 +855,9 @@ def test_dataframe_clip() -> None:
         df.copy().clip(lower=pd.Series([1, 2]), upper=None, axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.copy().clip(lower=None, upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.copy().clip(lower=pd.Series([4, 5]), upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        # bounds must be orderable against numbers or datetimes, not strings
+        df.clip(["1", "2"])  # type: ignore[list-item] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.clip(upper=pd.Index(["1", "2"]))  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(
         assert_type(df.clip(lower=None, upper=None, axis=None), pd.DataFrame),
@@ -989,6 +992,39 @@ def test_dataframe_clip() -> None:
     check(assert_type(df.clip(range(2)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip([1, 2], 4, axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip([1, 2], axis="columns"), pd.DataFrame), pd.DataFrame)
+
+    dates = pd.DataFrame({"date": pd.to_datetime(["2020-01-01", "2022-01-01"])})
+    lower = pd.Timestamp("2021-01-01")
+    check(assert_type(dates.clip(lower=[lower]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(dates.clip(lower=pd.DatetimeIndex([lower])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(dates.clip(lower=lower), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(dates.clip(upper=[datetime.datetime(2021, 1, 1)]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            dates.clip(lower=np.array(["2021-01-01"], dtype="datetime64[ns]")),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    deltas = pd.DataFrame({"delta": pd.to_timedelta(["1D", "3D"])})
+    check(
+        assert_type(deltas.clip(upper=[pd.Timedelta("2D")]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(deltas.clip(upper=pd.TimedeltaIndex(["2D"])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(deltas.clip(lower=datetime.timedelta(days=2)), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     # array-like bounds other than Series don't need an axis
     check(assert_type(df.clip(np.array([1, 2]), [4, 5]), pd.DataFrame), pd.DataFrame)
