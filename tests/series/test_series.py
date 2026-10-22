@@ -1925,6 +1925,38 @@ def test_cat_accessor() -> None:
         np.integer,
     )
     check(
+        assert_type(
+            ser.cat.remove_categories(2), "pd.Series[pd.CategoricalDtype[int]]"
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            ser.cat.remove_categories(pd.Index([2])),
+            "pd.Series[pd.CategoricalDtype[int]]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            ser.cat.reorder_categories(pd.Index([3, 2, 1])),
+            "pd.Series[pd.CategoricalDtype[int]]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            ser.cat.reorder_categories(pd.Series([3, 2, 1])),
+            "pd.Series[pd.CategoricalDtype[int]]",
+        ),
+        pd.Series,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        # the new order and the removals must have the categories' type
+        str_index = pd.Index(["a", "b", "c"])
+        ser.cat.reorder_categories(str_index)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        ser.cat.remove_categories(str_index)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+    check(
         assert_type(ser.cat.add_categories([4]), "pd.Series[pd.CategoricalDtype[int]]"),
         pd.Series,
         np.integer,

@@ -10,7 +10,9 @@ from typing import (
     Literal,
     Never,
     Self,
+    TypeVar,
     overload,
+    type_check_only,
 )
 
 import numpy as np
@@ -282,9 +284,13 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
         self, values: AnyArrayLike | SequenceNotStr[Hashable]
     ) -> np_1darray_bool: ...
 
-class CategoricalAccessor(PandasDelegate, Generic[CategoricalValueT]):
-    @property
-    def codes(self) -> Series[int]: ...
+_CategoricalResultT = TypeVar("_CategoricalResultT")
+
+# Methods that `Series.cat` and `CategoricalIndex` share with the same signatures. Each
+# returns a new object of the caller's kind: a `Series` for the accessor, a
+# `CategoricalIndex` for the index.
+@type_check_only
+class CategoricalMethods(Generic[_CategoricalResultT, CategoricalValueT]):
     @property
     def categories(self) -> Index: ...
     @property
@@ -296,33 +302,57 @@ class CategoricalAccessor(PandasDelegate, Generic[CategoricalValueT]):
             | dict[Any, CategoricalValueT]
             | Callable[[CategoricalValueT], CategoricalValueT]
         ),
-    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+    ) -> _CategoricalResultT: ...
+    # The new order and the removals must have the categories' type. That can only be
+    # spelled out for str/int/float categories, since Index and Series don't take object.
     @overload
     def reorder_categories(
-        self,
-        new_categories: Sequence[CategoricalValueT],
-        ordered: bool = ...,
-    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+        self: CategoricalMethods[_CategoricalResultT, CategoricalValueT1],
+        new_categories: (
+            SequenceNotStr[CategoricalValueT1]
+            | Index[CategoricalValueT1]
+            | Series[CategoricalValueT1]
+        ),
+        ordered: bool | None = None,
+    ) -> _CategoricalResultT: ...
     @overload
     def reorder_categories(
-        self,
-        new_categories: AnyArrayLike,
-        ordered: bool = ...,
-    ) -> Series[CategoricalDtype]: ...
+        self: CategoricalMethods[_CategoricalResultT, object],
+        new_categories: AnyArrayLike | SequenceNotStr[Hashable],
+        ordered: bool | None = None,
+    ) -> _CategoricalResultT: ...
     def add_categories(
         self, new_categories: Scalar | ListLike
-    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+    ) -> _CategoricalResultT: ...
+    @overload
     def remove_categories(
-        self, removals: Scalar | ListLike
-    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
-    def remove_unused_categories(
-        self,
-    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+        self: CategoricalMethods[_CategoricalResultT, CategoricalValueT1],
+        removals: (
+            CategoricalValueT1
+            | SequenceNotStr[CategoricalValueT1]
+            | Index[CategoricalValueT1]
+            | Series[CategoricalValueT1]
+        ),
+    ) -> _CategoricalResultT: ...
+    @overload
+    def remove_categories(
+        self: CategoricalMethods[_CategoricalResultT, object],
+        removals: Scalar | ListLike,
+    ) -> _CategoricalResultT: ...
+    def remove_unused_categories(self) -> _CategoricalResultT: ...
     def set_categories(
         self,
         new_categories: Sequence[CategoricalValueT] | ListLike,
-        ordered: bool | None = False,
+        ordered: bool | None = None,
         rename: bool = False,
-    ) -> Series[CategoricalDtype[CategoricalValueT]]: ...
-    def as_ordered(self) -> Series[CategoricalDtype[CategoricalValueT]]: ...
-    def as_unordered(self) -> Series[CategoricalDtype[CategoricalValueT]]: ...
+    ) -> _CategoricalResultT: ...
+    def as_ordered(self) -> _CategoricalResultT: ...
+    def as_unordered(self) -> _CategoricalResultT: ...
+
+class CategoricalAccessor(
+    PandasDelegate,
+    CategoricalMethods[Series[CategoricalDtype[CategoricalValueT]], CategoricalValueT],
+    Generic[CategoricalValueT],
+):
+    @property
+    def codes(self) -> Series[int]: ...
