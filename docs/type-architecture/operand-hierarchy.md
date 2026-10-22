@@ -64,9 +64,10 @@ ERROR: Series.__sub__ higher-tier operand DataFrame: expected 0 overload(s), obs
 For example, one `Series.__matmul__(DataFrame)` declaration requires
 `("Series", "__matmul__", "DataFrame"): 1`.
 
-To change a count, explain the signature's purpose in the PR, test its typing and runtime
-behavior as appropriate, then update the count. Never raise a count merely to silence a
-failure. Allowances are a review boundary, not a promise that each will disappear.
+The goal is to shrink this registry towards empty; pandas-dev/pandas-stubs#2023 tracks the
+steps. A PR may remove a key or lower a count. Adding a key or raising a count needs the
+signature's purpose explained in the PR and its typing and runtime behavior tested. Never
+raise a count merely to silence a failure.
 
 ## Limits
 
