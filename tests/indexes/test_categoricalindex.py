@@ -75,23 +75,28 @@ def test_categoricalindex_categories_methods() -> None:
         pd.CategoricalIndex,
     )
     check(
-        assert_type(ci.set_categories(["a", "b", "c", "d"]), pd.CategoricalIndex),
-        pd.CategoricalIndex,
-    )
-    check(
-        assert_type(ci.set_categories(["a", "b", "c", "d"], True), pd.CategoricalIndex),
+        assert_type(
+            ci.set_categories(["a", "b", "c", "d"]), "pd.CategoricalIndex[str]"
+        ),
         pd.CategoricalIndex,
     )
     check(
         assert_type(
-            ci.set_categories(["x", "y", "z"], None, True), pd.CategoricalIndex
+            ci.set_categories(["a", "b", "c", "d"], True), "pd.CategoricalIndex[str]"
+        ),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(
+            ci.set_categories(["x", "y", "z"], None, True),
+            "pd.CategoricalIndex[str]",
         ),
         pd.CategoricalIndex,
     )
     check(
         assert_type(
             ci.set_categories(["x", "y", "z"], ordered=False, rename=True),
-            pd.CategoricalIndex,
+            "pd.CategoricalIndex[str]",
         ),
         pd.CategoricalIndex,
     )
@@ -106,14 +111,14 @@ def test_categoricalindex_categories_methods() -> None:
         pd.CategoricalIndex,
     )
     check(
-        assert_type(ci.rename_categories(["x", "y", "z"]), pd.CategoricalIndex),
+        assert_type(ci.rename_categories(["x", "y", "z"]), "pd.CategoricalIndex[str]"),
         pd.CategoricalIndex,
     )
     check(
-        assert_type(ci.rename_categories({"a": "x"}), pd.CategoricalIndex),
+        assert_type(ci.rename_categories({"a": "x"}), "pd.CategoricalIndex[str]"),
         pd.CategoricalIndex,
     )
     check(
-        assert_type(ci.rename_categories(str.upper), pd.CategoricalIndex),
+        assert_type(ci.rename_categories(str.upper), "pd.CategoricalIndex[str]"),
         pd.CategoricalIndex,
     )
