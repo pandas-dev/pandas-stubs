@@ -292,6 +292,8 @@ _CategoricalResultT = TypeVar("_CategoricalResultT")
 @type_check_only
 class CategoricalMethods(Generic[_CategoricalResultT, CategoricalValueT]):
     @property
+    def categories(self) -> Index: ...
+    @property
     def ordered(self) -> bool | None: ...
     def rename_categories(
         self,
@@ -301,15 +303,42 @@ class CategoricalMethods(Generic[_CategoricalResultT, CategoricalValueT]):
             | Callable[[CategoricalValueT], CategoricalValueT]
         ),
     ) -> _CategoricalResultT: ...
+    # The new order and the removals must have the categories' type. That can only be
+    # spelled out for str/int/float categories, since Index and Series don't take object.
+    @overload
     def reorder_categories(
-        self,
-        new_categories: Sequence[CategoricalValueT] | AnyArrayLike,
+        self: CategoricalMethods[_CategoricalResultT, CategoricalValueT1],
+        new_categories: (
+            SequenceNotStr[CategoricalValueT1]
+            | Index[CategoricalValueT1]
+            | Series[CategoricalValueT1]
+        ),
+        ordered: bool | None = None,
+    ) -> _CategoricalResultT: ...
+    @overload
+    def reorder_categories(
+        self: CategoricalMethods[_CategoricalResultT, object],
+        new_categories: AnyArrayLike | SequenceNotStr[Hashable],
         ordered: bool | None = None,
     ) -> _CategoricalResultT: ...
     def add_categories(
         self, new_categories: Scalar | ListLike
     ) -> _CategoricalResultT: ...
-    def remove_categories(self, removals: Scalar | ListLike) -> _CategoricalResultT: ...
+    @overload
+    def remove_categories(
+        self: CategoricalMethods[_CategoricalResultT, CategoricalValueT1],
+        removals: (
+            CategoricalValueT1
+            | SequenceNotStr[CategoricalValueT1]
+            | Index[CategoricalValueT1]
+            | Series[CategoricalValueT1]
+        ),
+    ) -> _CategoricalResultT: ...
+    @overload
+    def remove_categories(
+        self: CategoricalMethods[_CategoricalResultT, object],
+        removals: Scalar | ListLike,
+    ) -> _CategoricalResultT: ...
     def remove_unused_categories(self) -> _CategoricalResultT: ...
     def set_categories(
         self,
@@ -327,5 +356,3 @@ class CategoricalAccessor(
 ):
     @property
     def codes(self) -> Series[int]: ...
-    @property
-    def categories(self) -> Index: ...

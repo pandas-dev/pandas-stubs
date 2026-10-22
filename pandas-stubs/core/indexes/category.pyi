@@ -29,7 +29,9 @@ class CategoricalIndex(
     CategoricalMethods[CategoricalIndex[S1], Any],
 ):
     codes: np_1darray_intp = ...
-    categories: Index[S1] = ...
+    @property
+    @override
+    def categories(self) -> Index[S1]: ...
     @property
     @override
     def array(self) -> Categorical: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
