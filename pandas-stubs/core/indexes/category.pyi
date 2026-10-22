@@ -3,13 +3,17 @@ from collections.abc import (
     Iterable,
 )
 from typing import (
+    Any,
     Literal,
     Never,
     Self,
 )
 
 from pandas.core.accessor import PandasDelegate
-from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.categorical import (
+    Categorical,
+    CategoricalMethods,
+)
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
 from typing_extensions import override
@@ -21,9 +25,15 @@ from pandas._typing import (
     np_1darray_intp,
 )
 
-class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
+class CategoricalIndex(
+    ExtensionIndex[S1],
+    PandasDelegate,
+    CategoricalMethods[CategoricalIndex[S1], Any],
+):
     codes: np_1darray_intp = ...
-    categories: Index[S1] = ...
+    @property
+    @override
+    def categories(self) -> Index[S1]: ...
     @override
     def any(
         self, axis: None = None, out: None = None, keepdims: Literal[False] = False

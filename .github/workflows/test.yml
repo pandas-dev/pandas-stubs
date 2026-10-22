@@ -21,7 +21,7 @@ jobs:
       matrix:
         # macos-latest is arm
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
     permissions:
@@ -71,3 +71,22 @@ jobs:
           persist-credentials: false
 
       - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+
+  architecture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install project dependencies
+        uses: ./.github/setup
+        with:
+          os: ubuntu-latest
+          python-version: "3.11"
+      - name: Test operand hierarchy contract
+        run: poetry run poe pytest_architecture
+      - name: Validate standalone operand hierarchy command
+        run: python -S scripts/check_operand_hierarchy.py

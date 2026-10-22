@@ -28,6 +28,7 @@ mypy_src = Step(
     run=partial(run.checker_src, "mypy"),
 )
 pytest = Step(name="Run pytest", run=run.pytest)
+pytest_architecture = Step(name="Run architecture tests", run=run.pytest_architecture)
 style = Step(name="Run pre-commit", run=run.style)
 build_dist = Step(name="Build pandas-stubs", run=run.build_dist)
 install_dist = Step(

@@ -2138,6 +2138,9 @@ def test_converters_partial(tmp_path: Path) -> None:
 
 
 @pytest.mark.filterwarnings("ignore::ResourceWarning")
+# Python 3.15 resolves pyiceberg 0.10.0 (newer releases cap requires-python at <4),
+# which calls deprecated pyparsing and pydantic APIs. Remove once 3.15 gets >=0.11.
+@pytest.mark.filterwarnings("ignore::DeprecationWarning:pyiceberg")
 def test_iceberg(tmp_path: Path) -> None:
     """Test read_iceberg and DataFrame.to_iceberg GH1654."""
 
