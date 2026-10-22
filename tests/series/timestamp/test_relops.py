@@ -8,6 +8,7 @@ import pandas as pd
 import pytest
 
 from tests import check
+from tests._typing import np_ndarray_dt
 
 
 @pytest.fixture
@@ -23,11 +24,68 @@ def test_relops_py_scalar(left: pd.Series[pd.Timestamp]) -> None:
     dtdt = datetime(2022, 7, 31, 8, 32, 21)
     ts = pd.Timestamp("2022-07-31 08:35:12")
 
-    check(assert_type(left > dtdt, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left < dtdt, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left <= dtdt, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > dtdt, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= dtdt, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left > ts, "pd.Series[bool]"), pd.Series, np.bool_)
+
     check(assert_type(left < ts, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left <= ts, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > ts, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= ts, "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_py_sequence(left: pd.Series[pd.Timestamp]) -> None:
+    values = [pd.Timestamp("2022-08-01")]
+
+    check(assert_type(left < values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= values, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(values), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(values), "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_numpy_array(left: pd.Series[pd.Timestamp]) -> None:
+    array: np_ndarray_dt = np.array(["2022-08-01"], dtype="datetime64[ns]")
+
+    check(assert_type(left < array, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= array, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > array, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= array, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.le(array), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(array), "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_pd_index(left: pd.Series[pd.Timestamp]) -> None:
+    index = pd.Index(left)
+    datetime_index = pd.DatetimeIndex(left)
+    check(assert_type(left < index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= index, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left < datetime_index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= datetime_index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > datetime_index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= datetime_index, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(index < left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index <= left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index > left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(datetime_index < left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(datetime_index <= left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(datetime_index > left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(datetime_index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_pd_series(left: pd.Series[pd.Timestamp]) -> None:
+    other = left.copy()
+    check(assert_type(left < other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)

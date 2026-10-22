@@ -4506,7 +4506,31 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def ge(
         self: Iterable[SupportsDunderGE[S1]],
-        other: ScalarArrayIndexSeriesComparison[S1],
+        other: S1 | Sequence[S1] | Index[S1] | Series[S1],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def ge(
+        self: Series[_str],
+        other: np_ndarray_str,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def ge(
+        self: Series[bytes],
+        other: np_ndarray[tuple[Any, ...], np.bytes_],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def ge(
+        self: Iterable[SupportsDunderGE[GenericT]],
+        other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -4522,7 +4546,31 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def gt(
         self: Iterable[SupportsDunderGT[S1]],
-        other: ScalarArrayIndexSeriesComparison[S1],
+        other: S1 | Sequence[S1] | Index[S1] | Series[S1],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def gt(
+        self: Series[_str],
+        other: np_ndarray_str,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def gt(
+        self: Series[bytes],
+        other: np_ndarray[tuple[Any, ...], np.bytes_],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def gt(
+        self: Iterable[SupportsDunderGT[GenericT]],
+        other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -4556,7 +4604,31 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def le(
         self: Iterable[SupportsDunderLE[S1]],
-        other: ScalarArrayIndexSeriesComparison[S1],
+        other: S1 | Sequence[S1] | Index[S1] | Series[S1],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def le(
+        self: Series[_str],
+        other: np_ndarray_str,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def le(
+        self: Series[bytes],
+        other: np_ndarray[tuple[Any, ...], np.bytes_],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def le(
+        self: Iterable[SupportsDunderLE[GenericT]],
+        other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -4572,7 +4644,31 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def lt(
         self: Iterable[SupportsDunderLT[S1]],
-        other: ScalarArrayIndexSeriesComparison[S1],
+        other: S1 | Sequence[S1] | Index[S1] | Series[S1],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def lt(
+        self: Series[_str],
+        other: np_ndarray_str,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def lt(
+        self: Series[bytes],
+        other: np_ndarray[tuple[Any, ...], np.bytes_],
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[_bool]: ...
+    @overload
+    def lt(
+        self: Iterable[SupportsDunderLT[GenericT]],
+        other: GenericT | Sequence[GenericT] | np_ndarray[tuple[Any, ...], GenericT],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,

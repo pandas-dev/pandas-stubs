@@ -19,9 +19,41 @@ def left() -> pd.Series[bytes]:
 def test_relops_py_scalar(left: pd.Series[bytes]) -> None:
     """Test pd.Series[bytes] <comparison> py scalar"""
     # GH 175
-    b: bytes = b"def"
+    b = b"def"
 
-    check(assert_type(left > b, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left < b, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left <= b, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > b, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= b, "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_numpy_array(left: pd.Series[bytes]) -> None:
+    other = np.array([b"a", b"b", b"c"], dtype=np.bytes_)
+
+    check(assert_type(left.lt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(other), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(other), "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_pd_index(left: pd.Series[bytes]) -> None:
+    index = pd.Index(left)
+
+    check(assert_type(left < index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= index, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(index < left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index <= left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index > left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_pd_series(left: pd.Series[bytes]) -> None:
+    other = left.copy()
+
+    check(assert_type(left < other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)

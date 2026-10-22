@@ -72,6 +72,29 @@ def test_datetimeindex_shift() -> None:
     check(assert_type(ind.shift(1), pd.DatetimeIndex), pd.DatetimeIndex)
 
 
+def test_datetime_index_boolean_indexing() -> None:
+    left = check(
+        assert_type(
+            pd.date_range("2022-01-01", "2022-01-31", freq="D"), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    x = pd.Timestamp("2022-01-17")
+    idx = check(
+        assert_type(pd.Index(left, name="date"), pd.DatetimeIndex), pd.DatetimeIndex
+    )
+
+    check(assert_type(left[idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
+
+    check(assert_type(left[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[x > idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[x >= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+
+
 def test_datetimeindex_indexer_at_time() -> None:
     dti = pd.date_range("2023-01-01", "2023-02-01")
     check(assert_type(dti.indexer_at_time("10:00"), np_1darray_intp), np_1darray_intp)

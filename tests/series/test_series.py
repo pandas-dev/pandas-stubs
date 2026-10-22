@@ -4097,3 +4097,16 @@ def test_series_primitive_conversions() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         bytes(s_float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         bytearray(s_float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+
+def test_relops_any() -> None:
+    left: pd.Series[Any] = pd.Series([1, 2, 3])
+
+    check(assert_type(left < 2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= 2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > 2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= 2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(2 < left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(2 <= left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(2 > left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(2 >= left, "pd.Series[bool]"), pd.Series, np.bool_)

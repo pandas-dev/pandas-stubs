@@ -8,6 +8,7 @@ import pandas as pd
 import pytest
 
 from tests import check
+from tests._typing import np_ndarray_td
 
 
 @pytest.fixture
@@ -23,11 +24,59 @@ def test_relops_py_scalar(left: pd.Series[pd.Timedelta]) -> None:
     dttd = timedelta(seconds=10)
     td = pd.Timedelta(seconds=10)
 
-    check(assert_type(left > dttd, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left < dttd, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left <= dttd, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > dttd, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= dttd, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left > td, "pd.Series[bool]"), pd.Series, np.bool_)
+
     check(assert_type(left < td, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left <= td, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > td, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left >= td, "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_py_sequence(left: pd.Series[pd.Timedelta]) -> None:
+    values = [pd.Timedelta(days=1)]
+
+    check(assert_type(left < values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > values, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= values, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(values), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(values), "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_numpy_array(left: pd.Series[pd.Timedelta]) -> None:
+    array: np_ndarray_td = np.array([1], dtype="timedelta64[D]")
+
+    check(assert_type(left < array, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= array, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > array, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= array, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.le(array), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(array), "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_pd_index(left: pd.Series[pd.Timedelta]) -> None:
+    index = pd.Index(left)
+
+    check(assert_type(left < index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > index, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= index, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(index < left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index <= left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index > left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(index >= left, "pd.Series[bool]"), pd.Series, np.bool_)
+
+
+def test_relops_pd_series(left: pd.Series[pd.Timedelta]) -> None:
+    other = left.copy()
+
+    check(assert_type(left < other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)
