@@ -99,28 +99,26 @@ cross-tier declaration the stubs currently carry, not a runtime entry point.
 The measured four-checker fallback is recorded in pandas-dev/pandas-stubs#2023. Deleting
 `Timedelta.__lt__(Series[Timedelta])` and `Timedelta.__floordiv__(Series[Timedelta])`
 keeps `Series[bool]` and `Series[int]` in mypy, pyright, pyrefly and ty through the
-reflected dunder; that issue runs the same experiment for the remaining keys, one class at
-a time.
+reflected dunder; that issue records the measurement and the per-class steps.
 
-`__eq__` and `__ne__` are different. Every `__eq__` accepts `object`, so the `object`
-catch-all wins and the reflected method does not produce the result. Deleting
-`Timedelta.__eq__(Series[Timedelta])` was measured to produce `Literal[False]` in all four
-checkers, so the lower tier must keep declaring the higher-tier result for these two names.
+`__eq__` and `__ne__` are the exception. The temporal and interval classes pair their
+higher-tier overload with an `object` catch-all; once the specific overload is gone, the
+catch-all absorbs the operand and the reflected method never runs. This was measured for
+`Timedelta`, whose catch-all returns `Literal[False]` in all four checkers, so the lower
+tier keeps declaring the result for these two names. Check each class before assuming the
+same fallback: `NAType` declares no `object` overload.
 
 This rationale is scoped to the operand pairs measured in pandas-dev/pandas-stubs#2023. It
 is not a general claim that the higher tier's reflected dunder suffices for every pair.
 
 ## Matrix multiplication
 
-`Series.__matmul__(DataFrame)` is the one `Series` operand the registry permits above its
-tier. The stubs return a `Series` for this matrix-multiplication overload, pandas supports
-the expression at runtime, and `tests/series/test_series.py::test_types_dot` exercises the
-forward operation, so removing the overload would regress valid code.
-
-The measured exit is to add a `DataFrame.__rmatmul__(Series)` overload and remove the
-`Series` key, moving the result shape to the tier that owns it.
-`pandas-stubs/core/frame.pyi` does not declare that overload today;
-pandas-dev/pandas-stubs#2023 tracks the step.
+`Series.__matmul__(DataFrame)` returns a `Series`, and pandas supports the expression at
+runtime; `tests/series/test_series.py::test_types_dot` exercises the forward operation.
+The result shape belongs to `DataFrame`, so the corresponding design is a
+`DataFrame.__rmatmul__(Series)` overload: it lets the `Series` side keep its operand scope
+while the tier that owns the shape declares the result. pandas-dev/pandas-stubs#2023
+tracks the step.
 
 ## Limits
 
@@ -132,7 +130,7 @@ pandas-dev/pandas-stubs#2023 tracks the step.
   cycles terminate.
 - Tier 1 is registered through the `ExtensionArray` ABC, so an operand is read at tier 1
   when the annotation spells `ExtensionArray`, or a `TypeAlias` chain such as `ArrayLike`
-  or `ListLike` that reaches it. A concrete array-like such as `Categorical` is not read
+  that reaches it. A concrete array-like such as `Categorical` is not read
   at tier 1: the checker inherits through base classes for `Index` subclasses only, so an
   annotation that names `Categorical` without an alias chain to `ExtensionArray` is an
   unknown spelling.

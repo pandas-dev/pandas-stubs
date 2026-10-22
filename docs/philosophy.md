@@ -129,9 +129,11 @@ and asserts the runtime type as the test runs:
 check(assert_type(left + right, "pd.Series[int]"), pd.Series, int)
 ```
 
-The third argument is the expected dtype and is optional; when the target is a
-parameterized `np.ndarray[shape, dtype]`, `check` also verifies the shape and dtype from
-the type arguments.
+The third argument is the expected dtype and is optional; it is checked with `isinstance`
+against one representative element, so the example above assumes Python `int` elements —
+use the numpy scalar type (for example `np.integer`) for numpy-backed data.  When the
+target is a parameterized `np.ndarray[shape, dtype]`, `check` also verifies a fixed-length
+tuple shape and a concrete `np.dtype[...]` dtype from the type arguments.
 
 When a stub returns `Never`, verify it with `assert_type(expr, Never)`.  For
 arithmetic operators returning `Never`, type checkers still check the rest of

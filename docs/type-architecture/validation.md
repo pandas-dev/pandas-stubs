@@ -39,10 +39,11 @@ Run it when a change touches one of the things it reads:
 
 A change outside these surfaces does not need the check.
 
-The checker proves only that its alias and operand restrictions hold, and — when run as a
-script, the mode CI uses — that every exception key is exercised by the tree it scans. A
-passing run then names the temporary list it consulted and reports how many combinations
-and occurrences the tree exercises. It does not check runtime dispatch, return
+The checker proves only that its alias and operand restrictions hold, and — whenever it
+validates the shipped registry, both as a script and through
+`test_repository_matches_allowances` — that every exception key is exercised by the tree it
+scans. A passing run prints the exceptions file it consulted and the number of
+combinations and occurrences observed. It does not check runtime dispatch, return
 annotations, reflected dunders, overload selection, or all pandas operand relationships. A
 passing result is therefore a focused regression signal, not a general proof of
 type-architecture correctness.

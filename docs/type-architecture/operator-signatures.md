@@ -26,7 +26,7 @@ assuming alias coverage.
 Binary dunders use a positional-only `other` parameter:
 
 ```python
-def __add__(self, other: ScalarArrayIndexReal, /) -> Self: ...
+def __floordiv__(self: Index[Never], other: ScalarArrayIndexReal, /) -> Index: ...
 ```
 
 The `/` records the dunder calling convention in the stubs. Named methods such as
@@ -35,8 +35,11 @@ The `/` records the dunder calling convention in the stubs. Named methods such a
 
 The name matters, not just the shape: the
 [operand-hierarchy checker](../../scripts/operand_hierarchy/check.py) enumerates its
-scanned methods in `FORWARD_BINARY_DUNDERS` and reads the operand by name from the
-positional-only `other` parameter of the methods it scans.
+scanned methods in `FORWARD_BINARY_DUNDERS` (defined in
+[`model.py`](../../scripts/operand_hierarchy/model.py)) and reads the operand from the
+parameter named `other` of the methods it scans. The checker accepts a positional-only,
+keyword-only or variadic `other`; the stubs' own convention, enforced by
+`guard-dunders-posonly`, is positional-only.
 
 - A forward binary dunder must keep an `other` parameter. A scanned dunder that
   declares its operand under another name (say `right` or `value`) fails the checker
@@ -49,9 +52,9 @@ positional-only `other` parameter of the methods it scans.
 
 The higher-tier rule has a temporary exception list, `FORWARD_DUNDER_EXCEPTIONS` in
 [`scripts/operand_hierarchy/exceptions.py`](../../scripts/operand_hierarchy/exceptions.py),
-whose target is an empty set. A key is `(class, dunder, forbidden)` and maps to a positive
-count; each overload contributes once per canonical higher tier, regardless of alias
-spelling. pandas-dev/pandas-stubs#2023 tracks the retirement, and the
+whose target is an empty set. A key is `(class, dunder, canonical higher-tier operand)` and
+maps to a positive count; each overload contributes once per canonical higher tier,
+regardless of alias spelling. pandas-dev/pandas-stubs#2023 tracks the retirement, and the
 [operand hierarchy](operand-hierarchy.md#scalar-and-index-subclass-overloads) page states
 the policy and the target.
 
