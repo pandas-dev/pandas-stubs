@@ -219,7 +219,7 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
     def __getitem__(
         self, key: tuple[int, int], /
-    ) -> ScalarOrNA | Period | Interval: ...
+    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @overload
     def __getitem__(self, key: IndexingInt, /) -> Series: ...
     @overload
@@ -265,7 +265,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             int | str | tuple[Scalar, ...],
         ],
         /,
-    ) -> ScalarOrNA | Period | Interval: ...
+    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @overload
     def __getitem__(
         self,
@@ -337,7 +337,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
 
 class _iAtIndexerFrame(_iAtIndexer):
     @override
-    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | np.bool_ | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[int, int], value: ScalarOrNA, /
@@ -347,7 +347,7 @@ class _AtIndexerFrame(_AtIndexer):
     @override
     def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], /
-    ) -> ScalarOrNA | Period | Interval: ...
+    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA, /
@@ -2709,4 +2709,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
 @type_check_only
 class PandasNamedTuple(tuple[Any, ...]):
-    def __getattr__(self, field: str, /) -> ScalarOrNA | Period | Interval: ...
+    def __getattr__(
+        self, field: str, /
+    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...

@@ -29,18 +29,37 @@ def test_types_iloc_iat() -> None:
     s = pd.Series(data={"row1": 1, "row2": 2})
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
-    check(assert_type(s.iat[0], ScalarOrNA | pd.Period | pd.Interval), np.integer)
+    check(
+        assert_type(s.iat[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        np.integer,
+    )
     s.iat[0] = 999
     s2.loc[0]
     s2.iat[0]
     s2.iat[0] = None
 
-    for value in (pd.Period("2020-01"), pd.Interval(0, 1)):
-        series = pd.Series([value])
-        check(
-            assert_type(series.iat[0], ScalarOrNA | pd.Period | pd.Interval),
-            type(value),
-        )
+    period_series = pd.Series([pd.Period("2020-01")])
+    check(
+        assert_type(
+            period_series.iat[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
+        ),
+        pd.Period,
+    )
+    interval_series = pd.Series([pd.Interval(0, 1)])
+    check(
+        assert_type(
+            interval_series.iat[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
+        ),
+        pd.Interval,
+    )
+    missing_series = pd.Series([None], dtype=object)
+    check(assert_type(missing_series.iloc[0], Any), type(None))
+    check(
+        assert_type(
+            missing_series.iat[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
+        ),
+        type(None),
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         s.iat[0, 0]  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
@@ -56,13 +75,32 @@ def test_types_loc_at() -> None:
     s2.at[1]
     s2.at[1] = 99
 
-    check(assert_type(s.at["row1"], ScalarOrNA | pd.Period | pd.Interval), np.integer)
+    check(
+        assert_type(s.at["row1"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        np.integer,
+    )
 
-    for value in (pd.Period("2020-01"), pd.Interval(0, 1)):
-        series = pd.Series([value])
-        check(
-            assert_type(series.at[0], ScalarOrNA | pd.Period | pd.Interval), type(value)
-        )
+    period_series = pd.Series([pd.Period("2020-01")])
+    check(
+        assert_type(
+            period_series.at[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
+        ),
+        pd.Period,
+    )
+    interval_series = pd.Series([pd.Interval(0, 1)])
+    check(
+        assert_type(
+            interval_series.at[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
+        ),
+        pd.Interval,
+    )
+    missing_series = pd.Series([None], dtype=object)
+    check(
+        assert_type(
+            missing_series.at[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
+        ),
+        type(None),
+    )
 
 
 def test_types_getitem() -> None:

@@ -739,7 +739,9 @@ def test_types_itertuples() -> None:
 
     for t1 in df.itertuples():
         check(assert_type(t1, PandasNamedTuple), tuple)
-        check(assert_type(t1.col1, ScalarOrNA | pd.Period | pd.Interval), int)
+        check(
+            assert_type(t1.col1, ScalarOrNA | np.bool_ | pd.Period | pd.Interval), int
+        )
         assert t1.__class__.__name__ == "Pandas"
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col2, int)
@@ -4101,16 +4103,27 @@ def test_itertuples() -> None:
 
     for item in df.itertuples():
         check(assert_type(item, PandasNamedTuple), tuple)
-        check(assert_type(item.a, ScalarOrNA | pd.Period | pd.Interval), int)
+        check(assert_type(item.a, ScalarOrNA | np.bool_ | pd.Period | pd.Interval), int)
 
     df = pd.DataFrame(
-        {"period": [pd.Period("2020-01")], "interval": [pd.Interval(0, 1)]}
+        {
+            "period": [pd.Period("2020-01")],
+            "interval": [pd.Interval(0, 1)],
+            "missing": pd.Series([None], dtype=object),
+        }
     )
     for item in df.itertuples():
-        check(assert_type(item.period, ScalarOrNA | pd.Period | pd.Interval), pd.Period)
         check(
-            assert_type(item.interval, ScalarOrNA | pd.Period | pd.Interval),
+            assert_type(item.period, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+            pd.Period,
+        )
+        check(
+            assert_type(item.interval, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
             pd.Interval,
+        )
+        check(
+            assert_type(item.missing, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+            type(None),
         )
 
 
