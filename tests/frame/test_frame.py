@@ -4372,6 +4372,32 @@ def test_combine() -> None:
         pd.DataFrame,
     )
 
+    check(
+        assert_type(
+            df1.combine(
+                df2,
+                lambda s1, s2: assert_type(s1, "pd.Series[Any]")
+                + assert_type(s2, "pd.Series[Any]"),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df1.combine(
+                df2,
+                lambda s1, s2: np.int64(
+                    len(assert_type(s1, "pd.Series[Any]"))
+                    + len(assert_type(s2, "pd.Series[Any]"))
+                ),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(df1.combine(df2, np.minimum), pd.DataFrame), pd.DataFrame)
+
 
 def test_unstack() -> None:
     """Test different types of argument for `fill_value` in DataFrame.unstack."""

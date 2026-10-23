@@ -703,7 +703,9 @@ def test_groupby_and_transform() -> None:
     grouped = df.groupby("A")[["C", "D"]]
     grouped1 = ser.groupby(ser > 100)
     c1 = grouped.transform("sum")
-    # Pyrefly does not infer the DataFrameGroupBy.transform callback parameter type.
+    # TODO: fixed in facebook/pyrefly@bb73a2ddef96d31b1bd7d8351691c1f243e2feba
+    # Expected in the next release; remove this ignore once the fix is available.
+    # https://github.com/facebook/pyrefly/commit/bb73a2ddef96d31b1bd7d8351691c1f243e2feba
     c2 = grouped.transform(
         lambda x: (x - x.mean()) / x.std()  # pyrefly: ignore[unknown-attribute-access]
     )
