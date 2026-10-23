@@ -8,7 +8,12 @@ import pytest
 
 from tests import check
 
-from pandas.tseries.offsets import Day
+from pandas.tseries.offsets import (
+    BusinessDay,
+    Day,
+    Hour,
+    Week,
+)
 
 
 @pytest.fixture
@@ -37,3 +42,20 @@ def test_day_pandas_scalars(left: Day) -> None:
     check(assert_type(pd.Timestamp("2026-10-02") + left, pd.Timestamp), pd.Timestamp)
     check(assert_type(left + pd.NaT, NaTType), NaTType)
     check(assert_type(pd.NaT + left, NaTType), NaTType)
+
+
+def test_day_durations(left: Day) -> None:
+    """`Day` preserves the type of a duration operand, in both directions."""
+    check(assert_type(left + dt.timedelta(hours=2), dt.timedelta), dt.timedelta)
+    check(assert_type(dt.timedelta(hours=2) + left, dt.timedelta), dt.timedelta)
+    check(assert_type(left + np.timedelta64(2, "h"), np.timedelta64), np.timedelta64)
+    check(assert_type(left + pd.Timedelta("2h"), pd.Timedelta), pd.Timedelta)
+
+
+def test_day_offsets(left: Day) -> None:
+    """`Day` collapses day-or-finer offsets, degenerates `Week`, and defers to `BusinessDay`."""
+    check(assert_type(Day(1) + Day(2), Day), Day)
+    check(assert_type(left + Hour(), pd.Timedelta), pd.Timedelta)
+    check(assert_type(left + Week(), dt.timedelta), dt.timedelta)
+    check(assert_type(left + BusinessDay(), BusinessDay), BusinessDay)
+    check(assert_type(left.__radd__(Hour()), pd.Timedelta), pd.Timedelta)
