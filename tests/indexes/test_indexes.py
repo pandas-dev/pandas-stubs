@@ -1745,10 +1745,10 @@ def test_datetimeindex_where() -> None:
     )
     check(assert_type(val_sr, DatetimeIndex), DatetimeIndex)
 
-    val_idx_scalar = datetime_index.where(mask, pd.Index([0, 1]))
+    val_idx_scalar = datetime_index.where(mask, pd.Index(range(len(datetime_index))))
     check(assert_type(val_idx_scalar, pd.Index), pd.Index)
 
-    val_sr_scalar = datetime_index.where(mask, pd.Series([0, 1]))
+    val_sr_scalar = datetime_index.where(mask, pd.Series(range(len(datetime_index))))
     check(assert_type(val_sr_scalar, pd.Index), pd.Index)
 
     val_scalar = datetime_index.where(mask, 1)
