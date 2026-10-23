@@ -4360,11 +4360,12 @@ def test_combine() -> None:
     df1 = pd.DataFrame({"A": [0, 0], "B": [4, 4]})
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
 
-    # fmt: off
     take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownVariableType]
-        s1 if s1.sum() < s2.sum() else s2  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        s1
+        if s1.sum()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        < s2.sum()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        else s2
     )
-    # fmt: on
     assert_type(
         check(
             df1.combine(df2, take_smaller, fill_value=0, overwrite=False), pd.DataFrame
@@ -4376,8 +4377,7 @@ def test_combine() -> None:
         assert_type(
             df1.combine(
                 df2,
-                lambda s1, s2: assert_type(s1, "pd.Series[Any]")
-                + assert_type(s2, "pd.Series[Any]"),
+                lambda s1, s2: assert_type(s1, pd.Series) + assert_type(s2, pd.Series),
             ),
             pd.DataFrame,
         ),
@@ -4388,8 +4388,7 @@ def test_combine() -> None:
             df1.combine(
                 df2,
                 lambda s1, s2: np.int64(
-                    len(assert_type(s1, "pd.Series[Any]"))
-                    + len(assert_type(s2, "pd.Series[Any]"))
+                    len(assert_type(s1, pd.Series)) + len(assert_type(s2, pd.Series))
                 ),
             ),
             pd.DataFrame,
