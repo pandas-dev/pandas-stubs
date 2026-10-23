@@ -946,13 +946,13 @@ def test_timedelta_cmp_array() -> None:
     # ==, != (td on the rhs, use == and != of lhs)
     eq_rhs_nd1 = check(assert_type(arr_nd == td, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != td, Any), np_ndarray_bool)
-    assert (eq_rhs_nd1 != ne_rhs_nd1).all()
+    assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_2d1 = check(assert_type(arr_2d == td, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != td, Any), np_2darray[np.bool])
-    assert (eq_rhs_2d1 != ne_rhs_2d1).all()
+    assert (eq_rhs_2d1 != ne_rhs_2d1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_1d1 = check(assert_type(arr_1d == td, Any), np_1darray_bool)
     ne_rhs_1d1 = check(assert_type(arr_1d != td, Any), np_1darray_bool)
-    assert (eq_rhs_1d1 != ne_rhs_1d1).all()
+    assert (eq_rhs_1d1 != ne_rhs_1d1).all()  # pyrefly: ignore[unknown-attribute-access]
 
 
 def test_timestamp_construction() -> None:
@@ -1394,13 +1394,13 @@ def test_timestamp_cmp_array() -> None:
     # ==, != (td on the rhs, use == and != of lhs)
     eq_rhs_nd1 = check(assert_type(arr_nd == ts, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != ts, Any), np_ndarray_bool)
-    assert (eq_rhs_nd1 != ne_rhs_nd1).all()
+    assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_2d1 = check(assert_type(arr_2d == ts, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != ts, Any), np_2darray[np.bool])
-    assert (eq_rhs_2d1 != ne_rhs_2d1).all()
+    assert (eq_rhs_2d1 != ne_rhs_2d1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_1d1 = check(assert_type(arr_1d == ts, Any), np_1darray_bool)
     ne_rhs_1d1 = check(assert_type(arr_1d != ts, Any), np_1darray_bool)
-    assert (eq_rhs_1d1 != ne_rhs_1d1).all()
+    assert (eq_rhs_1d1 != ne_rhs_1d1).all()  # pyrefly: ignore[unknown-attribute-access]
 
 
 def test_timestamp_types_init() -> None:
@@ -1909,13 +1909,13 @@ def test_period_cmp_array() -> None:
     # ==, != (td on the rhs, use == and != of lhs)
     eq_rhs_nd1 = check(assert_type(arr_nd == p, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != p, Any), np_ndarray_bool)
-    assert (eq_rhs_nd1 != ne_rhs_nd1).all()
+    assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_2d1 = check(assert_type(arr_2d == p, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != p, Any), np_2darray[np.bool])
-    assert (eq_rhs_2d1 != ne_rhs_2d1).all()
+    assert (eq_rhs_2d1 != ne_rhs_2d1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_1d1 = check(assert_type(arr_1d == p, Any), np_1darray_bool)
     ne_rhs_1d1 = check(assert_type(arr_1d != p, Any), np_1darray_bool)
-    assert (eq_rhs_1d1 != ne_rhs_1d1).all()
+    assert (eq_rhs_1d1 != ne_rhs_1d1).all()  # pyrefly: ignore[unknown-attribute-access]
 
 
 def test_period_methods() -> None:

@@ -703,7 +703,10 @@ def test_groupby_and_transform() -> None:
     grouped = df.groupby("A")[["C", "D"]]
     grouped1 = ser.groupby(ser > 100)
     c1 = grouped.transform("sum")
-    c2 = grouped.transform(lambda x: (x - x.mean()) / x.std())
+    # Pyrefly does not infer the DataFrameGroupBy.transform callback parameter type.
+    c2 = grouped.transform(
+        lambda x: (x - x.mean()) / x.std()  # pyrefly: ignore[unknown-attribute-access]
+    )
     c3 = grouped1.transform("cumsum")
     c4 = grouped1.transform(lambda x: x.max() - x.min())
     check(assert_type(c1, pd.DataFrame), pd.DataFrame)

@@ -419,8 +419,7 @@ implicit-bool = false  # We do use implicit bool
 no-any-return-explicit = false  # np.mean(DataFrame(...), axis=0) is such an example
 no-any-return-implicit = false  # x.sum() / len(x) is such an example
 unknown-argument-type = false  # Only in tests, companion with other errors
-unknown-attribute-access = false  # Implicit Any member access is allowed
-unknown-return-type = false  # Users pass lambdas with unknown return types
+unknown-return-type = false  # Match Pyright reportUnknownLambdaType = false
 unknown-variable-type = false  # Implicit Any is fine
 untyped-import = false  # Import discovery
 unused-call-result = false  # results of check(...) are never used
