@@ -944,6 +944,8 @@ def test_timedelta_cmp_array() -> None:
         assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
+    # TODO: remove these ignores once the upstream Any comparison fix is released.
+    # https://github.com/facebook/pyrefly/commit/537055a0069c7a0f2287a90b3b00ad3b8c14184e
     eq_rhs_nd1 = check(assert_type(arr_nd == td, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != td, Any), np_ndarray_bool)
     assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
@@ -1392,6 +1394,8 @@ def test_timestamp_cmp_array() -> None:
         assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
+    # TODO: remove these ignores once the upstream Any comparison fix is released.
+    # https://github.com/facebook/pyrefly/commit/537055a0069c7a0f2287a90b3b00ad3b8c14184e
     eq_rhs_nd1 = check(assert_type(arr_nd == ts, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != ts, Any), np_ndarray_bool)
     assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
@@ -1907,6 +1911,8 @@ def test_period_cmp_array() -> None:
     assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
+    # TODO: remove these ignores once the upstream Any comparison fix is released.
+    # https://github.com/facebook/pyrefly/commit/537055a0069c7a0f2287a90b3b00ad3b8c14184e
     eq_rhs_nd1 = check(assert_type(arr_nd == p, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != p, Any), np_ndarray_bool)
     assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
