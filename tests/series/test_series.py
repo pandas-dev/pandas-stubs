@@ -1049,7 +1049,9 @@ def test_types_groupby() -> None:
     s.groupby(
         [
             lambda x: x,
-            lambda x: x.replace("a", "b"),  # pyright: ignore[reportUnknownMemberType]
+            lambda x: x.replace(  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+                "a", "b"
+            ),
         ]
     )
     s.groupby(np.array([1, 0, 1, 0]))
@@ -1551,7 +1553,7 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             s.rename_axis(
-                index=lambda name: name.upper()  # pyright: ignore[reportUnknownMemberType]
+                index=lambda name: name.upper()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
             ),
             "pd.Series[int]",
         ),

@@ -2906,8 +2906,8 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
-                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
+                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
             ),
             pd.DataFrame,
         ),
@@ -4361,7 +4361,10 @@ def test_combine() -> None:
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
 
     take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownVariableType]
-        s1 if s1.sum() < s2.sum() else s2  # pyright: ignore[reportUnknownMemberType]
+        s1
+        if s1.sum()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        < s2.sum()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        else s2
     )
     assert_type(
         check(
@@ -4369,6 +4372,30 @@ def test_combine() -> None:
         ),
         pd.DataFrame,
     )
+
+    check(
+        assert_type(
+            df1.combine(
+                df2,
+                lambda s1, s2: assert_type(s1, pd.Series) + assert_type(s2, pd.Series),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df1.combine(
+                df2,
+                lambda s1, s2: np.int64(
+                    len(assert_type(s1, pd.Series)) + len(assert_type(s2, pd.Series))
+                ),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(df1.combine(df2, np.minimum), pd.DataFrame), pd.DataFrame)
 
 
 def test_unstack() -> None:

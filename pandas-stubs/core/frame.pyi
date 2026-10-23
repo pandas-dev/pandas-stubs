@@ -1214,7 +1214,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def combine(
         self,
         other: DataFrame,
-        func: Callable[..., Any],
+        func: Callable[[Series, Series], Any],
         fill_value: Scalar | None = None,
         overwrite: _bool = True,
     ) -> Self: ...
