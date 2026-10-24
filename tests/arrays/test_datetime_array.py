@@ -365,3 +365,11 @@ def test_constructor() -> None:
     check(assert_type(pd.array(pd.Index([dt])), DatetimeArray), DatetimeArray)
 
     check(assert_type(pd.array(pd.Series([dt])), DatetimeArray), DatetimeArray)
+
+
+def test_item() -> None:
+    arr = pd.array([pd.Timestamp("2026-01-01")])
+    check(assert_type(arr.item(), pd.Timestamp | NaTType), pd.Timestamp)
+    check(assert_type(arr.item(0), pd.Timestamp | NaTType), pd.Timestamp)
+    nat = pd.array([pd.Timestamp("2026-01-01"), pd.NaT])[1:]
+    check(assert_type(nat.item(), pd.Timestamp | NaTType), NaTType)

@@ -163,3 +163,9 @@ def test_dtype_unsigned() -> None:
     check(assert_type(pd.array([1], "UInt16").dtype, IntegerDtype), pd.UInt16Dtype)
     check(assert_type(pd.array([1], "UInt32").dtype, IntegerDtype), pd.UInt32Dtype)
     check(assert_type(pd.array([1], "UInt64").dtype, IntegerDtype), pd.UInt64Dtype)
+
+
+def test_item() -> None:
+    check(assert_type(pd.array([1]).item(), np.integer | NAType), np.int64)
+    check(assert_type(pd.array([1], "Int8").item(0), np.integer | NAType), np.int8)
+    check(assert_type(pd.array([None], "Int64").item(), np.integer | NAType), NAType)

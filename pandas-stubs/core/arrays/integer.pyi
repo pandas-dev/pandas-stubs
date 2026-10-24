@@ -1,9 +1,11 @@
+import numpy as np
 from pandas.core.arrays.numeric import (
     NumericArray,
     NumericDtype,
 )
 from typing_extensions import override
 
+from pandas._libs.missing import NAType
 from pandas._typing import (
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -23,6 +25,8 @@ class IntegerArray(NumericArray):
     def __init__(
         self, values: np_ndarray_anyint, mask: np_ndarray_bool, copy: bool = False
     ) -> None: ...
+    @override
+    def item(self, index: int | None = None) -> np.integer | NAType: ...
 
 class Int8Dtype(IntegerDtype): ...
 class Int16Dtype(IntegerDtype): ...
