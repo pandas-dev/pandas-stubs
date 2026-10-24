@@ -165,3 +165,8 @@ def test_construct_array_type() -> None:
         )
         is BooleanArray
     )
+
+
+def test_item() -> None:
+    check(assert_type(pd.array([True]).item(), np.bool | NAType), np.bool)
+    check(assert_type(pd.array([None], "boolean").item(), np.bool | NAType), NAType)

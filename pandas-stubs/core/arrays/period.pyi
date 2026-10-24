@@ -9,6 +9,7 @@ from pandas.core.series import Series
 import pyarrow as pa
 from typing_extensions import override
 
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.period import (
     Period,
     PeriodMixin,
@@ -37,6 +38,8 @@ class PeriodArray(DatelikeOps, PeriodMixin):
         dtype: PeriodDtype | None = None,
         copy: bool = False,
     ) -> None: ...
+    @override
+    def item(self, index: int | None = None) -> Period | NaTType: ...
     @property
     @override
     def dtype(self) -> PeriodDtype: ...
