@@ -1949,6 +1949,11 @@ def test_offset_dunder_methods() -> None:
     check(assert_type(do.__hash__(), int), int)
 
 
+def test_nat_value() -> None:
+    # GH 2001
+    check(assert_type(pd.NaT.value, int), int)
+
+
 def test_nattype_dunder_methods() -> None:
     # GH 827
     check(assert_type(pd.NaT.__hash__(), int), int)
