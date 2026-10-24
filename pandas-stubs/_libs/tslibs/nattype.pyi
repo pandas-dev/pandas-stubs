@@ -36,7 +36,7 @@ class _NatComparison:
 
 @final
 class NaTType:
-    value: np.int64
+    value: int
     @override
     def __hash__(self) -> int: ...
     def asm8(self) -> np.datetime64: ...
