@@ -115,14 +115,15 @@ is not a general claim that the higher tier's reflected dunder suffices for ever
 
 `Series.__matmul__(DataFrame)` returns a `Series`, and pandas supports the expression at
 runtime; `tests/series/test_series.py::test_types_dot` exercises the forward operation.
-The result shape belongs to `DataFrame`, so the corresponding design is a
+`DataFrame` is the higher tier, so the corresponding design is a
 `DataFrame.__rmatmul__(Series)` overload: it lets the `Series` side keep its operand scope
-while the tier that owns the shape declares the result. pandas-dev/pandas-stubs#2023
+while the higher tier declares the cross-tier operation. pandas-dev/pandas-stubs#2023
 tracks the step.
 
 ## Limits
 
-- `other` must be annotated, in positional, keyword-only or variadic form.
+- `other` must be annotated, in positional, positional-or-keyword, keyword-only or
+  variadic form.
 - Names match by terminal name (`pd.DataFrame` is `DataFrame`). Unions, qualified names and
   generic arguments are searched syntactically.
 - Only `TypeAlias`-annotated aliases are expanded, transitively. Aliases resolve globally by

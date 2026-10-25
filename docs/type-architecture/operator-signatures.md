@@ -38,8 +38,8 @@ The name matters, not just the shape: the
 scanned methods in `FORWARD_BINARY_DUNDERS` (defined in
 [`model.py`](../../scripts/operand_hierarchy/model.py)) and reads the operand from the
 parameter named `other` of the methods it scans. The checker accepts a positional-only,
-keyword-only or variadic `other`; the stubs' own convention, enforced by
-`guard-dunders-posonly`, is positional-only.
+positional-or-keyword, keyword-only or variadic `other`; the stubs' own convention,
+enforced by `guard-dunders-posonly`, is positional-only.
 
 - A forward binary dunder must keep an `other` parameter. A scanned dunder that
   declares its operand under another name (say `right` or `value`) fails the checker
@@ -67,17 +67,18 @@ spellings, so it enforces the `/` for `__radd__` and `__iadd__` exactly as it do
 `__add__`.
 
 They are deliberately outside the operand-hierarchy check, which scans only the names in
-`FORWARD_BINARY_DUNDERS`. A reflected dunder may legitimately name a higher-tier type as
-`other`:
+`FORWARD_BINARY_DUNDERS`.
 
-```python
-def __rmatmul__(self, other: DataFrame, /) -> Series: ...
-```
+Python tries `y.__rop__(x)` for `x op y` only when `x.__op__` is missing or returns
+`NotImplemented`, or first when `type(y)` is a proper subclass of `type(x)` that overrides
+the reflected method. A reflected overload therefore matters only for left operands the
+forward dunder does not accept. One that names a higher tier as `other` is unreachable
+whenever that tier's forward dunder already accepts this type, because every checker
+resolves the forward method. `Series.__rmatmul__(DataFrame)` was removed for this reason:
+`DataFrame.__matmul__(Series)` already resolves `df @ s`.
 
-A reflected method fires only when the higher-tier left operand did not implement the
-forward operation, so the forward rule that a type must not claim a higher tier does not
-apply to it. The stubs also use reflected signatures to narrow the reflecting type, as in
-`def __radd__(self: Series[Never], other: _str, /) -> Series[_str]: ...`.
+The stubs also use reflected signatures to restrict the receiver through an annotated
+`self`, as in `def __radd__(self: Series[Never], other: _str, /) -> Series[_str]: ...`.
 
 Reflected dunders are a substantial part of the operator surface: `Index` and `Series`
 declare many, while `MultiIndex` declares none and inherits `Index`'s. Because the checker
@@ -87,8 +88,9 @@ rest of that surface.
 ## Protocol overloads
 
 Protocol-based overloads and constrained type variables are the preferred direction when
-an operand family has uniform return behavior. They avoid repeating the same combinations
-for custom operand types. Keep explicit overloads where operand validity or return types
+an operand family has uniform return behavior. Protocols cover custom operand types,
+because any type with the right method matches; a constrained type variable admits only
+its listed constraints, so it collapses a closed set of overloads. Keep explicit overloads where operand validity or return types
 differ, and preserve specialized temporal overloads when changing those families: a
 broader protocol can otherwise capture a case that needs a distinct result.
 

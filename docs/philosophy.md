@@ -121,7 +121,7 @@ to test to validate the return types of functions and methods.  Future work
 is intended to expand the use of `assert_type()` in the test code.
 
 Type checkers read `assert_type()`, but `pytest` does not: it is satisfied by any
-expression.  When a test also needs to confirm the runtime value or type, wrap it in the
+expression.  When a test also needs to confirm the runtime type, wrap it in the
 `check` helper from `tests/__init__.py`, which is imported as `from tests import check`
 and asserts the runtime type as the test runs:
 
