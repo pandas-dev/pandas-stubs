@@ -69,6 +69,7 @@ dev = [
   "fsspec>=2025.10.0",
   "tables>=3.10.2",
   "pytz>=2025.2",
+  "tzdata>=2023.3",  # Linux CI images no longer ship legacy tz aliases used by tests
   "types-pytz>=2022.1.1",
   "pyiceberg>=0.10.0",  # TODO: bump apache/iceberg-python#4128
   "optype[numpy]"
