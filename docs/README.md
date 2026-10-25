@@ -12,4 +12,3 @@ Instructions for working with the code are found here:
 - [How to test the project](tests.md)
 - [How to make a release](release_procedure.md)
 - [Type architecture](type-architecture/README.md)
-- [Operand hierarchy](type-architecture/operand-hierarchy.md)
