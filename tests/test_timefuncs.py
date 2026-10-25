@@ -71,7 +71,7 @@ def test_types_init() -> None:
     check(assert_type(pd.Timestamp(1515590000.1, unit="s"), pd.Timestamp), pd.Timestamp)
     check(
         assert_type(
-            pd.Timestamp(1515590000.1, unit="s", tz="US/Pacific"), pd.Timestamp
+            pd.Timestamp(1515590000.1, unit="s", tz="America/Los_Angeles"), pd.Timestamp
         ),
         pd.Timestamp,
     )
@@ -85,7 +85,7 @@ def test_types_init() -> None:
     )
     check(
         assert_type(
-            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="US/Pacific"),
+            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="America/Los_Angeles"),
             pd.Timestamp,
         ),
         pd.Timestamp,
@@ -420,13 +420,16 @@ def test_series_dt_accessors() -> None:
     )
     check(
         assert_type(
-            s0.dt.tz_localize(pytz.timezone("US/Eastern")), "pd.Series[pd.Timestamp]"
+            s0.dt.tz_localize(pytz.timezone("America/New_York")),
+            "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(s0_local.dt.tz_convert("EST"), "pd.Series[pd.Timestamp]"),
+        assert_type(
+            s0_local.dt.tz_convert("America/Panama"), "pd.Series[pd.Timestamp]"
+        ),
         pd.Series,
         pd.Timestamp,
     )
@@ -447,7 +450,7 @@ def test_series_dt_accessors() -> None:
     )
     check(
         assert_type(
-            s0_local.dt.tz_convert(pytz.timezone("US/Eastern")),
+            s0_local.dt.tz_convert(pytz.timezone("America/New_York")),
             "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
@@ -764,13 +767,18 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(ilocal, pd.DatetimeIndex), pd.DatetimeIndex)
     check(assert_type(i0.tz_localize(pytz.UTC), pd.DatetimeIndex), pd.DatetimeIndex)
     check(
-        assert_type(i0.tz_localize(pytz.timezone("US/Central")), pd.DatetimeIndex),
+        assert_type(i0.tz_localize(pytz.timezone("America/Chicago")), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
-    check(assert_type(ilocal.tz_convert("EST"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(ilocal.tz_convert("America/Panama"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
     check(assert_type(ilocal.tz_convert(pytz.UTC), pd.DatetimeIndex), pd.DatetimeIndex)
     check(
-        assert_type(ilocal.tz_convert(pytz.timezone("US/Pacific")), pd.DatetimeIndex),
+        assert_type(
+            ilocal.tz_convert(pytz.timezone("America/Los_Angeles")), pd.DatetimeIndex
+        ),
         pd.DatetimeIndex,
     )
     check(assert_type(ilocal.tz, dt.tzinfo | None), dt.tzinfo)

@@ -1593,7 +1593,9 @@ def test_types_values() -> None:
     ):
         check(
             assert_type(
-                pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
+                pd.Series(
+                    pd.date_range("20130101", periods=3, tz="America/New_York")
+                ).values,
                 np_1darray | ExtensionArray | pd.Categorical,
             ),
             np_1darray,
