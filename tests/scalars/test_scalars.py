@@ -958,12 +958,12 @@ def test_timedelta_cmp_array() -> None:
 def test_timestamp_construction() -> None:
     check(assert_type(pd.Timestamp("2000-1-1"), pd.Timestamp), pd.Timestamp)
     check(
-        assert_type(pd.Timestamp("2000-1-1", tz="US/Pacific"), pd.Timestamp),
+        assert_type(pd.Timestamp("2000-1-1", tz="America/Los_Angeles"), pd.Timestamp),
         pd.Timestamp,
     )
     check(
         assert_type(
-            pd.Timestamp("2000-1-1", tz=pytz.timezone("US/Eastern")), pd.Timestamp
+            pd.Timestamp("2000-1-1", tz=pytz.timezone("America/New_York")), pd.Timestamp
         ),
         pd.Timestamp,
     )
@@ -1417,7 +1417,7 @@ def test_timestamp_types_init() -> None:
     check(assert_type(pd.Timestamp(1515590000.1, unit="s"), pd.Timestamp), pd.Timestamp)
     check(
         assert_type(
-            pd.Timestamp(1515590000.1, unit="s", tz="US/Pacific"), pd.Timestamp
+            pd.Timestamp(1515590000.1, unit="s", tz="America/Los_Angeles"), pd.Timestamp
         ),
         pd.Timestamp,
     )
@@ -1431,7 +1431,7 @@ def test_timestamp_types_init() -> None:
     )
     check(
         assert_type(
-            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="US/Pacific"),
+            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="America/Los_Angeles"),
             pd.Timestamp,
         ),
         pd.Timestamp,
@@ -1446,12 +1446,16 @@ def test_timestamp_misc_methods() -> None:
 
     check(assert_type(pd.Timestamp.fromtimestamp(432.54), pd.Timestamp), pd.Timestamp)
     check(
-        assert_type(pd.Timestamp.fromtimestamp(432.54, tz="US/Pacific"), pd.Timestamp),
+        assert_type(
+            pd.Timestamp.fromtimestamp(432.54, tz="America/Los_Angeles"), pd.Timestamp
+        ),
         pd.Timestamp,
     )
     check(assert_type(pd.Timestamp.fromordinal(700000), pd.Timestamp), pd.Timestamp)
     check(
-        assert_type(pd.Timestamp.fromordinal(700000, tz="US/Pacific"), pd.Timestamp),
+        assert_type(
+            pd.Timestamp.fromordinal(700000, tz="America/Los_Angeles"), pd.Timestamp
+        ),
         pd.Timestamp,
     )
 
@@ -1475,48 +1479,64 @@ def test_timestamp_misc_methods() -> None:
         ),
         pd.Timestamp,
     )
-    check(assert_type(ts.tz_localize("US/Pacific", False), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts.tz_localize("US/Pacific", True), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts.tz_localize(1, True), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts.tz_localize("US/Pacific", "NaT"), pd.Timestamp), pd.Timestamp)
     check(
-        assert_type(ts.tz_localize("US/Pacific", "raise"), pd.Timestamp), pd.Timestamp
+        assert_type(ts.tz_localize("America/Los_Angeles", False), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts.tz_localize("America/Los_Angeles", True), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(ts.tz_localize(1, True), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(ts.tz_localize("America/Los_Angeles", "NaT"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts.tz_localize("America/Los_Angeles", "raise"), pd.Timestamp),
+        pd.Timestamp,
     )
 
     check(
         assert_type(
-            ts.tz_localize("US/Pacific", nonexistent="shift_forward"), pd.Timestamp
+            ts.tz_localize("America/Los_Angeles", nonexistent="shift_forward"),
+            pd.Timestamp,
         ),
         pd.Timestamp,
     )
     check(
         assert_type(
-            ts.tz_localize("US/Pacific", nonexistent="shift_backward"), pd.Timestamp
+            ts.tz_localize("America/Los_Angeles", nonexistent="shift_backward"),
+            pd.Timestamp,
         ),
         pd.Timestamp,
     )
     check(
         assert_type(
-            ts.tz_localize("US/Pacific", nonexistent="NaT"), pd.Timestamp | NaTType
+            ts.tz_localize("America/Los_Angeles", nonexistent="NaT"),
+            pd.Timestamp | NaTType,
         ),
         pd.Timestamp,
     )
     check(
         assert_type(
             pd.Timestamp(2025, 3, 9, 2, 30, 0).tz_localize(
-                "US/Eastern", nonexistent="NaT"
+                "America/New_York", nonexistent="NaT"
             ),
             pd.Timestamp | NaTType,
         ),
         NaTType,
     )
     check(
-        assert_type(ts.tz_localize("US/Pacific", nonexistent="raise"), pd.Timestamp),
+        assert_type(
+            ts.tz_localize("America/Los_Angeles", nonexistent="raise"), pd.Timestamp
+        ),
         pd.Timestamp,
     )
     check(
         assert_type(
-            ts.tz_localize("US/Pacific", nonexistent=pd.Timedelta("1D")), pd.Timestamp
+            ts.tz_localize("America/Los_Angeles", nonexistent=pd.Timedelta("1D")),
+            pd.Timestamp,
         ),
         pd.Timestamp,
     )
