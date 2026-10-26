@@ -56,6 +56,7 @@ from tests import (
     pytest_warns_excel_pandas4,
 )
 from tests._typing import (
+    ScalarOrNA,
     np_1darray,
     np_2darray,
     np_ndarray,
@@ -744,9 +745,11 @@ def test_types_itertuples() -> None:
 
     for t1 in df.itertuples():
         check(assert_type(t1, PandasNamedTuple), tuple)
+        check(
+            assert_type(t1.col1, ScalarOrNA | np.bool_ | pd.Period | pd.Interval), int
+        )
         assert t1.__class__.__name__ == "Pandas"
         assert isinstance(t1.Index, int)
-        assert isinstance(t1.col1, int)
         assert isinstance(t1.col2, int)
         for k in [0, 1, 2]:
             assert isinstance(t1[k], int)
@@ -855,6 +858,9 @@ def test_dataframe_clip() -> None:
         df.copy().clip(lower=pd.Series([1, 2]), upper=None, axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.copy().clip(lower=None, upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.copy().clip(lower=pd.Series([4, 5]), upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        # bounds must be orderable against numbers or datetimes, not strings
+        df.clip(["1", "2"])  # type: ignore[list-item] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.clip(upper=pd.Index(["1", "2"]))  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(
         assert_type(df.clip(lower=None, upper=None, axis=None), pd.DataFrame),
@@ -977,6 +983,102 @@ def test_dataframe_clip() -> None:
     )
     check(
         assert_type(df.clip(lower=df2, upper=df2, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # list-like bounds aligned to the columns
+    check(assert_type(df.clip([1, 2], [4, 5]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(lower=[1, 2]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(upper=[4.5, 5.5]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(None, [4, 5]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "Operation with tuple is deprecated",
+        lower="3.0.99",
+        upper="3.99.99",
+    ):
+        check(assert_type(df.clip((1, 2), (4, 5)), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "Operation with range is deprecated",
+        lower="3.0.99",
+        upper="3.99.99",
+    ):
+        check(assert_type(df.clip(range(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip([1, 2], 4, axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip([1, 2], axis="columns"), pd.DataFrame), pd.DataFrame)
+
+    dates = pd.DataFrame({"date": pd.to_datetime(["2020-01-01", "2022-01-01"])})
+    lower = pd.Timestamp("2021-01-01")
+    check(assert_type(dates.clip(lower=[lower]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(dates.clip(lower=pd.DatetimeIndex([lower])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(dates.clip(lower=lower), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(dates.clip(upper=[datetime.datetime(2021, 1, 1)]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            dates.clip(lower=np.array(["2021-01-01"], dtype="datetime64[ns]")),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    deltas = pd.DataFrame({"delta": pd.to_timedelta(["1D", "3D"])})
+    check(
+        assert_type(deltas.clip(upper=[pd.Timedelta("2D")]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(deltas.clip(upper=pd.TimedeltaIndex(["2D"])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(deltas.clip(lower=datetime.timedelta(days=2)), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # array-like bounds other than Series don't need an axis
+    check(assert_type(df.clip(np.array([1, 2]), [4, 5]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.clip(upper=np.array([[15, 13], [4, 5]])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.clip(pd.Index([1, 2])), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.clip(pd.Index([1, 2]), np.array([4, 5]), axis=1), pd.DataFrame),
+        pd.DataFrame,
+    )
+    # extension arrays need an axis at runtime until pandas 3.1
+    check(
+        assert_type(
+            df.clip(pd.array([1, 2], dtype="Int64"), upper=None, axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(upper=pd.Index([4, 5], dtype="Int64"), axis="columns"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    # a Series bound with an axis can be mixed with other bounds
+    check(
+        assert_type(df.clip(pd.Series([1, 2]), 15, axis=0), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.clip([1, 2], pd.Series([14, 15]), axis=0), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(np.array([1, 2]), upper=pd.Series([14, 15]), axis="index"),
+            pd.DataFrame,
+        ),
         pd.DataFrame,
     )
 
@@ -4019,7 +4121,28 @@ def test_itertuples() -> None:
 
     for item in df.itertuples():
         check(assert_type(item, PandasNamedTuple), tuple)
-        assert_type(item.a, Scalar)
+        check(assert_type(item.a, ScalarOrNA | np.bool_ | pd.Period | pd.Interval), int)
+
+    df = pd.DataFrame(
+        {
+            "period": [pd.Period("2020-01")],
+            "interval": [pd.Interval(0, 1)],
+            "missing": pd.Series([None], dtype=object),
+        }
+    )
+    for item in df.itertuples():
+        check(
+            assert_type(item.period, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+            pd.Period,
+        )
+        check(
+            assert_type(item.interval, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+            pd.Interval,
+        )
+        check(
+            assert_type(item.missing, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+            type(None),
+        )
 
 
 @pytest.mark.parametrize("d", [1])

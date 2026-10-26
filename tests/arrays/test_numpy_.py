@@ -14,10 +14,13 @@ import pandas as pd
 from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pytest
 
+from pandas.errors import Pandas4Warning
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     exception_on_platform,
+    pytest_warns_bounded,
 )
 from tests._typing import (
     BuiltinNotStrObjDtypeArg,
@@ -92,11 +95,17 @@ def test_construction_dtype(
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray)
     elif dtype == "V" or "void" in str(dtype):
-        check(
-            assert_type(pd.array([b"1"], dtype=dtype), NumpyExtensionArray),
-            NumpyExtensionArray,
-            target_dtype,
-        )
+        with pytest_warns_bounded(
+            Pandas4Warning,
+            r"Passing a compound \(structured or void\) dtype to pd\.array is deprecated",
+            lower="3.1.99",
+            upper="3.99.99",
+        ):
+            check(
+                assert_type(pd.array([b"1"], dtype=dtype), NumpyExtensionArray),
+                NumpyExtensionArray,
+                target_dtype,
+            )
     else:
         check(
             assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray),
