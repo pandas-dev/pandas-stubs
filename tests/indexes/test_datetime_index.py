@@ -67,7 +67,6 @@ def test_datetime_index_constructor() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         r"The 'ambiguous' keyword in DatetimeIndex is deprecated and will be removed",
-        lower="3.0.99",
     ):
         check(
             assert_type(

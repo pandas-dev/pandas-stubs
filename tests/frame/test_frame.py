@@ -147,7 +147,6 @@ def test_types_init() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         r"Constructing a DataFrame from a list of sequences with mismatched",
-        "3.0.99",
     ):
         check(
             assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
@@ -384,9 +383,7 @@ def test_types_drop() -> None:
     check(assert_type(df.drop(index=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(labels=0), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
         check(assert_type(df.drop([0, 0], inplace=True), None), type(None))
 
     to_drop: list[str] = ["col1"]
@@ -426,9 +423,7 @@ def test_types_dropna() -> None:
     check(assert_type(df.dropna(ignore_index=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.dropna(axis=1, thresh=1), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
         check(
             assert_type(
                 df.dropna(axis=0, how="all", subset=["col1"], inplace=True), None
@@ -436,9 +431,7 @@ def test_types_dropna() -> None:
             type(None),
         )
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
         check(
             assert_type(
                 df.dropna(
@@ -465,14 +458,10 @@ def test_types_drop_duplicates() -> None:
     check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
         check(assert_type(df.drop_duplicates("AAA", inplace=True), None), type(None))
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
         check(
             assert_type(
                 df.drop_duplicates("AAA", inplace=False, ignore_index=True),
@@ -508,7 +497,6 @@ def test_types_sort_index() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The inplace keyword in DataFrame",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(
@@ -537,7 +525,6 @@ def test_types_set_index() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The inplace keyword in DataFrame",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(df.set_index("col1", inplace=True), None), type(None))
@@ -557,7 +544,6 @@ def test_types_query() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The inplace keyword in DataFrame",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(
@@ -577,7 +563,6 @@ def test_types_query_kwargs() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The inplace keyword in DataFrame",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(
@@ -596,14 +581,12 @@ def test_types_eval() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The inplace keyword in DataFrame",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
     with pytest_warns_bounded(
         Pandas4Warning,
         "The inplace keyword in DataFrame",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(
@@ -624,7 +607,6 @@ def test_types_sort_values() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The inplace keyword in DataFrame",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(
@@ -994,14 +976,12 @@ def test_dataframe_clip() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "Operation with tuple is deprecated",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(assert_type(df.clip((1, 2), (4, 5)), pd.DataFrame), pd.DataFrame)
     with pytest_warns_bounded(
         Pandas4Warning,
         "Operation with range is deprecated",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(assert_type(df.clip(range(2)), pd.DataFrame), pd.DataFrame)
@@ -2875,9 +2855,7 @@ def test_types_rename_inplace() -> None:
     """Test DataFrame.rename with inplace argument."""
     df = pd.DataFrame(columns=["a"])
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
         check(
             assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None)
         )
@@ -3770,7 +3748,6 @@ def test_reset_index_150_changes() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "The inplace keyword in DataFrame",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(frame.reset_index(inplace=True), None), type(None))
@@ -3993,9 +3970,7 @@ def test_align() -> None:
     )
 
     with pytest_warns_bounded(
-        Pandas4Warning,
-        "'int' is not supported as a fill value for str dtype. In",
-        lower="3.0.99",
+        Pandas4Warning, "'int' is not supported as a fill value for str dtype. In"
     ):
         aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
         check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
@@ -4095,7 +4070,6 @@ def test_convert_dtypes_convert_floating() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         match="convert_floating keyword in DataFrame.convert_dtypes is deprecated",
-        lower="3.0.99",
     ):
         dfn = df.convert_dtypes(convert_floating=False)
     check(assert_type(dfn, pd.DataFrame), pd.DataFrame)

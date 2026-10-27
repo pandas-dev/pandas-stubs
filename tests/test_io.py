@@ -1337,7 +1337,6 @@ def test_excel_writer(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "ExcelFile.parse is deprecated",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
@@ -1345,7 +1344,6 @@ def test_excel_writer(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "ExcelFile.parse is deprecated",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(

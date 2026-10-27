@@ -341,7 +341,6 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -352,7 +351,6 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -361,7 +359,6 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -380,7 +377,6 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -392,7 +388,6 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "return a BaseOffset object instead of a string from Series.dt.freq",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(assert_type(s0.dt.freq, str | None), str)
@@ -705,7 +700,6 @@ def test_datetimeindex_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -716,7 +710,6 @@ def test_datetimeindex_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -725,7 +718,6 @@ def test_datetimeindex_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -744,7 +736,6 @@ def test_datetimeindex_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -875,7 +866,6 @@ def test_periodindex_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -885,7 +875,6 @@ def test_periodindex_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -894,7 +883,6 @@ def test_periodindex_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -906,7 +894,6 @@ def test_periodindex_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):

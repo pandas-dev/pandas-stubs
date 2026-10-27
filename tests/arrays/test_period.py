@@ -173,7 +173,6 @@ def test_period_array_dayofweek() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -195,7 +194,6 @@ def test_period_array_weekday() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -210,7 +208,6 @@ def test_period_array_dayofyear() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
@@ -253,7 +250,6 @@ def test_period_array_daysinmonth() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
