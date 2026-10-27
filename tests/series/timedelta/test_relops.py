@@ -74,7 +74,8 @@ def test_relops_timedelta_sequence(left: pd.Series[pd.Timedelta]) -> None:
 
 
 def test_relops_numpy_array(left: pd.Series[pd.Timedelta]) -> None:
-    array: np_ndarray_td = np.array([1], dtype="timedelta64[D]")
+    array = np.array([np.timedelta64(1, "D")], dtype=np.timedelta64)
+    assert_type(array, np_ndarray_td)
 
     check(assert_type(left < array, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left <= array, "pd.Series[bool]"), pd.Series, np.bool_)
