@@ -1,13 +1,13 @@
 from pandas.core.window.ewm import (
     ExponentialMovingWindow as ExponentialMovingWindow,
-    ExponentialMovingWindowGroupby as ExponentialMovingWindowGroupby,
+    ExponentialMovingWindowGroupBy as ExponentialMovingWindowGroupBy,
 )
 from pandas.core.window.expanding import (
     Expanding as Expanding,
-    ExpandingGroupby as ExpandingGroupby,
+    ExpandingGroupBy as ExpandingGroupBy,
 )
 from pandas.core.window.rolling import (
     Rolling as Rolling,
-    RollingGroupby as RollingGroupby,
+    RollingGroupBy as RollingGroupBy,
     Window as Window,
 )
