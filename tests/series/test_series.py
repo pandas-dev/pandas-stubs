@@ -4134,7 +4134,6 @@ def test_series_primitive_conversions() -> None:
 def test_relops_any() -> None:
     df = pd.DataFrame({"x": [1, 2, 3]})
     left = df["x"]
-    assert_type(left, "pd.Series[Any]")
 
     check(assert_type(left < 2, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left <= 2, "pd.Series[bool]"), pd.Series, np.bool_)

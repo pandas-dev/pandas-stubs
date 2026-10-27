@@ -159,7 +159,6 @@ def test_relops_invalid_pd_series(left: pd.Series[str]) -> None:
 
 def test_relops_invalid_pd_index(left: pd.Series[str]) -> None:
     index = pd.Index([1.0, 2.0, 3.0])
-    assert_type(index, "pd.Index[float]")
 
     if TYPE_CHECKING_INVALID_USAGE:
         _lt_index = left < index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]

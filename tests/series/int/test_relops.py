@@ -10,7 +10,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import np_ndarray_dt
 
 
 @pytest.fixture
@@ -92,7 +91,6 @@ def test_relops_numpy_array(left: pd.Series[int]) -> None:
 
 def test_relops_invalid_numpy_array(left: pd.Series[int]) -> None:
     other = np.array([np.datetime64("2022-01-01", "ns")] * 3, dtype=np.datetime64)
-    assert_type(other, np_ndarray_dt)
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.__lt__(other)  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]

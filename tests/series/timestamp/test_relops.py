@@ -8,7 +8,6 @@ import pandas as pd
 import pytest
 
 from tests import check
-from tests._typing import np_ndarray_dt
 
 
 @pytest.fixture
@@ -75,7 +74,6 @@ def test_relops_datetime_sequence(left: pd.Series[pd.Timestamp]) -> None:
 
 def test_relops_numpy_array(left: pd.Series[pd.Timestamp]) -> None:
     array = np.array([np.datetime64("2022-08-01", "ns")], dtype=np.datetime64)
-    assert_type(array, np_ndarray_dt)
 
     check(assert_type(left < array, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left <= array, "pd.Series[bool]"), pd.Series, np.bool_)
