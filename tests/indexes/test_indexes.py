@@ -1459,7 +1459,6 @@ def test_periodindex_shift() -> None:
 
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
-    # broken on 3.0.0.dev0 as of 20250813, fix with pandas-dev/pandas/issues/62094
     check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 

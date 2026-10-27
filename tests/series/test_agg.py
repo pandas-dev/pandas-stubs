@@ -9,7 +9,6 @@ import pandas as pd
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
     pytest_warns_complex_pandas4,
 )
 
@@ -70,19 +69,9 @@ def test_agg_complex() -> None:
     with pytest_warns_complex_pandas4():
         check(assert_type(series.median(), complex), np.complex128)
 
-    with pytest_warns_bounded(
-        np.exceptions.ComplexWarning,
-        r"Casting complex values to real discards the imaginary part",
-        upper="3.0.3",
-    ):
-        check(assert_type(series.std(), np.float64), np.float64)
+    check(assert_type(series.std(), np.float64), np.float64)
 
-    with pytest_warns_bounded(
-        np.exceptions.ComplexWarning,
-        r"Casting complex values to real discards the imaginary part",
-        upper="3.0.3",
-    ):
-        check(assert_type(series.var(), float), np.float64)
+    check(assert_type(series.var(), float), np.float64)
 
 
 def test_agg_str() -> None:

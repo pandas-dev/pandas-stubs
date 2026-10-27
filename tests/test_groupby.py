@@ -1017,7 +1017,7 @@ def test_frame_groupby_transform_reduction_kernels() -> None:
     """Test DataFrameGroupBy.transform with ReductionKernelType literals."""
     check(assert_type(GB_DF.transform("all"), DataFrame), DataFrame)
     check(assert_type(GB_DF.transform("any"), DataFrame), DataFrame)
-    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated"):
         check(assert_type(GB_DF.transform("corrwith", other=DF), DataFrame), DataFrame)
     check(assert_type(GB_DF.transform("count"), DataFrame), DataFrame)
     check(assert_type(GB_DF.transform("first"), DataFrame), DataFrame)
@@ -1101,7 +1101,7 @@ def test_frame_groupby_agg_reduction_kernels() -> None:
     """Test DataFrameGroupBy.agg with ReductionKernelType literals."""
     check(assert_type(GB_DF.agg("all"), DataFrame), DataFrame)
     check(assert_type(GB_DF.agg("any"), DataFrame), DataFrame)
-    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated"):
         check(assert_type(GB_DF.agg("corrwith", other=DF), DataFrame), DataFrame)
     check(assert_type(GB_DF.agg("count"), DataFrame), DataFrame)
     check(assert_type(GB_DF.agg("first"), DataFrame), DataFrame)
