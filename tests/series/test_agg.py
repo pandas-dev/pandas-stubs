@@ -68,7 +68,7 @@ def test_agg_complex() -> None:
 
     check(assert_type(series.mean(), complex), np.complex128)
     with pytest_warns_complex_pandas4():
-        check(assert_type(series.median(), float), np.complex128)
+        check(assert_type(series.median(), complex), np.complex128)
 
     with pytest_warns_bounded(
         np.exceptions.ComplexWarning,

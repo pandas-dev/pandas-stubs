@@ -14,6 +14,7 @@ from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.period import PeriodArray
 import pyarrow as pa
 
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas.errors import Pandas4Warning
 
@@ -26,6 +27,8 @@ from tests._typing import (
     np_1darray_int64,
     np_1darray_object,
 )
+
+from pandas.tseries.offsets import Day
 
 
 def test_construction_sequence() -> None:
@@ -44,6 +47,13 @@ def test_construction_array_like() -> None:
 
 def test_construction_dtype() -> None:
     check(assert_type(pd.array([], PeriodDtype("D")), PeriodArray), PeriodArray)
+
+
+def test_period_array_freq() -> None:
+    """Test freq and freqstr properties for PeriodArray."""
+    arr = pd.array(pd.period_range("2020-01-01", periods=3, freq="D"))
+    check(assert_type(arr.freq, BaseOffset), Day)
+    check(assert_type(arr.freqstr, str), str)
 
 
 def test_constructor() -> None:

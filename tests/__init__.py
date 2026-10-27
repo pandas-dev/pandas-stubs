@@ -41,8 +41,6 @@ TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 LINUX = sys.platform == "linux"
 WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
-# PD_LTE_31 is retained only for tests/arrays/test_timedeltas.py.
-PD_LTE_31 = Version(pd.__version__) < Version("3.1.0")
 PD_LTE_32 = Version(pd.__version__) < Version("3.1.99")
 NP_GTE_25 = Version(np.__version__) >= Version("2.5.0")
 
