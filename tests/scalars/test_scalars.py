@@ -26,6 +26,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_dt_alias_pandas4,
 )
 from tests._typing import (
     np_1darray_bool,
@@ -1024,30 +1025,15 @@ def test_timestamp_properties() -> None:
     check(assert_type(ts.asm8, np.datetime64), np.datetime64)
     check(assert_type(ts.day_of_week, int), int)
     check(assert_type(ts.day_of_year, int), int)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(ts.dayofweek, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(ts.dayofyear, int), int)
 
     check(assert_type(ts.days_in_month, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(ts.daysinmonth, int), int)
 
     check(assert_type(ts.is_leap_year, bool), bool)
@@ -1664,30 +1650,15 @@ def test_period_properties() -> None:
     check(assert_type(p.day_of_week, int), int)
     check(assert_type(p.day_of_year, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(p.dayofweek, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(p.dayofyear, int), int)
 
     check(assert_type(p.days_in_month, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(p.daysinmonth, int), int)
 
     check(assert_type(p.end_time, pd.Timestamp), pd.Timestamp)
@@ -1702,12 +1673,7 @@ def test_period_properties() -> None:
     check(assert_type(p.start_time, pd.Timestamp), pd.Timestamp)
     check(assert_type(p.week, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(p.weekday, int), int)
 
     check(assert_type(p.weekofyear, int), int)

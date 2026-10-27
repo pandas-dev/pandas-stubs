@@ -57,6 +57,7 @@ from tests import (
     check,
     pytest_warns_bounded,
     pytest_warns_complex_pandas4,
+    pytest_warns_inplace_pandas4,
 )
 from tests._typing import (
     np_1darray,
@@ -262,17 +263,9 @@ def test_types_drop() -> None:
     check(assert_type(s.drop(0), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.drop([0, 1]), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.drop(0, axis=0), "pd.Series[int]"), pd.Series, np.integer)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         assert assert_type(s.drop([0, 1], inplace=True, errors="raise"), None) is None
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         assert assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None) is None
     # GH 302
     s = pd.Series([0, 1, 2])
@@ -321,10 +314,10 @@ def test_types_drop_duplicates() -> None:
     s = pd.Series([1.0, 2.0, 2.0])
     check(assert_type(s.drop_duplicates(), "pd.Series[float]"), pd.Series, float)
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in Series"):
+    with pytest_warns_inplace_pandas4("Series"):
         assert assert_type(s.drop_duplicates(inplace=True), None) is None
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in Series"):
+    with pytest_warns_inplace_pandas4("Series"):
         assert (
             assert_type(s.drop_duplicates(inplace=True, ignore_index=False), None)
             is None
@@ -335,10 +328,10 @@ def test_types_dropna() -> None:
     s = pd.Series([1.0, np.nan, np.nan])
     check(assert_type(s.dropna(), "pd.Series[float]"), pd.Series, float)
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in Series"):
+    with pytest_warns_inplace_pandas4("Series"):
         assert assert_type(s.dropna(axis=0, inplace=True), None) is None
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in Series"):
+    with pytest_warns_inplace_pandas4("Series"):
         assert (
             assert_type(s.dropna(axis=0, inplace=True, ignore_index=True), None) is None
         )
@@ -391,11 +384,7 @@ def test_types_sort_index() -> None:
         pd.Series,
         np.integer,
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         assert assert_type(s.sort_index(ascending=False, inplace=True), None) is None
     check(
         assert_type(s.sort_index(kind="mergesort"), "pd.Series[int]"),
@@ -425,11 +414,7 @@ def test_types_sort_values() -> None:
         pd.Series,
         np.integer,
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
     check(
         assert_type(s.sort_values(na_position="last"), "pd.Series[int]"),
@@ -1606,11 +1591,7 @@ def test_types_rename() -> None:
     s5 = pd.Series([1, 2, 3]).rename({1: 10})
     check(assert_type(s5, "pd.Series[int]"), pd.Series, np.integer)
     # inplace
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         check(
             assert_type(
                 pd.Series([1, 2, 3]).rename("A", inplace=True), "pd.Series[int]"
@@ -1618,20 +1599,12 @@ def test_types_rename() -> None:
             pd.Series,
             np.integer,
         )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         check(
             assert_type(pd.Series([1, 2, 3]).rename({1: 4, 2: 5}, inplace=True), None),
             type(None),
         )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         check(
             assert_type(
                 pd.Series([1, 2, 3]).rename(index=None, inplace=True), "pd.Series[int]"
@@ -1639,11 +1612,7 @@ def test_types_rename() -> None:
             pd.Series,
             np.integer,
         )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         check(
             assert_type(
                 pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None
@@ -1756,11 +1725,7 @@ def test_reset_index() -> None:
     check(assert_type(r5, "pd.Series[int]"), pd.Series, np.integer)
     r6 = s.reset_index(["ab"], drop=True, allow_duplicates=True)
     check(assert_type(r6, "pd.Series[int]"), pd.Series, np.integer)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in Series",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("Series"):
         assert assert_type(s.reset_index(inplace=True, drop=True), None) is None
 
 

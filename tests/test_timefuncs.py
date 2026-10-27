@@ -26,6 +26,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_dt_alias_pandas4,
 )
 from tests._typing import (
     np_1darray,
@@ -338,30 +339,15 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.microsecond, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.nanosecond, "pd.Series[int]"), pd.Series, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(s0.dt.dayofweek, "pd.Series[int]"), pd.Series, np.integer)
 
     check(assert_type(s0.dt.day_of_week, "pd.Series[int]"), pd.Series, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(s0.dt.weekday, "pd.Series[int]"), pd.Series, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(s0.dt.dayofyear, "pd.Series[int]"), pd.Series, np.integer)
 
     check(assert_type(s0.dt.day_of_year, "pd.Series[int]"), pd.Series, np.integer)
@@ -374,12 +360,7 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.is_year_end, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s0.dt.is_leap_year, "pd.Series[bool]"), pd.Series, np.bool_)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, np.integer)
 
     check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, np.integer)
@@ -697,30 +678,15 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.microsecond, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.nanosecond, "pd.Index[int]"), pd.Index, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.int32)
 
     check(assert_type(i0.day_of_week, "pd.Index[int]"), pd.Index, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.int32)
 
     check(assert_type(i0.day_of_year, "pd.Index[int]"), pd.Index, np.int32)
@@ -733,12 +699,7 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_year_end, np_1darray_bool), np_1darray_bool)
     check(assert_type(i0.is_leap_year, np_1darray_bool), np_1darray_bool)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.int32)
 
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.int32)
@@ -863,40 +824,20 @@ def test_periodindex_accessors() -> None:
     check(assert_type(i0.minute, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.second, "pd.Index[int]"), pd.Index, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.integer)
 
     check(assert_type(i0.day_of_week, "pd.Index[int]"), pd.Index, np.integer)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.integer)
 
     check(assert_type(i0.day_of_year, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.quarter, "pd.Index[int]"), pd.Index, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.integer)
 
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.integer)

@@ -54,6 +54,7 @@ from tests import (
     check,
     pytest_warns_bounded,
     pytest_warns_excel_pandas4,
+    pytest_warns_inplace_pandas4,
 )
 from tests._typing import (
     ScalarOrNA,
@@ -383,7 +384,7 @@ def test_types_drop() -> None:
     check(assert_type(df.drop(index=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(labels=0), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.drop([0, 0], inplace=True), None), type(None))
 
     to_drop: list[str] = ["col1"]
@@ -423,7 +424,7 @@ def test_types_dropna() -> None:
     check(assert_type(df.dropna(ignore_index=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.dropna(axis=1, thresh=1), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.dropna(axis=0, how="all", subset=["col1"], inplace=True), None
@@ -431,7 +432,7 @@ def test_types_dropna() -> None:
             type(None),
         )
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.dropna(
@@ -458,10 +459,10 @@ def test_types_drop_duplicates() -> None:
     check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.drop_duplicates("AAA", inplace=True), None), type(None))
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.drop_duplicates("AAA", inplace=False, ignore_index=True),
@@ -494,11 +495,7 @@ def test_types_sort_index() -> None:
     check(
         assert_type(df.sort_index(ascending=False, level=3), pd.DataFrame), pd.DataFrame
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.sort_index(kind="mergesort", inplace=True), None),
             type(None),
@@ -522,11 +519,7 @@ def test_types_set_index() -> None:
     check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
     check(
@@ -541,11 +534,7 @@ def test_types_set_index() -> None:
 def test_types_query() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
     check(assert_type(df.query("col1 > col2"), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.query("col1 % col2 == 0", inplace=True), None),
             type(None),
@@ -560,11 +549,7 @@ def test_types_query_kwargs() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.query(
@@ -578,17 +563,9 @@ def test_types_query_kwargs() -> None:
 
 def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None),
             type(None),
@@ -604,11 +581,7 @@ def test_types_eval() -> None:
 def test_types_sort_values() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.sort_values("col1"), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.sort_values("col1", ascending=False, inplace=True), None),
             type(None),
@@ -2845,7 +2818,7 @@ def test_types_rename_inplace() -> None:
     """Test DataFrame.rename with inplace argument."""
     df = pd.DataFrame(columns=["a"])
 
-    with pytest_warns_bounded(Pandas4Warning, "The inplace keyword in DataFrame"):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None)
         )
@@ -3735,11 +3708,7 @@ def test_reset_index_150_changes() -> None:
     check(assert_type(df4, pd.DataFrame), pd.DataFrame)
     check(assert_type(df4[["num"]], pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(frame.reset_index(inplace=True), None), type(None))
 
 
