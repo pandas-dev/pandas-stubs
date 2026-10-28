@@ -54,6 +54,7 @@ from tests import (
     check,
     pytest_warns_bounded,
     pytest_warns_excel_pandas4,
+    pytest_warns_inplace_pandas4,
 )
 from tests._typing import (
     ScalarOrNA,
@@ -147,7 +148,6 @@ def test_types_init() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         r"Constructing a DataFrame from a list of sequences with mismatched",
-        "3.0.99",
     ):
         check(
             assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
@@ -384,9 +384,7 @@ def test_types_drop() -> None:
     check(assert_type(df.drop(index=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(labels=0), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.drop([0, 0], inplace=True), None), type(None))
 
     to_drop: list[str] = ["col1"]
@@ -426,9 +424,7 @@ def test_types_dropna() -> None:
     check(assert_type(df.dropna(ignore_index=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.dropna(axis=1, thresh=1), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.dropna(axis=0, how="all", subset=["col1"], inplace=True), None
@@ -436,9 +432,7 @@ def test_types_dropna() -> None:
             type(None),
         )
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.dropna(
@@ -465,14 +459,10 @@ def test_types_drop_duplicates() -> None:
     check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.drop_duplicates("AAA", inplace=True), None), type(None))
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.drop_duplicates("AAA", inplace=False, ignore_index=True),
@@ -505,12 +495,7 @@ def test_types_sort_index() -> None:
     check(
         assert_type(df.sort_index(ascending=False, level=3), pd.DataFrame), pd.DataFrame
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.sort_index(kind="mergesort", inplace=True), None),
             type(None),
@@ -534,12 +519,7 @@ def test_types_set_index() -> None:
     check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
     check(
@@ -554,12 +534,7 @@ def test_types_set_index() -> None:
 def test_types_query() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
     check(assert_type(df.query("col1 > col2"), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.query("col1 % col2 == 0", inplace=True), None),
             type(None),
@@ -574,12 +549,7 @@ def test_types_query_kwargs() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.query(
@@ -593,19 +563,9 @@ def test_types_query_kwargs() -> None:
 
 def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None),
             type(None),
@@ -621,12 +581,7 @@ def test_types_eval() -> None:
 def test_types_sort_values() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.sort_values("col1"), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.sort_values("col1", ascending=False, inplace=True), None),
             type(None),
@@ -994,14 +949,12 @@ def test_dataframe_clip() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "Operation with tuple is deprecated",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(assert_type(df.clip((1, 2), (4, 5)), pd.DataFrame), pd.DataFrame)
     with pytest_warns_bounded(
         Pandas4Warning,
         "Operation with range is deprecated",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(assert_type(df.clip(range(2)), pd.DataFrame), pd.DataFrame)
@@ -1052,7 +1005,6 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(pd.Index([1, 2]), np.array([4, 5]), axis=1), pd.DataFrame),
         pd.DataFrame,
     )
-    # extension arrays need an axis at runtime until pandas 3.1
     check(
         assert_type(
             df.clip(pd.array([1, 2], dtype="Int64"), upper=None, axis=1), pd.DataFrame
@@ -1064,6 +1016,14 @@ def test_dataframe_clip() -> None:
             df.clip(upper=pd.Index([4, 5], dtype="Int64"), axis="columns"),
             pd.DataFrame,
         ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(pd.array([1, 2], dtype="Int64"), upper=None), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(upper=pd.Index([4, 5], dtype="Int64")), pd.DataFrame),
         pd.DataFrame,
     )
     # a Series bound with an axis can be mixed with other bounds
@@ -2240,34 +2200,17 @@ def test_types_to_feather(tmp_path: Path) -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     path = tmp_path / f"{uuid.uuid4()}.feather"
     path_str = str(path)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        df.to_feather(path_str)
+    df.to_feather(path_str)
     # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        df.to_feather(
-            path_str, compression="zstd", compression_level=3, chunksize=2, version=2
-        )
+    df.to_feather(
+        path_str, compression="zstd", compression_level=3, chunksize=2, version=2
+    )
 
     # to_feather has been able to accept a buffer since pandas 1.0.0
     # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
     # Docstring and type were updated in 1.2.0.
     # https://github.com/pandas-dev/pandas/pull/35408
-    with (
-        pytest_warns_bounded(
-            FutureWarning,
-            r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-            upper="3.0.4",
-        ),
-        path.open("wb") as file,
-    ):
+    with path.open("wb") as file:
         df.to_feather(file)
 
 
@@ -2801,9 +2744,7 @@ def test_types_rename_inplace() -> None:
     """Test DataFrame.rename with inplace argument."""
     df = pd.DataFrame(columns=["a"])
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None)
         )
@@ -3675,12 +3616,7 @@ def test_reset_index_150_changes() -> None:
     check(assert_type(df4, pd.DataFrame), pd.DataFrame)
     check(assert_type(df4[["num"]], pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(frame.reset_index(inplace=True), None), type(None))
 
 
@@ -3901,9 +3837,7 @@ def test_align() -> None:
     )
 
     with pytest_warns_bounded(
-        Pandas4Warning,
-        "'int' is not supported as a fill value for str dtype. In",
-        lower="3.0.99",
+        Pandas4Warning, "'int' is not supported as a fill value for str dtype. In"
     ):
         aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
         check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
@@ -4003,7 +3937,6 @@ def test_convert_dtypes_convert_floating() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         match="convert_floating keyword in DataFrame.convert_dtypes is deprecated",
-        lower="3.0.99",
     ):
         dfn = df.convert_dtypes(convert_floating=False)
     check(assert_type(dfn, pd.DataFrame), pd.DataFrame)

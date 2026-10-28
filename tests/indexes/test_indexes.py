@@ -34,11 +34,8 @@ import pytest
 from pandas._libs.tslibs.offsets import BaseOffset
 
 from tests import (
-    PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
-    WINDOWS,
     check,
-    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray,
@@ -155,8 +152,8 @@ def test_index_isin() -> None:
         assert_type(mi.isin({(1, "red"): 0, (3, "red"): 0}), np_1darray_bool),
         np_1darray_bool,
     )
-    if PD_LTE_31:
-        # TODO: pandas-dev/pandas#66540 pandas bug on nightly
+    # TODO: pandas-dev/pandas#66514 drop pytest.raises once fixed
+    with pytest.raises(TypeError, match="has no len"):
         check(
             assert_type(
                 mi.isin({iter((1, "red")): 0, (3, "red"): 0}.keys()), np_1darray_bool
@@ -168,8 +165,8 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin(iter([["1"]]), 1), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin({1: 0}.keys(), 0), np_1darray_bool), np_1darray_bool)
 
-    if PD_LTE_31:
-        # TODO: pandas-dev/pandas#66514 pandas bug on nightly
+    # TODO: pandas-dev/pandas#66514 drop pytest.raises once fixed
+    with pytest.raises(TypeError, match="has no len"):
         check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -1462,7 +1459,6 @@ def test_periodindex_shift() -> None:
 
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
-    # broken on 3.0.0.dev0 as of 20250813, fix with pandas-dev/pandas/issues/62094
     check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
@@ -1723,14 +1719,12 @@ def test_index_where() -> None:
     check(
         assert_type(val_idx, "pd.Index[int]"),
         pd.Index,
-        int if PD_LTE_31 else np.integer,
+        np.integer,
     )
 
     val_sr = idx.where(mask, idx.to_series())
 
-    check(
-        assert_type(val_sr, "pd.Index[int]"), pd.Index, int if PD_LTE_31 else np.int64
-    )
+    check(assert_type(val_sr, "pd.Index[int]"), pd.Index, np.int64)
 
 
 def test_datetimeindex_where() -> None:
@@ -1755,7 +1749,7 @@ def test_datetimeindex_where() -> None:
     check(assert_type(val_scalar, pd.Index), pd.Index)
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
-    check(assert_type(val_range, pd.Index), pd.RangeIndex if PD_LTE_31 else pd.Index)
+    check(assert_type(val_range, pd.Index), pd.Index)
 
 
 def test_index_set_names() -> None:
@@ -2003,7 +1997,7 @@ def test_get_loc_named_tuples() -> None:
             flat_midx_unsorted_dupes.get_loc(NamedIndex("i1", "i2")),
             int | slice | np_1darray_bool,
         ),
-        slice if PD_LTE_31 else np_1darray_bool,
+        np_1darray_bool,
     )
 
 
@@ -2107,18 +2101,15 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    with pytest_warns_conditioned(
-        RuntimeWarning, "overflow encountered in scalar multiply", WINDOWS
-    ):
-        check(
-            assert_type(
-                pd.period_range(start="2017-01-01", end="2017-02-01", freq="D").diff(),
-                pd.Index,  # "pd.Index[BaseOffset]" has dtype object
-            ),
-            pd.Index,
-            BaseOffset,
-            index_to_check_for_type=-1,
-        )
+    check(
+        assert_type(
+            pd.period_range(start="2017-01-01", end="2017-02-01", freq="D").diff(),
+            pd.Index,  # "pd.Index[BaseOffset]" has dtype object
+        ),
+        pd.Index,
+        BaseOffset,
+        index_to_check_for_type=-1,
+    )
     # bool -> Any
     check(
         assert_type(pd.Index([True, True, False, False, True]).diff(), pd.Index),

@@ -433,7 +433,6 @@ def test_groupby_series_methods() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "GroupBy.nth",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(gb.nth[0, 1, 2], pd.DataFrame | pd.Series), pd.Series)
