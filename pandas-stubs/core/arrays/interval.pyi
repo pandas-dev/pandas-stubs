@@ -97,6 +97,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @overload
     def __getitem__(self, item: SequenceIndexer, /) -> Self: ...
     @override
+    def item(self, index: int | None = None) -> IntervalOrNA: ...
+    @override
     def __eq__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def __ne__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]

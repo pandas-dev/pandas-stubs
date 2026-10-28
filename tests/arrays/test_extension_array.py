@@ -1,8 +1,5 @@
 # Test common ExtensionArray methods
-from typing import (
-    Any,
-    assert_type,
-)
+from typing import assert_type
 
 import numpy as np
 import pandas as pd
@@ -14,6 +11,8 @@ from pandas.core.arrays.integer import (
     IntegerArray,
 )
 from pandas.core.construction import array
+
+from pandas._libs.missing import NAType
 
 from tests import check
 from tests._typing import (
@@ -40,8 +39,8 @@ def test_ea_common() -> None:
     check(assert_type(arr.unique(), IntegerArray), IntegerArray)
     check(assert_type(arr.duplicated(), np_1darray_bool), np_1darray_bool)
     check(assert_type(arr.duplicated(keep=False), np_1darray_bool), np_1darray_bool)
-    check(assert_type(arr.item(0), Any), np.int64)
-    check(assert_type(array([1]).item(), Any), np.int64)
+    check(assert_type(arr.item(0), np.integer | NAType), np.int64)
+    check(assert_type(array([1]).item(), np.integer | NAType), np.int64)
     check(assert_type(arr.dropna(), IntegerArray), IntegerArray)
     check(assert_type(arr.take([1, 0, 2]), IntegerArray), IntegerArray)
     check(

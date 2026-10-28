@@ -548,3 +548,11 @@ def test_timedelta_array_median() -> None:
 
     result = arr.median(skipna=True)
     check(assert_type(result, Timedelta), Timedelta)
+
+
+def test_item() -> None:
+    arr = pd.array([pd.Timedelta("1D")])
+    check(assert_type(arr.item(), Timedelta | NaTType), Timedelta)
+    check(assert_type(arr.item(0), Timedelta | NaTType), Timedelta)
+    nat = pd.array([pd.Timedelta("1D"), pd.NaT])[1:]
+    check(assert_type(nat.item(), Timedelta | NaTType), NaTType)

@@ -367,3 +367,10 @@ def test_interval_mixin_properties() -> None:
     check(assert_type(arr.open_left, bool), bool)
     check(assert_type(arr.open_right, bool), bool)
     check(assert_type(arr.is_empty, np_1darray_bool), np_1darray_bool)
+
+
+def test_item() -> None:
+    itv = pd.Interval(0, 1)
+    check(assert_type(pd.array([itv]).item(), Interval | float), Interval)
+    check(assert_type(pd.array([itv]).item(0), Interval | float), Interval)
+    check(assert_type(pd.array([itv, None])[1:].item(), Interval | float), float)

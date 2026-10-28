@@ -38,6 +38,8 @@ class TimedeltaArray(TimelikeOps):
         freq: Frequency | None = None,
         copy: bool = ...,
     ) -> None: ...
+    @override
+    def item(self, index: int | None = None) -> Timedelta | NaTType: ...
     @overload
     def sum(
         self,

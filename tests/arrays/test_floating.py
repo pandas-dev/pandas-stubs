@@ -18,6 +18,8 @@ from pandas.core.arrays.floating import (
 )
 import pytest
 
+from pandas._libs.missing import NAType
+
 from tests import (
     check,
     exception_on_platform,
@@ -133,3 +135,12 @@ def test_construct_array_type() -> None:
         )
         is FloatingArray
     )
+
+
+def test_item() -> None:
+    check(assert_type(pd.array([1.0]).item(), np.floating | NAType), np.float64)
+    check(
+        assert_type(pd.array([1.0], "Float32").item(0), np.floating | NAType),
+        np.float32,
+    )
+    check(assert_type(pd.array([None], "Float64").item(), np.floating | NAType), NAType)
