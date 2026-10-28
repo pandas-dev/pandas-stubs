@@ -128,7 +128,9 @@ class Series:
     def __matmul__(self, other: DataFrame, /) -> DataFrame: ...
 """},
     )
-    allowances = {("Series", "__matmul__", "DataFrame"): expected} if expected else {}
+    allowances: dict[tuple[str, str, str], int] = (
+        {("Series", "__matmul__", "DataFrame"): expected} if expected else {}
+    )
     assert check_operand_hierarchy(root, exceptions=allowances) == (expected == 2)
     error = capsys.readouterr().err
     if expected != 2:
