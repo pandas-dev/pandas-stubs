@@ -152,8 +152,8 @@ def test_index_isin() -> None:
         assert_type(mi.isin({(1, "red"): 0, (3, "red"): 0}), np_1darray_bool),
         np_1darray_bool,
     )
-    if TYPE_CHECKING:
-        # TODO: pandas-dev/pandas#66514 remove guard once fixed
+    # TODO: pandas-dev/pandas#66514 drop pytest.raises once fixed
+    with pytest.raises(TypeError, match="has no len"):
         check(
             assert_type(
                 mi.isin({iter((1, "red")): 0, (3, "red"): 0}.keys()), np_1darray_bool
@@ -165,8 +165,8 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin(iter([["1"]]), 1), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin({1: 0}.keys(), 0), np_1darray_bool), np_1darray_bool)
 
-    if TYPE_CHECKING:
-        # TODO: pandas-dev/pandas#66514 remove guard once fixed
+    # TODO: pandas-dev/pandas#66514 drop pytest.raises once fixed
+    with pytest.raises(TypeError, match="has no len"):
         check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
