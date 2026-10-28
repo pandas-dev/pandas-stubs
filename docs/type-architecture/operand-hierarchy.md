@@ -101,9 +101,9 @@ pyright, pyrefly and ty through the reflected dunder.
 
 `__eq__` and `__ne__` are the exception. The temporal and interval classes pair their
 higher-tier overload with an `object` catch-all; once the specific overload is gone, the
-catch-all absorbs the operand and the reflected method never runs. This was measured for
-`Timedelta`, whose catch-all returns `Literal[False]` in all four checkers, so the lower
-tier keeps declaring the result for these two names. Check each class before assuming the
+catch-all absorbs the operand and the reflected method never runs. `Timedelta`'s catch-all
+returns `Literal[False]` in all four checkers, so the lower tier keeps declaring the result
+for these two names. Check each class before assuming the
 same fallback: `NAType` declares no `object` overload.
 
 This rationale is scoped to the operand pairs named above. It
@@ -135,8 +135,8 @@ reachable only once `Series.__matmul__(DataFrame)` is gone.
 - `ScalarArrayIndex*` aliases must not reference `Series` or `DataFrame`. `ScalarArrayIndexSeries*`
   aliases may reference `Series` but not `DataFrame`. No exceptions.
 - Both branches of class-level and module-level `if` statements are scanned without
-  evaluating conditions. Nested functions and classes are not entered. Inherited methods
-  are not resolved.
+  evaluating conditions. Methods inside nested functions and classes are not scanned. Inherited
+  methods are not resolved.
 - Unsupported: quoted annotations, implicit aliases, PEP 695 `type` aliases, TypeVar bounds,
   import renaming, async methods, callable class attributes and other class families.
 - Passing is not proof that a signature is correct.
