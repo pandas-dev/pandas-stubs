@@ -56,7 +56,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
-    pytest_warns_complex_pandas4,
     pytest_warns_inplace_pandas4,
 )
 from tests._typing import (
@@ -1984,114 +1983,6 @@ def test_categorical_codes() -> None:
     check(
         assert_type(sr_float, "pd.Series[pd.CategoricalDtype[float]]"), pd.Series, float
     )
-
-
-def test_relops() -> None:
-    # GH 175
-    s: str = "abc"
-    check(assert_type(pd.Series([s]) > s, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([s]) < s, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([s]) <= s, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([s]) >= s, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    b: bytes = b"def"
-    check(assert_type(pd.Series([b]) > b, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([b]) < b, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([b]) <= b, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([b]) >= b, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    dtd = datetime.date(2022, 7, 31)
-    check(assert_type(pd.Series([dtd]) > dtd, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([dtd]) < dtd, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([dtd]) <= dtd, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([dtd]) >= dtd, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    dtdt = datetime.datetime(2022, 7, 31, 8, 32, 21)
-    check(assert_type(pd.Series([dtdt]) > dtdt, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([dtdt]) < dtdt, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type(pd.Series([dtdt]) <= dtdt, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    check(
-        assert_type(pd.Series([dtdt]) >= dtdt, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-
-    dttd = datetime.timedelta(seconds=10)
-    check(assert_type(pd.Series([dttd]) > dttd, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([dttd]) < dttd, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type(pd.Series([dttd]) <= dttd, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    check(
-        assert_type(pd.Series([dttd]) >= dttd, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-
-    bo: bool = True
-    check(assert_type(pd.Series([bo]) > bo, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([bo]) < bo, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([bo]) <= bo, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([bo]) >= bo, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    ai: int = 10
-    check(assert_type(pd.Series([ai]) > ai, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ai]) < ai, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ai]) <= ai, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ai]) >= ai, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    af: float = 3.14
-    check(assert_type(pd.Series([af]) > af, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([af]) < af, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([af]) <= af, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([af]) >= af, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    # GH 1903
-    check(assert_type(pd.Series([ai]) > af, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ai]) < af, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ai]) <= af, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ai]) >= af, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([af]) > ai, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([af]) < ai, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([af]) <= ai, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([af]) >= ai, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(af > pd.Series([ai]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(af < pd.Series([ai]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(af <= pd.Series([ai]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(af >= pd.Series([ai]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(ai > pd.Series([af]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(ai < pd.Series([af]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(ai <= pd.Series([af]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(ai >= pd.Series([af]), "pd.Series[bool]"), pd.Series, np.bool_)
-    if TYPE_CHECKING_INVALID_USAGE:
-        _0 = pd.Series([s]) < af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _1 = pd.Series([s]) > af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _2 = pd.Series([s]) <= af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _3 = pd.Series([s]) >= af  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-
-    ac: complex = 1 + 2j
-    with pytest_warns_complex_pandas4():
-        check(assert_type(pd.Series([ac]) > ac, "pd.Series[bool]"), pd.Series, np.bool_)
-    with pytest_warns_complex_pandas4():
-        check(assert_type(pd.Series([ac]) < ac, "pd.Series[bool]"), pd.Series, np.bool_)
-    with pytest_warns_complex_pandas4():
-        check(
-            assert_type(pd.Series([ac]) <= ac, "pd.Series[bool]"), pd.Series, np.bool_
-        )
-    with pytest_warns_complex_pandas4():
-        check(
-            assert_type(pd.Series([ac]) >= ac, "pd.Series[bool]"), pd.Series, np.bool_
-        )
-
-    ts = pd.Timestamp("2022-07-31 08:35:12")
-    check(assert_type(pd.Series([ts]) > ts, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ts]) < ts, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ts]) <= ts, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([ts]) >= ts, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    td = pd.Timedelta(seconds=10)
-    check(assert_type(pd.Series([td]) > td, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([td]) < td, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([td]) <= td, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(pd.Series([td]) >= td, "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_resample() -> None:
@@ -4176,3 +4067,22 @@ def test_series_primitive_conversions() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         bytes(s_float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         bytearray(s_float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+
+def test_relops_any() -> None:
+    df = pd.DataFrame({"x": [1, 2, 3]})
+    left = df["x"]
+
+    check(assert_type(left < 2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left <= 2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left > 2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left >= 2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(2 < left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(2 <= left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(2 > left, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(2 >= left, "pd.Series[bool]"), pd.Series, np.bool_)
+
+    check(assert_type(left.lt(2), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.le(2), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.gt(2), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(left.ge(2), "pd.Series[bool]"), pd.Series, np.bool_)

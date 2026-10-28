@@ -1,0 +1,114 @@
+# Operator signatures
+
+The operator declarations live in the relevant `.pyi` files; this page explains common
+patterns for editing them. Confirm an intended change with focused type and runtime
+tests rather than treating an example here as a complete overload recipe.
+
+## Operand aliases
+
+`pandas-stubs/_stubs_only/__init__.pyi` defines `ScalarArrayIndex*` aliases for operands
+shared by `Index` operations. Their `ScalarArrayIndexSeries*` counterparts add compatible
+`Series` forms for `Series` operations. The numeric, complex, and timedelta families use
+this pattern where it keeps overloads readable.
+
+The names describe cumulative operand scopes: `Scalar` contains scalar values,
+`ScalarArray` conceptually adds array-like values, `ScalarArrayIndex` adds `Index`, and
+`ScalarArrayIndexSeries` adds `Series`. `ScalarArray` is vocabulary for the conceptual
+level, not a current alias family in `pandas-stubs/_stubs_only/__init__.pyi`.
+
+Not every operator uses one of these aliases. Several additions and temporal operations
+spell their operand unions inline, and named methods may have a different set of
+parameters from the matching dunder. Check the declaration you are editing instead of
+assuming alias coverage.
+
+## Dunder parameters
+
+Binary dunders use a positional-only `other` parameter:
+
+```python
+def __floordiv__(self: Index[Never], other: ScalarArrayIndexReal, /) -> Index: ...
+```
+
+The `/` records the dunder calling convention in the stubs. Named methods such as
+`add`, `sub`, and `mul` can additionally expose keyword parameters such as `axis`,
+`level`, or `fill_value` when their own declarations support them.
+
+The name matters, not just the shape: the
+[operand-hierarchy checker](../../scripts/operand_hierarchy/check.py) enumerates its
+scanned methods in `FORWARD_BINARY_DUNDERS` (defined in
+[`model.py`](../../scripts/operand_hierarchy/model.py)) and reads the operand from the
+parameter named `other` of the methods it scans. The checker accepts a positional-only,
+positional-or-keyword, keyword-only or variadic `other`; the stubs' own convention,
+enforced by `guard-dunders-posonly`, is positional-only.
+
+- A forward binary dunder must keep an `other` parameter. A scanned dunder that
+  declares its operand under another name (say `right` or `value`) fails the checker
+  rather than being skipped.
+- The checker reads a qualified terminal name as the operand type, so `pd.DataFrame`
+  counts exactly like `DataFrame`.
+- Methods named `__*__` outside that set are not scanned at all. That includes every
+  reflected dunder, such as `__radd__`, and non-operator methods, such as `__init__`
+  or a bespoke `__foo__`.
+
+The higher-tier rule has an exception list, `FORWARD_DUNDER_EXCEPTIONS` in
+[`scripts/operand_hierarchy/exceptions.py`](../../scripts/operand_hierarchy/exceptions.py),
+whose target is an empty set. A key is `(class, dunder, canonical higher-tier operand)` and
+maps to a positive count; each overload contributes once per canonical higher tier,
+regardless of alias spelling. The
+[operand hierarchy](operand-hierarchy.md#scalar-and-index-subclass-overloads) page states
+the policy and the target.
+
+## Reflected dunders
+
+Reflected dunders (`__radd__`, `__rsub__`, …, `__rmatmul__`) mirror the forward binary
+operators and use the same positional-only `other` parameter. The
+`guard-dunders-posonly` pre-commit hook covers the forward, reflected and in-place
+spellings, so it enforces the `/` for `__radd__` and `__iadd__` exactly as it does for
+`__add__`.
+
+They are deliberately outside the operand-hierarchy check, which scans only the names in
+`FORWARD_BINARY_DUNDERS`.
+
+Python tries `y.__rop__(x)` for `x op y` only when `x.__op__` is missing or returns
+`NotImplemented`, or first when `type(y)` is a proper subclass of `type(x)` that overrides
+the reflected method. A reflected overload therefore matters only for left operands the
+forward dunder does not accept. One that names a higher tier as `other` is unreachable
+whenever that tier's forward dunder already accepts this type, because every checker
+resolves the forward method. `Series.__rmatmul__` therefore has no `DataFrame` overload,
+because `DataFrame.__matmul__(Series)` already resolves `df @ s`, and no `Series` overload,
+because both operands have the same type and Python never tries the reflected method.
+
+The stubs also use reflected signatures to restrict the receiver through an annotated
+`self`, as in `def __radd__(self: Series[Never], other: _str, /) -> Series[_str]: ...`.
+
+Reflected dunders are a substantial part of the operator surface: `Index` and `Series`
+declare many, while `MultiIndex` declares none and inherits `Index`'s. Because the checker
+cannot prove their operand scope, they need the same focused type and runtime tests as the
+rest of that surface.
+
+## Protocol overloads
+
+Protocol-based overloads and constrained type variables are the preferred direction when
+an operand family has uniform return behavior. Protocols cover custom operand types,
+because any type with the right method matches; a constrained type variable admits only
+its listed constraints, so it collapses a closed set of overloads. Keep explicit overloads where operand validity or return types
+differ, and preserve specialized temporal overloads when changing those families: a
+broader protocol can otherwise capture a case that needs a distinct result.
+
+This distinction matters for bool-sensitive operations. For example, subtraction and true
+division cannot blindly generalize from supported scalar protocols when `bool` minus
+`bool` or `bool` divided by `bool` is invalid. The structural hierarchy checker cannot
+infer those semantic exceptions, so focused type tests remain necessary.
+
+## Subclass overrides
+
+Specialized `Index` subclasses can narrow a broad `Index` return type. Their dunder
+overrides use the repository's ordered multi-checker ignore comments when a checker
+reports an intentional override incompatibility. Keep the standard order documented in
+[`docs/philosophy.md`](../philosophy.md#using-ignore-comments): mypy, pyright, pyrefly,
+then ty.
+
+The operand-hierarchy checker scans subclass dunders as well, so a subclass cannot
+declare a higher-tier forward operand that its base would be rejected for. See
+[Scalar and Index subclass overloads](operand-hierarchy.md#scalar-and-index-subclass-overloads)
+for the exception list and its empty-set target.

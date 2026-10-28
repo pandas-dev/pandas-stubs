@@ -1,3 +1,4 @@
 - [ ] Closes #xxxx (Replace xxxx with the Github issue number)
 - [ ] Tests added (Please use `assert_type()` to assert the type of any return value)
+- [ ] If I add a new API, it is already listed as public in the [pandas API reference](https://pandas.pydata.org/docs/reference/).
 - [ ] If I used AI to develop this pull request, I prompted it to follow `AGENTS.md`.
