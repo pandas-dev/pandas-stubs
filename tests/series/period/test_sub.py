@@ -12,10 +12,15 @@ from tests import check
 def test_sub() -> None:
     """Test sub method for pd.Series[pd.Period]."""
     p = pd.Period("2012-1-1", freq="D")
+    pi = pd.PeriodIndex(["2012-1-1"], freq="D")
     sr = pd.Series([pd.Period("2012-1-1", freq="D")])
 
     check(assert_type(sr - sr, "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
     check(assert_type(p - sr, "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
     check(assert_type(sr - p, "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
+    check(assert_type(pi - sr, "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
+    check(assert_type(sr - pi, "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
     check(assert_type(sr.sub(p), "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
+    check(assert_type(sr.sub(pi), "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
     check(assert_type(sr.rsub(p), "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
+    check(assert_type(sr.rsub(pi), "pd.Series[BaseOffset]"), pd.Series, BaseOffset)
