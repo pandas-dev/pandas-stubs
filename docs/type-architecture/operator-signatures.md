@@ -50,11 +50,11 @@ enforced by `guard-dunders-posonly`, is positional-only.
   reflected dunder, such as `__radd__`, and non-operator methods, such as `__init__`
   or a bespoke `__foo__`.
 
-The higher-tier rule has a temporary exception list, `FORWARD_DUNDER_EXCEPTIONS` in
+The higher-tier rule has an exception list, `FORWARD_DUNDER_EXCEPTIONS` in
 [`scripts/operand_hierarchy/exceptions.py`](../../scripts/operand_hierarchy/exceptions.py),
 whose target is an empty set. A key is `(class, dunder, canonical higher-tier operand)` and
 maps to a positive count; each overload contributes once per canonical higher tier,
-regardless of alias spelling. pandas-dev/pandas-stubs#2023 tracks the retirement, and the
+regardless of alias spelling. The
 [operand hierarchy](operand-hierarchy.md#scalar-and-index-subclass-overloads) page states
 the policy and the target.
 
@@ -111,4 +111,4 @@ then ty.
 The operand-hierarchy checker scans subclass dunders as well, so a subclass cannot
 declare a higher-tier forward operand that its base would be rejected for. See
 [Scalar and Index subclass overloads](operand-hierarchy.md#scalar-and-index-subclass-overloads)
-for the temporary exception list and its empty-set target.
+for the exception list and its empty-set target.

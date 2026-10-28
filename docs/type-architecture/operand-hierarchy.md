@@ -41,7 +41,7 @@ being represented, then inspect its forward and reflected overloads and a focuse
 The scalar rows are not one-sided: a scalar such as `Timedelta` declares its own forward
 overloads for the array-like operands it broadcasts over, and those overloads are part of
 the surface to review. [Scalar and Index subclass overloads](#scalar-and-index-subclass-overloads)
-states why the checker permits them and where the temporary list that records them lives.
+states why the checker permits them and where the list that records them lives.
 
 For example, `IntervalIndex`'s comparison overloads against `Series` return `Series[bool]`,
 so the result shape belongs to `Series`.
@@ -84,8 +84,7 @@ ERROR: Series.__sub__ higher-tier operand DataFrame: expected 0 overload(s), obs
 - Observed and recorded counts must match exactly. New combinations, increases, decreases
   and unused entries all fail.
 
-The goal is to shrink this registry towards empty; pandas-dev/pandas-stubs#2023 tracks the
-steps. A PR may remove a key or lower a count. Adding a key or raising a count needs the
+The target is an empty registry. A PR may remove a key or lower a count. Adding a key or raising a count needs the
 signature's purpose explained in the PR and its typing and runtime behavior tested as
 appropriate. Never raise a count merely to silence a failure.
 
@@ -94,12 +93,11 @@ appropriate. Never raise a count merely to silence a failure.
 The allowances are not a claim that the lower tier owns dispatch. At runtime the tier-0
 scalars and `IntervalIndex` return `NotImplemented` for a `Series` or `Index` operand, and
 the higher tier's reflected dunder produces the result. Each key therefore records a
-cross-tier declaration the stubs currently carry, not a runtime entry point.
+cross-tier declaration the stubs carry, not a runtime entry point.
 
-The measured four-checker fallback is recorded in pandas-dev/pandas-stubs#2023. Deleting
-`Timedelta.__lt__(Series[Timedelta])` and `Timedelta.__floordiv__(Series[Timedelta])`
-keeps `Series[bool]` and `Series[int]` in mypy, pyright, pyrefly and ty through the
-reflected dunder; that issue records the measurement and the per-class steps.
+Deleting `Timedelta.__lt__(Series[Timedelta])` and
+`Timedelta.__floordiv__(Series[Timedelta])` keeps `Series[bool]` and `Series[int]` in mypy,
+pyright, pyrefly and ty through the reflected dunder.
 
 `__eq__` and `__ne__` are the exception. The temporal and interval classes pair their
 higher-tier overload with an `object` catch-all; once the specific overload is gone, the
@@ -108,17 +106,16 @@ catch-all absorbs the operand and the reflected method never runs. This was meas
 tier keeps declaring the result for these two names. Check each class before assuming the
 same fallback: `NAType` declares no `object` overload.
 
-This rationale is scoped to the operand pairs measured in pandas-dev/pandas-stubs#2023. It
+This rationale is scoped to the operand pairs named above. It
 is not a general claim that the higher tier's reflected dunder suffices for every pair.
 
 ## Matrix multiplication
 
 `Series.__matmul__(DataFrame)` returns a `Series`, and pandas supports the expression at
 runtime; `tests/series/test_series.py::test_types_dot` exercises the forward operation.
-`DataFrame` is the higher tier, so the corresponding design is a
-`DataFrame.__rmatmul__(Series)` overload: it lets the `Series` side keep its operand scope
-while the higher tier declares the cross-tier operation. pandas-dev/pandas-stubs#2023
-tracks the step.
+`DataFrame` is the higher tier, so the overload is a cross-tier declaration recorded in the
+exception list. The way out is a `DataFrame.__rmatmul__(Series)` overload, which becomes
+reachable only once `Series.__matmul__(DataFrame)` is gone.
 
 ## Limits
 
