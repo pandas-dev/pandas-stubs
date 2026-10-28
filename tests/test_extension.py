@@ -6,7 +6,6 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas.api.extensions import ExtensionArray
 from pandas.arrays import IntegerArray
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.indexers import check_array_indexer
@@ -80,8 +79,3 @@ def test_boolean_array() -> None:
     check(assert_type(arr_bool & np.array([True, False]), BooleanArray), BooleanArray)
     check(assert_type(arr_bool & arr_int, BooleanArray), BooleanArray)
     check(assert_type(arr_bool & arr_bool, BooleanArray), BooleanArray)
-
-
-def test_extension_dtype_empty() -> None:
-    check(assert_type(pd.Int64Dtype().empty(3), ExtensionArray), IntegerArray)
-    check(assert_type(pd.Int64Dtype().empty(shape=(2,)), ExtensionArray), IntegerArray)

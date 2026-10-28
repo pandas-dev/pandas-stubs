@@ -28,6 +28,7 @@ from pandas.api.typing.aliases import (
 )
 from pandas.core.arrays import (
     BooleanArray,
+    ExtensionArray,
     IntegerArray,
 )
 from pandas.core.arrays.datetimes import DatetimeArray
@@ -160,6 +161,8 @@ def test_int64_dtype() -> None:
     check(assert_type(i64dt.itemsize, int), int)
     check(assert_type(i64dt.na_value, NAType), NAType)
     check(assert_type(i64dt.construct_array_type(), type[IntegerArray]), type)
+    check(assert_type(i64dt.empty(3), ExtensionArray), IntegerArray)
+    check(assert_type(i64dt.empty(shape=(2,)), ExtensionArray), IntegerArray)
 
 
 def test_categorical_dtype() -> None:
