@@ -92,6 +92,7 @@ def test_types_dot() -> None:
     check(assert_type(df1 @ np_array, pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.dot(np_array), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1 @ s1, pd.Series), pd.Series)
+    check(assert_type(s1 @ df2, pd.Series), pd.Series)
     check(assert_type(df1.dot(s1), pd.Series), pd.Series)
     list_like = [[0, 1], [1, 2], [-1, -1], [2, 0]]
     check(assert_type(df1.dot(list_like), pd.DataFrame), pd.DataFrame)
