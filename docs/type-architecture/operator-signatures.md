@@ -74,8 +74,9 @@ Python tries `y.__rop__(x)` for `x op y` only when `x.__op__` is missing or retu
 the reflected method. A reflected overload therefore matters only for left operands the
 forward dunder does not accept. One that names a higher tier as `other` is unreachable
 whenever that tier's forward dunder already accepts this type, because every checker
-resolves the forward method. `Series.__rmatmul__(DataFrame)` was removed for this reason:
-`DataFrame.__matmul__(Series)` already resolves `df @ s`.
+resolves the forward method. `Series.__rmatmul__` therefore has no `DataFrame` overload,
+because `DataFrame.__matmul__(Series)` already resolves `df @ s`, and no `Series` overload,
+because both operands have the same type and Python never tries the reflected method.
 
 The stubs also use reflected signatures to restrict the receiver through an annotated
 `self`, as in `def __radd__(self: Series[Never], other: _str, /) -> Series[_str]: ...`.
