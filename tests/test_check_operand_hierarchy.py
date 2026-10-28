@@ -430,8 +430,11 @@ def test_registry_and_documentation() -> None:
         for heading in headings
     }
     assert anchor and anchor in anchors
-    assert "type-architecture/operand-hierarchy.md" in (
-        _REPO_ROOT / "docs/README.md"
+    assert "type-architecture/README.md" in (_REPO_ROOT / "docs/README.md").read_text(
+        encoding="utf-8"
+    )
+    assert "operand-hierarchy.md" in (
+        _REPO_ROOT / "docs/type-architecture/README.md"
     ).read_text(encoding="utf-8")
 
 
