@@ -623,16 +623,59 @@ def test_isna() -> None:
     [(), (1, 2), (None,), (np.nan,), (pd.NA, pd.NaT), (1, None), ([1, None],)],
 )
 def test_isna_tuple(obj: tuple[object, ...]) -> None:
-    assert not check(assert_type(pd.isna(obj), bool), bool)
-    assert check(assert_type(pd.notna(obj), bool), bool)
-    assert not check(assert_type(pd.isnull(obj), bool), bool)
-    assert check(assert_type(pd.notnull(obj), bool), bool)
+    assert not check(assert_type(pd.isna(obj), bool | np.bool | np_ndarray_bool), bool)
+    assert check(assert_type(pd.notna(obj), bool | np.bool | np_ndarray_bool), bool)
+    assert not check(
+        assert_type(pd.isnull(obj), bool | np.bool | np_ndarray_bool), bool
+    )
+    assert check(assert_type(pd.notnull(obj), bool | np.bool | np_ndarray_bool), bool)
 
 
 def test_isna_fixed_tuple() -> None:
     obj = (1, None)
-    assert not check(assert_type(pd.isna(obj), bool), bool)
-    assert check(assert_type(pd.notna(obj), bool), bool)
+    assert not check(assert_type(pd.isna(obj), bool | np.bool | np_ndarray_bool), bool)
+    assert check(assert_type(pd.notna(obj), bool | np.bool | np_ndarray_bool), bool)
+
+
+@pytest.mark.parametrize(
+    "values, expected, isna_type, notna_type",
+    [
+        ([1, None], [False, True], np.ndarray, np.ndarray),
+        (
+            [[1, None], [None, 2]],
+            [[False, True], [True, False]],
+            np.ndarray,
+            np.ndarray,
+        ),
+        (1, False, np.bool, np.bool),
+        (np.nan, True, np.bool, np.bool),
+        (None, True, np.ndarray, np.bool),
+    ],
+)
+def test_isna_array_tuple(
+    values: object, expected: object, isna_type: type, notna_type: type
+) -> None:
+    class ArrayTuple(tuple[object]):
+        __slots__ = ()
+
+        def __array__(
+            self, dtype: np.dtype[Any] | None = None, copy: bool | None = None
+        ) -> np_ndarray:
+            return np.asarray(self[0], dtype=dtype)
+
+    obj = ArrayTuple((values,))
+    for result in (
+        check(assert_type(pd.isna(obj), bool | np.bool | np_ndarray_bool), isna_type),
+        check(assert_type(pd.isnull(obj), bool | np.bool | np_ndarray_bool), isna_type),
+    ):
+        np.testing.assert_array_equal(result, expected)
+    for result in (
+        check(assert_type(pd.notna(obj), bool | np.bool | np_ndarray_bool), notna_type),
+        check(
+            assert_type(pd.notnull(obj), bool | np.bool | np_ndarray_bool), notna_type
+        ),
+    ):
+        np.testing.assert_array_equal(result, np.logical_not(np.asarray(expected)))
 
 
 # GH 55
