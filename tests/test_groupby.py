@@ -34,8 +34,12 @@ from pandas.core.window import (
     ExponentialMovingWindowGroupBy,
     RollingGroupBy,
 )
+import pytest
 
-from pandas.errors import Pandas4Warning
+from pandas.errors import (
+    Pandas4Warning,
+    UnsupportedFunctionCall,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -1178,3 +1182,102 @@ def test_dataframe_groupby_dtypes() -> None:
 
         def _0() -> None:  # pyright: ignore[reportUnusedFunction]
             assert_type(GB_DF.dtypes, Never)
+
+
+def test_groupby_pandas3_parameter_signatures() -> None:
+    """Check removed parameters and current positional argument order."""
+    check(
+        assert_type(
+            GB_DF.rolling(2, 1, False, None, None, None, "single"),
+            "RollingGroupBy[DataFrame]",
+        ),
+        RollingGroupBy,
+    )
+    check(
+        assert_type(GB_DF.expanding(1, "single"), "ExpandingGroupBy[DataFrame]"),
+        ExpandingGroupBy,
+    )
+    check(
+        assert_type(
+            GB_DF.ewm(1, None, None, None, 0, True, False, None, "single"),
+            "ExponentialMovingWindowGroupBy[DataFrame]",
+        ),
+        ExponentialMovingWindowGroupBy,
+    )
+    check(assert_type(GB_DF.rank(), DataFrame), DataFrame)
+    check(assert_type(GB_DF.diff(), DataFrame), DataFrame)
+    check(assert_type(GB_S.rank(), "Series[float]"), Series, float)
+    check(assert_type(GB_S.diff(), "Series[float]"), Series, float)
+    check(assert_type(GB_DF.shift(1, "D"), DataFrame), DataFrame)
+    check(assert_type(GB_DF.shift(1, None, 0), DataFrame), DataFrame)
+    check(assert_type(GB_DF.cumsum(False, False), DataFrame), DataFrame)
+    check(assert_type(GB_DF.cumprod(False, False), DataFrame), DataFrame)
+    check(assert_type(GB_DF.cummin(False, False), DataFrame), DataFrame)
+    check(assert_type(GB_DF.cummax(False, False), DataFrame), DataFrame)
+    check(
+        assert_type(
+            GB_DF.resample("ME", "left", "right"), "ResamplerGroupBy[DataFrame]"
+        ),
+        DatetimeIndexResamplerGroupBy,
+    )
+    check(
+        assert_type(
+            GB_DF.resample(
+                "ME",
+                obj=DF,
+                how="mean",
+                fill_method="ffill",
+                limit=1,
+                level=None,
+                sort=True,
+                dropna=False,
+                include_groups=False,
+            ),
+            "ResamplerGroupBy[DataFrame]",
+        ),
+        DatetimeIndexResamplerGroupBy,
+    )
+    check(
+        assert_type(GB_S.resample("ME", obj=S), "ResamplerGroupBy[Series[float]]"),
+        DatetimeIndexResamplerGroupBy,
+    )
+    cases: list[tuple[str, tuple[object, ...], dict[str, object]]] = [
+        ("rank", (), {"axis": 0}),
+        ("diff", (), {"axis": 0}),
+        ("rolling", (2,), {"axis": 0}),
+        ("rolling", (2,), {"selection": "col1"}),
+        ("expanding", (), {"axis": 0}),
+        ("expanding", (), {"selection": "col1"}),
+        ("ewm", (), {"com": 1, "axis": 0}),
+        ("ewm", (), {"com": 1, "selection": "col1"}),
+        ("resample", ("ME",), {"axis": 0}),
+        ("shift", (), {"axis": 0}),
+        ("rolling", (), {}),
+    ]
+    for group in (GB_DF, GB_S):
+        for method, args, kwargs in cases:
+            with pytest.raises(TypeError):
+                getattr(group, method)(*args, **kwargs)
+        for method in ("cumsum", "cumprod"):
+            with pytest.raises(UnsupportedFunctionCall):
+                getattr(group, method)(axis=0)
+        for method in ("cummin", "cummax"):
+            with pytest_warns_bounded(
+                Pandas4Warning,
+                f"Passing additional arguments to GroupBy.{method}",
+                lower="3.0.99",
+            ):
+                getattr(group, method)(axis=0)
+    if TYPE_CHECKING_INVALID_USAGE:
+        GB_DF.rank(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.diff(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.rolling(2, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.rolling(2, selection="col1")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.expanding(selection="col1")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.ewm(com=1, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.ewm(com=1, selection="col1")  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.resample("ME", axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.shift(axis=0)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        GB_DF.cumsum(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_DF.cumprod(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
