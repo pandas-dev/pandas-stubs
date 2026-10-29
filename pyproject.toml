@@ -1,6 +1,6 @@
 [project]
 name = "pandas-stubs"
-version = "3.0.5.260914"
+version = "3.1.0.261029"
 description = "Type annotations for pandas"
 authors = [{name = "The Pandas Development Team", email = "pandas-dev@python.org"}]
 license = "BSD-3-Clause"
