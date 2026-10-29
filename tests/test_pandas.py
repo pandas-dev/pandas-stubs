@@ -618,6 +618,23 @@ def test_isna() -> None:
         assert_type(nullable3, NAType | None)
 
 
+@pytest.mark.parametrize(
+    "obj",
+    [(), (1, 2), (None,), (np.nan,), (pd.NA, pd.NaT), (1, None), ([1, None],)],
+)
+def test_isna_tuple(obj: tuple[object, ...]) -> None:
+    assert not check(assert_type(pd.isna(obj), bool), bool)
+    assert check(assert_type(pd.notna(obj), bool), bool)
+    assert not check(assert_type(pd.isnull(obj), bool), bool)
+    assert check(assert_type(pd.notnull(obj), bool), bool)
+
+
+def test_isna_fixed_tuple() -> None:
+    obj = (1, None)
+    assert not check(assert_type(pd.isna(obj), bool), bool)
+    assert check(assert_type(pd.notna(obj), bool), bool)
+
+
 # GH 55
 def test_read_xml() -> None:
     if TYPE_CHECKING:  # Skip running pytest
