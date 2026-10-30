@@ -332,15 +332,6 @@ def test_ewm_basic_math() -> None:
 
 
 def test_ewm_times_method() -> None:
-    check(
-        assert_type(
-            S.ewm(10, None, None, None, 0, True, False, None, "single").mean(), Series
-        ),
-        Series,
-    )
-    if TYPE_CHECKING_INVALID_USAGE:
-        S.ewm(span=10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
-
     times = Series(IDX)
     check(
         assert_type(
@@ -388,6 +379,15 @@ def test_ewm_basic_math_series() -> None:
     check(assert_type(S.ewm(span=10).std(), Series), Series)
     check(assert_type(S.ewm(span=10).corr(), Series), Series)
     check(assert_type(S.ewm(span=10).cov(), Series), Series)
+
+    check(
+        assert_type(
+            S.ewm(10, None, None, None, 0, True, False, None, "single").mean(), Series
+        ),
+        Series,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        S.ewm(span=10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_ewm_aggregate_series() -> None:
