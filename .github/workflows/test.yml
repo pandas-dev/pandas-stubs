@@ -85,7 +85,7 @@ jobs:
         uses: ./.github/setup
         with:
           os: ubuntu-latest
-          python-version: "3.11"
+          python-version: "3.15"
       - name: Test operand hierarchy contract
         run: poetry run poe pytest_architecture
       - name: Validate standalone operand hierarchy command

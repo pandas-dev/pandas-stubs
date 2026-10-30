@@ -433,7 +433,6 @@ def test_groupby_series_methods() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "GroupBy.nth",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(gb.nth[0, 1, 2], pd.DataFrame | pd.Series), pd.Series)
@@ -703,7 +702,11 @@ def test_groupby_and_transform() -> None:
     grouped = df.groupby("A")[["C", "D"]]
     grouped1 = ser.groupby(ser > 100)
     c1 = grouped.transform("sum")
-    c2 = grouped.transform(lambda x: (x - x.mean()) / x.std())
+    # TODO: remove this ignore once the upstream fix is released.
+    # https://github.com/facebook/pyrefly/commit/bb73a2ddef96d31b1bd7d8351691c1f243e2feba
+    c2 = grouped.transform(
+        lambda x: (x - x.mean()) / x.std()  # pyrefly: ignore[unknown-attribute-access]
+    )
     c3 = grouped1.transform("cumsum")
     c4 = grouped1.transform(lambda x: x.max() - x.min())
     check(assert_type(c1, pd.DataFrame), pd.DataFrame)

@@ -50,13 +50,13 @@ def test_add_py_sequence(left: "pd.Index[str]") -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(left + r0, "pd.Index[str]"), pd.Index, str)
-    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="3.0.99"):
+    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple"):
         check(assert_type(left + r1, "pd.Index[str]"), pd.Index, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
         _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
     check(assert_type(r0 + left, "pd.Index[str]"), pd.Index, str)
-    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple", lower="3.0.99"):
+    with pytest_warns_bounded(Pandas4Warning, "Operation with tuple"):
         check(assert_type(r1 + left, "pd.Index[str]"), pd.Index, str)
 
 

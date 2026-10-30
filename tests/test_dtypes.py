@@ -65,9 +65,13 @@ def test_datetimetz_dtype() -> None:
     assert assert_type(dttz_dt.name, str) == "datetime64[ns, UTC]"
     check(assert_type(dttz_dt.na_value, NaTType), NaTType)
 
-    assert assert_type(pd.DatetimeTZDtype("s", "PRC").unit, TimeUnit) == "s"
-    assert assert_type(pd.DatetimeTZDtype("ms", "CST6CDT").unit, TimeUnit) == "ms"
-    assert assert_type(pd.DatetimeTZDtype("us", "HST").unit, TimeUnit) == "us"
+    assert assert_type(pd.DatetimeTZDtype("s", "Asia/Shanghai").unit, TimeUnit) == "s"
+    assert (
+        assert_type(pd.DatetimeTZDtype("ms", "America/Chicago").unit, TimeUnit) == "ms"
+    )
+    assert (
+        assert_type(pd.DatetimeTZDtype("us", "Pacific/Honolulu").unit, TimeUnit) == "us"
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
@@ -94,7 +98,6 @@ def test_period_dtype() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated for offsets that are not DateOffse",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(

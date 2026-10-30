@@ -1,11 +1,9 @@
 from pandas.core.window.rolling import (
-    BaseWindowGroupby,
+    BaseWindowGroupBy,
     RollingAndExpandingMixin,
 )
 
 from pandas._typing import NDFrameT
 
 class Expanding(RollingAndExpandingMixin[NDFrameT]): ...
-
-# TODO: rename to ExpandingGroupBy (pandas-dev/pandas-stubs#1948)
-class ExpandingGroupby(BaseWindowGroupby[NDFrameT], Expanding[NDFrameT]): ...
+class ExpandingGroupBy(BaseWindowGroupBy[NDFrameT], Expanding[NDFrameT]): ...

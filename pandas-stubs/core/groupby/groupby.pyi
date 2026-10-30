@@ -31,15 +31,15 @@ from pandas.core.groupby.indexing import (
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.api import Index
 from pandas.core.resample import (
-    DatetimeIndexResamplerGroupby,
-    PeriodIndexResamplerGroupby,
-    TimedeltaIndexResamplerGroupby,
+    DatetimeIndexResamplerGroupBy,
+    PeriodIndexResamplerGroupBy,
+    TimedeltaIndexResamplerGroupBy,
 )
 from pandas.core.series import Series
 from pandas.core.window import (
-    ExpandingGroupby,
-    ExponentialMovingWindowGroupby,
-    RollingGroupby,
+    ExpandingGroupBy,
+    ExponentialMovingWindowGroupBy,
+    RollingGroupBy,
 )
 from typing_extensions import override
 
@@ -75,9 +75,9 @@ from pandas._typing import (
 from pandas.plotting import PlotAccessor
 
 ResamplerGroupBy: TypeAlias = (
-    DatetimeIndexResamplerGroupby[NDFrameT]
-    | PeriodIndexResamplerGroupby[NDFrameT]
-    | TimedeltaIndexResamplerGroupby[NDFrameT]
+    DatetimeIndexResamplerGroupBy[NDFrameT]
+    | PeriodIndexResamplerGroupBy[NDFrameT]
+    | TimedeltaIndexResamplerGroupBy[NDFrameT]
 )
 
 class GroupBy(BaseGroupBy[NDFrameT]):
@@ -246,7 +246,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         method: CalculationMethod = "single",
         *,
         selection: IndexLabel | None = None,
-    ) -> RollingGroupby[NDFrameT]: ...
+    ) -> RollingGroupBy[NDFrameT]: ...
     @final
     def expanding(
         self,
@@ -254,7 +254,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         axis: Axis = ...,
         method: CalculationMethod = ...,
         selection: IndexLabel | None = ...,
-    ) -> ExpandingGroupby[NDFrameT]: ...
+    ) -> ExpandingGroupBy[NDFrameT]: ...
     @final
     def ewm(
         self,
@@ -270,7 +270,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         method: CalculationMethod = ...,
         *,
         selection: IndexLabel | None = ...,
-    ) -> ExponentialMovingWindowGroupby[NDFrameT]: ...
+    ) -> ExponentialMovingWindowGroupBy[NDFrameT]: ...
     @final
     def ffill(self, limit: int | None = ...) -> NDFrameT: ...
     @final

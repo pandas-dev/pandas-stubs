@@ -693,7 +693,7 @@ def test_loc_callable() -> None:
         assert_type(
             df.loc[
                 :,
-                lambda df: df.columns.str.startswith(  # pyright: ignore[reportUnknownMemberType]
+                lambda df: df.columns.str.startswith(  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
                     "x"
                 ),
             ],

@@ -9,7 +9,7 @@ from pandas import (
 )
 from pandas.core.window.rolling import (
     BaseWindow,
-    BaseWindowGroupby,
+    BaseWindowGroupBy,
 )
 from typing_extensions import override
 
@@ -64,7 +64,6 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
     ) -> DataFrame: ...
     agg = aggregate  # type: ignore[assignment]
 
-# TODO: rename to ExponentialMovingWindowGroupBy (pandas-dev/pandas-stubs#1948)
-class ExponentialMovingWindowGroupby(
-    BaseWindowGroupby[NDFrameT], ExponentialMovingWindow[NDFrameT]
+class ExponentialMovingWindowGroupBy(
+    BaseWindowGroupBy[NDFrameT], ExponentialMovingWindow[NDFrameT]
 ): ...

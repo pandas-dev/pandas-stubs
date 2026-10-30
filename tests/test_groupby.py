@@ -25,34 +25,15 @@ from pandas.core.groupby.generic import (
     DataFrameGroupBy,
     SeriesGroupBy,
 )
-from pandas.core.resample import Resampler
-
-if TYPE_CHECKING:
-    # The stubs still use the pre-3.1 *Groupby spellings, which pandas
-    # renames to *GroupBy in 3.1 (pandas-dev/pandas#49578).
-    from pandas.core.resample import DatetimeIndexResamplerGroupby
-    from pandas.core.window import (
-        ExpandingGroupby,
-        ExponentialMovingWindowGroupby,
-        RollingGroupby,
-    )
-else:
-    try:
-        from pandas.core.resample import (
-            DatetimeIndexResamplerGroupBy as DatetimeIndexResamplerGroupby,
-        )
-        from pandas.core.window import (
-            ExpandingGroupBy as ExpandingGroupby,
-            ExponentialMovingWindowGroupBy as ExponentialMovingWindowGroupby,
-            RollingGroupBy as RollingGroupby,
-        )
-    except ImportError:  # pandas < 3.1
-        from pandas.core.resample import DatetimeIndexResamplerGroupby
-        from pandas.core.window import (
-            ExpandingGroupby,
-            ExponentialMovingWindowGroupby,
-            RollingGroupby,
-        )
+from pandas.core.resample import (
+    DatetimeIndexResamplerGroupBy,
+    Resampler,
+)
+from pandas.core.window import (
+    ExpandingGroupBy,
+    ExponentialMovingWindowGroupBy,
+    RollingGroupBy,
+)
 
 from pandas.errors import Pandas4Warning
 
@@ -90,19 +71,19 @@ def test_frame_groupby_resample() -> None:
     # basic
     check(
         assert_type(GB_DF.resample("ME"), "ResamplerGroupBy[DataFrame]"),
-        DatetimeIndexResamplerGroupby,
+        DatetimeIndexResamplerGroupBy,
         DataFrame,
     )
     check(
         assert_type(GB_DF.resample(Timedelta(days=30)), "ResamplerGroupBy[DataFrame]"),
-        DatetimeIndexResamplerGroupby,
+        DatetimeIndexResamplerGroupBy,
         DataFrame,
     )
     check(
         assert_type(
             GB_DF.resample(dt.timedelta(days=30)), "ResamplerGroupBy[DataFrame]"
         ),
-        DatetimeIndexResamplerGroupby,
+        DatetimeIndexResamplerGroupBy,
         DataFrame,
     )
 
@@ -226,19 +207,19 @@ def test_frame_groupby_resample() -> None:
     # getattr
     check(
         assert_type(GB_DF.resample("ME").col1, "ResamplerGroupBy[DataFrame]"),
-        DatetimeIndexResamplerGroupby,
+        DatetimeIndexResamplerGroupBy,
     )
 
     # getitem
     check(
         assert_type(GB_DF.resample("ME")["col1"], "ResamplerGroupBy[DataFrame]"),
-        DatetimeIndexResamplerGroupby,
+        DatetimeIndexResamplerGroupBy,
     )
     check(
         assert_type(
             GB_DF.resample("ME")[["col1", "col2"]], "ResamplerGroupBy[DataFrame]"
         ),
-        DatetimeIndexResamplerGroupby,
+        DatetimeIndexResamplerGroupBy,
     )
 
     def resample_interpolate(x: DataFrame) -> DataFrame:
@@ -294,7 +275,7 @@ def test_series_groupby_resample() -> None:
     # basic
     check(
         assert_type(GB_S.resample("ME"), "ResamplerGroupBy[Series[float]]"),
-        DatetimeIndexResamplerGroupby,
+        DatetimeIndexResamplerGroupBy,
         Series,
     )
 
@@ -442,8 +423,8 @@ def test_series_groupby_resample() -> None:
 def test_frame_groupby_rolling() -> None:
     # basic
     check(
-        assert_type(GB_DF.rolling(1), "RollingGroupby[DataFrame]"),
-        RollingGroupby,
+        assert_type(GB_DF.rolling(1), "RollingGroupBy[DataFrame]"),
+        RollingGroupBy,
         DataFrame,
     )
 
@@ -534,18 +515,18 @@ def test_frame_groupby_rolling() -> None:
 
     # getattr
     check(
-        assert_type(GB_DF.rolling(1).col1, "RollingGroupby[DataFrame]"),
-        RollingGroupby,
+        assert_type(GB_DF.rolling(1).col1, "RollingGroupBy[DataFrame]"),
+        RollingGroupBy,
     )
 
     # getitem
     check(
-        assert_type(GB_DF.rolling(1)["col1"], "RollingGroupby[DataFrame]"),
-        RollingGroupby,
+        assert_type(GB_DF.rolling(1)["col1"], "RollingGroupBy[DataFrame]"),
+        RollingGroupBy,
     )
     check(
-        assert_type(GB_DF.rolling(1)[["col1", "col2"]], "RollingGroupby[DataFrame]"),
-        RollingGroupby,
+        assert_type(GB_DF.rolling(1)[["col1", "col2"]], "RollingGroupBy[DataFrame]"),
+        RollingGroupBy,
     )
 
     # iter
@@ -558,8 +539,8 @@ def test_frame_groupby_rolling() -> None:
 def test_series_groupby_rolling() -> None:
     # basic
     check(
-        assert_type(GB_S.rolling(1), "RollingGroupby[Series[float]]"),
-        RollingGroupby,
+        assert_type(GB_S.rolling(1), "RollingGroupBy[Series[float]]"),
+        RollingGroupBy,
         Series,
     )
 
@@ -609,8 +590,8 @@ def test_series_groupby_rolling() -> None:
 def test_frame_groupby_expanding() -> None:
     # basic
     check(
-        assert_type(GB_DF.expanding(1), "ExpandingGroupby[DataFrame]"),
-        ExpandingGroupby,
+        assert_type(GB_DF.expanding(1), "ExpandingGroupBy[DataFrame]"),
+        ExpandingGroupBy,
         DataFrame,
     )
 
@@ -703,20 +684,20 @@ def test_frame_groupby_expanding() -> None:
 
     # getattr
     check(
-        assert_type(GB_DF.expanding(1).col1, "ExpandingGroupby[DataFrame]"),
-        ExpandingGroupby,
+        assert_type(GB_DF.expanding(1).col1, "ExpandingGroupBy[DataFrame]"),
+        ExpandingGroupBy,
     )
 
     # getitem
     check(
-        assert_type(GB_DF.expanding(1)["col1"], "ExpandingGroupby[DataFrame]"),
-        ExpandingGroupby,
+        assert_type(GB_DF.expanding(1)["col1"], "ExpandingGroupBy[DataFrame]"),
+        ExpandingGroupBy,
     )
     check(
         assert_type(
-            GB_DF.expanding(1)[["col1", "col2"]], "ExpandingGroupby[DataFrame]"
+            GB_DF.expanding(1)[["col1", "col2"]], "ExpandingGroupBy[DataFrame]"
         ),
-        ExpandingGroupby,
+        ExpandingGroupBy,
     )
 
     # iter
@@ -729,8 +710,8 @@ def test_frame_groupby_expanding() -> None:
 def test_series_groupby_expanding() -> None:
     # basic
     check(
-        assert_type(GB_S.expanding(1), "ExpandingGroupby[Series[float]]"),
-        ExpandingGroupby,
+        assert_type(GB_S.expanding(1), "ExpandingGroupBy[Series[float]]"),
+        ExpandingGroupBy,
         Series,
     )
 
@@ -780,8 +761,8 @@ def test_series_groupby_expanding() -> None:
 def test_frame_groupby_ewm() -> None:
     # basic
     check(
-        assert_type(GB_DF.ewm(1), "ExponentialMovingWindowGroupby[DataFrame]"),
-        ExponentialMovingWindowGroupby,
+        assert_type(GB_DF.ewm(1), "ExponentialMovingWindowGroupBy[DataFrame]"),
+        ExponentialMovingWindowGroupBy,
         DataFrame,
     )
 
@@ -802,20 +783,20 @@ def test_frame_groupby_ewm() -> None:
 
     # getattr
     check(
-        assert_type(GB_DF.ewm(1).col1, "ExponentialMovingWindowGroupby[DataFrame]"),
-        ExponentialMovingWindowGroupby,
+        assert_type(GB_DF.ewm(1).col1, "ExponentialMovingWindowGroupBy[DataFrame]"),
+        ExponentialMovingWindowGroupBy,
     )
 
     # getitem
     check(
-        assert_type(GB_DF.ewm(1)["col1"], "ExponentialMovingWindowGroupby[DataFrame]"),
-        ExponentialMovingWindowGroupby,
+        assert_type(GB_DF.ewm(1)["col1"], "ExponentialMovingWindowGroupBy[DataFrame]"),
+        ExponentialMovingWindowGroupBy,
     )
     check(
         assert_type(
-            GB_DF.ewm(1)[["col1", "col2"]], "ExponentialMovingWindowGroupby[DataFrame]"
+            GB_DF.ewm(1)[["col1", "col2"]], "ExponentialMovingWindowGroupBy[DataFrame]"
         ),
-        ExponentialMovingWindowGroupby,
+        ExponentialMovingWindowGroupBy,
     )
 
     # iter
@@ -846,8 +827,8 @@ def test_frame_groupby_ewm() -> None:
 def test_series_groupby_ewm() -> None:
     # basic
     check(
-        assert_type(GB_S.ewm(1), "ExponentialMovingWindowGroupby[Series[float]]"),
-        ExponentialMovingWindowGroupby,
+        assert_type(GB_S.ewm(1), "ExponentialMovingWindowGroupBy[Series[float]]"),
+        ExponentialMovingWindowGroupBy,
         Series,
     )
 
@@ -1017,7 +998,7 @@ def test_frame_groupby_transform_reduction_kernels() -> None:
     """Test DataFrameGroupBy.transform with ReductionKernelType literals."""
     check(assert_type(GB_DF.transform("all"), DataFrame), DataFrame)
     check(assert_type(GB_DF.transform("any"), DataFrame), DataFrame)
-    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated"):
         check(assert_type(GB_DF.transform("corrwith", other=DF), DataFrame), DataFrame)
     check(assert_type(GB_DF.transform("count"), DataFrame), DataFrame)
     check(assert_type(GB_DF.transform("first"), DataFrame), DataFrame)
@@ -1101,7 +1082,7 @@ def test_frame_groupby_agg_reduction_kernels() -> None:
     """Test DataFrameGroupBy.agg with ReductionKernelType literals."""
     check(assert_type(GB_DF.agg("all"), DataFrame), DataFrame)
     check(assert_type(GB_DF.agg("any"), DataFrame), DataFrame)
-    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "corrwith is deprecated"):
         check(assert_type(GB_DF.agg("corrwith", other=DF), DataFrame), DataFrame)
     check(assert_type(GB_DF.agg("count"), DataFrame), DataFrame)
     check(assert_type(GB_DF.agg("first"), DataFrame), DataFrame)
