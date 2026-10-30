@@ -1331,6 +1331,8 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
     check(assert_type(s.expanding(), "Expanding[pd.Series]"), Expanding)
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
     check(assert_type(s.rolling(2, center=True), "Rolling[pd.Series]"), Rolling)
 
     check(assert_type(s.rolling(2), "Rolling[pd.Series]"), Rolling)
@@ -1635,6 +1637,8 @@ def test_types_ne() -> None:
 
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
+    if TYPE_CHECKING_INVALID_USAGE:
+        s1.ewm(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
     check(
         assert_type(
             s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),

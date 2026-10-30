@@ -4606,7 +4606,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         min_periods: int = 0,
         adjust: _bool = True,
         ignore_na: _bool = False,
-        axis: Axis = 0,
         times: np_ndarray_dt | Series | None = None,
         method: CalculationMethod = "single",
     ) -> ExponentialMovingWindow[Series]: ...
@@ -4614,7 +4613,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def expanding(
         self,
         min_periods: int = 1,
-        axis: Literal[0] = 0,
         method: CalculationMethod = "single",
     ) -> Expanding[Series]: ...
     @overload
