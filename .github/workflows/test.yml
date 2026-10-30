@@ -90,3 +90,20 @@ jobs:
         run: poetry run poe pytest_architecture
       - name: Validate standalone operand hierarchy command
         run: python -S scripts/check_operand_hierarchy.py
+
+  stubtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install project dependencies
+        uses: ./.github/setup
+        with:
+          os: ubuntu-latest
+          python-version: "3.15"
+      - name: Run stubtest against the committed allowlists
+        run: poetry run poe stubtest
