@@ -1918,6 +1918,8 @@ def test_offset_dunder_methods() -> None:
 def test_nat_value() -> None:
     # GH 2001
     check(assert_type(pd.NaT.value, int), int)
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.NaT.value = 1  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue] # pyrefly: ignore[read-only] # ty: ignore[invalid-assignment]
 
 
 def test_nattype_dunder_methods() -> None:
