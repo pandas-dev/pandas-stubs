@@ -297,17 +297,13 @@ def test_types_groupby_agg() -> None:
     )
     check(
         assert_type(
-            df.groupby("col1").agg(
-                {
-                    "col2": "min",
-                    "col3": "max",
-                    0: "sum",
-                }
-            ),
+            df.groupby("col1").agg({"col2": "min", "col3": "max", 0: "sum"}),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
+    agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
+    check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
     def wrapped_min(x: pd.Series[S1]) -> S1:
         return x.min()
@@ -339,6 +335,18 @@ def test_types_groupby_agg() -> None:
         assert_type(df.groupby("col1").agg({"col2": "sum"}), pd.DataFrame), pd.DataFrame
     )
     check(assert_type(df.groupby("col1").agg({0: "sum"}), pd.DataFrame), pd.DataFrame)
+
+    # Mixed strings and callables need an explicit annotation.
+    agg_dict3: dict[str | int, str | Callable[..., Any]] = {
+        "col2": min,
+        "col3": "max",
+        0: wrapped_min,
+    }
+    check(assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame)
+    agg_dict4 = {"col2": "sum"}
+    check(assert_type(df.groupby("col1").agg(agg_dict4), pd.DataFrame), pd.DataFrame)
+    agg_dict5 = {0: "sum"}
+    check(assert_type(df.groupby("col1").agg(agg_dict5), pd.DataFrame), pd.DataFrame)
 
     # GroupBy.aggregate resolves a string `func` via getattr, so the set of
     # valid strings is open-ended, unlike GroupBy.transform which validates

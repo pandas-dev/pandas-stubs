@@ -175,13 +175,15 @@ def test_rolling_aggregate() -> None:
     # func: np.ufunc | Callable[..., Any] | str | list[Callable[..., Any] | str, np.ufunc] | dict[Hashable, Callable[..., Any] | str | np.ufunc | list[Callable[..., Any] | str]]
     check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
 
+    funcs = ["sum", "mean"]
+    funcs_dict = {"col1": "sum", "col2": "mean"}
+    check(assert_type(DF.rolling(10).aggregate(funcs), DataFrame), DataFrame)
+    check(assert_type(DF.rolling(10).aggregate(funcs_dict), DataFrame), DataFrame)
+
     if TYPE_CHECKING_INVALID_USAGE:
-        # only the top-level (non-list, non-dict) value is restricted to the
-        # closed window-method set; a dict's values stay `str` (see
-        # WindowAggFuncTypeFrame), so a dict held in a variable keeps
-        # working, at the cost of this particular dict form no longer being
-        # rejected statically even though it still fails at runtime.
-        DF.rolling(10).aggregate("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # ty: ignore[no-matching-overload] # pyrefly: ignore[no-matching-overload]
+        DF.rolling(10).aggregate("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        S.rolling(10).agg("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.expanding().agg("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_rolling_basic_math_series() -> None:
@@ -372,12 +374,26 @@ def test_ewm_times_method() -> None:
 
 def test_ewm_aggregate() -> None:
     check(assert_type(DF.ewm(span=10).agg("sum"), DataFrame), DataFrame)
+    check(assert_type(DF.ewm(span=10).aggregate("mean"), DataFrame), DataFrame)
+    check(assert_type(DF.ewm(span=10).aggregate(["mean", "std"]), DataFrame), DataFrame)
+    check(
+        assert_type(
+            DF.ewm(span=10).aggregate({"col1": "mean", "col2": ["mean", "std"]}),
+            DataFrame,
+        ),
+        DataFrame,
+    )
+    funcs = ["mean", "std"]
+    funcs_dict = {"col1": "mean", "col2": "std"}
+    check(assert_type(DF.ewm(span=10).aggregate(funcs), DataFrame), DataFrame)
+    check(assert_type(DF.ewm(span=10).aggregate(funcs_dict), DataFrame), DataFrame)
 
     # TODO: pandas-dev/pandas#63855, see if ewm.aggregate(any callable) is implemented
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[list-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.ewm(span=10).agg("median")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_ewm_basic_math_series() -> None:
@@ -400,12 +416,22 @@ def test_ewm_basic_math_series() -> None:
 
 def test_ewm_aggregate_series() -> None:
     # TODO: pandas-dev/pandas#63855, only str function names are possible, not callable, add tests
-    if TYPE_CHECKING_INVALID_USAGE:
-        _0 = S.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        _1 = S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-        _2 = S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
-
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
+    check(assert_type(S.ewm(span=10).aggregate("mean"), Series), Series)
+    check(assert_type(S.ewm(span=10).aggregate(["mean", "std"]), DataFrame), DataFrame)
+    check(
+        assert_type(
+            S.ewm(span=10).aggregate({"col1": "mean", "col2": "std"}), DataFrame
+        ),
+        DataFrame,
+    )
+    funcs = ["mean", "std"]
+    check(assert_type(S.ewm(span=10).aggregate(funcs), DataFrame), DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        S.ewm(span=10).aggregate(np.mean)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[list-item] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_rolling_step_method() -> None:

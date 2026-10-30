@@ -628,57 +628,45 @@ AggFuncType: TypeAlias = (
     AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]] | AggFuncTypeDict[HashableT, P]
 )
 
-# type of `func` kwarg for Rolling/Expanding/EWM.aggregate, as a single
-# (non-list, non-dict) value. Unlike AggFuncTypeBase above, window strings
-# resolve against the window object's own methods, i.e. a closed set, so a
-# Literal is appropriate here. Rolling and Expanding share this list; EWM
-# supports only a subset of it, but since one list has to serve all three
-# window classes, over-accepting a few names on EWM (e.g. "median") is the
-# acceptable trade-off over maintaining a second, near-duplicate list.
+# String `func` names a window method (pandas/core/window/{rolling,ewm}.py), a
+# closed set. EWM has only EWMAggName and rejects callables.
+EWMAggName: TypeAlias = Literal["corr", "cov", "mean", "std", "sum", "var"]
+RollingOnlyAggName: TypeAlias = Literal[
+    "count",
+    "first",
+    "kurt",
+    "last",
+    "max",
+    "median",
+    "min",
+    "nunique",
+    "quantile",
+    "rank",
+    "sem",
+    "skew",
+]
+# Scalar `func` for Rolling/Expanding.aggregate. Weighted Window inherits it
+# but only has sum/mean/var/std.
 WindowAggFuncTypeBase: TypeAlias = (
-    Callable[P, Any]
-    | Literal[
-        "corr",
-        "count",
-        "cov",
-        "first",
-        "kurt",
-        "last",
-        "max",
-        "mean",
-        "median",
-        "min",
-        "nunique",
-        "quantile",
-        "rank",
-        "sem",
-        "skew",
-        "std",
-        "sum",
-        "var",
-    ]
-    | np.ufunc
+    Callable[P, Any] | EWMAggName | RollingOnlyAggName | np.ufunc
 )
-# list form of the above, shared by Series- and DataFrame-returning
-# Rolling/Expanding/EWM.aggregate. `str` is itself a `Sequence[str]`, so a
-# plain `Sequence[AggFuncTypeBase[P]]` would let a bare string slip past the
-# closed WindowAggFuncTypeBase restriction above (it would structurally
-# match this "list" branch instead); SequenceNotStr closes that loophole
-# while still accepting a real `list`/`tuple` of (open) `str` elements, so a
-# list or dict held in a variable rather than passed inline keeps working.
+# List/dict elements stay open `str` so stored variables still match;
+# SequenceNotStr keeps a bare `str` out of the list branch.
 WindowAggFuncTypeSeriesToFrame: TypeAlias = (
     SequenceNotStr[AggFuncTypeBase[P]] | AggFuncTypeDictSeries[HashableT, P]
 )
-# type of `func` kwarg for DataFrame-returning Rolling/Expanding/EWM.aggregate.
-# Only the top-level (non-list, non-dict) value is restricted to the closed
-# window-method set above; a list/dict's elements keep the open `str` type
-# of AggFuncTypeBase, otherwise a `dict` held in a variable rather than
-# passed inline would stop matching this overload (the type checker cannot
-# narrow a `dict[str, str]` back down to the Literal set after the fact).
 WindowAggFuncTypeFrame: TypeAlias = (
     WindowAggFuncTypeBase[P]
     | SequenceNotStr[AggFuncTypeBase[P]]
     | AggFuncTypeDictFrame[HashableT, P]
+)
+# List/dict forms of EWM.aggregate: list/tuple, not SequenceNotStr, because
+# mypy does not check SequenceNotStr elements of an inline list (GH #1609).
+EWMAggFuncTypeSeriesToFrame: TypeAlias = (
+    list[str] | tuple[str, ...] | Mapping[HashableT, str]
+)
+EWMAggFuncTypeFrame: TypeAlias = (
+    EWMAggName | list[str] | tuple[str, ...] | Mapping[HashableT, str | Sequence[str]]
 )
 
 # Not used in stubs
