@@ -9,7 +9,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tests import check
+from pandas.errors import Pandas4Warning
+
+from tests import (
+    check,
+    pytest_warns_bounded,
+)
 from tests._typing import VoidDtypeArg
 from tests.dtypes import ASTYPE_VOID_ARGS
 
@@ -17,7 +22,13 @@ from tests.dtypes import ASTYPE_VOID_ARGS
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_VOID_ARGS.items(), ids=repr)
 def test_astype_void(cast_arg: VoidDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
-    check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"astype to a compound \(structured or void\) dtype is deprecated",
+        lower="3.1.99",
+        upper="3.99.99",
+    ):
+        check(assert_type(s.astype(cast_arg), pd.Series), pd.Series, target_type)
 
     if TYPE_CHECKING:
         # numpy void

@@ -14,12 +14,15 @@ from pandas._typing import (
     AxisIndex,
     GenericT_co,
     TimeUnit,
+    np_1darray_int64,
     np_ndarray_complex,
 )
 
 class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
     @property
     def freq(self) -> BaseOffset | None: ...
+    @property
+    def asi8(self) -> np_1darray_int64: ...
     @property
     def freqstr(self) -> str | None: ...
     @property
@@ -65,3 +68,4 @@ class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1, GenericT_co]):
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit) -> Self: ...
+    def mean(self, *, skipna: bool = True, axis: AxisIndex | None = 0) -> S1: ...

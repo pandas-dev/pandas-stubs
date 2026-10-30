@@ -54,8 +54,10 @@ from tests import (
     check,
     pytest_warns_bounded,
     pytest_warns_excel_pandas4,
+    pytest_warns_inplace_pandas4,
 )
 from tests._typing import (
+    ScalarOrNA,
     np_1darray,
     np_2darray,
     np_ndarray,
@@ -146,7 +148,6 @@ def test_types_init() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         r"Constructing a DataFrame from a list of sequences with mismatched",
-        "3.0.99",
     ):
         check(
             assert_type(pd.DataFrame(data=(range(i) for i in range(5))), pd.DataFrame),
@@ -383,9 +384,7 @@ def test_types_drop() -> None:
     check(assert_type(df.drop(index=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(labels=0), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.drop([0, 0], inplace=True), None), type(None))
 
     to_drop: list[str] = ["col1"]
@@ -425,9 +424,7 @@ def test_types_dropna() -> None:
     check(assert_type(df.dropna(ignore_index=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.dropna(axis=1, thresh=1), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.dropna(axis=0, how="all", subset=["col1"], inplace=True), None
@@ -435,9 +432,7 @@ def test_types_dropna() -> None:
             type(None),
         )
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.dropna(
@@ -464,14 +459,10 @@ def test_types_drop_duplicates() -> None:
     check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.drop_duplicates("AAA", inplace=True), None), type(None))
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.drop_duplicates("AAA", inplace=False, ignore_index=True),
@@ -504,12 +495,7 @@ def test_types_sort_index() -> None:
     check(
         assert_type(df.sort_index(ascending=False, level=3), pd.DataFrame), pd.DataFrame
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.sort_index(kind="mergesort", inplace=True), None),
             type(None),
@@ -533,12 +519,7 @@ def test_types_set_index() -> None:
     check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
     check(
@@ -553,12 +534,7 @@ def test_types_set_index() -> None:
 def test_types_query() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
     check(assert_type(df.query("col1 > col2"), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.query("col1 % col2 == 0", inplace=True), None),
             type(None),
@@ -573,12 +549,7 @@ def test_types_query_kwargs() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(
                 df.query(
@@ -592,19 +563,9 @@ def test_types_query_kwargs() -> None:
 
 def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None),
             type(None),
@@ -620,12 +581,7 @@ def test_types_eval() -> None:
 def test_types_sort_values() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.sort_values("col1"), pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.sort_values("col1", ascending=False, inplace=True), None),
             type(None),
@@ -744,9 +700,11 @@ def test_types_itertuples() -> None:
 
     for t1 in df.itertuples():
         check(assert_type(t1, PandasNamedTuple), tuple)
+        check(
+            assert_type(t1.col1, ScalarOrNA | np.bool_ | pd.Period | pd.Interval), int
+        )
         assert t1.__class__.__name__ == "Pandas"
         assert isinstance(t1.Index, int)
-        assert isinstance(t1.col1, int)
         assert isinstance(t1.col2, int)
         for k in [0, 1, 2]:
             assert isinstance(t1[k], int)
@@ -855,6 +813,9 @@ def test_dataframe_clip() -> None:
         df.copy().clip(lower=pd.Series([1, 2]), upper=None, axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.copy().clip(lower=None, upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.copy().clip(lower=pd.Series([4, 5]), upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        # bounds must be orderable against numbers or datetimes, not strings
+        df.clip(["1", "2"])  # type: ignore[list-item] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.clip(upper=pd.Index(["1", "2"]))  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
     check(
         assert_type(df.clip(lower=None, upper=None, axis=None), pd.DataFrame),
@@ -977,6 +938,107 @@ def test_dataframe_clip() -> None:
     )
     check(
         assert_type(df.clip(lower=df2, upper=df2, inplace=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # list-like bounds aligned to the columns
+    check(assert_type(df.clip([1, 2], [4, 5]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(lower=[1, 2]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(upper=[4.5, 5.5]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(None, [4, 5]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "Operation with tuple is deprecated",
+        upper="3.99.99",
+    ):
+        check(assert_type(df.clip((1, 2), (4, 5)), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "Operation with range is deprecated",
+        upper="3.99.99",
+    ):
+        check(assert_type(df.clip(range(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip([1, 2], 4, axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip([1, 2], axis="columns"), pd.DataFrame), pd.DataFrame)
+
+    dates = pd.DataFrame({"date": pd.to_datetime(["2020-01-01", "2022-01-01"])})
+    lower = pd.Timestamp("2021-01-01")
+    check(assert_type(dates.clip(lower=[lower]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(dates.clip(lower=pd.DatetimeIndex([lower])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(dates.clip(lower=lower), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(dates.clip(upper=[datetime.datetime(2021, 1, 1)]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            dates.clip(lower=np.array(["2021-01-01"], dtype="datetime64[ns]")),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    deltas = pd.DataFrame({"delta": pd.to_timedelta(["1D", "3D"])})
+    check(
+        assert_type(deltas.clip(upper=[pd.Timedelta("2D")]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(deltas.clip(upper=pd.TimedeltaIndex(["2D"])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(deltas.clip(lower=datetime.timedelta(days=2)), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # array-like bounds other than Series don't need an axis
+    check(assert_type(df.clip(np.array([1, 2]), [4, 5]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.clip(upper=np.array([[15, 13], [4, 5]])), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.clip(pd.Index([1, 2])), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.clip(pd.Index([1, 2]), np.array([4, 5]), axis=1), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(pd.array([1, 2], dtype="Int64"), upper=None, axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(upper=pd.Index([4, 5], dtype="Int64"), axis="columns"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(pd.array([1, 2], dtype="Int64"), upper=None), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(upper=pd.Index([4, 5], dtype="Int64")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    # a Series bound with an axis can be mixed with other bounds
+    check(
+        assert_type(df.clip(pd.Series([1, 2]), 15, axis=0), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.clip([1, 2], pd.Series([14, 15]), axis=0), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(np.array([1, 2]), upper=pd.Series([14, 15]), axis="index"),
+            pd.DataFrame,
+        ),
         pd.DataFrame,
     )
 
@@ -1121,6 +1183,16 @@ def test_types_std() -> None:
     check(assert_type(df.std(), pd.Series), pd.Series)
     check(assert_type(df.std(axis=1, ddof=1), pd.Series), pd.Series)
     check(assert_type(df.std(skipna=True, numeric_only=False), pd.Series), pd.Series)
+
+
+def test_types_mode() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1, 1], "col2": [1, 4, 4]})
+    check(assert_type(df.mode(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mode(axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.mode(numeric_only=True, dropna=False), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_idxmin() -> None:
@@ -1423,85 +1495,11 @@ def test_types_map() -> None:
     check(assert_type(df.map(str, na_action=None), pd.DataFrame), pd.DataFrame)
 
 
-def test_types_element_wise_arithmetic() -> None:
-    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    df2 = pd.DataFrame(data={"col1": [10, 20], "col3": [3, 4]})
-
-    check(assert_type(df + df2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.add(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df - df2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.sub(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df * df2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.mul(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df / df2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.div(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df / [2, 2], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.div([2, 2], fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df // df2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.floordiv(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df // [2, 2], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.floordiv([2, 2], fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df % df2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.mod(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df2**df, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df2.pow(df, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    # divmod operation was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    check(
-        assert_type(divmod(df, df2), tuple[pd.DataFrame, pd.DataFrame]),
-        tuple,
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.__divmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
-        tuple,
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.__rdivmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
-        tuple,
-        pd.DataFrame,
-    )
-
-
 def test_types_bool_removed() -> None:
     # `bool()` was removed from `NDFrame` in pandas 2.1
     df = pd.DataFrame(data={"col1": [1]})
     if TYPE_CHECKING_INVALID_USAGE:
         df.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-
-
-def test_types_scalar_arithmetic() -> None:
-    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-
-    check(assert_type(df + 1, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.add(1, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df - 1, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.sub(1, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df * 2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.mul(2, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df / 2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.div(2, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df // 2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.floordiv(2, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df % 2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.mod(2, fill_value=0), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(df**2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df**0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df**0.213, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.pow(0.5), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_melt() -> None:
@@ -2202,34 +2200,17 @@ def test_types_to_feather(tmp_path: Path) -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     path = tmp_path / f"{uuid.uuid4()}.feather"
     path_str = str(path)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        df.to_feather(path_str)
+    df.to_feather(path_str)
     # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        df.to_feather(
-            path_str, compression="zstd", compression_level=3, chunksize=2, version=2
-        )
+    df.to_feather(
+        path_str, compression="zstd", compression_level=3, chunksize=2, version=2
+    )
 
     # to_feather has been able to accept a buffer since pandas 1.0.0
     # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
     # Docstring and type were updated in 1.2.0.
     # https://github.com/pandas-dev/pandas/pull/35408
-    with (
-        pytest_warns_bounded(
-            FutureWarning,
-            r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-            upper="3.0.4",
-        ),
-        path.open("wb") as file,
-    ):
+    with path.open("wb") as file:
         df.to_feather(file)
 
 
@@ -2774,9 +2755,7 @@ def test_types_rename_inplace() -> None:
     """Test DataFrame.rename with inplace argument."""
     df = pd.DataFrame(columns=["a"])
 
-    with pytest_warns_bounded(
-        Pandas4Warning, "The inplace keyword in DataFrame", lower="3.0.99"
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(
             assert_type(df.rename(columns={"a": "b"}, inplace=True), None), type(None)
         )
@@ -2817,8 +2796,8 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
-                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
+                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
             ),
             pd.DataFrame,
         ),
@@ -2840,24 +2819,6 @@ def test_types_eq() -> None:
 def test_types_as_type() -> None:
     df1 = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
     check(assert_type(df1.astype({"A": "int32"}), pd.DataFrame), pd.DataFrame)
-
-
-def test_types_dot() -> None:
-    df1 = pd.DataFrame([[0, 1, -2, -1], [1, 1, 1, 1]])
-    df2 = pd.DataFrame([[0, 1], [1, 2], [-1, -1], [2, 0]])
-    s1 = pd.Series([1, 1, 2, 1])
-    np_array = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
-    check(assert_type(df1 @ df2, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df1.dot(df2), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df1 @ np_array, pd.DataFrame), pd.DataFrame)
-    check(assert_type(df1.dot(np_array), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df1 @ s1, pd.Series), pd.Series)
-    check(assert_type(df1.dot(s1), pd.Series), pd.Series)
-    list_like = [[0, 1], [1, 2], [-1, -1], [2, 0]]
-    check(assert_type(df1.dot(list_like), pd.DataFrame), pd.DataFrame)
-    time = pd.DataFrame({"HH": [1, 2, 3], "MM": [4, 5, 6]})
-    seconds = time.dot([3600, 60])
-    check(assert_type(seconds, pd.Series), pd.Series)
 
 
 def test_read_csv(tmp_path: Path) -> None:
@@ -3666,12 +3627,7 @@ def test_reset_index_150_changes() -> None:
     check(assert_type(df4, pd.DataFrame), pd.DataFrame)
     check(assert_type(df4[["num"]], pd.DataFrame), pd.DataFrame)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "The inplace keyword in DataFrame",
-        lower="3.0.99",
-        upper="3.99",
-    ):
+    with pytest_warns_inplace_pandas4("DataFrame"):
         check(assert_type(frame.reset_index(inplace=True), None), type(None))
 
 
@@ -3892,9 +3848,7 @@ def test_align() -> None:
     )
 
     with pytest_warns_bounded(
-        Pandas4Warning,
-        "'int' is not supported as a fill value for str dtype. In",
-        lower="3.0.99",
+        Pandas4Warning, "'int' is not supported as a fill value for str dtype. In"
     ):
         aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
         check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
@@ -3994,7 +3948,6 @@ def test_convert_dtypes_convert_floating() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         match="convert_floating keyword in DataFrame.convert_dtypes is deprecated",
-        lower="3.0.99",
     ):
         dfn = df.convert_dtypes(convert_floating=False)
     check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
@@ -4112,7 +4065,28 @@ def test_itertuples() -> None:
 
     for item in df.itertuples():
         check(assert_type(item, PandasNamedTuple), tuple)
-        assert_type(item.a, Scalar)
+        check(assert_type(item.a, ScalarOrNA | np.bool_ | pd.Period | pd.Interval), int)
+
+    df = pd.DataFrame(
+        {
+            "period": [pd.Period("2020-01")],
+            "interval": [pd.Interval(0, 1)],
+            "missing": pd.Series([None], dtype=object),
+        }
+    )
+    for item in df.itertuples():
+        check(
+            assert_type(item.period, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+            pd.Period,
+        )
+        check(
+            assert_type(item.interval, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+            pd.Interval,
+        )
+        check(
+            assert_type(item.missing, ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+            type(None),
+        )
 
 
 @pytest.mark.parametrize("d", [1])
@@ -4251,7 +4225,10 @@ def test_combine() -> None:
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
 
     take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownVariableType]
-        s1 if s1.sum() < s2.sum() else s2  # pyright: ignore[reportUnknownMemberType]
+        s1
+        if s1.sum()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        < s2.sum()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        else s2
     )
     assert_type(
         check(
@@ -4259,6 +4236,30 @@ def test_combine() -> None:
         ),
         pd.DataFrame,
     )
+
+    check(
+        assert_type(
+            df1.combine(
+                df2,
+                lambda s1, s2: assert_type(s1, pd.Series) + assert_type(s2, pd.Series),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df1.combine(
+                df2,
+                lambda s1, s2: np.int64(
+                    len(assert_type(s1, pd.Series)) + len(assert_type(s2, pd.Series))
+                ),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(df1.combine(df2, np.minimum), pd.DataFrame), pd.DataFrame)
 
 
 def test_unstack() -> None:

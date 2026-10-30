@@ -1,6 +1,8 @@
 from collections.abc import Hashable
 import datetime
 from typing import (
+    Literal,
+    Never,
     Self,
     overload,
 )
@@ -31,6 +33,14 @@ from pandas._typing import (
 )
 
 class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps):
+    @override
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
     def __new__(
         cls,
         data: AxesData | None = None,

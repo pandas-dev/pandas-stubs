@@ -141,4 +141,4 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def overlaps(self, other: Interval) -> np_1darray_bool: ...
     @property
     @override
-    def is_empty(self) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def is_empty(self) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-property-type-override]

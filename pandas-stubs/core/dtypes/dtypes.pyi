@@ -28,6 +28,7 @@ from pandas._libs.tslibs.offsets import (
     SingleConstructorOffset,
 )
 from pandas._typing import (
+    IntervalClosedType,
     NumpyTimedeltaDtypeArg,
     NumpyTimestampDtypeArg,
     Ordered,
@@ -95,9 +96,15 @@ class PeriodDtype(PandasExtensionDtype):
     def na_value(self) -> NaTType: ...
 
 class IntervalDtype(PandasExtensionDtype):
-    def __init__(self, subtype: str | npt.DTypeLike | None = ...) -> None: ...
+    def __init__(
+        self,
+        subtype: str | npt.DTypeLike | None = None,
+        closed: IntervalClosedType | None = None,
+    ) -> None: ...
     @property
     def subtype(self) -> np.dtype | None: ...
+    @property
+    def closed(self) -> IntervalClosedType | None: ...
 
 class SparseDtype(ExtensionDtype):
     @overload

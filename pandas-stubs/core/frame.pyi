@@ -37,17 +37,21 @@ from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from numpy import typing as npt
 from pandas import (
+    Interval,
     Period,
     Timedelta,
     Timestamp,
 )
 from pandas._stubs_only import (
+    Orderables,
     PivotAggFuncTypes,
     PivotTableColumnsTypes,
     PivotTableIndexTypes,
     PivotTableValuesTypes,
+    SupportsSelfMul,
 )
 from pandas.core.arraylike import OpsMixin
+from pandas.core.arrays.base import ExtensionArray
 from pandas.core.base import IndexOpsMixin
 from pandas.core.col import Expression
 from pandas.core.generic import NDFrame
@@ -67,10 +71,7 @@ from pandas.core.indexing import _IndexSliceTuple  # pyright: ignore[reportPriva
 from pandas.core.indexing import _LocIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iAtIndexer  # pyright: ignore[reportPrivateUsage]
 from pandas.core.indexing import _iLocIndexer  # pyright: ignore[reportPrivateUsage]
-from pandas.core.series import (
-    Series,
-    SupportsSelfMul,
-)
+from pandas.core.series import Series
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
@@ -173,11 +174,13 @@ from pandas._typing import (
     XMLParsers,
     np_2darray,
     np_ndarray,
+    np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_num,
     np_ndarray_object,
+    np_ndarray_td,
 )
 
 from pandas.io.formats.style import Styler
@@ -201,6 +204,10 @@ _LocSetItemKey: TypeAlias = (
     | MaskType
     | Hashable
     | _IndexSliceTuple
+    | tuple[
+        IndexOpsMixin | MaskType | Scalar | Sequence[Scalar] | slice,
+        Hashable | Iterable[Hashable],
+    ]
     | Iterable[Scalar]
     | IndexingInt
     | slice
@@ -216,7 +223,9 @@ _SetItemValueNotDataFrame: TypeAlias = (
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
-    def __getitem__(self, key: tuple[int, int], /) -> Scalar: ...
+    def __getitem__(
+        self, key: tuple[int, int], /
+    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @overload
     def __getitem__(self, key: IndexingInt, /) -> Series: ...
     @overload
@@ -262,7 +271,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             int | str | tuple[Scalar, ...],
         ],
         /,
-    ) -> Scalar: ...
+    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @overload
     def __getitem__(
         self,
@@ -334,7 +343,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
 
 class _iAtIndexerFrame(_iAtIndexer):
     @override
-    def __getitem__(self, key: tuple[int, int], /) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | np.bool_ | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[int, int], value: ScalarOrNA, /
@@ -344,7 +353,7 @@ class _AtIndexerFrame(_AtIndexer):
     @override
     def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], /
-    ) -> Scalar: ...
+    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA, /
@@ -369,6 +378,23 @@ class _GetItemHack:
 
     @overload
     def __getitem__(self, key: Hashable, /) -> Series: ...
+
+# Same element types for every DataFrame.clip bound form
+_ClipBound: TypeAlias = (
+    Orderables | dt.datetime | dt.timedelta | np.datetime64 | np.timedelta64
+)
+_ClipBoundListLike: TypeAlias = (
+    Sequence[_ClipBound]
+    | np_ndarray_anyint
+    | np_ndarray_float
+    | np_ndarray_dt
+    | np_ndarray_td
+    | Index[int]
+    | Index[float]
+    | Index[Timestamp]
+    | Index[Timedelta]
+    | ExtensionArray
+)
 
 _AstypeArgExt: TypeAlias = (
     AstypeArg
@@ -431,7 +457,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def itertuples(
         self, index: _bool = ..., name: None = None
     ) -> Iterator[tuple[Any, ...]]: ...
-    def __len__(self) -> int: ...
     @overload
     def dot(
         self,
@@ -1189,7 +1214,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def combine(
         self,
         other: DataFrame,
-        func: Callable[..., Any],
+        func: Callable[[Series, Series], Any],
         fill_value: Scalar | None = None,
         overwrite: _bool = True,
     ) -> Self: ...
@@ -1686,7 +1711,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = 0,
         numeric_only: _bool = False,
         dropna: _bool = True,
-    ) -> Series: ...
+    ) -> Self: ...
     @overload
     def quantile(
         self,
@@ -1979,18 +2004,19 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: float | None = ...,
-        upper: float | None = ...,
+        lower: _ClipBound | _ClipBoundListLike | None = None,
+        upper: _ClipBound | _ClipBoundListLike | None = None,
         *,
-        axis: Axis | None = ...,
+        axis: Axis | None = None,
         inplace: bool = False,
         **kwargs: Any,
     ) -> Self: ...
+    # A Series bound needs an explicit axis
     @overload
     def clip(
         self,
-        lower: AnyArrayLike = ...,
-        upper: AnyArrayLike | None = ...,
+        lower: Series,
+        upper: _ClipBound | _ClipBoundListLike | Series | None = None,
         *,
         axis: Axis,
         inplace: bool = False,
@@ -1999,8 +2025,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: AnyArrayLike | None = ...,
-        upper: AnyArrayLike = ...,
+        lower: _ClipBound | _ClipBoundListLike | Series | None = None,
+        upper: Series = ...,
         *,
         axis: Axis,
         inplace: bool = False,
@@ -2706,4 +2732,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
 @type_check_only
 class PandasNamedTuple(tuple[Any, ...]):
-    def __getattr__(self, field: str, /) -> Scalar: ...
+    def __getattr__(
+        self, field: str, /
+    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...

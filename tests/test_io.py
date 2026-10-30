@@ -312,7 +312,6 @@ def test_clipboard_iterator() -> None:
 
 
 def test_sas_bdat() -> None:
-    # there is a bug with pandas 3.1.0.dev0+1139.gb431b4f927 that SegFault the code
     path = Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
@@ -647,38 +646,13 @@ def test_parquet_options(tmp_path: Path) -> None:
 
 def test_feather(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(assert_type(DF.to_feather(path_str), None), type(None))
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(assert_type(read_feather(path_str), DataFrame), DataFrame)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
+    check(assert_type(DF.to_feather(path_str), None), type(None))
+    check(assert_type(read_feather(path_str), DataFrame), DataFrame)
+    check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
     with io.BytesIO() as bio:
-        with pytest_warns_bounded(
-            FutureWarning,
-            "pyarrow.feather.write_feather is deprecated as of 24.0.0",
-            upper="3.0.4",
-        ):
-            check(assert_type(DF.to_feather(bio), None), type(None))
+        check(assert_type(DF.to_feather(bio), None), type(None))
         bio.seek(0)
-        with pytest_warns_bounded(
-            FutureWarning,
-            r"pyarrow.feather.read_table is deprecated as of 24.0.0",
-            upper="3.0.4",
-        ):
-            check(assert_type(read_feather(bio), DataFrame), DataFrame)
+        check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
 def test_read_csv(tmp_path: Path) -> None:
@@ -1337,7 +1311,6 @@ def test_excel_writer(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "ExcelFile.parse is deprecated",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
@@ -1345,7 +1318,6 @@ def test_excel_writer(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "ExcelFile.parse is deprecated",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(
@@ -1908,21 +1880,11 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
             assert_type(read_orc(path_str, dtype_backend="numpy_nullable"), DataFrame),
             DataFrame,
         )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(assert_type(DF.to_feather(path_str), None), type(None))
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(
-            assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
-            DataFrame,
-        )
+    check(assert_type(DF.to_feather(path_str), None), type(None))
+    check(
+        assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
+        DataFrame,
+    )
 
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     as_str: str = path_str
@@ -2138,6 +2100,9 @@ def test_converters_partial(tmp_path: Path) -> None:
 
 
 @pytest.mark.filterwarnings("ignore::ResourceWarning")
+# Python 3.15 resolves pyiceberg 0.10.0 (newer releases cap requires-python at <4),
+# which calls deprecated pyparsing and pydantic APIs. Remove once 3.15 gets >=0.11.
+@pytest.mark.filterwarnings("ignore::DeprecationWarning:pyiceberg")
 def test_iceberg(tmp_path: Path) -> None:
     """Test read_iceberg and DataFrame.to_iceberg GH1654."""
 

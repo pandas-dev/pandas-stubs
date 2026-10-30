@@ -23,6 +23,10 @@ from typing import (
 
 from _typeshed import (
     SupportsAdd,
+    SupportsDunderGE,
+    SupportsDunderGT,
+    SupportsDunderLE,
+    SupportsDunderLT,
     SupportsGetItem,
     SupportsMul,
     SupportsRAdd,
@@ -53,6 +57,7 @@ from pandas._stubs_only import (
     Supports_ProtoRTrueDiv,
     Supports_ProtoSub,
     Supports_ProtoTrueDiv,
+    SupportsSelfSub,
     T_contra,
 )
 from pandas.core.arrays.boolean import (
@@ -69,10 +74,7 @@ from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.series import (
-    Series,
-    SupportsSelfSub,
-)
+from pandas.core.series import Series
 from pandas.core.strings.accessor import StrDescriptor
 from typing_extensions import override
 
@@ -419,6 +421,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self, index: Index | None = None, name: Hashable | None = None
     ) -> Series[S1]: ...
     def to_frame(self, index: bool = True, name: Hashable = ...) -> DataFrame: ...
+    def to_flat_index(self) -> Self: ...
     @property
     def name(self) -> Hashable | None: ...
     @name.setter
@@ -456,6 +459,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def drop_duplicates(self, *, keep: DropKeep = "first") -> Self: ...
     def droplevel(self, level: Sequence[Never]) -> Self: ...
     def duplicated(self, keep: DropKeep = "first") -> np_1darray_bool: ...
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> np.bool: ...
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> np.bool: ...
     @override
     def __and__(self, other: Never, /) -> Never: ...
     @override
@@ -632,14 +641,25 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __eq__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def __ne__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    # The ordering operand is intentionally unconstrained: Index subclasses such
+    # as IntervalIndex order generic IntervalT values, which checkers cannot
+    # prove compatible with S1.
     @override
-    def __le__(self, other: Self | S1, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __le__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+        self: Iterable[SupportsDunderLE[Any]], other: Index[S1] | S1, /
+    ) -> np_1darray_bool: ...
     @override
-    def __ge__(self, other: Self | S1, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __ge__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+        self: Iterable[SupportsDunderGE[Any]], other: Index[S1] | S1, /
+    ) -> np_1darray_bool: ...
     @override
-    def __lt__(self, other: Self | S1, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __lt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+        self: Iterable[SupportsDunderLT[Any]], other: Index[S1] | S1, /
+    ) -> np_1darray_bool: ...
     @override
-    def __gt__(self, other: Self | S1, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __gt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+        self: Iterable[SupportsDunderGT[Any]], other: Index[S1] | S1, /
+    ) -> np_1darray_bool: ...
     @overload
     def __add__(self: Index[Never], other: _str, /) -> Index[_str]: ...
     @overload
@@ -666,19 +686,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __add__(
-        self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
-    ) -> Index[S2]: ...
-    @overload
-    def __add__(
-        self: Index[S2_contra],
-        other: (
-            SupportsRAdd[S2_contra, S2_NSDT]
-            | Sequence[SupportsRAdd[S2_contra, S2_NSDT]]
-        ),
-        /,
-    ) -> Index[S2_NSDT]: ...
-    @overload
-    def __add__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
     ) -> Index[T_COMPLEX]: ...
     @overload
@@ -701,6 +708,19 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __add__(
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
     ) -> Index[complex]: ...
+    @overload
+    def __add__(
+        self: Supports_ProtoAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
+    @overload
+    def __add__(
+        self: Index[S2_contra],
+        other: (
+            SupportsRAdd[S2_contra, S2_NSDT]
+            | Sequence[SupportsRAdd[S2_contra, S2_NSDT]]
+        ),
+        /,
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __radd__(self: Index[Never], other: _str, /) -> Index[_str]: ...
     @overload
@@ -727,18 +747,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __radd__(
-        self: Supports_ProtoRAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
-    ) -> Index[S2]: ...
-    @overload
-    def __radd__(
-        self: Index[S2_contra],
-        other: (
-            SupportsAdd[S2_contra, S2_NSDT] | Sequence[SupportsAdd[S2_contra, S2_NSDT]]
-        ),
-        /,
-    ) -> Index[S2_NSDT]: ...
-    @overload
-    def __radd__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
     ) -> Index[T_COMPLEX]: ...
     @overload
@@ -762,6 +770,18 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
     ) -> Index[complex]: ...
     @overload
+    def __radd__(
+        self: Supports_ProtoRAdd[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
+    @overload
+    def __radd__(
+        self: Index[S2_contra],
+        other: (
+            SupportsAdd[S2_contra, S2_NSDT] | Sequence[SupportsAdd[S2_contra, S2_NSDT]]
+        ),
+        /,
+    ) -> Index[S2_NSDT]: ...
+    @overload
     def __sub__(self: Index[Never], other: DatetimeIndex, /) -> Never: ...
     @overload
     def __sub__(  # type: ignore[overload-overlap]
@@ -772,17 +792,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     # Must precede `Supports_ProtoSub`: mypy and pyrefly match it for `bool` (python/mypy#20061, facebook/pyrefly#5089)
     @overload
     def __sub__(self: Index[bool], other: bool | SequenceNotStr[bool], /) -> Never: ...
-    # `-` follows `/`, not `+`/`*`: only the internal, self-bound
-    # `Supports_ProtoSub` plus explicit `Never` guards, with no external
-    # `_typeshed.Supports*` overload. `bool <: int` plus `Index[bool]`'s
-    # `Never`-guarded dunders structurally satisfy `SupportsRSub[bool, Never]`,
-    # so an external `Supports*` overload would greedily capture `Index[bool]`
-    # and resolve the invalid `Index[bool] - Index[bool]` to `Index[Never]`.
-    # See ADR-0023.
-    @overload
-    def __sub__(
-        self: Supports_ProtoSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
-    ) -> Index[S2]: ...
     @overload
     def __sub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
     @overload
@@ -809,6 +818,17 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __sub__(
         self: IndexComplex, other: ScalarArrayIndexJustComplex, /
     ) -> Index[complex]: ...
+    # `-` follows `/`, not `+`/`*`: only the internal, self-bound
+    # `Supports_ProtoSub` plus explicit `Never` guards, with no external
+    # `_typeshed.Supports*` overload. `bool <: int` plus `Index[bool]`'s
+    # `Never`-guarded dunders structurally satisfy `SupportsRSub[bool, Never]`,
+    # so an external `Supports*` overload would greedily capture `Index[bool]`
+    # and resolve the invalid `Index[bool] - Index[bool]` to `Index[Never]`.
+    # See ADR-0023.
+    @overload
+    def __sub__(
+        self: Supports_ProtoSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
     @overload
     def __rsub__(self: Index[Never], other: DatetimeIndex, /) -> Never: ...  # type: ignore[misc]
     @overload
@@ -820,17 +840,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     # Must precede `Supports_ProtoRSub`: mypy and pyrefly match it for `bool` (python/mypy#20061, facebook/pyrefly#5089)
     @overload
     def __rsub__(self: Index[bool], other: bool | SequenceNotStr[bool], /) -> Never: ...
-    # `-` follows `/`, not `+`/`*`: only the internal, self-bound
-    # `Supports_ProtoRSub` plus explicit `Never` guards, with no external
-    # `_typeshed.Supports*` overload. `bool <: int` plus `Index[bool]`'s
-    # `Never`-guarded dunders structurally satisfy `SupportsSub[bool, Never]`,
-    # so an external `Supports*` overload would greedily capture `Index[bool]`
-    # and resolve the invalid `Index[bool] - Index[bool]` to `Index[Never]`.
-    # See ADR-0023.
-    @overload
-    def __rsub__(
-        self: Supports_ProtoRSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
-    ) -> Index[S2]: ...
     @overload
     def __rsub__(self: Index[int], other: ArrayIndexBoolNoSeq, /) -> Index[int]: ...
     @overload
@@ -857,6 +866,17 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rsub__(
         self: IndexComplex, other: ScalarArrayIndexJustComplex, /
     ) -> Index[complex]: ...
+    # `-` follows `/`, not `+`/`*`: only the internal, self-bound
+    # `Supports_ProtoRSub` plus explicit `Never` guards, with no external
+    # `_typeshed.Supports*` overload. `bool <: int` plus `Index[bool]`'s
+    # `Never`-guarded dunders structurally satisfy `SupportsSub[bool, Never]`,
+    # so an external `Supports*` overload would greedily capture `Index[bool]`
+    # and resolve the invalid `Index[bool] - Index[bool]` to `Index[Never]`.
+    # See ADR-0023.
+    @overload
+    def __rsub__(
+        self: Supports_ProtoRSub[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
     @overload
     def __mul__(
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index, /
@@ -893,19 +913,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __mul__(
-        self: Supports_ProtoMul[T_contra, S2], other: T_contra | Sequence[T_contra], /
-    ) -> Index[S2]: ...
-    @overload
-    def __mul__(
-        self: Index[S2_contra],
-        other: (
-            SupportsRMul[S2_contra, S2_NSDT]
-            | Sequence[SupportsRMul[S2_contra, S2_NSDT]]
-        ),
-        /,
-    ) -> Index[S2_NSDT]: ...
-    @overload
-    def __mul__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
     ) -> Index[T_COMPLEX]: ...
     @overload
@@ -928,6 +935,19 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __mul__(
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
     ) -> Index[complex]: ...
+    @overload
+    def __mul__(
+        self: Supports_ProtoMul[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
+    @overload
+    def __mul__(
+        self: Index[S2_contra],
+        other: (
+            SupportsRMul[S2_contra, S2_NSDT]
+            | Sequence[SupportsRMul[S2_contra, S2_NSDT]]
+        ),
+        /,
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __rmul__(
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index, /
@@ -964,18 +984,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __rmul__(
-        self: Supports_ProtoRMul[T_contra, S2], other: T_contra | Sequence[T_contra], /
-    ) -> Index[S2]: ...
-    @overload
-    def __rmul__(
-        self: Index[S2_contra],
-        other: (
-            SupportsMul[S2_contra, S2_NSDT] | Sequence[SupportsMul[S2_contra, S2_NSDT]]
-        ),
-        /,
-    ) -> Index[S2_NSDT]: ...
-    @overload
-    def __rmul__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool], /
     ) -> Index[T_COMPLEX]: ...
     @overload
@@ -999,6 +1007,18 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex], /
     ) -> Index[complex]: ...
     @overload
+    def __rmul__(
+        self: Supports_ProtoRMul[T_contra, S2], other: T_contra | Sequence[T_contra], /
+    ) -> Index[S2]: ...
+    @overload
+    def __rmul__(
+        self: Index[S2_contra],
+        other: (
+            SupportsMul[S2_contra, S2_NSDT] | Sequence[SupportsMul[S2_contra, S2_NSDT]]
+        ),
+        /,
+    ) -> Index[S2_NSDT]: ...
+    @overload
     def __truediv__(self, other: np_ndarray_dt, /) -> Never: ...
     @overload
     def __truediv__(  # type: ignore[overload-overlap]
@@ -1014,12 +1034,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __truediv__(self: Index[bool], other: np_ndarray_bool, /) -> Never: ...
     @overload
     def __truediv__(self: IndexComplex, other: Index[Never], /) -> Index: ...
-    @overload
-    def __truediv__(
-        self: Supports_ProtoTrueDiv[T_contra, S2],
-        other: T_contra | Sequence[T_contra],
-        /,
-    ) -> Index[S2]: ...
     @overload
     def __truediv__(
         self: Index[int], other: np_ndarray_bool | Index[bool], /
@@ -1055,6 +1069,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __truediv__(self: Index[_str], other: Path, /) -> Index: ...
     @overload
+    def __truediv__(
+        self: Supports_ProtoTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
+        /,
+    ) -> Index[S2]: ...
+    @overload
     def __rtruediv__(self, other: np_ndarray_dt, /) -> Never: ...
     @overload
     def __rtruediv__(  # type: ignore[overload-overlap]
@@ -1070,12 +1090,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rtruediv__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self: Index[int] | Index[float], other: Sequence[timedelta | np.timedelta64], /
     ) -> Index: ...
-    @overload
-    def __rtruediv__(
-        self: Supports_ProtoRTrueDiv[T_contra, S2],
-        other: T_contra | Sequence[T_contra],
-        /,
-    ) -> Index[S2]: ...
     @overload
     def __rtruediv__(
         self: Index[int], other: np_ndarray_bool | Index[bool], /
@@ -1115,6 +1129,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __rtruediv__(self: Index[_str], other: Path, /) -> Index: ...
     @overload
+    def __rtruediv__(
+        self: Supports_ProtoRTrueDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
+        /,
+    ) -> Index[S2]: ...
+    @overload
     def __floordiv__(self, other: np_ndarray_dt, /) -> Never: ...
     @overload
     def __floordiv__(self: Index[Never], other: np_ndarray_td, /) -> Never: ...
@@ -1132,12 +1152,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __floordiv__(
-        self: Supports_ProtoFloorDiv[T_contra, S2],
-        other: T_contra | Sequence[T_contra],
-        /,
-    ) -> Index[S2]: ...
-    @overload
-    def __floordiv__(
         self: Index[int], other: np_ndarray_bool | Index[bool], /
     ) -> Index[int]: ...
     @overload
@@ -1152,6 +1166,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __floordiv__(
         self: Index[float], other: np_ndarray_anyint | Index[int], /
     ) -> Index[float]: ...
+    @overload
+    def __floordiv__(
+        self: Supports_ProtoFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
+        /,
+    ) -> Index[S2]: ...
     @overload
     def __floordiv__(
         self: Index[int] | Index[float],
@@ -1178,12 +1198,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index: ...
     @overload
     def __rfloordiv__(
-        self: Supports_ProtoRFloorDiv[T_contra, S2],
-        other: T_contra | Sequence[T_contra],
-        /,
-    ) -> Index[S2]: ...
-    @overload
-    def __rfloordiv__(
         self: Index[int], other: np_ndarray_bool | Index[bool], /
     ) -> Index[int]: ...
     @overload
@@ -1201,12 +1215,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __rfloordiv__(
         self: Index[int] | Index[float],
-        other: float | Sequence[float] | np_ndarray_float | Index[float],
-        /,
-    ) -> Index[float]: ...
-    @overload
-    def __rfloordiv__(
-        self: Index[int] | Index[float],
         other: timedelta | np.timedelta64 | ArrayIndexTimedeltaNoSeq,
         /,
     ) -> TimedeltaIndex: ...
@@ -1214,4 +1222,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rfloordiv__(
         self: Index[int] | Index[float], other: Sequence[timedelta | np.timedelta64], /
     ) -> Index: ...
+    @overload
+    def __rfloordiv__(
+        self: Supports_ProtoRFloorDiv[T_contra, S2],
+        other: T_contra | Sequence[T_contra],
+        /,
+    ) -> Index[S2]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int] | Index[float],
+        other: float | Sequence[float] | np_ndarray_float | Index[float],
+        /,
+    ) -> Index[float]: ...
     def infer_objects(self, copy: bool = True) -> Self: ...

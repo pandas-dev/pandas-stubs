@@ -3,6 +3,7 @@
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
+from contextlib import AbstractContextManager
 import datetime as dt
 import random
 from typing import (
@@ -22,12 +23,16 @@ from pandas.api.typing import (
 )
 from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays.integer import IntegerArray
+from pandas.core.generic import NDFrame
 import pandas.util as pdutil
 import pytest
+
+from pandas.errors import Pandas4Warning
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -110,34 +115,55 @@ def test_types_to_datetime() -> None:
     )
 
 
+def pytest_warns_concat_none() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        "Passing None in the objects to concat is deprecated",
+        lower="3.1.99",
+    )
+
+
 def test_types_concat_none() -> None:
     """Test concatenation with None values."""
     series = pd.Series([7, -5, 10])
     df = pd.DataFrame({"a": [7, -5, 10]})
 
-    check(
-        assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
-    )
-    check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
-    )
-    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat([None, series]), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame),
+            pd.DataFrame,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
-    check(
-        assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
-    check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(
+                pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
+            pd.DataFrame,
+        )
 
     def _0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(pd.concat({"a": None}), Never)
@@ -635,7 +661,7 @@ def test_unique() -> None:
         np.datetime64,
     )
 
-    zoned_timestamps = [ts.tz_localize("US/Eastern") for ts in unzoned_timestamps]
+    zoned_timestamps = [ts.tz_localize("America/New_York") for ts in unzoned_timestamps]
     check(
         assert_type(
             pd.unique(pd.Series(zoned_timestamps)), np_1darray | ExtensionArray
@@ -766,6 +792,10 @@ def test_to_numeric_scalar() -> None:
     check(assert_type(pd.to_numeric(1, downcast="unsigned"), float), int)
     check(assert_type(pd.to_numeric(1, downcast="float"), float), int)
     check(assert_type(pd.to_numeric(1, downcast="integer"), float), int)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = pd.to_numeric(pd.Period("2020-01"))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = pd.to_numeric(pd.Interval(0, 1))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_to_numeric_array_like() -> None:
@@ -2603,3 +2633,17 @@ def test_argmin_and_argmax_return() -> None:
     i1 = df.a.abs().argmax()
     check(assert_type(i, np.int64), np.int64)
     check(assert_type(i1, np.int64), np.int64)
+
+
+def _ndframe_len(obj: NDFrame) -> None:
+    check(assert_type(len(obj), int), int)
+
+
+def test_ndframe_len() -> None:
+    """`len()` works on `NDFrame`, the base of `Series` and `DataFrame` (#1986)."""
+    s = pd.Series([1, 2, 3])
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(assert_type(len(s), int), int)
+    check(assert_type(len(df), int), int)
+    _ndframe_len(s)
+    _ndframe_len(df)

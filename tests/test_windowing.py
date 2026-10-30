@@ -283,6 +283,7 @@ def test_expanding_aggregate() -> None:
 
 
 def test_expanding_basic_math_series() -> None:
+    check(assert_type(S.expanding(10, "single").sum(), Series), Series)
     check(assert_type(S.expanding(10).count(), Series), Series)
     check(assert_type(S.expanding(10).sum(), Series), Series)
     check(assert_type(S.expanding(10).mean(), Series), Series)
@@ -300,6 +301,9 @@ def test_expanding_basic_math_series() -> None:
     check(assert_type(S.expanding(10).rank("average"), Series), Series)
     check(assert_type(S.expanding(10).rank("min"), Series), Series)
     check(assert_type(S.expanding(10).rank("max"), Series), Series)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        S.expanding(10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_expanding_apply_series() -> None:
@@ -371,7 +375,7 @@ def test_ewm_aggregate() -> None:
 
     # TODO: pandas-dev/pandas#63855, see if ewm.aggregate(any callable) is implemented
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _0 = DF.ewm(span=10).aggregate(np.mean)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         _1 = DF.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         _2 = DF.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
@@ -383,6 +387,15 @@ def test_ewm_basic_math_series() -> None:
     check(assert_type(S.ewm(span=10).std(), Series), Series)
     check(assert_type(S.ewm(span=10).corr(), Series), Series)
     check(assert_type(S.ewm(span=10).cov(), Series), Series)
+
+    check(
+        assert_type(
+            S.ewm(10, None, None, None, 0, True, False, None, "single").mean(), Series
+        ),
+        Series,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        S.ewm(span=10, axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
 def test_ewm_aggregate_series() -> None:

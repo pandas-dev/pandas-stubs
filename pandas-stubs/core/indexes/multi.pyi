@@ -7,6 +7,7 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    Literal,
     Never,
     Self,
     overload,
@@ -40,6 +41,14 @@ from pandas._typing import (
 )
 
 class MultiIndex(Index):
+    @override
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
     def __new__(
         cls,
         levels: Sequence[SequenceNotStr[Hashable]],
@@ -153,7 +162,8 @@ class MultiIndex(Index):
         name: list[HashableT] = ...,
         allow_duplicates: bool = False,
     ) -> pd.DataFrame: ...
-    def to_flat_index(self) -> Index: ...
+    @override
+    def to_flat_index(self) -> Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     def remove_unused_levels(self) -> MultiIndex: ...
     @property
     def levshape(self) -> Shape: ...

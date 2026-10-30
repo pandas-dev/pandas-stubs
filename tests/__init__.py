@@ -41,7 +41,7 @@ TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 LINUX = sys.platform == "linux"
 WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
-PD_LTE_31 = Version(pd.__version__) < Version("3.0.99")
+PD_LT_32 = Version(pd.__version__) < Version("3.1.99")
 NP_GTE_25 = Version(np.__version__) >= Version("2.5.0")
 
 
@@ -208,9 +208,32 @@ def pytest_warns_conditioned(
 
 def pytest_warns_excel_pandas4() -> AbstractContextManager[Any]:
     return pytest_warns_bounded(
+        Pandas4Warning, "The default engine for reading 'xlsx' files will ch"
+    )
+
+
+def pytest_warns_complex_pandas4() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
         Pandas4Warning,
-        "The default engine for reading 'xlsx' files will ch",
-        lower="3.0.99",
+        r"deprecated on complex data",
+        lower="3.1.99",
+    )
+
+
+def pytest_warns_dt_alias_pandas4() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        upper="3.99.99",
+        upper_exception=AttributeError,
+    )
+
+
+def pytest_warns_inplace_pandas4(
+    cls: Literal["Series", "DataFrame"],
+) -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning, f"The inplace keyword in {cls}", upper="3.99"
     )
 
 

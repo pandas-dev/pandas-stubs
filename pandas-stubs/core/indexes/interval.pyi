@@ -7,6 +7,7 @@ from typing import (
     Literal,
     Never,
     TypeAlias,
+    TypeVar,
     overload,
     type_check_only,
 )
@@ -65,6 +66,7 @@ _EdgesTimedelta: TypeAlias = (
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
+_IntOrFloatT = TypeVar("_IntOrFloatT", int, float)
 
 @type_check_only
 class _LengthDescriptor:
@@ -100,6 +102,14 @@ class _MidDescriptor:
 class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     closed: IntervalClosedType
 
+    @override
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
     def __new__(
         cls,
         data: Sequence[IntervalT],
@@ -278,42 +288,14 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, idx: int, /
     ) -> IntervalT: ...
-    @overload  # type: ignore[override]
     @override
-    def __gt__(
-        self, other: IntervalT | IntervalIndex[IntervalT], /
-    ) -> np_1darray_bool: ...
-    @overload
-    def __gt__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: pd.Series[IntervalT], /
-    ) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    def __gt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
     @override
-    def __ge__(
-        self, other: IntervalT | IntervalIndex[IntervalT], /
-    ) -> np_1darray_bool: ...
-    @overload
-    def __ge__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: pd.Series[IntervalT], /
-    ) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    def __ge__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
     @override
-    def __le__(
-        self, other: IntervalT | IntervalIndex[IntervalT], /
-    ) -> np_1darray_bool: ...
-    @overload
-    def __le__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: pd.Series[IntervalT], /
-    ) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    def __le__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
     @override
-    def __lt__(
-        self, other: IntervalT | IntervalIndex[IntervalT], /
-    ) -> np_1darray_bool: ...
-    @overload
-    def __lt__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: pd.Series[IntervalT], /
-    ) -> pd.Series[bool]: ...
+    def __lt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
     @overload  # type: ignore[override]
     @override
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
@@ -335,26 +317,15 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     @override
     def diff(self, periods: int = 1) -> Never: ...
 
-# misc here because int and float overlap but interval has distinct types
-# int gets hit first and so the correct type is returned
-@overload
-def interval_range(  # pyright: ignore[reportOverlappingOverload]
-    start: int | None = None,
-    end: int | None = None,
-    periods: int | None = None,
-    freq: int | None = None,
-    name: Hashable = None,
-    closed: IntervalClosedType = "right",
-) -> IntervalIndex[Interval[int]]: ...
 @overload
 def interval_range(
-    start: float | None = None,
-    end: float | None = None,
+    start: _IntOrFloatT | None = None,
+    end: _IntOrFloatT | None = None,
     periods: int | None = None,
-    freq: int | None = None,
+    freq: _IntOrFloatT | None = None,
     name: Hashable = None,
     closed: IntervalClosedType = "right",
-) -> IntervalIndex[Interval[float]]: ...
+) -> IntervalIndex[Interval[_IntOrFloatT]]: ...
 @overload
 def interval_range(
     start: _TimestampLike,

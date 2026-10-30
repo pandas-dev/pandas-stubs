@@ -16,7 +16,7 @@ from pandas._libs import NaTType
 from pandas._libs.tslibs.timedeltas import Timedelta
 
 from tests import (
-    PD_LTE_31,
+    TYPE_CHECKING_INVALID_USAGE,
     check,
 )
 from tests._typing import (
@@ -347,23 +347,74 @@ def test_timedelta_array_size() -> None:
 
 
 def test_timedelta_array_freq() -> None:
-    """Test freq property for TimedeltaArray."""
-    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
-    arr = pd.array(idx)
+    """TimedeltaArray has no freq attribute."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="D"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freq  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
 
-    if PD_LTE_31:
-        result = arr.freq
-        check(assert_type(result, pd.DateOffset | None), pd.DateOffset)
+
+def test_timedelta_array_freq_two_hours() -> None:
+    """TimedeltaArray has no freq attribute for two-hour ticks."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="2h"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freq  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+
+
+def test_timedelta_array_freq_hour() -> None:
+    """TimedeltaArray has no freq attribute for hourly ticks."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="h"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freq  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+
+
+def test_timedelta_array_freq_minute() -> None:
+    """TimedeltaArray has no freq attribute for minute ticks."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="min"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freq  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+
+
+def test_timedelta_array_freq_second() -> None:
+    """TimedeltaArray has no freq attribute for second ticks."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="s"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freq  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+
+
+def test_timedelta_array_freq_millisecond() -> None:
+    """TimedeltaArray has no freq attribute for millisecond ticks."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="ms"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freq  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+
+
+def test_timedelta_array_freq_microsecond() -> None:
+    """TimedeltaArray has no freq attribute for microsecond ticks."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="us"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freq  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+
+
+def test_timedelta_array_freq_nanosecond() -> None:
+    """TimedeltaArray has no freq attribute for nanosecond ticks."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="ns"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freq  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+
+
+def test_timedelta_array_freq_setter() -> None:
+    """TimedeltaArray has no settable freq attribute."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="D"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        arr.freq = "D"  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+        arr.freq = None  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
 
 
 def test_timedelta_array_freqstr() -> None:
-    """Test freqstr property for TimedeltaArray."""
-    idx = pd.TimedeltaIndex(["1 days", "2 days", "3 days"], freq="D")
-    arr = pd.array(idx)
-
-    if PD_LTE_31:
-        result = arr.freqstr
-        check(assert_type(result, str | None), str)
+    """TimedeltaArray has no freqstr attribute."""
+    arr = pd.array(pd.timedelta_range("0 days", periods=3, freq="D"))
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = arr.freqstr  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
 
 
 def test_timedelta_array_min() -> None:
