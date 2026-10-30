@@ -222,7 +222,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         offset: TimedeltaConvertibleTypes | None = None,
         group_keys: bool = False,
         *,
-        include_groups: bool = False,
+        include_groups: Literal[False] = False,
         how: str | None = None,
         fill_method: str | None = None,
         limit: int | None = None,
@@ -312,6 +312,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
+        *,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
