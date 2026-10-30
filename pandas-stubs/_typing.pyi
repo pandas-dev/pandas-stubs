@@ -602,12 +602,8 @@ ValueKeyFunc: TypeAlias = Callable[[Series], Series | AnyArrayLike] | None
 IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
-# NDFrame.aggregate/transform and GroupBy.aggregate resolve a string `func`
-# via getattr/hasattr (see pandas.core.apply._apply_str), so the set of valid
-# strings is open-ended (e.g. "describe", "value_counts", "nanmean" all work)
-# and cannot be narrowed to a Literal. GroupBy.transform uses
-# TransformReductionListType instead, since it validates against the closed
-# pandas.core.groupby.base.transformation_kernels/reduction_kernels lists.
+# A string `func` resolves via getattr (pandas.core.apply._apply_str), so it
+# stays an open `str`; GroupBy.transform uses the closed TransformReductionListType.
 AggFuncTypeBase: TypeAlias = Callable[P, Any] | str | np.ufunc
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase[P]]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
