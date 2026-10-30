@@ -39,7 +39,7 @@ dev = [
   "pytest>=8.4.2",
   "pyright==1.1.411",
   "ty>=0.0.89",
-  "pyrefly>=1.3.0",
+  "pyrefly>=1.4.0",
   "poethepoet>=0.16.5",
   "loguru>=0.7.3; python_version < '4.0'",
   "typing-extensions>=4.5.0",
@@ -419,6 +419,7 @@ implicit-bool = false  # We do use implicit bool
 no-any-return-explicit = false  # np.mean(DataFrame(...), axis=0) is such an example
 no-any-return-implicit = false  # x.sum() / len(x) is such an example
 unknown-argument-type = false  # Only in tests, companion with other errors
+unknown-return-type = false  # Match Pyright reportUnknownLambdaType = false
 unknown-variable-type = false  # Implicit Any is fine
 untyped-import = false  # Import discovery
 unused-call-result = false  # results of check(...) are never used
