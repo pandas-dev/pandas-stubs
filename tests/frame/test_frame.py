@@ -13,6 +13,7 @@ from collections.abc import (
     MutableMapping,
 )
 import csv
+from dataclasses import dataclass
 import datetime
 import io
 import itertools
@@ -1334,6 +1335,7 @@ def test_types_apply() -> None:
         pd.Series,
         np.integer,
     )
+    check(assert_type(df.apply(returns_scalar_na, axis=1), "pd.Series[int]"), pd.Series)
     check(assert_type(df.apply(returns_series, axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series), pd.Series)
     check(assert_type(df.apply(returns_dict, axis=1), pd.Series), pd.Series)
@@ -1482,6 +1484,61 @@ def test_types_apply() -> None:
         pd.Series,
         np.integer,
     )
+
+
+def test_types_apply_custom_object() -> None:
+    # GH 1001
+    @dataclass
+    class Row:
+        a: int
+        b: int
+
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [2, 3, 4]})
+    expected = [Row(1, 2), Row(2, 3), Row(3, 4)]
+
+    def make_row(row: pd.Series) -> Row:
+        return Row(a=row["a"], b=row["b"])
+
+    result = check(assert_type(df.apply(make_row, axis=1), pd.Series), pd.Series, Row)
+    assert list(result) == expected
+
+    result = check(
+        assert_type(df.apply(make_row, axis="columns"), pd.Series), pd.Series, Row
+    )
+    assert list(result) == expected
+
+    result = check(
+        assert_type(
+            df.apply(func=make_row, axis=1, raw=False, result_type=None), pd.Series
+        ),
+        pd.Series,
+        Row,
+    )
+    assert list(result) == expected
+
+    result = check(
+        assert_type(
+            df.apply(lambda row: Row(a=row["a"], b=row["b"]), axis=1), pd.Series
+        ),
+        pd.Series,
+        Row,
+    )
+    assert list(result) == expected
+
+
+def test_types_apply_invalid_usage() -> None:
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+
+    def make_object(row: pd.Series) -> object:
+        return object()
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.apply(make_object, axis=2)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(make_object, axis=1, result_type="invalid")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(make_object, axis=1, raw="invalid")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(object(), axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(make_object, False, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(make_object, axis=1, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_map() -> None:
