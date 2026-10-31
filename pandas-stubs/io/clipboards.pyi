@@ -49,7 +49,6 @@ def read_clipboard(
     na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
-    verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: (
         bool
@@ -58,9 +57,6 @@ def read_clipboard(
         | Sequence[Sequence[int]]
         | dict[str, Sequence[int]]
     ) = ...,
-    infer_datetime_format: bool = ...,
-    keep_date_col: bool = ...,
-    date_parser: Callable[..., Any] = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
     iterator: Literal[True],
@@ -80,7 +76,6 @@ def read_clipboard(
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
-    delim_whitespace: bool = ...,
     low_memory: bool = ...,
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
@@ -108,7 +103,6 @@ def read_clipboard(
     na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
-    verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: (
         bool
@@ -117,9 +111,6 @@ def read_clipboard(
         | Sequence[Sequence[int]]
         | dict[str, Sequence[int]]
     ) = ...,
-    infer_datetime_format: bool = ...,
-    keep_date_col: bool = ...,
-    date_parser: Callable[..., Any] = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
     iterator: bool = ...,
@@ -139,7 +130,6 @@ def read_clipboard(
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
-    delim_whitespace: bool = ...,
     low_memory: bool = ...,
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
@@ -167,7 +157,6 @@ def read_clipboard(
     na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
-    verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: (
         bool
@@ -176,9 +165,6 @@ def read_clipboard(
         | Sequence[Sequence[int]]
         | dict[str, Sequence[int]]
     ) = ...,
-    infer_datetime_format: bool = ...,
-    keep_date_col: bool = ...,
-    date_parser: Callable[..., Any] = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
     iterator: Literal[False] = False,
@@ -198,7 +184,6 @@ def read_clipboard(
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
-    delim_whitespace: bool = ...,
     low_memory: bool = ...,
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,

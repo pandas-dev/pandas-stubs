@@ -292,6 +292,11 @@ def test_clipboard() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         DF.to_clipboard(True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
+        read_clipboard(verbose=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(infer_datetime_format=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(date_parser=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(delim_whitespace=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_clipboard_iterator() -> None:
@@ -966,6 +971,7 @@ def test_read_table(tmp_path: Path) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
         pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_table(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_read_table_iterator(tmp_path: Path) -> None:

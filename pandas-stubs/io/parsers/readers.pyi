@@ -234,7 +234,6 @@ def read_table(
         | Mapping[str, Sequence[int | str]]
         | None
     ) = None,
-    keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
     cache_dates: bool = True,
@@ -297,7 +296,6 @@ def read_table(
         | Mapping[str, Sequence[int | str]]
         | None
     ) = None,
-    keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
     cache_dates: bool = True,
@@ -360,7 +358,6 @@ def read_table(
         | Mapping[str, Sequence[int | str]]
         | None
     ) = None,
-    keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
     cache_dates: bool = True,
