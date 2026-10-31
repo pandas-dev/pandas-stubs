@@ -336,7 +336,6 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | Callable[..., Any],
                 MaskType
                 | _ListLikeKey[HashableT]
-                | frozenset[HashableT]
                 | IndexType
                 | Callable[..., Any]
                 | _IndexSliceTuple,
@@ -386,14 +385,14 @@ class _GetItemHack:
         @overload
         def __getitem__(  # type: ignore[overload-overlap]
             self,
-            key: _ListLikeKey[Hashable] | frozenset[Hashable] | DataFrame | slice,
+            key: _ListLikeKey[Hashable] | DataFrame | slice,
             /,
         ) -> Self: ...
     else:
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
             self,
-            key: _ListLikeKey[Hashable] | frozenset[Hashable] | DataFrame | slice,
+            key: _ListLikeKey[Hashable] | DataFrame | slice,
             /,
         ) -> Self: ...
 

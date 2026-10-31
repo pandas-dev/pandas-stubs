@@ -850,10 +850,13 @@ def test_frame_disallow_set_dict_indexing() -> None:
     dq = deque(["a"])
     ea = pd.array(["a"])
 
+    # GH#41062: a frozenset is a label, not a list-like of labels
+    dff = pd.DataFrame({fs: [1, 2]})
+    check(assert_type(dff[fs], pd.Series), pd.Series)
+
     # Valid controls
     check(assert_type(df[["a"]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[arr], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df[fs], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[ea], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[dl.values()], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[dc.keys()], pd.DataFrame), pd.DataFrame)
@@ -882,7 +885,6 @@ def test_frame_disallow_set_dict_indexing() -> None:
     check(assert_type(df.loc[:, arr], pd.DataFrame), pd.DataFrame)
     df.loc[:, ea] = 1
     check(assert_type(df.loc[:, ea], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.loc[:, fs], pd.DataFrame), pd.DataFrame)
     df.loc[:, ["a"]] = 1
     check(assert_type(df.loc[:, ["a"]], pd.DataFrame), pd.DataFrame)
     df.loc[:, dc.values()] = 1
