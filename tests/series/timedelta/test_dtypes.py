@@ -250,3 +250,7 @@ def test_astype_timedelta(cast_arg: TimedeltaDtypeArg, target_type: type) -> Non
         assert_type(s.astype("duration[ms][pyarrow]"), "pd.Series[pd.Timedelta]")
         assert_type(s.astype("duration[us][pyarrow]"), "pd.Series[pd.Timedelta]")
         assert_type(s.astype("duration[ns][pyarrow]"), "pd.Series[pd.Timedelta]")
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.astype("timedelta64")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.astype("m8")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
