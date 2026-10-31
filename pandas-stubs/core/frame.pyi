@@ -201,6 +201,20 @@ _iLocSetItemKey: TypeAlias = (
     | tuple[IndexType, IndexType]
     | tuple[int, IndexType]
 )
+_KeyT = TypeVar("_KeyT")
+# Iterable minus set/dict (pandas raises on those), GH 1579.
+# Sequence also matches str/bytes, which are routed earlier as labels.
+_ListLikeKey: TypeAlias = (
+    list[_KeyT]  # mypy infers list literals against list[int]/list[bool] in the union
+    | Sequence[_KeyT]
+    | Iterator[_KeyT]
+    | KeysView[_KeyT]
+    | ValuesView[_KeyT]
+    | Index
+    | Series
+    | np_ndarray
+    | ExtensionArray
+)
 _LocSetItemKey: TypeAlias = (
     Expression
     | MaskType
@@ -208,28 +222,9 @@ _LocSetItemKey: TypeAlias = (
     | _IndexSliceTuple
     | tuple[
         IndexOpsMixin | MaskType | Scalar | Sequence[Scalar] | slice,
-        (
-            Hashable
-            | list[Hashable]
-            | Sequence[Hashable]
-            | Iterator[Hashable]
-            | KeysView[Hashable]
-            | ValuesView[Hashable]
-            | Index
-            | Series
-            | np_ndarray
-            | ExtensionArray
-        ),
+        Hashable | _ListLikeKey[Hashable],
     ]
-    | list[Scalar]
-    | Sequence[Scalar]
-    | Iterator[Scalar]
-    | KeysView[Scalar]
-    | ValuesView[Scalar]
-    | Index
-    | Series
-    | np_ndarray
-    | ExtensionArray
+    | _ListLikeKey[Scalar]
     | IndexingInt
     | slice
 )
@@ -340,16 +335,8 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | _IndexSliceTuple
                 | Callable[..., Any],
                 MaskType
-                | list[HashableT]
-                | Sequence[HashableT]
-                | Iterator[HashableT]
-                | KeysView[HashableT]
-                | ValuesView[HashableT]
+                | _ListLikeKey[HashableT]
                 | frozenset[HashableT]
-                | Index
-                | Series
-                | np_ndarray
-                | ExtensionArray
                 | IndexType
                 | Callable[..., Any]
                 | _IndexSliceTuple,
@@ -399,40 +386,14 @@ class _GetItemHack:
         @overload
         def __getitem__(  # type: ignore[overload-overlap]
             self,
-            key: (
-                list[Hashable]
-                | Sequence[Hashable]
-                | Iterator[Hashable]
-                | KeysView[Hashable]
-                | ValuesView[Hashable]
-                | frozenset[Hashable]
-                | Index
-                | Series
-                | np_ndarray
-                | ExtensionArray
-                | DataFrame
-                | slice
-            ),
+            key: _ListLikeKey[Hashable] | frozenset[Hashable] | DataFrame | slice,
             /,
         ) -> Self: ...
     else:
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
             self,
-            key: (
-                list[Hashable]
-                | Sequence[Hashable]
-                | Iterator[Hashable]
-                | KeysView[Hashable]
-                | ValuesView[Hashable]
-                | frozenset[Hashable]
-                | Index
-                | Series
-                | np_ndarray
-                | ExtensionArray
-                | DataFrame
-                | slice
-            ),
+            key: _ListLikeKey[Hashable] | frozenset[Hashable] | DataFrame | slice,
             /,
         ) -> Self: ...
 
