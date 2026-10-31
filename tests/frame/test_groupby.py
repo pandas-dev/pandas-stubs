@@ -295,6 +295,13 @@ def test_types_groupby_agg() -> None:
     check(
         assert_type(df.groupby("col1").agg(["min", "max"]), pd.DataFrame), pd.DataFrame
     )
+    check(
+        assert_type(
+            df.groupby("col1").agg({"col2": "min", "col3": "max", 0: "sum"}),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
@@ -311,7 +318,25 @@ def test_types_groupby_agg() -> None:
     agg_dict2 = {"col2": min, "col3": max, 0: min}
     check(assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame)
 
-    # Here, MyPy infers dict[object, object], so it must be explicitly annotated
+    check(
+        assert_type(
+            df.groupby("col1").agg(
+                {
+                    "col2": min,
+                    "col3": "max",
+                    0: wrapped_min,
+                }
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.groupby("col1").agg({"col2": "sum"}), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(df.groupby("col1").agg({0: "sum"}), pd.DataFrame), pd.DataFrame)
+
+    # Mixed strings and callables need an explicit annotation.
     agg_dict3: dict[str | int, str | Callable[..., Any]] = {
         "col2": min,
         "col3": "max",
@@ -322,6 +347,12 @@ def test_types_groupby_agg() -> None:
     check(assert_type(df.groupby("col1").agg(agg_dict4), pd.DataFrame), pd.DataFrame)
     agg_dict5 = {0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict5), pd.DataFrame), pd.DataFrame)
+
+    # GroupBy.aggregate resolves a string `func` via getattr, so the set of
+    # valid strings is open-ended, unlike GroupBy.transform which validates
+    # against a closed list (see TransformReductionListType below).
+    check(assert_type(df.groupby("col1").agg("describe"), pd.DataFrame), pd.DataFrame)
+
     named_agg = pd.NamedAgg(column="col2", aggfunc="max")
     check(
         assert_type(df.groupby("col1").agg(new_col=named_agg), pd.DataFrame),
