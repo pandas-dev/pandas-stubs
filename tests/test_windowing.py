@@ -184,6 +184,7 @@ def test_rolling_aggregate() -> None:
         DF.rolling(10).aggregate("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         S.rolling(10).agg("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         DF.expanding().agg("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        S.expanding(10).agg("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_rolling_basic_math_series() -> None:
@@ -430,6 +431,7 @@ def test_ewm_aggregate_series() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         S.ewm(span=10).aggregate(np.mean)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        S.ewm(span=10).aggregate("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         S.ewm(span=10).aggregate(["mean", np.mean])  # type: ignore[list-item] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         S.ewm(span=10).aggregate({"col1": "mean", "col2": np.mean})  # type: ignore[dict-item] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
