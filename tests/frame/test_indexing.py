@@ -834,3 +834,81 @@ def test_frame_iat() -> None:
     df.iat[0, 0] = float("nan")
     if TYPE_CHECKING_INVALID_USAGE:
         df.iat[(0,), 0] = 999  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+
+
+def test_frame_disallow_set_dict_indexing() -> None:
+    # GH 1579
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]}, index=["a", "b"])
+    st = {"a"}
+    dc = {"a": 1}
+    dl = {"k": "a"}
+    h: Hashable = "a"
+    idx = pd.Index(["a"])
+    ser = pd.Series(["a"])
+    arr = np.array(["a"])
+    fs = frozenset({"a"})
+    dq = deque(["a"])
+    ea = pd.array(["a"])
+
+    # Valid controls
+    check(assert_type(df[["a"]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[arr], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[fs], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[ea], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[dl.values()], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[dc.keys()], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[(x for x in ["a", "b"])], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[iter(["a", "b"])], pd.DataFrame), pd.DataFrame)
+
+    df[h] = 1
+
+    df.loc[h] = 1
+    df.loc[idx] = 1
+    df.loc[ser] = 1
+    df.loc[arr] = 1
+    df.loc[fs] = 1
+    df.loc[dq] = 1
+    df.loc[ea] = 1
+    df.loc[dl.values()] = 1
+    df.loc[dc.keys()] = 1
+    df.loc[(x for x in ["a", "b"])] = 1
+    df.loc[iter(["a", "b"])] = 1
+
+    df.loc[:, idx] = 1
+    check(assert_type(df.loc[:, idx], pd.DataFrame), pd.DataFrame)
+    df.loc[:, ser] = 1
+    check(assert_type(df.loc[:, ser], pd.DataFrame), pd.DataFrame)
+    df.loc[:, arr] = 1
+    check(assert_type(df.loc[:, arr], pd.DataFrame), pd.DataFrame)
+    df.loc[:, ea] = 1
+    check(assert_type(df.loc[:, ea], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[:, fs], pd.DataFrame), pd.DataFrame)
+    df.loc[:, ["a"]] = 1
+    check(assert_type(df.loc[:, ["a"]], pd.DataFrame), pd.DataFrame)
+    df.loc[:, dc.values()] = 1
+    check(assert_type(df.loc[:, dc.values()], pd.DataFrame), pd.DataFrame)
+    df.loc[:, dc.keys()] = 1
+    check(assert_type(df.loc[:, dc.keys()], pd.DataFrame), pd.DataFrame)
+    df.loc[:, (x for x in ["a", "b"])] = 1
+    check(assert_type(df.loc[:, (x for x in ["a", "b"])], pd.DataFrame), pd.DataFrame)
+    df.loc[:, iter(["a", "b"])] = 1
+    check(assert_type(df.loc[:, iter(["a", "b"])], pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = df[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _1 = df[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        df[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        df[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        _2 = df.loc[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _3 = df.loc[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        df.loc[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        df.loc[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        _4 = df.loc[:, st]  # type: ignore[index] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _5 = df.loc[:, dc]  # type: ignore[index] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        # (slice, set) is structurally Hashable, so only ty rejects these setters
+        df.loc[:, st] = 1  # ty: ignore[invalid-assignment]
+        df.loc[:, dc] = 1  # ty: ignore[invalid-assignment]
+        _6 = df.iloc[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _7 = df.iloc[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        df.iloc[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        df.iloc[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]

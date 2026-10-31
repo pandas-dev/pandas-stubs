@@ -11,10 +11,12 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
+    KeysView,
     Mapping,
     MutableMapping,
     MutableSequence,
     Sequence,
+    ValuesView,
 )
 import datetime as dt
 import sys
@@ -206,9 +208,28 @@ _LocSetItemKey: TypeAlias = (
     | _IndexSliceTuple
     | tuple[
         IndexOpsMixin | MaskType | Scalar | Sequence[Scalar] | slice,
-        Hashable | Iterable[Hashable],
+        (
+            Hashable
+            | list[Hashable]
+            | Sequence[Hashable]
+            | Iterator[Hashable]
+            | KeysView[Hashable]
+            | ValuesView[Hashable]
+            | Index
+            | Series
+            | np_ndarray
+            | ExtensionArray
+        ),
     ]
-    | Iterable[Scalar]
+    | list[Scalar]
+    | Sequence[Scalar]
+    | Iterator[Scalar]
+    | KeysView[Scalar]
+    | ValuesView[Scalar]
+    | Index
+    | Series
+    | np_ndarray
+    | ExtensionArray
     | IndexingInt
     | slice
 )
@@ -319,7 +340,16 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | _IndexSliceTuple
                 | Callable[..., Any],
                 MaskType
-                | Iterable[HashableT]
+                | list[HashableT]
+                | Sequence[HashableT]
+                | Iterator[HashableT]
+                | KeysView[HashableT]
+                | ValuesView[HashableT]
+                | frozenset[HashableT]
+                | Index
+                | Series
+                | np_ndarray
+                | ExtensionArray
                 | IndexType
                 | Callable[..., Any]
                 | _IndexSliceTuple,
@@ -367,13 +397,43 @@ class _GetItemHack:
     # With python 3.12+, the second overload needs a type-ignore statement
     if sys.version_info >= (3, 12):
         @overload
-        def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-            self, key: Iterable[Hashable] | slice, /
+        def __getitem__(  # type: ignore[overload-overlap]
+            self,
+            key: (
+                list[Hashable]
+                | Sequence[Hashable]
+                | Iterator[Hashable]
+                | KeysView[Hashable]
+                | ValuesView[Hashable]
+                | frozenset[Hashable]
+                | Index
+                | Series
+                | np_ndarray
+                | ExtensionArray
+                | DataFrame
+                | slice
+            ),
+            /,
         ) -> Self: ...
     else:
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
-            self, key: Iterable[Hashable] | slice, /
+            self,
+            key: (
+                list[Hashable]
+                | Sequence[Hashable]
+                | Iterator[Hashable]
+                | KeysView[Hashable]
+                | ValuesView[Hashable]
+                | frozenset[Hashable]
+                | Index
+                | Series
+                | np_ndarray
+                | ExtensionArray
+                | DataFrame
+                | slice
+            ),
+            /,
         ) -> Self: ...
 
     @overload
