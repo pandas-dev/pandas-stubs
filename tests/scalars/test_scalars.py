@@ -941,6 +941,9 @@ def test_timedelta_cmp_array() -> None:
 
 def test_timestamp_construction() -> None:
     check(assert_type(pd.Timestamp("2000-1-1"), pd.Timestamp), pd.Timestamp)
+    # `Timestamp` accepts `NaT` but returns it unchanged, so the runtime type is
+    # `NaTType` even though the constructor is typed as returning `Timestamp`
+    check(assert_type(pd.Timestamp(pd.NaT), pd.Timestamp), NaTType)
     check(
         assert_type(pd.Timestamp("2000-1-1", tz="America/Los_Angeles"), pd.Timestamp),
         pd.Timestamp,

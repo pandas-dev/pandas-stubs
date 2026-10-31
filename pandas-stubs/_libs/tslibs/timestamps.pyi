@@ -66,7 +66,9 @@ class Timestamp(datetime, SupportsIndex):
     value: int
     def __new__(
         cls,
-        ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
+        ts_input: (
+            np.integer | float | str | _date | datetime | np.datetime64 | NaTType
+        ) = ...,
         year: int | None = None,
         month: int | None = None,
         day: int | None = None,
