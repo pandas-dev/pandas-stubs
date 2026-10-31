@@ -3798,6 +3798,13 @@ def test_astype() -> None:
         s.astype(int, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
+def test_astype_unitless() -> None:
+    df = pd.DataFrame({"d": [1, 2]})
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.astype("datetime64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.astype("timedelta64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+
 def test_xs_frame_new() -> None:
     d = {
         "num_legs": [4, 4, 2, 2],
