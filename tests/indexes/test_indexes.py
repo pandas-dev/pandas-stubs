@@ -1626,6 +1626,22 @@ def test_period_index_from_ordinals() -> None:
         ),
         pd.PeriodIndex,
     )
+    check(
+        assert_type(pd.PeriodIndex.from_ordinals(range(2), freq="D"), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.PeriodIndex.from_ordinals(pd.Series([0, 1]), freq="D"), pd.PeriodIndex
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.PeriodIndex.from_ordinals(pd.array([0, 1]), freq="D"), pd.PeriodIndex
+        ),
+        pd.PeriodIndex,
+    )
     if TYPE_CHECKING_INVALID_USAGE:
         pd.PeriodIndex.from_ordinals([0, 1])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[missing-argument] # ty: ignore[missing-argument]
 

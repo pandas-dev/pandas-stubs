@@ -15,7 +15,10 @@ from pandas.core.arrays.integer import (
 )
 from pandas.core.construction import array
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 from tests._typing import (
     np_1darray,
     np_1darray_bool,
@@ -38,7 +41,8 @@ def test_ea_common() -> None:
     check(assert_type(arr.repeat([1, 2, 3]), IntegerArray), IntegerArray)
 
     check(assert_type(arr.unique(), IntegerArray), IntegerArray)
-    check(assert_type(arr.count(), int | np.integer), np.integer)
+    check(assert_type(arr.count(), int), np.integer)
+    check(assert_type(array(["a", None], dtype="string").count(), int), int)
     check(assert_type(arr.copy().sort(), None), type(None))
     check(
         assert_type(
@@ -47,6 +51,10 @@ def test_ea_common() -> None:
         ),
         type(None),
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        arr.copy().sort(False)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
+        arr.copy().sort(kind="foo")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        arr.copy().sort(na_position="middle")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
     check(assert_type(arr.duplicated(), np_1darray_bool), np_1darray_bool)
     check(assert_type(arr.duplicated(keep=False), np_1darray_bool), np_1darray_bool)
     check(assert_type(arr.item(0), Any), np.int64)
