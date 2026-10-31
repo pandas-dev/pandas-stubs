@@ -688,6 +688,10 @@ def test_read_csv(tmp_path: Path) -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_csv(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_csv(path_str, verbose=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_csv(path_str, infer_datetime_format=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_csv(path_str, date_parser=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_csv(path_str, delim_whitespace=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_read_csv_iterator(tmp_path: Path) -> None:
@@ -972,6 +976,10 @@ def test_read_table(tmp_path: Path) -> None:
         pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
         pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
         pd.read_table(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_table(path_str, verbose=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_table(path_str, infer_datetime_format=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_table(path_str, date_parser=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_table(path_str, delim_whitespace=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_read_table_iterator(tmp_path: Path) -> None:
