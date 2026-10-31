@@ -5,6 +5,7 @@ The `pandas-stubs` project is introduced in `README.md`.
 ## Purpose
 
 - Assist contributors by suggesting code changes, tests, and documentation edits for the `pandas-stubs` repository while preserving stability and compatibility.
+- "The user" is the human contributor who runs you and is accountable for the PR; you act on their behalf and never in their place.
 
 ## Persona & Tone
 
@@ -18,8 +19,8 @@ The `pandas-stubs` project is introduced in `README.md`.
 ## Scope: Public API Only
 
 - Document first: a new API must be listed as public in the [pandas API reference](https://pandas.pydata.org/docs/reference/) before a stub is added here.
-- Before changing an existing stub, confirm the API is listed there. If it is not, open an issue in pandas-dev/pandas and link it; do not change the stub.
-- When a reviewer asks for an issue, open it.
+- Before changing an existing stub, confirm the API is listed there. If it is not, do not change the stub: draft the issue text for pandas-dev/pandas in chat, let the user open it, and add its link to the PR body.
+- When a reviewer asks for an issue, draft it the same way. Never act on pandas-dev/pandas yourself.
 
 ## Citation & Reference Formatting Rules (Important)
 
@@ -45,15 +46,29 @@ When generating documentation or writing PR descriptions, format all GitHub refe
   - Humans read the rendered page: lead with a concise summary, checklist, and links.
   - AI agents read the raw body and can consume far more detail than a human reviewer wants to scroll through. Put a comprehensive implementation record at the bottom of the body inside a `<details><summary>AI Implementation Plan</summary>` block: motivation, experiments and attempts (including failures), caveats, outcome, out-of-scope items, and a to-do list. This information lives in a developer's head; an AI agent can write it down cheaply, and later agents (e.g. pandas-dev/pandas-stubs#1926 sub-PRs) can pick it up without re-deriving it.
   - Rules: never put machine-only detail in the visible text; never hide information a human reviewer needs. The `<details>` block stays visible when expanded, so both audiences keep full access.
+- **Self-applying**: a PR that adds or changes a rule must already follow it.
+- **Keep the PR in sync with its code**: after every push, re-read the title, the visible summary, the template checkboxes, and the `<details><summary>AI Implementation Plan</summary>` block. Update the current-state parts (summary, outcome, to-do, checkboxes) and append new attempts to the history; never erase recorded failed attempts.
+- **Report the checks**: say in the PR body whether `poetry run poe test_all` passed on the head commit, and list every new `# type: ignore` / `pyright` / `pyrefly` / `ty` ignore (other than those in `TYPE_CHECKING_INVALID_USAGE` blocks) with a reason. A per-checker subset is not a substitute for `poe test_all`.
 - **Commit messages**: do not add summaries or additional comments to individual commits. The single PR description is sufficient.
-- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Prefer the exact model name when known; use the tool name only when the model is not disclosed. Use the provider's official no-reply address:
+- **Commit signatures**: When AI generates commits, add a `Co-authored-by:` trailer naming the actual model or tool. Use the exact model string your harness reports, and use the same string in the AI disclosure. Use the provider's official no-reply address:
   - `Co-authored-by: deepseek-v4-pro <noreply@deepseek.com>`
   - `Co-authored-by: gpt-5.6-terra <noreply@openai.com>`
   - `Co-authored-by: claude-opus-4-20250514 <noreply@anthropic.com>`
   - `Co-authored-by: GitHub Copilot <noreply@github.com>`
   - `Co-authored-by: Gemini 3.1 Pro <noreply@google.com>`
-- **Why a fixed list**: models cannot reliably report their own name or version (they frequently hallucinate or are unaware of their exact identifier), so a canonical list lets an agent choose the closest matching identity deterministically; when the model isn't listed, use the tool name.
+- **Why a fixed list**: models cannot reliably report their own name (they frequently hallucinate it), so take the model string from the harness, never from memory. The list above only fixes the trailer format and the provider's no-reply address; a model that is not listed still uses its harness string with that provider's address.
+- **AI disclosure (required)**: state in the PR description, under the `### AI disclosure` heading defined by `.github/pull_request_template.md`, what produced the PR, as three fields with one value each:
+  - `Tool` — the harness or tool, e.g. `claude-code`; if several tools were used, list each.
+  - `Model` — the model and version as the harness reports it, identical to the `Co-authored-by:` trailer.
+  - `Reasoning effort` — the effort level the harness reports.
+  Write `not surfaced` for any field the harness does not report. Never omit a field and never guess.
 - **Splitting exceptionally large PRs**: If a PR is massive, split it into small, individually reviewable sub-PRs. Each sub-PR body should start with `- [x] Towards pandas-dev/pandas-stubs#<parent>`.
+
+## Interactions on GitHub
+
+- In scope: writing code, tests, and documentation in a pull request; updating the title, description, and checkboxes of the user's own pull request; setting labels only when the user has the rights to.
+- Out of scope: posting comments, reviews, or replies on GitHub on the user's behalf, and any action on pandas-dev/pandas. Do not write the user's side of a discussion for them to paste; summarize the analysis in chat and let the user respond in their own words.
+- Translation and grammar editing are an exception, but must be disclosed inline in the comment itself (for example, "translated with AI").
 
 ## Decision Heuristics
 
