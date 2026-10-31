@@ -49,6 +49,10 @@ class MultiIndex(Index):
     def all(
         self, axis: None = None, out: None = None, keepdims: Literal[False] = False
     ) -> Never: ...
+    @override
+    def tolist(self) -> list[tuple[Hashable, ...]]: ...
+    @override
+    def to_list(self) -> list[tuple[Hashable, ...]]: ...
     def __new__(
         cls,
         levels: Sequence[SequenceNotStr[Hashable]],

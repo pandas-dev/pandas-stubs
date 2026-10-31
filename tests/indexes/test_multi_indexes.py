@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Hashable
 from typing import assert_type
 
 import numpy as np
@@ -90,3 +91,9 @@ def test_multiindex_get_loc_level() -> None:
     res_0, res_1 = mi.get_loc_level(1, level=0)
     check(assert_type(res_0, int | slice | np_1darray_bool), np_1darray_bool)
     check(assert_type(res_1, pd.Index), pd.Index)
+
+
+def test_multiindex_to_list() -> None:
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]])
+    check(assert_type(mi.to_list(), list[tuple[Hashable, ...]]), list)
+    check(assert_type(mi.tolist(), list[tuple[Hashable, ...]]), list)
