@@ -253,8 +253,6 @@ def test_astype_timestamp(cast_arg: TimestampDtypeArg, target_type: type) -> Non
         assert_type(s.astype("date32[pyarrow]"), "pd.Series[pd.Timestamp]")
         assert_type(s.astype("date64[pyarrow]"), "pd.Series[pd.Timestamp]")
 
-
-def test_astype_timestamp_unitless() -> None:
-    s = pd.Series([1, 2, 3])
     if TYPE_CHECKING_INVALID_USAGE:
         s.astype("datetime64")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.astype("M8")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
