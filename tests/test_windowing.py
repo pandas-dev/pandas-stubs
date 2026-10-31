@@ -172,8 +172,10 @@ def test_rolling_aggregate() -> None:
         DataFrame,
     )
 
-    # func: np.ufunc | Callable[..., Any] | str | list[Callable[..., Any] | str, np.ufunc] | dict[Hashable, Callable[..., Any] | str | np.ufunc | list[Callable[..., Any] | str]]
-    check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
+    # Scalar names are the closed EWMAggName | RollingOnlyAggName Literal; list and
+    # dict elements stay open `str`.
+    check(assert_type(DF.rolling(10).agg("median"), DataFrame), DataFrame)
+    check(assert_type(DF.rolling(10).agg("quantile", 0.5), DataFrame), DataFrame)
 
     funcs = ["sum", "mean"]
     funcs_dict = {"col1": "sum", "col2": "mean"}
@@ -181,6 +183,8 @@ def test_rolling_aggregate() -> None:
     check(assert_type(DF.rolling(10).aggregate(funcs_dict), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
+        DF.rolling(10).agg("size")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        DF.rolling(10).agg("prod")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         DF.rolling(10).aggregate("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         S.rolling(10).agg("random_func")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         DF.expanding().agg("random_func")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
@@ -233,6 +237,8 @@ def test_rolling_aggregate_series() -> None:
         DataFrame,
     )
     check(assert_type(S.rolling(10).agg("sum"), Series), Series)
+    check(assert_type(S.rolling(10).agg("nunique"), Series), Series)
+    check(assert_type(S.rolling(10).agg("quantile", 0.5), Series), Series)
 
 
 def test_expanding_basic_math() -> None:
