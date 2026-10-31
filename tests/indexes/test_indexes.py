@@ -1608,6 +1608,28 @@ def test_period_index_constructor() -> None:
     )
 
 
+def test_period_index_from_ordinals() -> None:
+    check(
+        assert_type(pd.PeriodIndex.from_ordinals([0, 1], freq="D"), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.PeriodIndex.from_ordinals(np.array([0, 1]), freq="D", name="foo"),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.PeriodIndex.from_ordinals(pd.Index([0, 1]), freq="D"), pd.PeriodIndex
+        ),
+        pd.PeriodIndex,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.PeriodIndex.from_ordinals([0, 1])  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[missing-argument] # ty: ignore[missing-argument]
+
+
 def test_period_index_asof_locs() -> None:
     idx = pd.PeriodIndex(["2000", "2001"], freq="D")
     where = pd.DatetimeIndex(["2023-05-30 00:12:00", "2023-06-01 00:00:00"])

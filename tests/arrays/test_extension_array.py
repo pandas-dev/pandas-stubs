@@ -38,6 +38,15 @@ def test_ea_common() -> None:
     check(assert_type(arr.repeat([1, 2, 3]), IntegerArray), IntegerArray)
 
     check(assert_type(arr.unique(), IntegerArray), IntegerArray)
+    check(assert_type(arr.count(), int | np.integer), np.integer)
+    check(assert_type(arr.copy().sort(), None), type(None))
+    check(
+        assert_type(
+            arr.copy().sort(ascending=False, kind="stable", na_position="first"),
+            None,
+        ),
+        type(None),
+    )
     check(assert_type(arr.duplicated(), np_1darray_bool), np_1darray_bool)
     check(assert_type(arr.duplicated(keep=False), np_1darray_bool), np_1darray_bool)
     check(assert_type(arr.item(0), Any), np.int64)
