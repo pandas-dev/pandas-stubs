@@ -3,6 +3,7 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
+    Mapping,
     Sequence,
 )
 from typing import (
@@ -219,7 +220,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def apply(
         self,
         func: Callable[
-            Concatenate[DataFrame, ...], Scalar | list[Any] | dict[Hashable, Any]
+            Concatenate[DataFrame, ...],
+            Scalar | list[Any] | tuple[Any, ...] | Mapping[Hashable, Any],
         ],
         *args: Any,
         include_groups: Literal[False],
@@ -229,7 +231,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def apply(
         self,
         func: Callable[
-            Concatenate[DataFrame, P], Scalar | list[Any] | dict[Hashable, Any]
+            Concatenate[DataFrame, P],
+            Scalar | list[Any] | tuple[Any, ...] | Mapping[Hashable, Any],
         ],
         *args: P.args,
         **kwargs: P.kwargs,
@@ -252,17 +255,25 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def apply(
         self,
-        func: Callable[Concatenate[DataFrame, ...], DataFrame] | str,
+        func: Callable[Concatenate[DataFrame, ...], DataFrame],
         *args: Any,
         include_groups: Literal[False],
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
-    def apply(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def apply(
         self,
-        func: Callable[Concatenate[DataFrame, P], DataFrame] | str,
+        func: Callable[Concatenate[DataFrame, P], DataFrame],
         *args: P.args,
         **kwargs: P.kwargs,
+    ) -> DataFrame: ...
+    @overload
+    def apply(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        func: str,
+        *args: Any,
+        include_groups: Literal[False] = False,
+        **kwargs: Any,
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload
