@@ -52,6 +52,9 @@ from pandas._typing import (
 )
 
 AggScalar: TypeAlias = str | Callable[..., Any]
+_ApplyScalarReturn: TypeAlias = (
+    Scalar | list[Any] | tuple[Any, ...] | Mapping[Hashable, Any]
+)
 
 class NamedAgg:
     column: Hashable
@@ -67,6 +70,38 @@ class NamedAgg:
     ) -> None: ...
 
 class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
+    @overload
+    @override
+    def apply(
+        self,
+        func: Callable[Concatenate[Series[S2], ...], Any],
+        *args: Any,
+        include_groups: Literal[False],
+        **kwargs: Any,
+    ) -> Series[S2]: ...
+    @overload
+    def apply(
+        self,
+        func: Callable[Concatenate[Series[S2], P], Any],
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> Series[S2]: ...
+    @overload
+    def apply(
+        self,
+        func: str,
+        *args: Any,
+        include_groups: Literal[False] = False,
+        **kwargs: Any,
+    ) -> Series[S2]: ...
+    # mirrors GroupBy.apply so mypy accepts the override; Never args keep it unmatched
+    @overload
+    def apply(
+        self,
+        func: Callable[Concatenate[Series[S2], ...], Any] | str,
+        *args: Never,
+        **kwargs: Never,
+    ) -> Series[S2]: ...
     @overload
     def aggregate(
         self,
@@ -215,14 +250,11 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
-    @overload  # type: ignore[override]
+    @overload
     @override
     def apply(
         self,
-        func: Callable[
-            Concatenate[DataFrame, ...],
-            Scalar | list[Any] | tuple[Any, ...] | Mapping[Hashable, Any],
-        ],
+        func: Callable[Concatenate[DataFrame, ...], _ApplyScalarReturn],
         *args: Any,
         include_groups: Literal[False],
         **kwargs: Any,
@@ -230,10 +262,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def apply(
         self,
-        func: Callable[
-            Concatenate[DataFrame, P],
-            Scalar | list[Any] | tuple[Any, ...] | Mapping[Hashable, Any],
-        ],
+        func: Callable[Concatenate[DataFrame, P], _ApplyScalarReturn],
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> Series: ...
@@ -268,12 +297,20 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
-    def apply(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def apply(
         self,
         func: str,
         *args: Any,
         include_groups: Literal[False] = False,
         **kwargs: Any,
+    ) -> DataFrame: ...
+    # mirrors GroupBy.apply so mypy accepts the override; Never args keep it unmatched
+    @overload
+    def apply(
+        self,
+        func: Callable[Concatenate[DataFrame, ...], DataFrame] | str,
+        *args: Never,
+        **kwargs: Never,
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload
