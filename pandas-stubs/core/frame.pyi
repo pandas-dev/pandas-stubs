@@ -202,10 +202,10 @@ _iLocSetItemKey: TypeAlias = (
     | tuple[int, IndexType]
 )
 _KeyT = TypeVar("_KeyT")
-# Iterable minus set/dict (pandas raises on those), GH 1579.
+# Iterable minus set/dict (pandas raises on those).
 # Sequence also matches str/bytes, which are routed earlier as labels.
 _ListLikeKey: TypeAlias = (
-    # python/mypy#3506: list literals are checked against list[int]/list[bool]
+    # python/mypy#22342: list literals are checked against list[int]/list[bool]
     list[_KeyT]
     | Sequence[_KeyT]
     | Iterator[_KeyT]
