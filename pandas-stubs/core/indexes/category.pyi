@@ -18,7 +18,6 @@ from pandas.core.arrays.categorical import (
 )
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
-from pandas.core.dtypes.dtypes import CategoricalValueT1
 from typing_extensions import override
 
 from pandas._typing import (
@@ -27,6 +26,8 @@ from pandas._typing import (
     ListLike,
     np_1darray_intp,
 )
+
+from pandas.core.dtypes.dtypes import CategoricalValueT1
 
 class CategoricalIndex(
     ExtensionIndex[S1],
