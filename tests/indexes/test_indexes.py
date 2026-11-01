@@ -1190,6 +1190,14 @@ def test_getitem() -> None:
     check(assert_type(i0[0], str), str)
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        st = {"a"}
+        dc = {"a": 1}
+        _0 = i0[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _1 = i0[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _2 = mi[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _3 = mi[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+
 
 def test_append_mix() -> None:
     """Test pd.Index.append with mixed types"""
