@@ -1,6 +1,8 @@
 from collections.abc import (
+    Callable,
     Hashable,
     Iterable,
+    Sequence,
 )
 from typing import (
     Any,
@@ -16,6 +18,7 @@ from pandas.core.arrays.categorical import (
 )
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
+from pandas.core.dtypes.dtypes import CategoricalValueT1
 from typing_extensions import override
 
 from pandas._typing import (
@@ -34,6 +37,14 @@ class CategoricalIndex(
     @property
     @override
     def categories(self) -> Index[S1]: ...
+    def rename_categories(
+        self,
+        new_categories: (
+            Sequence[CategoricalValueT1]
+            | dict[Any, CategoricalValueT1]
+            | Callable[[S1], CategoricalValueT1]
+        ),
+    ) -> CategoricalIndex[CategoricalValueT1]: ...
     @override
     def any(
         self, axis: None = None, out: None = None, keepdims: Literal[False] = False

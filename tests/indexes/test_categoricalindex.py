@@ -122,3 +122,11 @@ def test_categoricalindex_categories_methods() -> None:
         assert_type(ci.rename_categories(str.upper), "pd.CategoricalIndex[str]"),
         pd.CategoricalIndex,
     )
+    ci_int = pd.CategoricalIndex([1, 2, 3])
+    check(
+        assert_type(
+            ci_int.rename_categories(["one", "two", "three"]),
+            "pd.CategoricalIndex[str]",
+        ),
+        pd.CategoricalIndex,
+    )

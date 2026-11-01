@@ -295,14 +295,6 @@ class CategoricalMethods(Generic[_CategoricalResultT, CategoricalValueT]):
     def categories(self) -> Index: ...
     @property
     def ordered(self) -> bool | None: ...
-    def rename_categories(
-        self,
-        new_categories: (
-            Sequence[CategoricalValueT]
-            | dict[Any, CategoricalValueT]
-            | Callable[[CategoricalValueT], CategoricalValueT]
-        ),
-    ) -> _CategoricalResultT: ...
     # The new order and the removals must have the categories' type. That can only be
     # spelled out for str/int/float categories, since Index and Series don't take object.
     @overload
@@ -354,5 +346,13 @@ class CategoricalAccessor(
     CategoricalMethods[Series[CategoricalDtype[CategoricalValueT]], CategoricalValueT],
     Generic[CategoricalValueT],
 ):
+    def rename_categories(
+        self,
+        new_categories: (
+            Sequence[CategoricalValueT1]
+            | dict[Any, CategoricalValueT1]
+            | Callable[[CategoricalValueT], CategoricalValueT1]
+        ),
+    ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
     @property
     def codes(self) -> Series[int]: ...

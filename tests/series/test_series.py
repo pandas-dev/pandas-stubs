@@ -1851,6 +1851,14 @@ def test_cat_accessor() -> None:
         pd.Series,
         np.integer,
     )
+    ser_int = pd.Series([1, 2, 3], dtype="category")
+    check(
+        assert_type(
+            ser_int.cat.rename_categories(["one", "two", "three"]),
+            "pd.Series[pd.CategoricalDtype[str]]",
+        ),
+        pd.Series,
+    )
     check(
         assert_type(
             ser.cat.remove_unused_categories(), "pd.Series[pd.CategoricalDtype[int]]"
