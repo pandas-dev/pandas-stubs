@@ -214,8 +214,18 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
-    @overload
+    @overload  # type: ignore[override]
     @override
+    def apply(
+        self,
+        func: Callable[
+            Concatenate[DataFrame, ...], Scalar | list[Any] | dict[Hashable, Any]
+        ],
+        *args: Any,
+        include_groups: Literal[False],
+        **kwargs: Any,
+    ) -> Series: ...
+    @overload
     def apply(
         self,
         func: Callable[
@@ -227,12 +237,28 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def apply(
         self,
+        func: Callable[Concatenate[DataFrame, ...], Series],
+        *args: Any,
+        include_groups: Literal[False],
+        **kwargs: Any,
+    ) -> Series | DataFrame: ...
+    @overload
+    def apply(
+        self,
         func: Callable[Concatenate[DataFrame, P], Series],
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> Series | DataFrame: ...
     @overload
     def apply(
+        self,
+        func: Callable[Concatenate[DataFrame, ...], DataFrame] | str,
+        *args: Any,
+        include_groups: Literal[False],
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def apply(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         func: Callable[Concatenate[DataFrame, P], DataFrame] | str,
         *args: P.args,
