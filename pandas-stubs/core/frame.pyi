@@ -19,7 +19,6 @@ from collections.abc import (
     ValuesView,
 )
 import datetime as dt
-import sys
 from typing import (
     Any,
     ClassVar,
@@ -381,22 +380,12 @@ class _GetItemHack:
     def __getitem__(self, key: Expression, /) -> Self: ...
     @overload
     def __getitem__(self, key: Scalar | tuple[Hashable, ...], /) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    # With python 3.12+, the second overload needs a type-ignore statement
-    if sys.version_info >= (3, 12):
-        @overload
-        def __getitem__(  # type: ignore[overload-overlap]
-            self,
-            key: _ListLikeKey[Hashable] | DataFrame | slice,
-            /,
-        ) -> Self: ...
-    else:
-        @overload
-        def __getitem__(  # pyright: ignore[reportOverlappingOverload]
-            self,
-            key: _ListLikeKey[Hashable] | DataFrame | slice,
-            /,
-        ) -> Self: ...
-
+    @overload
+    def __getitem__(  # type: ignore[overload-overlap]
+        self,
+        key: _ListLikeKey[Hashable] | DataFrame | slice,
+        /,
+    ) -> Self: ...
     @overload
     def __getitem__(self, key: Hashable, /) -> Series: ...
 
