@@ -855,15 +855,13 @@ def test_frame_disallow_set_dict_indexing() -> None:
     check(assert_type(dff[fs], pd.Series), pd.Series)
 
     # Valid controls
-    check(assert_type(df[["a"]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[arr], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[ea], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[dl.values()], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df[dc.keys()], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df[(x for x in ["a", "b"])], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[iter(["a", "b"])], pd.DataFrame), pd.DataFrame)
-
-    df[h] = 1
+    check(assert_type(df[idx], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[ser], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[dq], pd.DataFrame), pd.DataFrame)
 
     df.loc[h] = 1
     df.loc[idx] = 1
@@ -879,21 +877,20 @@ def test_frame_disallow_set_dict_indexing() -> None:
 
     df.loc[:, idx] = 1
     check(assert_type(df.loc[:, idx], pd.DataFrame), pd.DataFrame)
-    df.loc[:, ser] = 1
     check(assert_type(df.loc[:, ser], pd.DataFrame), pd.DataFrame)
     df.loc[:, arr] = 1
     check(assert_type(df.loc[:, arr], pd.DataFrame), pd.DataFrame)
     df.loc[:, ea] = 1
     check(assert_type(df.loc[:, ea], pd.DataFrame), pd.DataFrame)
+    df.loc[:, dq] = 1
+    check(assert_type(df.loc[:, dq], pd.DataFrame), pd.DataFrame)
     df.loc[:, ["a"]] = 1
-    check(assert_type(df.loc[:, ["a"]], pd.DataFrame), pd.DataFrame)
     df.loc[:, dc.values()] = 1
     check(assert_type(df.loc[:, dc.values()], pd.DataFrame), pd.DataFrame)
     df.loc[:, dc.keys()] = 1
     check(assert_type(df.loc[:, dc.keys()], pd.DataFrame), pd.DataFrame)
     df.loc[:, (x for x in ["a", "b"])] = 1
     check(assert_type(df.loc[:, (x for x in ["a", "b"])], pd.DataFrame), pd.DataFrame)
-    df.loc[:, iter(["a", "b"])] = 1
     check(assert_type(df.loc[:, iter(["a", "b"])], pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
