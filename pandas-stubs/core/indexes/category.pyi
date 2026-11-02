@@ -2,13 +2,14 @@ from collections.abc import (
     Callable,
     Hashable,
     Iterable,
-    Sequence,
+    Mapping,
 )
 from typing import (
     Any,
     Literal,
     Never,
     Self,
+    overload,
 )
 
 from pandas.core.accessor import PandasDelegate
@@ -22,8 +23,10 @@ from typing_extensions import override
 
 from pandas._typing import (
     S1,
+    S2,
     Dtype,
     ListLike,
+    SequenceNotStr,
     np_1darray_intp,
 )
 
@@ -38,14 +41,45 @@ class CategoricalIndex(
     @property
     @override
     def categories(self) -> Index[S1]: ...
+    @overload
+    def set_categories(
+        self,
+        new_categories: SequenceNotStr[S2],
+        ordered: bool | None = None,
+        rename: Literal[True] = True,
+    ) -> CategoricalIndex[S2]: ...
+    @overload
+    def set_categories(
+        self,
+        new_categories: SequenceNotStr[S1] | ListLike,
+        ordered: bool | None = None,
+        rename: Literal[False] = False,
+    ) -> CategoricalIndex[S1]: ...
+    @overload
+    def set_categories(
+        self,
+        new_categories: SequenceNotStr[S1] | ListLike,
+        ordered: bool | None = None,
+        rename: bool = False,
+    ) -> CategoricalIndex[S1]: ...
+    @overload
+    def rename_categories(
+        self: CategoricalIndex[Hashable],
+        new_categories: (
+            SequenceNotStr[Any]
+            | Mapping[Any, Any]
+            | Callable[[Hashable], Any]
+        ),
+    ) -> CategoricalIndex[Any]: ...
+    @overload
     def rename_categories(
         self,
         new_categories: (
-            Sequence[CategoricalValueT1]
-            | dict[Any, CategoricalValueT1]
-            | Callable[[S1], CategoricalValueT1]
+            SequenceNotStr[S2]
+            | Mapping[Any, S2]
+            | Callable[[S1], S2]
         ),
-    ) -> CategoricalIndex[CategoricalValueT1]: ...
+    ) -> CategoricalIndex[S2]: ...
     @override
     def any(
         self, axis: None = None, out: None = None, keepdims: Literal[False] = False

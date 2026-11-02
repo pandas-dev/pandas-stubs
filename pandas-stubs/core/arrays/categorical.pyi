@@ -1,6 +1,7 @@
 from collections.abc import (
     Callable,
     Hashable,
+    Mapping,
     Sequence,
 )
 from typing import (
@@ -332,6 +333,27 @@ class CategoricalMethods(Generic[_CategoricalResultT, CategoricalValueT]):
         removals: Scalar | ListLike,
     ) -> _CategoricalResultT: ...
     def remove_unused_categories(self) -> _CategoricalResultT: ...
+    @overload
+    def set_categories(
+        self: CategoricalMethods[_CategoricalResultT, CategoricalValueT],
+        new_categories: SequenceNotStr[CategoricalValueT1],
+        ordered: bool | None = None,
+        rename: Literal[True] = True,
+    ) -> _CategoricalResultT: ...
+    @overload
+    def set_categories(
+        self,
+        new_categories: Sequence[CategoricalValueT] | ListLike,
+        ordered: bool | None = None,
+        rename: Literal[False] = False,
+    ) -> _CategoricalResultT: ...
+    @overload
+    def set_categories(
+        self,
+        new_categories: Sequence[CategoricalValueT] | ListLike,
+        ordered: bool | None = None,
+        rename: bool = False,
+    ) -> _CategoricalResultT: ...
     def set_categories(
         self,
         new_categories: Sequence[CategoricalValueT] | ListLike,
@@ -349,8 +371,8 @@ class CategoricalAccessor(
     def rename_categories(
         self,
         new_categories: (
-            Sequence[CategoricalValueT1]
-            | dict[Any, CategoricalValueT1]
+            SequenceNotStr[CategoricalValueT1]
+            | Mapping[Any, CategoricalValueT1]
             | Callable[[CategoricalValueT], CategoricalValueT1]
         ),
     ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
