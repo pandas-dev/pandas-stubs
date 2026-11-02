@@ -1,4 +1,7 @@
-from collections.abc import Hashable
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 import datetime
 from typing import (
     Literal,
@@ -24,6 +27,7 @@ from pandas._libs.tslibs import (
     Period,
 )
 from pandas._typing import (
+    AnyArrayLikeInt,
     AxesData,
     Dtype,
     Frequency,
@@ -47,6 +51,14 @@ class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps
         freq: Frequency | None = None,
         dtype: Dtype | None = None,
         copy: bool = False,
+        name: Hashable | None = None,
+    ) -> Self: ...
+    @classmethod
+    def from_ordinals(
+        cls,
+        ordinals: AnyArrayLikeInt | Sequence[int],
+        *,
+        freq: Frequency,
         name: Hashable | None = None,
     ) -> Self: ...
     @property
