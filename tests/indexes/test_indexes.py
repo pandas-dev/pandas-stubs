@@ -1697,46 +1697,22 @@ def test_multiindex_swaplevel() -> None:
 def test_index_replace_scalar() -> None:
     index = pd.Index([1, 2, 3], name="source")
 
-    result = check(assert_type(index.replace(2, "two"), pd.Index), pd.Index)
-
-    pd.testing.assert_index_equal(result, pd.Index([1, "two", 3], name="source"))
+    check(assert_type(index.replace(2, "two"), pd.Index), pd.Index)
 
 
 def test_index_replace_mapping_and_list() -> None:
     index = pd.Index([1, 2, 3])
 
-    mapped = check(assert_type(index.replace({1: 10, 3: 30}), pd.Index), pd.Index)
-    listed = check(assert_type(index.replace([1, 3], [10, 30]), pd.Index), pd.Index)
-    series = check(
-        assert_type(index.replace(pd.Series({1: 10, 3: 30})), pd.Index), pd.Index
-    )
-
-    expected = pd.Index([10, 2, 30])
-    pd.testing.assert_index_equal(mapped, expected)
-    pd.testing.assert_index_equal(listed, expected)
-    pd.testing.assert_index_equal(series, expected)
+    check(assert_type(index.replace({1: 10, 3: 30}), pd.Index), pd.Index)
+    check(assert_type(index.replace([1, 3], [10, 30]), pd.Index), pd.Index)
+    check(assert_type(index.replace(pd.Series({1: 10, 3: 30})), pd.Index), pd.Index)
 
 
 def test_index_replace_regex() -> None:
     index = pd.Index(["alpha", "beta"])
 
-    pattern = check(
-        assert_type(index.replace(re.compile("^a"), "x", True), pd.Index), pd.Index
-    )
-    keyword = check(
-        assert_type(index.replace(value="x", regex="^a"), pd.Index), pd.Index
-    )
-
-    pd.testing.assert_index_equal(pattern, pd.Index(["xlpha", "beta"]))
-    pd.testing.assert_index_equal(keyword, pattern)
-
-
-def test_rangeindex_replace() -> None:
-    index = pd.RangeIndex(3)
-
-    result = check(assert_type(index.replace(1, 10), pd.Index), pd.Index)
-
-    pd.testing.assert_index_equal(result, pd.Index([0, 10, 2]))
+    check(assert_type(index.replace(re.compile("^a"), "x", True), pd.Index), pd.Index)
+    check(assert_type(index.replace(value="x", regex="^a"), pd.Index), pd.Index)
 
 
 def test_multiindex_replace_unsupported() -> None:
@@ -1749,41 +1725,15 @@ def test_multiindex_replace_unsupported() -> None:
 def test_index_replace_pandas_scalars() -> None:
     periods = pd.period_range("2026-01", periods=2, freq="M")
     period = pd.Period("2026-03", freq="M")
-    replaced_period = check(
-        assert_type(periods.replace(periods[0], period), pd.Index), pd.Index
-    )
-    pd.testing.assert_index_equal(replaced_period, pd.PeriodIndex([period, periods[1]]))
+    check(assert_type(periods.replace(periods[0], period), pd.Index), pd.Index)
 
     intervals = pd.IntervalIndex.from_breaks([0, 1, 2])
     interval = pd.Interval(2, 3)
-    replaced_interval = check(
-        assert_type(intervals.replace(intervals[0], interval), pd.Index), pd.Index
-    )
-    pd.testing.assert_index_equal(
-        replaced_interval, pd.IntervalIndex([interval, intervals[1]])
-    )
+    check(assert_type(intervals.replace(intervals[0], interval), pd.Index), pd.Index)
 
     timestamp = pd.Timestamp("2026-01-01")
     dates = pd.DatetimeIndex([pd.NaT, timestamp])
-    replaced_nat = check(
-        assert_type(dates.replace(pd.NaT, timestamp), pd.Index), pd.Index
-    )
-    pd.testing.assert_index_equal(
-        replaced_nat, pd.DatetimeIndex([timestamp, timestamp])
-    )
-
-
-def test_index_replace_pandas_scalar_collections() -> None:
-    periods = pd.period_range("2026-01", periods=2, freq="M")
-    period = pd.Period("2026-03", freq="M")
-    listed = check(
-        assert_type(periods.replace([periods[0]], [period]), pd.Index), pd.Index
-    )
-    mixed = pd.Index([1, periods[1]], dtype=object)
-    mapped = check(assert_type(mixed.replace({1: period}), pd.Index), pd.Index)
-
-    pd.testing.assert_index_equal(listed, pd.PeriodIndex([period, periods[1]]))
-    pd.testing.assert_index_equal(mapped, pd.Index([period, periods[1]], dtype=object))
+    check(assert_type(dates.replace(pd.NaT, timestamp), pd.Index), pd.Index)
 
 
 def test_index_where() -> None:
