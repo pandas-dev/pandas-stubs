@@ -1186,6 +1186,14 @@ ReplaceValue: TypeAlias = (
     | None
 )
 
+_IndexReplaceScalar: TypeAlias = ScalarOrNA | PandasScalar | Pattern[str]
+IndexReplaceValue: TypeAlias = (
+    _IndexReplaceScalar
+    | Sequence[_IndexReplaceScalar]
+    | Mapping[HashableT0, _IndexReplaceScalar]
+    | Series
+)
+
 JsonFrameOrient: TypeAlias = Literal[
     "split", "records", "index", "columns", "values", "table"
 ]
