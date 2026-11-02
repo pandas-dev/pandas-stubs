@@ -155,12 +155,13 @@ help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:run_tests(dist=True, type_checker='mypy')"
 
 [tool.poe.tasks.stubtest]
-script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
+script = "scripts.test:stubtest(allowlist, check_missing=check_missing, nightly=nightly, no_allowlist=no_allowlist)"
 help = "Run stubtest to compare the installed stubs against pandas"
 args = [
-  { name = "allowlist", positional = true, default = "", required = false, help = "Path to an allowlist (optional)" },
+  { name = "allowlist", positional = true, default = "", required = false, help = "Path to a single allowlist that replaces the committed permanent and burn-down lists (optional)" },
   { name = "check_missing", positional = false, default = false, type = "boolean", required = false, help = "Report errors when the stubs are incomplete (off by default)" },
-  { name = "nightly", positional = false, default = false, type = "boolean", required = false, help = "Compare against pandas nightly (off by default)" },
+  { name = "nightly", positional = false, default = false, type = "boolean", required = false, help = "Compare against pandas nightly (off by default); the version-pinned burn-down allowlist is skipped" },
+  { name = "no_allowlist", positional = false, default = false, type = "boolean", required = false, help = "Run without any allowlist: report every mismatch (off by default)" },
 ]
 
 [tool.poe.tasks.type_completeness]
