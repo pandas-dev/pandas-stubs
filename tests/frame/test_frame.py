@@ -3796,6 +3796,11 @@ def test_astype() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
         s.astype(int, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        # unit-less datetime64/timedelta64 (and short codes) are rejected
+        df.astype("datetime64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.astype("timedelta64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.astype("M8")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.astype("m8")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_xs_frame_new() -> None:
