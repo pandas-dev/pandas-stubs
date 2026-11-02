@@ -336,7 +336,8 @@ def test_types_groupby_agg() -> None:
     )
     check(assert_type(df.groupby("col1").agg({0: "sum"}), pd.DataFrame), pd.DataFrame)
 
-    # Mixed strings and callables need an explicit annotation.
+    # A stored mixed dict needs an explicit annotation; the inline dict above
+    # does not.
     agg_dict3: dict[str | int, str | Callable[..., Any]] = {
         "col2": min,
         "col3": "max",
