@@ -59,7 +59,7 @@ from pandas._typing import (
     TimestampConvertibleTypes,
     WriteBuffer,
     WriteExcelBuffer,
-    np_1darray,
+    np_ndarray,
 )
 
 from pandas.io.excel import ExcelWriter
@@ -104,7 +104,7 @@ class NDFrame:
     __array_priority__: int = ...
     def __array__(
         self, dtype: _str | np.dtype = ..., copy: _bool | None = ...
-    ) -> np_1darray: ...
+    ) -> np_ndarray: ...
     @final
     def __delitem__(self, key: Hashable, /) -> None: ...
     @final
