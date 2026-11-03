@@ -173,6 +173,7 @@ from pandas._typing import (
     ValueKeyFunc,
     WriteBuffer,
     XMLParsers,
+    np_1darray,
     np_2darray,
     np_ndarray,
     np_ndarray_anyint,
@@ -470,10 +471,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def dot(
         self,
-        other: DataFrame | ArrayLike | Sequence[Sequence[SupportsSelfMul[Any]]],
+        other: DataFrame | np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]],
     ) -> Self: ...
     @overload
-    def dot(self, other: Series | Sequence[SupportsSelfMul[Any]]) -> Series: ...
+    def dot(
+        self,
+        other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
+    ) -> Series: ...
     @overload
     def __matmul__(self, other: DataFrame, /) -> Self: ...
     @overload
