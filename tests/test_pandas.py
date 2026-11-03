@@ -661,7 +661,7 @@ def test_unique() -> None:
         np.datetime64,
     )
 
-    zoned_timestamps = [ts.tz_localize("US/Eastern") for ts in unzoned_timestamps]
+    zoned_timestamps = [ts.tz_localize("America/New_York") for ts in unzoned_timestamps]
     check(
         assert_type(
             pd.unique(pd.Series(zoned_timestamps)), np_1darray | ExtensionArray

@@ -1,0 +1,70 @@
+# stubtest allowlist - PERMANENT: intentional divergences between pandas-stubs
+# and pandas. Not a baseline: this list never shrinks and does not depend on
+# the Python or pandas version. Do not add a mismatch that should be fixed;
+# those are tracked in the burn-down list (see stubtest-allowlist-burndown.txt).
+#
+# Each non-comment line matches a stubtest error's object_desc (exact match
+# first, then re.fullmatch). Stubtest fails on entries that match nothing, so
+# every line here must keep matching at least one current finding.
+#
+# Policy: docs/philosophy.md (stubs extend runtime generics, internal
+# annotations may be incorrect, the recommended API is what is typed).
+# Prefer a narrow pattern; a catch-all for private names would hide helpers
+# that are added later.
+#
+# Tracking: pandas-dev/pandas-stubs#1964
+
+# Stub-only module holding helpers for type checkers
+pandas\._stubs_only(\..*)?
+
+# Stub-only type aliases. Every name that also exists in the runtime pandas._typing
+# (107 today) is excluded so that drift in it stays visible (burn-down list).
+pandas\._typing\.(?!(?:AggFuncType|AggFuncTypeBase|AggFuncTypeDict|AlignJoin|AnyAll|AnyArrayLike|AnyStr_co|AnyStr_contra|ArrayLike|AstypeArg|Axes|Axis|AxisInt|BaseBuffer|CSVEngine|ColspaceArgType|CompressionDict|CompressionOptions|ConvertersArg|CorrelationMethod|DateTimeErrorChoices|DatetimeLikeScalar|DropKeep|Dtype|DtypeArg|DtypeBackend|DtypeObj|ExcelWriterIfSheetExists|ExcelWriterMergeCells|F|FilePath|FillnaOptions|FloatFormatType|FormattersType|Frequency|FromDictOrient|FuncType|HTMLFlavors|HashableT|HashableT2|IgnoreRaise|IndexKeyFunc|IndexLabel|IndexT|IntStrT|InterpolateOptions|IntervalClosedType|IntervalLeftRight|JSONEngine|JSONSerializable|JoinHow|JoinValidate|Level|ListLike|MergeHow|MergeValidate|NDFrameT|NaPosition|NpDtype|NsmallestNlargestKeep|OpenFileErrors|Ordered|P|ParquetCompressionOptions|ParseDatesArg|PositionalIndexer|PositionalIndexerTuple|PythonScalar|QuantileInterpolation|RandomState|ReadBuffer|ReadCsvBuffer|ReadPickleBuffer|ReindexMethod|Renamer|Scalar|ScalarIndexer|SequenceIndexer|SequenceNotStr|Shape|SliceType|SortKind|StorageOptions|Suffixes|T|TakeIndexer|TimeAmbiguous|TimeGrouperOrigin|TimeNonexistent|TimeUnit|TimedeltaConvertibleTypes|TimestampConvertibleTypes|TimestampNonexistent|Timezone|ToStataByteorder|ToTimestampHow|TypeT|UpdateJoin|UsecolsArgType|ValueKeyFunc|WindowingRankType|WriteBuffer|WriteExcelBuffer|XMLParsers|_IndexIterScalar|_T_co|__all__)(?:\.|$)).*
+
+# Internal expression-evaluation visitor: incorrect internal annotations are accepted
+pandas\.core\.computation\.expr\.BaseExprVisitor\..*
+
+# Arithmetic that always raises at runtime; the stubs reject it by omission or Never
+pandas\.core\.indexes\.multi\.MultiIndex\.__(?:r?(?:add|sub|mul|truediv|floordiv|mod|pow|divmod)|neg)__
+pandas\.core\.arrays\.datetimelike\.DatetimeLikeArrayMixin\.__r?(?:divmod|mod|pow)__
+
+# Stub-only protocol helpers behind the datetime-like accessors and Index.dt
+pandas\.core\.indexes\.accessors\.(?:\w+IndexProperties|PeriodIndexFieldOps|_\w+)
+
+# Stub-only private indexer and mixin helpers
+pandas\.core\.frame\._\w+
+pandas\.core\.series\._i?LocIndexerSeries
+pandas\.core\.indexing\._NDFrameIndexer
+pandas\.core\.resample\._InterpolateMixin
+pandas\._libs\.tslibs\.nattype\._NatComparison
+
+# Descriptors typed through their accessor classes in the stubs
+pandas\._libs\.properties\.cache_readonly\.(?:getter|setter|deleter)
+pandas\.core\.(?:frame\.DataFrame|series\.Series)\.(?:plot|sparse)
+
+# Stub-only generic bases and metaclass of the datetime-like index classes
+pandas\.core\.indexes\.(?:datetimes\.DatetimeIndex|period\.PeriodIndex|timedeltas\.TimedeltaIndex)
+
+# Deliberate retyping of the runtime ABC classes as type[...] aliases
+pandas\.core\.dtypes\.generic\.(?:ABCSeries|ABCExtensionArray)
+
+# Stub-only TypeVars, aliases and helper protocols
+pandas._libs.tslibs.timedeltas.TimeDeltaUnitChoices
+pandas._libs.tslibs.timestamps.TimeZones
+pandas.core.arrays.base.ExtensionArraySupportsAnyAll
+pandas.core.arrays.sparse.array.SparseIndexKind
+pandas.core.arrays.sparse.array.ellipsis
+pandas.core.arrays.string_.Storage
+pandas.core.arrays.string_.StorageT
+pandas.core.base.T_INTERVAL_NP
+pandas.core.dtypes.dtypes.CategoricalValueT
+pandas.core.dtypes.dtypes.CategoricalValueT1
+pandas.core.groupby.base.OutputKey._DT
+pandas.core.groupby.base.ReductionKernelType
+pandas.core.groupby.base.TransformReductionListType
+pandas.core.groupby.base.TransformationKernelType
+pandas.core.indexes.base.FloatNotNumpy16DtypeArg
+pandas.core.reshape.concat.DataFrameT0
+pandas.core.series.MaskTypeNoList
+pandas.io.excel._base.ExcelWriteWorkbook
+pandas.io.formats.style_render.StyleExportDict

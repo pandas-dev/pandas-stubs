@@ -292,6 +292,12 @@ def test_clipboard() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         DF.to_clipboard(True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
+        read_clipboard(verbose=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(infer_datetime_format=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(date_parser=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(delim_whitespace=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        read_clipboard(delimiter=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_clipboard_iterator() -> None:
@@ -312,7 +318,6 @@ def test_clipboard_iterator() -> None:
 
 
 def test_sas_bdat() -> None:
-    # there is a bug with pandas 3.1.0.dev0+1139.gb431b4f927 that SegFault the code
     path = Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
@@ -647,38 +652,13 @@ def test_parquet_options(tmp_path: Path) -> None:
 
 def test_feather(tmp_path: Path) -> None:
     path_str = str(tmp_path / str(uuid.uuid4()))
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(assert_type(DF.to_feather(path_str), None), type(None))
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(assert_type(read_feather(path_str), DataFrame), DataFrame)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
+    check(assert_type(DF.to_feather(path_str), None), type(None))
+    check(assert_type(read_feather(path_str), DataFrame), DataFrame)
+    check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
     with io.BytesIO() as bio:
-        with pytest_warns_bounded(
-            FutureWarning,
-            "pyarrow.feather.write_feather is deprecated as of 24.0.0",
-            upper="3.0.4",
-        ):
-            check(assert_type(DF.to_feather(bio), None), type(None))
+        check(assert_type(DF.to_feather(bio), None), type(None))
         bio.seek(0)
-        with pytest_warns_bounded(
-            FutureWarning,
-            r"pyarrow.feather.read_table is deprecated as of 24.0.0",
-            upper="3.0.4",
-        ):
-            check(assert_type(read_feather(bio), DataFrame), DataFrame)
+        check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
 def test_read_csv(tmp_path: Path) -> None:
@@ -709,6 +689,10 @@ def test_read_csv(tmp_path: Path) -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_csv(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_csv(path_str, verbose=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_csv(path_str, infer_datetime_format=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_csv(path_str, date_parser=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_csv(path_str, delim_whitespace=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_read_csv_iterator(tmp_path: Path) -> None:
@@ -992,6 +976,11 @@ def test_read_table(tmp_path: Path) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
         pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        pd.read_table(path_str, keep_date_col=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_table(path_str, verbose=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_table(path_str, infer_datetime_format=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_table(path_str, date_parser=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.read_table(path_str, delim_whitespace=False)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_read_table_iterator(tmp_path: Path) -> None:
@@ -1337,7 +1326,6 @@ def test_excel_writer(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "ExcelFile.parse is deprecated",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
@@ -1345,7 +1333,6 @@ def test_excel_writer(tmp_path: Path) -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "ExcelFile.parse is deprecated",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(
@@ -1908,21 +1895,11 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
             assert_type(read_orc(path_str, dtype_backend="numpy_nullable"), DataFrame),
             DataFrame,
         )
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.write_feather is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(assert_type(DF.to_feather(path_str), None), type(None))
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"pyarrow.feather.read_table is deprecated as of 24.0.0",
-        upper="3.0.4",
-    ):
-        check(
-            assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
-            DataFrame,
-        )
+    check(assert_type(DF.to_feather(path_str), None), type(None))
+    check(
+        assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
+        DataFrame,
+    )
 
     path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     as_str: str = path_str

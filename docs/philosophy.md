@@ -120,6 +120,21 @@ which is supported by `typing_extensions` version 4.2 and beyond makes it easier
 to test to validate the return types of functions and methods.  Future work
 is intended to expand the use of `assert_type()` in the test code.
 
+Type checkers read `assert_type()`, but `pytest` does not: it is satisfied by any
+expression.  When a test also needs to confirm the runtime type, wrap it in the
+`check` helper from `tests/__init__.py`, which is imported as `from tests import check`
+and asserts the runtime type as the test runs:
+
+```python
+check(assert_type(left + right, "pd.Series[int]"), pd.Series, int)
+```
+
+The third argument is the expected dtype and is optional; it is checked with `isinstance`
+against one representative element, so the example above assumes Python `int` elements —
+use the numpy scalar type (for example `np.integer`) for numpy-backed data.  When the
+target is a parameterized `np.ndarray[shape, dtype]`, `check` also verifies a fixed-length
+tuple shape and a concrete `np.dtype[...]` dtype from the type arguments.
+
 When a stub returns `Never`, verify it with `assert_type(expr, Never)`.  For
 arithmetic operators returning `Never`, type checkers still check the rest of
 the scope, so a bare assertion is fine.  Some `Never`-returning calls, however,
