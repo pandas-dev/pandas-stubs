@@ -223,7 +223,6 @@ pandas.core.frame.DataFrame.reindex
 pandas.core.frame.DataFrame.reindex_like
 pandas.core.frame.DataFrame.rename
 pandas.core.frame.DataFrame.rename_axis
-pandas.core.frame.DataFrame.replace
 pandas.core.frame.DataFrame.reset_index
 pandas.core.frame.DataFrame.rolling
 pandas.core.frame.DataFrame.set_axis
