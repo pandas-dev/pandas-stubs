@@ -481,17 +481,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def __matmul__(
         self,
-        other: (
-            DataFrame
-            | np_ndarray_num[tuple[int, int]]
-            | Sequence[Sequence[SupportsSelfMul[Any]]]
-        ),
+        other: DataFrame | np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]],
         /,
     ) -> Self: ...
     @overload
     def __matmul__(
         self,
-        other: Series | np_ndarray_num[tuple[int]] | Sequence[SupportsSelfMul[Any]],
+        other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
         /,
     ) -> Series: ...
     @overload

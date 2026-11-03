@@ -101,6 +101,8 @@ def test_types_dot() -> None:
     check(assert_type(df1 @ [1, 2, 3, 4], pd.Series), pd.Series)
     check(assert_type([[1, 0], [0, 1]] @ df1, pd.DataFrame), pd.DataFrame)
     check(assert_type([1, 2] @ df1, pd.Series), pd.Series)
+    check(assert_type(df1.__rmatmul__(np.eye(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.__rmatmul__(np.ones(2)), pd.Series), pd.Series)
     check(assert_type(df1.dot(s1), pd.Series), pd.Series)
     list_like = [[0, 1], [1, 2], [-1, -1], [2, 0]]
     check(assert_type(df1.dot(list_like), pd.DataFrame), pd.DataFrame)
