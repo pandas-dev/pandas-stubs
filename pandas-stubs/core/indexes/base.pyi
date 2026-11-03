@@ -102,6 +102,7 @@ from pandas._typing import (
     DtypeObj,
     HashableT,
     IgnoreRaise,
+    IndexReplaceValue,
     IntDtypeArg,
     JoinHow,
     Label,
@@ -543,6 +544,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @property
     def values(self) -> np_1darray: ...
     def memory_usage(self, deep: bool = False) -> int: ...
+    def replace(
+        self,
+        to_replace: IndexReplaceValue = None,
+        value: IndexReplaceValue = ...,
+        regex: IndexReplaceValue = False,
+    ) -> Index: ...
     @overload
     def where(
         self,

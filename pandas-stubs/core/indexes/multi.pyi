@@ -24,6 +24,7 @@ from pandas._typing import (
     Dtype,
     HashableT,
     IndexLabel,
+    IndexReplaceValue,
     Label,
     Level,
     MaskType,
@@ -48,6 +49,13 @@ class MultiIndex(Index):
     @override
     def all(
         self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def replace(
+        self,
+        to_replace: IndexReplaceValue = None,
+        value: IndexReplaceValue = ...,
+        regex: IndexReplaceValue = False,
     ) -> Never: ...
     def __new__(
         cls,
