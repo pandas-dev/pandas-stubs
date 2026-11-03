@@ -79,6 +79,7 @@ from pandas.core.strings.accessor import StrDescriptor
 from typing_extensions import override
 
 from pandas._libs.interval import Interval
+from pandas._libs.lib import NoDefault
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -547,7 +548,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def replace(
         self,
         to_replace: IndexReplaceValue = None,
-        value: IndexReplaceValue = ...,
+        value: IndexReplaceValue | NoDefault = ...,
         regex: IndexReplaceValue = False,
     ) -> Index: ...
     @overload

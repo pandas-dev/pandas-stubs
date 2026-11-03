@@ -996,10 +996,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         limit: int = ...,
         inplace: bool = False,
     ) -> Self: ...
+    @final
     def replace(
         self,
         to_replace: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
-        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] | NoDefault = ...,
         *,
         inplace: bool = False,
         regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
