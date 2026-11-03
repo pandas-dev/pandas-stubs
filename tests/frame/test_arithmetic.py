@@ -86,15 +86,21 @@ def test_types_dot() -> None:
     df1 = pd.DataFrame([[0, 1, -2, -1], [1, 1, 1, 1]])
     df2 = pd.DataFrame([[0, 1], [1, 2], [-1, -1], [2, 0]])
     s1 = pd.Series([1, 1, 2, 1])
-    np_array = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
     check(assert_type(df1 @ df2, pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.dot(df2), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df1 @ np_array, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1 @ np.eye(4), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1 @ np.ones(4), pd.Series), pd.Series)
     check(assert_type(df1.dot(np.eye(4)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.dot(np.ones(4)), pd.Series), pd.Series)
     check(assert_type(df1.dot(pd.array([1, 3, 3, 7])), pd.Series), pd.Series)
     check(assert_type(df1 @ s1, pd.Series), pd.Series)
     check(assert_type(s1 @ df2, pd.Series), pd.Series)
+    check(
+        assert_type(df1 @ [[0, 0], [0, 1], [1, 0], [1, 1]], pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(df1 @ [1, 2, 3, 4], pd.Series), pd.Series)
+    check(assert_type([[1, 0], [0, 1]] @ df1, pd.DataFrame), pd.DataFrame)
+    check(assert_type([1, 2] @ df1, pd.Series), pd.Series)
     check(assert_type(df1.dot(s1), pd.Series), pd.Series)
     list_like = [[0, 1], [1, 2], [-1, -1], [2, 0]]
     check(assert_type(df1.dot(list_like), pd.DataFrame), pd.DataFrame)
