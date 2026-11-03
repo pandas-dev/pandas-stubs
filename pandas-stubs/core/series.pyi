@@ -258,6 +258,7 @@ from pandas._typing import (
     np_1darray_object,
     np_1darray_str,
     np_1darray_td,
+    np_2darray,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -1149,14 +1150,22 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def diff(self: Iterable[SupportsSelfSub[S2]], periods: int = ...) -> Series[S2]: ...
     def autocorr(self, lag: int = 1) -> float: ...
     @overload
-    def dot(self, other: Series[S1]) -> Scalar: ...
-    @overload
-    def dot(self, other: DataFrame) -> Series[S1]: ...
-    @overload
     def dot(
         self,
-        other: ArrayLike | dict[_str, np_ndarray_num] | Sequence[S1] | Index[S1],
-    ) -> np_ndarray_num: ...
+        other: (
+            Series
+            | Index
+            | ExtensionArray
+            | np_1darray
+            | Sequence[SupportsSelfMul[Any]]
+        ),
+    ) -> np.number | np.bool: ...
+    @overload
+    def dot(self, other: DataFrame) -> Series: ...
+    @overload
+    def dot(
+        self, other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]]
+    ) -> np_1darray: ...
     @overload
     def __matmul__(self, other: Series, /) -> Scalar: ...
     @overload
