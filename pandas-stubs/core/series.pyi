@@ -47,10 +47,7 @@ from _typeshed import (
     SupportsRAdd,
     SupportsRMul,
 )
-from matplotlib.axes import (
-    Axes as PlotAxes,
-    SubplotBase,
-)
+from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas import (
     Index,
@@ -265,6 +262,7 @@ from pandas._typing import (
     np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_num,
+    np_ndarray_object,
     np_ndarray_str,
     np_ndarray_td,
 )
@@ -1545,9 +1543,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @property
     def plot(self) -> PlotAccessor: ...
     sparse = ...
+    @overload
     def hist(
         self,
-        by: object | None = None,
+        by: None = None,
         ax: PlotAxes | None = None,
         grid: _bool = True,
         xlabelsize: float | _str | None = None,
@@ -1559,7 +1558,23 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         backend: _str | None = None,
         legend: _bool = False,
         **kwargs: Any,
-    ) -> SubplotBase: ...
+    ) -> PlotAxes: ...
+    @overload
+    def hist(
+        self,
+        by: object,
+        ax: PlotAxes | None = None,
+        grid: _bool = True,
+        xlabelsize: float | _str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | _str | None = None,
+        yrot: float | None = None,
+        figsize: tuple[float, float] | None = None,
+        bins: int | Sequence[int] = 10,
+        backend: _str | None = None,
+        legend: _bool = False,
+        **kwargs: Any,
+    ) -> PlotAxes | np_ndarray_object: ...
     @final
     def droplevel(self, level: Level | list[Level], axis: AxisIndex = 0) -> Self: ...
     def pop(self, item: Hashable) -> S1: ...
