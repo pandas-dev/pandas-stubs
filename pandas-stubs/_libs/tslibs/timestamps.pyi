@@ -64,6 +64,25 @@ class Timestamp(datetime, SupportsIndex):
         Timedelta
     ]
     value: int
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        ts_input: NaTType | None,
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        microsecond: int | None = None,
+        tzinfo: _tzinfo | None = None,
+        *,
+        nanosecond: int | None = None,
+        tz: TimeZones = None,
+        unit: str | int | None = None,
+        fold: Literal[0, 1] | None = None,
+    ) -> NaTType: ...
+    @overload
     def __new__(
         cls,
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
@@ -81,9 +100,6 @@ class Timestamp(datetime, SupportsIndex):
         unit: str | int | None = None,
         fold: Literal[0, 1] | None = None,
     ) -> Self: ...
-    # GH 46171
-    # While Timestamp can return pd.NaT, having the constructor return
-    # a Union with NaTType makes things awkward for users of pandas
     @property
     @override
     def year(self) -> int: ...
