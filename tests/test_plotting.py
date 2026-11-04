@@ -264,12 +264,22 @@ def test_boxplot(close_figures: None) -> None:
 
     # Basic by= usage
     check(
-        assert_type(pd.plotting.boxplot(df, column=["Col1"], by="Col4"), Axes),
+        assert_type(pd.plotting.boxplot(df, column="Col1", by="Col4"), Axes),
         Axes,
     )
     check(
-        assert_type(df.boxplot(column=["Col1"], by="Col4"), Axes),
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1", "Col2"], by="Col4"),
+            Axes | np_ndarray_object,
+        ),
+        np_ndarray_object,
+    )
+    check(
+        assert_type(df.boxplot(column="Col1", by="Col4"), Axes),
         Axes,
+    )
+    check(
+        assert_type(df.boxplot(by="Col4"), Axes | np_ndarray_object), np_ndarray_object
     )
 
     # Return type: axes with by=
