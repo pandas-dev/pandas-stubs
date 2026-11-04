@@ -2550,47 +2550,46 @@ def test_types_to_numpy() -> None:
             pd.Period,
         )
 
-    # TODO: remove these ignores when minimum ty includes astral-sh/ty#4364.
     # np.dtypes signed int instances
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int8DType()), np_1darray[np.int8]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.int8,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int16DType()), np_1darray[np.int16]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.int16,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int32DType()), np_1darray[np.int32]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.int32,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int64DType()), np_1darray[np.int64]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.int64,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.IntDType()), np_1darray[np.intc]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.intc,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongDType()), np_1darray[np.long]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.long,
     )
@@ -2598,7 +2597,7 @@ def test_types_to_numpy() -> None:
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongLongDType()),
             np_1darray[np.longlong],
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.longlong,
     )
@@ -2607,42 +2606,42 @@ def test_types_to_numpy() -> None:
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt8DType()), np_1darray[np.uint8]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.uint8,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt16DType()), np_1darray[np.uint16]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.uint16,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt32DType()), np_1darray[np.uint32]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.uint32,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt64DType()), np_1darray[np.uint64]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.uint64,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UIntDType()), np_1darray[np.uintc]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.uintc,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.ULongDType()), np_1darray[np.ulong]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.ulong,
     )
@@ -2650,7 +2649,7 @@ def test_types_to_numpy() -> None:
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.ULongLongDType()),
             np_1darray[np.ulonglong],
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.ulonglong,
     )
@@ -2659,21 +2658,21 @@ def test_types_to_numpy() -> None:
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Float16DType()), np_1darray[np.float16]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.float16,
     )
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Float32DType()), np_1darray[np.float32]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.float32,
     )
     check(
         assert_type(
             s_timedelta.to_numpy(dtype=np.dtypes.Float64DType()), np_1darray[np.float64]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.float64,
     )
@@ -2681,7 +2680,7 @@ def test_types_to_numpy() -> None:
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongDoubleDType()),
             np_1darray[np.longdouble],
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.longdouble,
     )
@@ -2691,7 +2690,7 @@ def test_types_to_numpy() -> None:
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Complex64DType()),
             np_1darray[np.complex64],
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.complex64,
     )
@@ -2699,7 +2698,7 @@ def test_types_to_numpy() -> None:
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Complex128DType()),
             np_1darray[np.complex128],
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.complex128,
     )
@@ -2707,7 +2706,7 @@ def test_types_to_numpy() -> None:
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.CLongDoubleDType()),
             np_1darray[np.clongdouble],
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.clongdouble,
     )
@@ -2716,7 +2715,7 @@ def test_types_to_numpy() -> None:
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.BytesDType(4)), np_1darray[np.bytes_]
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.bytes_,
     )
@@ -2724,7 +2723,7 @@ def test_types_to_numpy() -> None:
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.StrDType(4)), np_1darray_str
-        ),  # ty: ignore[type-assertion-failure,unused-ignore-comment,unused-ignore-comment]
+        ),
         np_1darray,
         np.str_,
     )
