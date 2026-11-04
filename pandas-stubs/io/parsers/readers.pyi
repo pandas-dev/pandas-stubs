@@ -38,7 +38,7 @@ def read_csv(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
     sep: str | None = ...,
-    delimiter: str | None = None,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
@@ -93,7 +93,7 @@ def read_csv(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
     sep: str | None = ...,
-    delimiter: str | None = None,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
@@ -203,7 +203,7 @@ def read_table(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
     sep: str | None = ...,
-    delimiter: str | None = None,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
@@ -234,7 +234,6 @@ def read_table(
         | Mapping[str, Sequence[int | str]]
         | None
     ) = None,
-    keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
     cache_dates: bool = True,
@@ -266,7 +265,7 @@ def read_table(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
     sep: str | None = ...,
-    delimiter: str | None = None,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
@@ -297,7 +296,6 @@ def read_table(
         | Mapping[str, Sequence[int | str]]
         | None
     ) = None,
-    keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
     cache_dates: bool = True,
@@ -329,7 +327,7 @@ def read_table(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
     sep: str | None = ...,
-    delimiter: str | None = None,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
@@ -360,7 +358,6 @@ def read_table(
         | Mapping[str, Sequence[int | str]]
         | None
     ) = None,
-    keep_date_col: bool = False,
     date_format: dict[Hashable, str] | str | None = None,
     dayfirst: bool = False,
     cache_dates: bool = True,

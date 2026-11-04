@@ -9,6 +9,7 @@ from collections.abc import (
     Sequence,
 )
 import datetime as dt
+import re
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -34,11 +35,8 @@ import pytest
 from pandas._libs.tslibs.offsets import BaseOffset
 
 from tests import (
-    PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
-    WINDOWS,
     check,
-    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray,
@@ -155,8 +153,8 @@ def test_index_isin() -> None:
         assert_type(mi.isin({(1, "red"): 0, (3, "red"): 0}), np_1darray_bool),
         np_1darray_bool,
     )
-    if PD_LTE_31:
-        # TODO: pandas-dev/pandas#66540 pandas bug on nightly
+    # TODO: pandas-dev/pandas#66514 drop pytest.raises once fixed
+    with pytest.raises(TypeError, match="has no len"):
         check(
             assert_type(
                 mi.isin({iter((1, "red")): 0, (3, "red"): 0}.keys()), np_1darray_bool
@@ -168,8 +166,8 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin(iter([["1"]]), 1), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin({1: 0}.keys(), 0), np_1darray_bool), np_1darray_bool)
 
-    if PD_LTE_31:
-        # TODO: pandas-dev/pandas#66514 pandas bug on nightly
+    # TODO: pandas-dev/pandas#66514 drop pytest.raises once fixed
+    with pytest.raises(TypeError, match="has no len"):
         check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -1193,6 +1191,14 @@ def test_getitem() -> None:
     check(assert_type(i0[0], str), str)
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        st = {"a"}
+        dc = {"a": 1}
+        _0 = i0[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _1 = i0[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _2 = mi[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _3 = mi[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+
 
 def test_append_mix() -> None:
     """Test pd.Index.append with mixed types"""
@@ -1455,14 +1461,8 @@ def test_disallow_empty_index() -> None:
         _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
-def test_periodindex_shift() -> None:
-    ind = pd.period_range(start="2022-06-01", periods=10)
-    check(assert_type(ind.shift(1), pd.PeriodIndex), pd.PeriodIndex)
-
-
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
-    # broken on 3.0.0.dev0 as of 20250813, fix with pandas-dev/pandas/issues/62094
     check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
@@ -1599,26 +1599,6 @@ def test_index_searchsorted() -> None:
     check(assert_type(idx.searchsorted(1, sorter=range(3)), np.intp), np.intp)
 
 
-def test_period_index_constructor() -> None:
-    check(
-        assert_type(pd.PeriodIndex(["2000"], dtype="period[D]"), pd.PeriodIndex),
-        pd.PeriodIndex,
-    )
-    check(
-        assert_type(
-            pd.PeriodIndex(["2000"], freq="D", name="foo", copy=True), pd.PeriodIndex
-        ),
-        pd.PeriodIndex,
-    )
-
-
-def test_period_index_asof_locs() -> None:
-    idx = pd.PeriodIndex(["2000", "2001"], freq="D")
-    where = pd.DatetimeIndex(["2023-05-30 00:12:00", "2023-06-01 00:00:00"])
-    mask = np.ones(2, dtype=bool)
-    check(assert_type(idx.asof_locs(where, mask), np_1darray_intp), np_1darray_intp)
-
-
 def test_array_property() -> None:
     """Test that Index.array and semantic Index.array return ExtensionArray and its subclasses"""
     # casting due to pandas-dev/pandas-stubs#1383
@@ -1714,6 +1694,48 @@ def test_multiindex_swaplevel() -> None:
     check(assert_type(mi.swaplevel(0, 1), "pd.MultiIndex"), pd.MultiIndex)
 
 
+def test_index_replace_scalar() -> None:
+    index = pd.Index([1, 2, 3], name="source")
+
+    check(assert_type(index.replace(2, "two"), pd.Index), pd.Index)
+
+
+def test_index_replace_mapping_and_list() -> None:
+    index = pd.Index([1, 2, 3])
+
+    check(assert_type(index.replace({1: 10, 3: 30}), pd.Index), pd.Index)
+    check(assert_type(index.replace([1, 3], [10, 30]), pd.Index), pd.Index)
+    check(assert_type(index.replace(pd.Series({1: 10, 3: 30})), pd.Index), pd.Index)
+
+
+def test_index_replace_regex() -> None:
+    index = pd.Index(["alpha", "beta"])
+
+    check(assert_type(index.replace(re.compile("^a"), "x", True), pd.Index), pd.Index)
+    check(assert_type(index.replace(value="x", regex="^a"), pd.Index), pd.Index)
+
+
+def test_multiindex_replace_unsupported() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.MultiIndex.from_tuples([(1, 2)]).replace(1, 3), Never)
+
+
+def test_index_replace_pandas_scalars() -> None:
+    periods = pd.period_range("2026-01", periods=2, freq="M")
+    period = pd.Period("2026-03", freq="M")
+    check(assert_type(periods.replace(periods[0], period), pd.Index), pd.Index)
+
+    intervals = pd.IntervalIndex.from_breaks([0, 1, 2])
+    interval = pd.Interval(2, 3)
+    check(assert_type(intervals.replace(intervals[0], interval), pd.Index), pd.Index)
+
+    timestamp = pd.Timestamp("2026-01-01")
+    dates = pd.DatetimeIndex([pd.NaT, timestamp])
+    check(assert_type(dates.replace(pd.NaT, timestamp), pd.Index), pd.Index)
+
+
 def test_index_where() -> None:
     """Test Index.where with multiple types of other GH1419."""
     idx = pd.Index(range(48))
@@ -1723,14 +1745,12 @@ def test_index_where() -> None:
     check(
         assert_type(val_idx, "pd.Index[int]"),
         pd.Index,
-        int if PD_LTE_31 else np.integer,
+        np.integer,
     )
 
     val_sr = idx.where(mask, idx.to_series())
 
-    check(
-        assert_type(val_sr, "pd.Index[int]"), pd.Index, int if PD_LTE_31 else np.int64
-    )
+    check(assert_type(val_sr, "pd.Index[int]"), pd.Index, np.int64)
 
 
 def test_datetimeindex_where() -> None:
@@ -1755,7 +1775,7 @@ def test_datetimeindex_where() -> None:
     check(assert_type(val_scalar, pd.Index), pd.Index)
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
-    check(assert_type(val_range, pd.Index), pd.RangeIndex if PD_LTE_31 else pd.Index)
+    check(assert_type(val_range, pd.Index), pd.Index)
 
 
 def test_index_set_names() -> None:
@@ -2003,7 +2023,7 @@ def test_get_loc_named_tuples() -> None:
             flat_midx_unsorted_dupes.get_loc(NamedIndex("i1", "i2")),
             int | slice | np_1darray_bool,
         ),
-        slice if PD_LTE_31 else np_1darray_bool,
+        np_1darray_bool,
     )
 
 
@@ -2107,18 +2127,15 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    with pytest_warns_conditioned(
-        RuntimeWarning, "overflow encountered in scalar multiply", WINDOWS
-    ):
-        check(
-            assert_type(
-                pd.period_range(start="2017-01-01", end="2017-02-01", freq="D").diff(),
-                pd.Index,  # "pd.Index[BaseOffset]" has dtype object
-            ),
-            pd.Index,
-            BaseOffset,
-            index_to_check_for_type=-1,
-        )
+    check(
+        assert_type(
+            pd.period_range(start="2017-01-01", end="2017-02-01", freq="D").diff(),
+            pd.Index,  # "pd.Index[BaseOffset]" has dtype object
+        ),
+        pd.Index,
+        BaseOffset,
+        index_to_check_for_type=-1,
+    )
     # bool -> Any
     check(
         assert_type(pd.Index([True, True, False, False, True]).diff(), pd.Index),

@@ -9,6 +9,7 @@ from pandas.core.series import Series
 import pyarrow as pa
 from typing_extensions import override
 
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.period import (
     Period,
     PeriodMixin,
@@ -47,6 +48,10 @@ class PeriodArray(DatelikeOps, PeriodMixin):
     def __arrow_array__(
         self, type: DtypeArg | None = None
     ) -> pa.ExtensionArray[Any]: ...
+    @property
+    def freq(self) -> BaseOffset: ...
+    @property
+    def freqstr(self) -> str: ...
     @property
     def year(self) -> np_1darray_int64: ...
     @property

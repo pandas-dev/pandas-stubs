@@ -128,7 +128,9 @@ class Series:
     def __matmul__(self, other: DataFrame, /) -> DataFrame: ...
 """},
     )
-    allowances = {("Series", "__matmul__", "DataFrame"): expected} if expected else {}
+    allowances: dict[tuple[str, str, str], int] = (
+        {("Series", "__matmul__", "DataFrame"): expected} if expected else {}
+    )
     assert check_operand_hierarchy(root, exceptions=allowances) == (expected == 2)
     error = capsys.readouterr().err
     if expected != 2:
@@ -430,8 +432,11 @@ def test_registry_and_documentation() -> None:
         for heading in headings
     }
     assert anchor and anchor in anchors
-    assert "type-architecture/operand-hierarchy.md" in (
-        _REPO_ROOT / "docs/README.md"
+    assert "type-architecture/README.md" in (_REPO_ROOT / "docs/README.md").read_text(
+        encoding="utf-8"
+    )
+    assert "operand-hierarchy.md" in (
+        _REPO_ROOT / "docs/type-architecture/README.md"
     ).read_text(encoding="utf-8")
 
 

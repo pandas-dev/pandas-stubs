@@ -295,6 +295,13 @@ def test_types_groupby_agg() -> None:
     check(
         assert_type(df.groupby("col1").agg(["min", "max"]), pd.DataFrame), pd.DataFrame
     )
+    check(
+        assert_type(
+            df.groupby("col1").agg({"col2": "min", "col3": "max", 0: "sum"}),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
@@ -311,7 +318,26 @@ def test_types_groupby_agg() -> None:
     agg_dict2 = {"col2": min, "col3": max, 0: min}
     check(assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame)
 
-    # Here, MyPy infers dict[object, object], so it must be explicitly annotated
+    check(
+        assert_type(
+            df.groupby("col1").agg(
+                {
+                    "col2": min,
+                    "col3": "max",
+                    0: wrapped_min,
+                }
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.groupby("col1").agg({"col2": "sum"}), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(df.groupby("col1").agg({0: "sum"}), pd.DataFrame), pd.DataFrame)
+
+    # A stored mixed dict needs an explicit annotation; the inline dict above
+    # does not.
     agg_dict3: dict[str | int, str | Callable[..., Any]] = {
         "col2": min,
         "col3": "max",
@@ -322,6 +348,12 @@ def test_types_groupby_agg() -> None:
     check(assert_type(df.groupby("col1").agg(agg_dict4), pd.DataFrame), pd.DataFrame)
     agg_dict5 = {0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict5), pd.DataFrame), pd.DataFrame)
+
+    # GroupBy.aggregate resolves a string `func` via getattr, so the set of
+    # valid strings is open-ended, unlike GroupBy.transform which validates
+    # against a closed list (see TransformReductionListType below).
+    check(assert_type(df.groupby("col1").agg("describe"), pd.DataFrame), pd.DataFrame)
+
     named_agg = pd.NamedAgg(column="col2", aggfunc="max")
     check(
         assert_type(df.groupby("col1").agg(new_col=named_agg), pd.DataFrame),
@@ -433,7 +465,6 @@ def test_groupby_series_methods() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "GroupBy.nth",
-        lower="3.0.99",
         upper="3.99",
     ):
         check(assert_type(gb.nth[0, 1, 2], pd.DataFrame | pd.Series), pd.Series)
@@ -703,7 +734,11 @@ def test_groupby_and_transform() -> None:
     grouped = df.groupby("A")[["C", "D"]]
     grouped1 = ser.groupby(ser > 100)
     c1 = grouped.transform("sum")
-    c2 = grouped.transform(lambda x: (x - x.mean()) / x.std())
+    # TODO: remove this ignore once the upstream fix is released.
+    # https://github.com/facebook/pyrefly/commit/bb73a2ddef96d31b1bd7d8351691c1f243e2feba
+    c2 = grouped.transform(
+        lambda x: (x - x.mean()) / x.std()  # pyrefly: ignore[unknown-attribute-access]
+    )
     c3 = grouped1.transform("cumsum")
     c4 = grouped1.transform(lambda x: x.max() - x.min())
     check(assert_type(c1, pd.DataFrame), pd.DataFrame)

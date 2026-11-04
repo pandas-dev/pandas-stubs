@@ -11,7 +11,6 @@ from pandas.core.frame import DataFrame
 from typing_extensions import override
 
 from pandas._libs.tslibs.nattype import NaTType
-from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     AnyArrayLike,
@@ -129,13 +128,6 @@ class TimedeltaArray(TimelikeOps):
     def nanoseconds(self) -> np_1darray_int32: ...
     @property
     def components(self) -> DataFrame: ...
-    # TODO: python/mypy#15900 we did use explicit override but mypy does not see it
-    @property  # type: ignore[explicit-override]
-    @override
-    def freq(self) -> BaseOffset | None: ...
-    @freq.setter
-    @override
-    def freq(self, value: Frequency | None) -> None: ...
     @override
     def min(self, *, skipna: bool = True, **kwargs: Any) -> Timedelta | NaTType: ...
     @override
