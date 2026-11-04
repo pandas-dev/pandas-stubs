@@ -6,7 +6,6 @@
 
 from pathlib import Path
 from typing import (
-    TYPE_CHECKING,
     TypeAlias,
     assert_type,
 )
@@ -15,58 +14,39 @@ import uuid
 import numpy as np
 import pandas as pd
 from pandas import read_json
+from pandas.api import typing as api_typing
 from pandas.api.typing import (
     DataFrameGroupBy,
+    DatetimeIndexResamplerGroupBy,
     Expanding,
+    ExpandingGroupBy,
     ExponentialMovingWindow,
+    ExponentialMovingWindowGroupBy,
     JsonReader,
     NaTType,
     NAType,
+    PeriodIndexResamplerGroupBy,
     Resampler,
     Rolling,
+    RollingGroupBy,
     SeriesGroupBy,
     StataReader,
+    TimedeltaIndexResamplerGroupBy,
     TimeGrouper,
     Window,
 )
 
-if TYPE_CHECKING:
-    # The stubs still use the pre-3.1 *Groupby spellings, which pandas
-    # renames to *GroupBy in 3.1 (pandas-dev/pandas#49578).
-    from pandas.api.typing import (
-        DatetimeIndexResamplerGroupby,
-        ExpandingGroupby,
-        ExponentialMovingWindowGroupby,
-        PeriodIndexResamplerGroupby,
-        RollingGroupby,
-        TimedeltaIndexResamplerGroupby,
-    )
-else:
-    try:
-        from pandas.api.typing import (
-            DatetimeIndexResamplerGroupBy as DatetimeIndexResamplerGroupby,
-            ExpandingGroupBy as ExpandingGroupby,
-            ExponentialMovingWindowGroupBy as ExponentialMovingWindowGroupby,
-            PeriodIndexResamplerGroupBy as PeriodIndexResamplerGroupby,
-            RollingGroupBy as RollingGroupby,
-            TimedeltaIndexResamplerGroupBy as TimedeltaIndexResamplerGroupby,
-        )
-    except ImportError:  # pandas < 3.1
-        from pandas.api.typing import (
-            DatetimeIndexResamplerGroupby,
-            ExpandingGroupby,
-            ExponentialMovingWindowGroupby,
-            PeriodIndexResamplerGroupby,
-            RollingGroupby,
-            TimedeltaIndexResamplerGroupby,
-        )
+from pandas.errors import Pandas4Warning
 
-from tests import check
+from tests import (
+    check,
+    pytest_warns_bounded,
+)
 
 ResamplerGroupBy: TypeAlias = (
-    DatetimeIndexResamplerGroupby
-    | PeriodIndexResamplerGroupby
-    | TimedeltaIndexResamplerGroupby
+    DatetimeIndexResamplerGroupBy
+    | PeriodIndexResamplerGroupBy
+    | TimedeltaIndexResamplerGroupBy
 )
 
 
@@ -97,7 +77,7 @@ def tests_datetimeindexersamplergroupby() -> None:
     gb_df = df.groupby("col2")
 
     def f1(gb: ResamplerGroupBy) -> None:
-        check(gb, DatetimeIndexResamplerGroupby)
+        check(gb, DatetimeIndexResamplerGroupBy)
 
     f1(gb_df.resample("ME"))
 
@@ -110,7 +90,7 @@ def test_timedeltaindexresamplergroupby() -> None:
     gb_df = df.groupby("col2")
 
     def f1(gb: ResamplerGroupBy) -> None:
-        check(gb, TimedeltaIndexResamplerGroupby)
+        check(gb, TimedeltaIndexResamplerGroupBy)
 
     f1(gb_df.resample("1D"))
 
@@ -120,7 +100,7 @@ def test_periodindexresamplergroupby() -> None:
     df = pd.DataFrame(data=4 * [range(2)], index=idx, columns=["a", "b"])
 
     def f1(gb: ResamplerGroupBy) -> None:
-        check(gb, PeriodIndexResamplerGroupby)
+        check(gb, PeriodIndexResamplerGroupBy)
 
     f1(df.groupby("a").resample("3min"))
 
@@ -149,8 +129,8 @@ def test_expanding() -> None:
 def test_expanding_groubpy() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: ExpandingGroupby) -> None:
-        check(gb, ExpandingGroupby)
+    def f1(gb: ExpandingGroupBy) -> None:
+        check(gb, ExpandingGroupBy)
 
     f1(df.groupby("B").expanding())
 
@@ -167,8 +147,8 @@ def test_ewm() -> None:
 def test_ewm_groubpy() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: ExponentialMovingWindowGroupby) -> None:
-        check(gb, ExponentialMovingWindowGroupby)
+    def f1(gb: ExponentialMovingWindowGroupBy) -> None:
+        check(gb, ExponentialMovingWindowGroupBy)
 
     f1(df.groupby("B").ewm(2))
 
@@ -207,8 +187,8 @@ def test_rolling() -> None:
 def test_rolling_groupby() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: RollingGroupby) -> None:
-        check(gb, RollingGroupby)
+    def f1(gb: RollingGroupBy) -> None:
+        check(gb, RollingGroupBy)
 
     f1(df.groupby("B").rolling(2))
 
@@ -245,3 +225,13 @@ def test_statereader(tmp_path: Path) -> None:
 
     with StataReader(path_str) as reader:
         f1(reader)
+
+
+def test_groupby_old_spelling() -> None:
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "is deprecated and will be removed in a future version.",
+        upper="3.99.99",
+        upper_exception=AttributeError,
+    ):
+        _ = api_typing.RollingGroupby  # type: ignore[attr-defined,unused-ignore] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]

@@ -15,6 +15,12 @@ The `pandas-stubs` project is introduced in `README.md`.
 - Follow `docs/philosophy.md`.
 - Also follow all guidelines for contributing to the codebase specified at [Contributing to the code base](https://pandas.pydata.org/docs/development/contributing_codebase.html).
 
+## Scope: Public API Only
+
+- Document first: a new API must be listed as public in the [pandas API reference](https://pandas.pydata.org/docs/reference/) before a stub is added here.
+- Before changing an existing stub, confirm the API is listed there. If it is not, open an issue in pandas-dev/pandas and link it; do not change the stub.
+- When a reviewer asks for an issue, open it.
+
 ## Citation & Reference Formatting Rules (Important)
 
 When generating documentation or writing PR descriptions, format all GitHub references as plain text so that GitHub renders them as native autolinks.

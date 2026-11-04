@@ -63,6 +63,12 @@ def test_types_iloc_iat() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         s.iat[0, 0]  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        st = {"a"}
+        dc = {"a": 1}
+        _4 = s2.iloc[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _5 = s2.iloc[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        s2.iloc[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        s2.iloc[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
 
 
 def test_types_loc_at() -> None:
@@ -102,6 +108,14 @@ def test_types_loc_at() -> None:
         type(None),
     )
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        st = {"a"}
+        dc = {"a": 1}
+        _2 = s2.loc[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _3 = s2.loc[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        s2.loc[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        s2.loc[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+
 
 def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
@@ -109,6 +123,14 @@ def test_types_getitem() -> None:
     s2 = pd.Series([0, 1, 2, 3])
     check(assert_type(s2[0], int), np.integer)
     check(assert_type(s[:2], pd.Series), pd.Series)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        st = {"a"}
+        dc = {"a": 1}
+        _0 = s2[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _1 = s2[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        s2[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        s2[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
 
 
 def test_types_getitem_by_timestamp() -> None:

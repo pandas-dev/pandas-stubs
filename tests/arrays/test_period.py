@@ -14,18 +14,20 @@ from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.period import PeriodArray
 import pyarrow as pa
 
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.period import Period
-from pandas.errors import Pandas4Warning
 
 from tests import (
     check,
-    pytest_warns_bounded,
+    pytest_warns_dt_alias_pandas4,
 )
 from tests._typing import (
     np_1darray_bool,
     np_1darray_int64,
     np_1darray_object,
 )
+
+from pandas.tseries.offsets import Day
 
 
 def test_construction_sequence() -> None:
@@ -44,6 +46,13 @@ def test_construction_array_like() -> None:
 
 def test_construction_dtype() -> None:
     check(assert_type(pd.array([], PeriodDtype("D")), PeriodArray), PeriodArray)
+
+
+def test_period_array_freq() -> None:
+    """Test freq and freqstr properties for PeriodArray."""
+    arr = pd.array(pd.period_range("2020-01-01", periods=3, freq="D"))
+    check(assert_type(arr.freq, BaseOffset), Day)
+    check(assert_type(arr.freqstr, str), str)
 
 
 def test_constructor() -> None:
@@ -170,13 +179,7 @@ def test_period_array_dayofweek() -> None:
     idx = PeriodIndex(["2020-01-01", "2020-01-02", "2020-01-03"], freq="D")
     arr = PeriodArray(idx)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(arr.dayofweek, np_1darray_int64), np_1darray_int64)
 
 
@@ -192,13 +195,7 @@ def test_period_array_weekday() -> None:
     idx = PeriodIndex(["2020-01-01", "2020-01-02", "2020-01-03"], freq="D")
     arr = PeriodArray(idx)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(arr.weekday, np_1darray_int64), np_1darray_int64)
 
 
@@ -207,13 +204,7 @@ def test_period_array_dayofyear() -> None:
     idx = PeriodIndex(["2020-01-01", "2020-06-15", "2020-12-31"], freq="D")
     arr = PeriodArray(idx)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(arr.dayofyear, np_1darray_int64), np_1darray_int64)
 
 
@@ -250,13 +241,7 @@ def test_period_array_daysinmonth() -> None:
     idx = PeriodIndex(["2020-01", "2020-02", "2020-03"], freq="M")
     arr = PeriodArray(idx)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(arr.daysinmonth, np_1darray_int64), np_1darray_int64)
 
 

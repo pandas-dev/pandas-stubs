@@ -288,42 +288,14 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, idx: int, /
     ) -> IntervalT: ...
-    @overload  # type: ignore[override]
     @override
-    def __gt__(
-        self, other: IntervalT | IntervalIndex[IntervalT], /
-    ) -> np_1darray_bool: ...
-    @overload
-    def __gt__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: pd.Series[IntervalT], /
-    ) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    def __gt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
     @override
-    def __ge__(
-        self, other: IntervalT | IntervalIndex[IntervalT], /
-    ) -> np_1darray_bool: ...
-    @overload
-    def __ge__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: pd.Series[IntervalT], /
-    ) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    def __ge__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
     @override
-    def __le__(
-        self, other: IntervalT | IntervalIndex[IntervalT], /
-    ) -> np_1darray_bool: ...
-    @overload
-    def __le__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: pd.Series[IntervalT], /
-    ) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    def __le__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
     @override
-    def __lt__(
-        self, other: IntervalT | IntervalIndex[IntervalT], /
-    ) -> np_1darray_bool: ...
-    @overload
-    def __lt__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: pd.Series[IntervalT], /
-    ) -> pd.Series[bool]: ...
+    def __lt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
     @overload  # type: ignore[override]
     @override
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]

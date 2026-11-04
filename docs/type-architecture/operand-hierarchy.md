@@ -26,6 +26,29 @@ are not scanned, so `__radd__` is outside the check while `__rshift__` is scanne
 subclasses are discovered through their bases, not listed. `REQUIRED_STUB_FILES` lists every
 file that may declare a checked class, so moving a class to a new file requires updating it.
 
+## Cross-tier lookup examples
+
+When reviewing a cross-tier expression, start with the operand type whose result shape is
+being represented, then inspect its forward and reflected overloads and a focused test.
+
+| Expression to review | Relevant stub surface |
+| --- | --- |
+| Scalar and `Index` | `Index` operator overloads, plus the scalar's own forward overloads |
+| Scalar and `Series` | `Series` operator overloads, plus the scalar's own forward overloads |
+| `Index` and `Series` | `Series` operator overloads, plus `IntervalIndex`'s comparison overloads |
+| `Series` and `DataFrame` | `DataFrame` operator overloads |
+
+The scalar rows are not one-sided: a scalar such as `Timedelta` declares its own forward
+overloads for the array-like operands it broadcasts over, and those overloads are part of
+the surface to review. [Scalar and Index subclass overloads](#scalar-and-index-subclass-overloads)
+states why the checker permits them and where the list that records them lives.
+
+For example, `IntervalIndex`'s comparison overloads against `Series` return `Series[bool]`,
+so the result shape belongs to `Series`.
+
+These are lookup examples for the stubs, not a claim about the exact runtime dispatch
+sequence for every operand pair.
+
 ## A rejected signature, traced
 
 ```python
@@ -61,29 +84,64 @@ ERROR: Series.__sub__ higher-tier operand DataFrame: expected 0 overload(s), obs
 - Observed and recorded counts must match exactly. New combinations, increases, decreases
   and unused entries all fail.
 
-For example, one `Series.__matmul__(DataFrame)` declaration requires
-`("Series", "__matmul__", "DataFrame"): 1`.
+The target is an empty registry. A PR may remove a key or lower a count. Adding a key or raising a count needs the
+signature's purpose explained in the PR and its typing and runtime behavior tested as
+appropriate. Never raise a count merely to silence a failure.
 
-To change a count, explain the signature's purpose in the PR, test its typing and runtime
-behavior as appropriate, then update the count. Never raise a count merely to silence a
-failure. Allowances are a review boundary, not a promise that each will disappear.
+### Why the allowances exist
+
+The allowances are not a claim that the lower tier owns dispatch. At runtime the tier-0
+scalars and `IntervalIndex` return `NotImplemented` for a `Series` or `Index` operand, and
+the higher tier's reflected dunder produces the result. Each key therefore records a
+cross-tier declaration the stubs carry, not a runtime entry point.
+
+Deleting `Timedelta.__lt__(Series[Timedelta])` and
+`Timedelta.__floordiv__(Series[Timedelta])` keeps `Series[bool]` and `Series[int]` in mypy,
+pyright, pyrefly and ty through the reflected dunder.
+
+`__eq__` and `__ne__` are the exception. The temporal and interval classes pair their
+higher-tier overload with an `object` catch-all; once the specific overload is gone, the
+catch-all absorbs the operand and the reflected method never runs. `Timedelta`'s catch-all
+returns `Literal[False]` in all four checkers, so the lower tier keeps declaring the result
+for these two names. Check each class before assuming the
+same fallback: `NAType` declares no `object` overload.
+
+This rationale is scoped to the operand pairs named above. It
+is not a general claim that the higher tier's reflected dunder suffices for every pair.
+
+## Matrix multiplication
+
+`Series.__matmul__(DataFrame)` returns a `Series`, and pandas supports the expression at
+runtime; `tests/series/test_series.py::test_types_dot` exercises the forward operation.
+`DataFrame` is the higher tier, so the overload is a cross-tier declaration recorded in the
+exception list. The way out is a `DataFrame.__rmatmul__(Series)` overload, which becomes
+reachable only once `Series.__matmul__(DataFrame)` is gone.
 
 ## Limits
 
-- `other` must be annotated, in positional, keyword-only or variadic form.
+- `other` must be annotated, in positional, positional-or-keyword, keyword-only or
+  variadic form.
 - Names match by terminal name (`pd.DataFrame` is `DataFrame`). Unions, qualified names and
   generic arguments are searched syntactically.
 - Only `TypeAlias`-annotated aliases are expanded, transitively. Aliases resolve globally by
   terminal name, not by scope, so same-named aliases contribute. Duplicates are kept and
   cycles terminate.
+- Tier 1 is registered through the `ExtensionArray` ABC, so an operand is read at tier 1
+  when the annotation spells `ExtensionArray`, or a `TypeAlias` chain such as `ArrayLike`
+  that reaches it. A concrete array-like such as `Categorical` is not read
+  at tier 1: the checker inherits through base classes for `Index` subclasses only, so an
+  annotation that names `Categorical` without an alias chain to `ExtensionArray` is an
+  unknown spelling.
 - `ScalarArrayIndex*` aliases must not reference `Series` or `DataFrame`. `ScalarArrayIndexSeries*`
   aliases may reference `Series` but not `DataFrame`. No exceptions.
 - Both branches of class-level and module-level `if` statements are scanned without
-  evaluating conditions. Nested functions and classes are not entered. Inherited methods
-  are not resolved.
+  evaluating conditions. Methods inside nested functions and classes are not scanned. Inherited
+  methods are not resolved.
 - Unsupported: quoted annotations, implicit aliases, PEP 695 `type` aliases, TypeVar bounds,
   import renaming, async methods, callable class attributes and other class families.
 - Passing is not proof that a signature is correct.
+
+See [Validation](validation.md) for when a change needs the check.
 
 ## Running the checks
 

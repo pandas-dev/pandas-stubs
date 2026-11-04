@@ -98,7 +98,6 @@ def test_period_dtype() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated for offsets that are not DateOffse",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(
