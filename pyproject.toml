@@ -38,7 +38,7 @@ dev = [
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright==1.1.411",
-  "ty>=0.0.89",
+  "ty>=0.0.97",
   "pyrefly>=1.4.0",
   "poethepoet>=0.16.5",
   "loguru>=0.7.3; python_version < '4.0'",
