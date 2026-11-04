@@ -270,11 +270,12 @@ def test_construction_dtype(
 @pytest.mark.parametrize("creator", [np.array, pd.array])
 def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -> None:
     # TODO: pandas-dev/pandas-stubs#1799 investigate and report to ty
+    values = creator([None])
     check(
         assert_type(
             NumpyExtensionArray(
-                creator([None])
-            ),  # ty: ignore[invalid-argument-type,unused-ignore-comment,unused-ignore-comment]
+                values  # ty: ignore[invalid-argument-type,unused-ignore-comment,unused-ignore-comment]
+            ),
             NumpyExtensionArray,
         ),
         NumpyExtensionArray,
