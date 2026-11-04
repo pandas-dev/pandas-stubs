@@ -18,7 +18,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import (
     DataFrameGroupBy,
