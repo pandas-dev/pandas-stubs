@@ -38,6 +38,7 @@ from pandas.core.window import (
 from pandas.errors import Pandas4Warning
 
 from tests import (
+    PD_LT_32,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -1287,7 +1288,8 @@ def test_dataframe_groupby_dtypes() -> None:
 
 def test_groupby_rank_diff() -> None:
     check(assert_type(GB_DF.rank(), DataFrame), DataFrame)
-    check(assert_type(GB_DF.rank(numeric_only=True), DataFrame), DataFrame)
+    if not PD_LT_32:
+        check(assert_type(GB_DF.rank(numeric_only=True), DataFrame), DataFrame)
     check(assert_type(GB_DF.diff(), DataFrame), DataFrame)
     check(assert_type(GB_S.rank(), "Series[float]"), Series, float)
     check(assert_type(GB_S.diff(), "Series[float]"), Series, float)
