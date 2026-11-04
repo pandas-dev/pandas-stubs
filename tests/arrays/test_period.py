@@ -14,6 +14,7 @@ from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.period import PeriodArray
 import pyarrow as pa
 
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.period import Period
 
@@ -291,3 +292,10 @@ def test_period_array_asfreq() -> None:
     check(assert_type(arr.asfreq(freq="D", how="end"), PeriodArray), PeriodArray)
     check(assert_type(arr.asfreq(freq="D", how="E"), PeriodArray), PeriodArray)
     check(assert_type(arr.asfreq(freq="D", how="S"), PeriodArray), PeriodArray)
+
+
+def test_item() -> None:
+    prd = pd.Period("2023-01-01")
+    check(assert_type(pd.array([prd]).item(), Period | NaTType), Period)
+    check(assert_type(pd.array([prd]).item(0), Period | NaTType), Period)
+    check(assert_type(pd.array([prd, None])[1:].item(), Period | NaTType), NaTType)

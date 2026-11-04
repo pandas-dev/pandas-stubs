@@ -13,6 +13,7 @@ from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.series import Series
 from typing_extensions import override
 
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     Frequency,
@@ -54,6 +55,8 @@ class DatetimeArray(TimelikeOps, DatelikeOps):
     def is_normalized(self) -> bool: ...
     @override
     def __iter__(self) -> Iterator[Timestamp]: ...
+    @override
+    def item(self, index: int | None = None) -> Timestamp | NaTType: ...
     def tz_convert(self, tz: TimeZones) -> Self: ...
     def tz_localize(
         self,
