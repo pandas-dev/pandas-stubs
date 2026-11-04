@@ -231,6 +231,9 @@ _LocSetItemKey: TypeAlias = (
 )
 _SetItemValueNotDataFrame: TypeAlias = (
     ScalarOrNA
+    | np.bool_
+    | Period
+    | Interval
     | Sequence[ScalarOrNA]
     | Sequence[Sequence[ScalarOrNA]]
     | Mapping[Any, ScalarOrNA]
@@ -363,7 +366,7 @@ class _iAtIndexerFrame(_iAtIndexer):
     def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | np.bool_ | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, key: tuple[int, int], value: ScalarOrNA, /
+        self, key: tuple[int, int], value: ScalarOrNA | np.bool_ | Period | Interval, /
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
@@ -373,7 +376,10 @@ class _AtIndexerFrame(_AtIndexer):
     ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
-        self, key: tuple[Hashable, Hashable], value: ScalarOrNA, /
+        self,
+        key: tuple[Hashable, Hashable],
+        value: ScalarOrNA | np.bool_ | Period | Interval,
+        /,
     ) -> None: ...
 
 class _GetItemHack:

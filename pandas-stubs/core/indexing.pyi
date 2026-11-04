@@ -16,8 +16,6 @@ from pandas import (
 from pandas.core.base import IndexOpsMixin
 
 from pandas._libs.indexing import NDFrameIndexerBase
-from pandas._libs.missing import NAType
-from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     Axis,
     AxisInt,
@@ -51,11 +49,11 @@ class _AtIndexer(NDFrameIndexerBase):
         self, key: Hashable, /
     ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     def __setitem__(
-        self, key: Hashable, value: Scalar | NAType | NaTType | None, /
+        self, key: Hashable, value: ScalarOrNA | np.bool_ | Period | Interval, /
     ) -> None: ...
 
 class _iAtIndexer(NDFrameIndexerBase):
     def __getitem__(self, key: int, /) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     def __setitem__(
-        self, key: int, value: Scalar | NAType | NaTType | None, /
+        self, key: int, value: ScalarOrNA | np.bool_ | Period | Interval, /
     ) -> None: ...
