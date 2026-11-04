@@ -223,12 +223,8 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         group_keys: bool = False,
         *,
         include_groups: Literal[False] = False,
-        how: str | None = None,
-        fill_method: str | None = None,
-        limit: int | None = None,
         obj: DataFrame | Series | None = None,
         level: Hashable | None = None,
-        sort: bool = False,
         dropna: bool = True,
     ) -> ResamplerGroupBy[NDFrameT]: ...
     @final
@@ -256,7 +252,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         min_periods: int | None = 0,
         adjust: bool = True,
         ignore_na: bool = False,
-        times: str | np_ndarray_dt | Series | np.timedelta64 | None = None,
+        times: np_ndarray_dt | Series | None = None,  # pandas-dev/pandas#48842
         method: CalculationMethod = "single",
     ) -> ExponentialMovingWindowGroupBy[NDFrameT]: ...
     @final
@@ -286,6 +282,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         ascending: bool = True,
         na_option: str = "keep",
         pct: bool = False,
+        numeric_only: bool = False,
     ) -> NDFrameT: ...
     @final
     def cumprod(self, numeric_only: bool = False, skipna: bool = True) -> NDFrameT: ...

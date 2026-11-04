@@ -2275,6 +2275,10 @@ def test_types_aggregate() -> None:
     check(assert_type(df.aggregate({"A": "mean"}), pd.Series), pd.Series)
     check(assert_type(df.aggregate({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
+    # aggregate resolves a string `func` via getattr, so the set of valid
+    # strings is open-ended and not limited to reduction kernels.
+    check(assert_type(df.aggregate("memory_usage"), pd.Series), pd.Series)
+
 
 def test_types_transform() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
@@ -2290,6 +2294,13 @@ def test_types_transform() -> None:
         assert_type(df.transform({"A": [abs, np.sqrt], "B": abs}), pd.DataFrame),
         pd.DataFrame,
     )
+    # transform resolves a string `func` via getattr, like aggregate, so
+    # these are not restricted to a closed set of kernels.
+    check(assert_type(df.transform("round"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform("clip"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform("astype", 0, "float64"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform("add", 0, 1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform("interpolate"), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_describe() -> None:
@@ -2785,8 +2796,8 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
-                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType]
+                index=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+                columns=lambda name: name.upper(),  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
             ),
             pd.DataFrame,
         ),
@@ -3785,6 +3796,11 @@ def test_astype() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # copy argument is deprecated from 3.0
         s.astype(int, copy=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        # unit-less datetime64/timedelta64 (and short codes) are rejected
+        df.astype("datetime64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.astype("timedelta64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.astype("M8")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.astype("m8")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_xs_frame_new() -> None:
@@ -4214,7 +4230,10 @@ def test_combine() -> None:
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
 
     take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownVariableType]
-        s1 if s1.sum() < s2.sum() else s2  # pyright: ignore[reportUnknownMemberType]
+        s1
+        if s1.sum()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        < s2.sum()  # pyright: ignore[reportUnknownMemberType] # pyrefly: ignore[unknown-attribute-access]
+        else s2
     )
     assert_type(
         check(
@@ -4222,6 +4241,30 @@ def test_combine() -> None:
         ),
         pd.DataFrame,
     )
+
+    check(
+        assert_type(
+            df1.combine(
+                df2,
+                lambda s1, s2: assert_type(s1, pd.Series) + assert_type(s2, pd.Series),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df1.combine(
+                df2,
+                lambda s1, s2: np.int64(
+                    len(assert_type(s1, pd.Series)) + len(assert_type(s2, pd.Series))
+                ),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(df1.combine(df2, np.minimum), pd.DataFrame), pd.DataFrame)
 
 
 def test_unstack() -> None:

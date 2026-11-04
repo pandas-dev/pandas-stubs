@@ -55,23 +55,24 @@ def test_property_dt() -> None:
     )
 
     df = DataFrame({"ts": [Timestamp(2025, 12, 6)], "td": [Timedelta(1, "s")]})
-    # TODO: resolve the four Series[Any].dt assertions in pandas-dev/pandas-stubs#1987.
+    # TODO: pandas-dev/pandas-stubs#1987: fix Series[Any].dt accessor inference
+    # and remove both assert-type and unknown-attribute-access suppressions.
     check(
-        assert_type(df["ts"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(df["ts"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # pyrefly: ignore[assert-type,unknown-attribute-access] # ty: ignore[type-assertion-failure]
         DatetimeProperties,
     )
     check(
-        assert_type(df["td"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(df["td"].dt, CombinedDatetimelikeProperties),  # type: ignore[assert-type] # pyrefly: ignore[assert-type,unknown-attribute-access] # ty: ignore[type-assertion-failure]
         TimedeltaProperties,
     )
 
     check(
-        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type] # pyrefly: ignore[assert-type,unknown-attribute-access] # ty: ignore[type-assertion-failure]
         Series,
         np.integer,
     )
     check(
-        assert_type(df["td"].dt.total_seconds(), "Series[float]"),  # type: ignore[assert-type] # pyrefly: ignore[assert-type] # ty: ignore[type-assertion-failure]
+        assert_type(df["td"].dt.total_seconds(), "Series[float]"),  # type: ignore[assert-type] # pyrefly: ignore[assert-type,unknown-attribute-access] # ty: ignore[type-assertion-failure]
         Series,
         np.floating,
     )

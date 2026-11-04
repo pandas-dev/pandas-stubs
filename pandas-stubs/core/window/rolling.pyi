@@ -10,7 +10,6 @@ from typing import (
     Concatenate,
     Generic,
     Self,
-    TypeAlias,
     overload,
 )
 
@@ -23,15 +22,15 @@ from pandas.core.indexers import BaseIndexer
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
-    AggFuncTypeBase,
-    AggFuncTypeFrame,
-    AggFuncTypeSeriesToFrame,
     AxisInt,
     CalculationMethod,
     IntervalClosedType,
     NDFrameT,
     P,
     QuantileInterpolation,
+    WindowAggFuncTypeBase,
+    WindowAggFuncTypeFrame,
+    WindowAggFuncTypeSeriesToFrame,
     WindowingEngine,
     WindowingEngineKwargs,
     WindowingRankType,
@@ -51,23 +50,23 @@ class BaseWindow(Generic[NDFrameT]):
     def __getattr__(self, attr: str, /) -> Self: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
     @overload
-    def aggregate(  # pyright: ignore[reportOverlappingOverload]
+    def aggregate(
         self: BaseWindow[Series],
-        func: AggFuncTypeBase[...],
+        func: WindowAggFuncTypeBase[...],
         *args: Any,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self: BaseWindow[Series],
-        func: AggFuncTypeSeriesToFrame[..., Any],
+        func: WindowAggFuncTypeSeriesToFrame[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: BaseWindow[DataFrame],
-        func: AggFuncTypeFrame[..., Any],
+        func: WindowAggFuncTypeFrame[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
@@ -84,8 +83,6 @@ class Window(BaseWindow[NDFrameT]):
     def std(
         self, ddof: int = ..., numeric_only: bool = False, **kwargs: Any
     ) -> NDFrameT: ...
-
-_PipeCallable: TypeAlias = Callable[Concatenate[NDFrameT, P], Any]
 
 class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def count(self, numeric_only: bool = ...) -> NDFrameT: ...
@@ -178,12 +175,15 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def nunique(self, numeric_only: bool = False) -> NDFrameT: ...
     @overload
     def pipe(
-        self, func: _PipeCallable[NDFrameT, P], *args: P.args, **kwargs: P.kwargs
+        self,
+        func: Callable[Concatenate[NDFrameT, P], Any],
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> NDFrameT: ...
     @overload
     def pipe(
         self,
-        func: tuple[_PipeCallable[NDFrameT, P], str],
+        func: tuple[Callable[Concatenate[NDFrameT, P], Any], str],
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> NDFrameT: ...

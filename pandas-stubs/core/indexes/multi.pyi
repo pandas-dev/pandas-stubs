@@ -19,11 +19,13 @@ from pandas.api.typing import FrozenList
 from pandas.core.indexes.base import Index
 from typing_extensions import override
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     Axes,
     Dtype,
     HashableT,
     IndexLabel,
+    IndexReplaceValue,
     Label,
     Level,
     MaskType,
@@ -48,6 +50,13 @@ class MultiIndex(Index):
     @override
     def all(
         self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def replace(
+        self,
+        to_replace: IndexReplaceValue = None,
+        value: IndexReplaceValue | NoDefault = ...,
+        regex: IndexReplaceValue = False,
     ) -> Never: ...
     def __new__(
         cls,

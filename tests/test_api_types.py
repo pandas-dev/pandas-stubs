@@ -22,6 +22,7 @@ ind = pd.Index([1, 2.0])
 
 def test_is_bool() -> None:
     check(assert_type(api.is_bool(obj), bool), bool)
+    check(assert_type(api.is_bool(obj=obj), bool), bool)
     check(assert_type(api.is_bool(nparr), bool), bool)
     check(assert_type(api.is_bool(dtylike), bool), bool)
     check(assert_type(api.is_bool(arr), bool), bool)
@@ -43,6 +44,7 @@ def test_is_bool_dtype() -> None:
 
 def test_is_complex() -> None:
     check(assert_type(api.is_complex(obj), bool), bool)
+    check(assert_type(api.is_complex(obj=obj), bool), bool)
     check(assert_type(api.is_complex(nparr), bool), bool)
     check(assert_type(api.is_complex(dtylike), bool), bool)
     check(assert_type(api.is_complex(arr), bool), bool)
@@ -143,6 +145,7 @@ def test_is_file_like() -> None:
 
 def test_is_float() -> None:
     check(assert_type(api.is_float(obj), bool), bool)
+    check(assert_type(api.is_float(obj=obj), bool), bool)
     check(assert_type(api.is_float(nparr), bool), bool)
     check(assert_type(api.is_float(dtylike), bool), bool)
     check(assert_type(api.is_float(arr), bool), bool)
@@ -179,6 +182,7 @@ def test_is_hashable() -> None:
 
 def test_is_integer() -> None:
     check(assert_type(api.is_integer(obj), bool), bool)
+    check(assert_type(api.is_integer(obj=obj), bool), bool)
     check(assert_type(api.is_integer(nparr), bool), bool)
     check(assert_type(api.is_integer(dtylike), bool), bool)
     check(assert_type(api.is_integer(arr), bool), bool)

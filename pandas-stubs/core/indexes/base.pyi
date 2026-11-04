@@ -79,6 +79,7 @@ from pandas.core.strings.accessor import StrDescriptor
 from typing_extensions import override
 
 from pandas._libs.interval import Interval
+from pandas._libs.lib import NoDefault
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -102,6 +103,7 @@ from pandas._typing import (
     DtypeObj,
     HashableT,
     IgnoreRaise,
+    IndexReplaceValue,
     IntDtypeArg,
     JoinHow,
     Label,
@@ -543,6 +545,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @property
     def values(self) -> np_1darray: ...
     def memory_usage(self, deep: bool = False) -> int: ...
+    def replace(
+        self,
+        to_replace: IndexReplaceValue = None,
+        value: IndexReplaceValue | NoDefault = ...,
+        regex: IndexReplaceValue = False,
+    ) -> Index: ...
     @overload
     def where(
         self,

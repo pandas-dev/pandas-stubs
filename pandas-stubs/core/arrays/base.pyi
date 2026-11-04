@@ -22,10 +22,12 @@ from pandas._typing import (
     Dtype,
     InterpolateOptions,
     ListLike,
+    NaPosition,
     Renamer,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
+    SortKind,
     TakeIndexer,
     np_1darray,
     np_1darray_bool,
@@ -73,6 +75,14 @@ class ExtensionArray:
     def argsort(
         self, *, ascending: bool = ..., kind: str = ..., **kwargs: Any
     ) -> np_1darray: ...
+    def count(self) -> int: ...
+    def sort(
+        self,
+        *,
+        ascending: bool = True,
+        kind: SortKind = "quicksort",
+        na_position: NaPosition = "last",
+    ) -> None: ...
     def fillna(
         self, value: object | ArrayLike, limit: int | None = None, copy: bool = True
     ) -> Self: ...
