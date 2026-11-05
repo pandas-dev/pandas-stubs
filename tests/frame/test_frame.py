@@ -3042,11 +3042,58 @@ def test_join() -> None:
 def test_types_join() -> None:
     df1 = pd.DataFrame({"A": [1, 2], "B": ["test", "test"]})
     df2 = pd.DataFrame({"C": [2, 3], "D": ["test", "test"]})
+
+    # Existing join types
     check(assert_type(df1.join(df2, how="cross"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.join(df2, how="inner"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.join(df2, how="outer"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.join(df2, how="left"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.join(df2, how="right"), pd.DataFrame), pd.DataFrame)
+
+    # New suffixes parameter: tuple, list, and optional suffix
+    check(
+        assert_type(
+            df1.join(df2, suffixes=("_left", "_right")),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df1.join(df2, suffixes=["_left", "_right"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df1.join(df2, suffixes=(None, "_right")),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Legacy arguments remain supported but are deprecated in pandas 3.1+
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        match="The 'lsuffix' and 'rsuffix' keywords in DataFrame.join are deprecated",
+        lower="3.0.99",
+    ):
+        check(
+            assert_type(
+                df1.join(df2, lsuffix="_left", rsuffix="_right"),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(df1.join(df2, lsuffix="_left"), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(df1.join(df2, rsuffix="_right"), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 def test_types_ffill() -> None:

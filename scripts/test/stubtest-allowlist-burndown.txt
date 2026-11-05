@@ -212,7 +212,6 @@ pandas.core.frame.DataFrame.filter
 pandas.core.frame.DataFrame.hist
 pandas.core.frame.DataFrame.infer_objects
 pandas.core.frame.DataFrame.interpolate
-pandas.core.frame.DataFrame.join
 pandas.core.frame.DataFrame.map
 pandas.core.frame.DataFrame.mask
 pandas.core.frame.DataFrame.merge
