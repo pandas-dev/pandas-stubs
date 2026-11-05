@@ -127,22 +127,32 @@ def test_interval_dtype() -> None:
         assert_type(pd.IntervalDtype(np.datetime64), pd.IntervalDtype), pd.IntervalDtype
     )
     check(
-        assert_type(pd.IntervalDtype("int64", closed="both"), pd.IntervalDtype),
-        pd.IntervalDtype,
+        assert_type(
+            pd.IntervalDtype("int64", closed="both").closed,
+            Literal["both"],
+        ),
+        str,
     )
     check(
         assert_type(
-            pd.IntervalDtype(subtype="float64", closed="left"), pd.IntervalDtype
+            pd.IntervalDtype(subtype="float64", closed="left").closed,
+            Literal["left"],
         ),
-        pd.IntervalDtype,
+        str,
     )
     assert (
-        assert_type(
-            pd.IntervalDtype("int64", "neither").closed, IntervalClosedType | None
-        )
+        assert_type(pd.IntervalDtype("int64", "neither").closed, Literal["neither"])
         == "neither"
     )
     check(assert_type(i_dt.closed, IntervalClosedType | None), type(None))
+    assert_type(
+        pd.IntervalDtype("int64", "right").closed,
+        Literal["right"],
+    )
+    assert_type(
+        pd.IntervalDtype("int64", "neither").closed,
+        Literal["neither"],
+    )
 
 
 def test_int64_dtype() -> None:
