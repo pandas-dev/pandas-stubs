@@ -95,4 +95,4 @@ def test_multiindex_get_loc_level() -> None:
 
 def test_multiindex_to_list() -> None:
     mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]])
-    check(assert_type(mi.to_list(), list[tuple[Hashable, ...]]), list)
+    check(assert_type(mi.to_list(), list[tuple[Hashable, ...]]), list, tuple)
