@@ -52,6 +52,8 @@ class MultiIndex(Index):
         self, axis: None = None, out: None = None, keepdims: Literal[False] = False
     ) -> Never: ...
     @override
+    def to_list(self) -> list[tuple[Hashable, ...]]: ...
+    @override
     def replace(
         self,
         to_replace: IndexReplaceValue = None,
