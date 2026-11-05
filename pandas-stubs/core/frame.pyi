@@ -1634,6 +1634,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Self: ...
+    @overload
+    def apply(
+        self,
+        # Keep S2 in the fallback so mypy preserves the more specific overloads.
+        func: Callable[..., S2 | _T],
+        *,
+        axis: AxisColumn,
+        raw: Literal[False] = False,
+        result_type: None = None,
+        args: tuple[Any, ...] = ...,
+        **kwargs: Any,
+    ) -> Series: ...
 
     # apply() overloads with keyword axis=1 and keyword result_type
     @overload
