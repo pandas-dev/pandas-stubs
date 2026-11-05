@@ -1,6 +1,7 @@
 from collections.abc import (
     Callable,
     Hashable,
+    Mapping,
     Sequence,
 )
 from typing import (
@@ -295,14 +296,6 @@ class CategoricalMethods(Generic[_CategoricalResultT, CategoricalValueT]):
     def categories(self) -> Index: ...
     @property
     def ordered(self) -> bool | None: ...
-    def rename_categories(
-        self,
-        new_categories: (
-            Sequence[CategoricalValueT]
-            | dict[Any, CategoricalValueT]
-            | Callable[[CategoricalValueT], CategoricalValueT]
-        ),
-    ) -> _CategoricalResultT: ...
     # The new order and the removals must have the categories' type. That can only be
     # spelled out for str/int/float categories, since Index and Series don't take object.
     @overload
@@ -340,6 +333,27 @@ class CategoricalMethods(Generic[_CategoricalResultT, CategoricalValueT]):
         removals: Scalar | ListLike,
     ) -> _CategoricalResultT: ...
     def remove_unused_categories(self) -> _CategoricalResultT: ...
+    @overload
+    def set_categories(
+        self: CategoricalMethods[_CategoricalResultT, CategoricalValueT],
+        new_categories: SequenceNotStr[CategoricalValueT1],
+        ordered: bool | None = None,
+        rename: Literal[True] = True,
+    ) -> _CategoricalResultT: ...
+    @overload
+    def set_categories(
+        self,
+        new_categories: Sequence[CategoricalValueT] | ListLike,
+        ordered: bool | None = None,
+        rename: Literal[False] = False,
+    ) -> _CategoricalResultT: ...
+    @overload
+    def set_categories(
+        self,
+        new_categories: Sequence[CategoricalValueT] | ListLike,
+        ordered: bool | None = None,
+        rename: bool = False,
+    ) -> _CategoricalResultT: ...
     def set_categories(
         self,
         new_categories: Sequence[CategoricalValueT] | ListLike,
@@ -354,5 +368,13 @@ class CategoricalAccessor(
     CategoricalMethods[Series[CategoricalDtype[CategoricalValueT]], CategoricalValueT],
     Generic[CategoricalValueT],
 ):
+    def rename_categories(
+        self,
+        new_categories: (
+            SequenceNotStr[CategoricalValueT1]
+            | Mapping[Any, CategoricalValueT1]
+            | Callable[[CategoricalValueT], CategoricalValueT1]
+        ),
+    ) -> Series[CategoricalDtype[CategoricalValueT1]]: ...
     @property
     def codes(self) -> Series[int]: ...

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import assert_type
+from collections import UserDict
+from typing import Any, assert_type
 
 import pandas as pd
 
@@ -100,6 +101,14 @@ def test_categoricalindex_categories_methods() -> None:
         ),
         pd.CategoricalIndex,
     )
+    ci_str = pd.CategoricalIndex(["a", "b", "c"])
+    check(
+        assert_type(
+            ci_str.set_categories([1, 2, 3], rename=True),
+            "pd.CategoricalIndex[int]",
+        ),
+        pd.CategoricalIndex,
+    )
     check(
         assert_type(
             ci.reorder_categories(["c", "b", "a"], True), "pd.CategoricalIndex[str]"
@@ -120,5 +129,65 @@ def test_categoricalindex_categories_methods() -> None:
     )
     check(
         assert_type(ci.rename_categories(str.upper), "pd.CategoricalIndex[str]"),
+        pd.CategoricalIndex,
+    )
+    ci_dates = pd.CategoricalIndex(
+        [pd.Timestamp("2020-01-01"), pd.Timestamp("2020-01-02")]
+    )
+    check(
+        assert_type(
+            ci_dates.rename_categories(
+                [pd.Timestamp("2021-01-01"), pd.Timestamp("2021-01-02")]
+            ),
+            "pd.CategoricalIndex[pd.Timestamp]",
+        ),
+        pd.CategoricalIndex,
+    )
+    mixed: list[int | str] = [1, "a", 2]
+    check(
+        assert_type(ci.rename_categories(mixed), "pd.CategoricalIndex[int | str]"),
+        pd.CategoricalIndex,
+    )
+    ci_int = pd.CategoricalIndex([1, 2, 3])
+    ts = [
+        pd.Timestamp("2020"),
+        pd.Timestamp("2021"),
+        pd.Timestamp("2022"),
+    ]
+    ci_int.rename_categories(ts)
+    ci_int.rename_categories([1, "a", 2])
+    ci_any = pd.Index([1, 2, 3], dtype="category")
+    check(
+        assert_type(ci_any, "pd.CategoricalIndex[Any]"),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(
+            ci_any.rename_categories(ts),
+            "pd.CategoricalIndex[Any]",
+        ),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(
+            ci_int.rename_categories(["one", "two", "three"]),
+            "pd.CategoricalIndex[str]",
+        ),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(
+            ci_int.rename_categories({1: "one", 2: "two", 3: "three"}),
+            "pd.CategoricalIndex[str]",
+        ),
+        pd.CategoricalIndex,
+    )
+    mapping = UserDict[int, str]({1: "one", 2: "two", 3: "three"})
+    check(
+        assert_type(ci_int.rename_categories(mapping), "pd.CategoricalIndex[str]"),
+        pd.CategoricalIndex,
+    )
+    check(
+        assert_type(ci_int.rename_categories(str), "pd.CategoricalIndex[str]"),
         pd.CategoricalIndex,
     )
