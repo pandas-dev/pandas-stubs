@@ -17,7 +17,11 @@ from pandas import Series
 import pytest
 
 from tests import check
-from tests._typing import np_ndarray_object
+from tests._typing import (
+    np_1darray_object,
+    np_2darray_object,
+    np_ndarray_object,
+)
 
 from pandas.plotting import (
     deregister_matplotlib_converters,
@@ -388,19 +392,22 @@ def test_plot_line() -> None:
     check(assert_type(IRIS_DF.plot(), Axes), Axes)
     check(assert_type(IRIS_DF.plot.line(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="line"), Axes), Axes)
-    check(assert_type(IRIS_DF.plot.line(subplots=True), np_ndarray_object), np.ndarray)
     check(
-        assert_type(IRIS_DF.plot(kind="line", subplots=True), np_ndarray_object),
-        np.ndarray,
+        assert_type(IRIS_DF.plot.line(subplots=True), np_1darray_object),
+        np_1darray_object,
+    )
+    check(
+        assert_type(IRIS_DF.plot(kind="line", subplots=True), np_1darray_object),
+        np_1darray_object,
     )
 
 
 def test_plot_area(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.area(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="area"), Axes), Axes)
-    check(assert_type(IRIS_DF.plot.area(subplots=True), np_ndarray_object), np.ndarray)
+    check(assert_type(IRIS_DF.plot.area(subplots=True), np_1darray_object), np.ndarray)
     check(
-        assert_type(IRIS_DF.plot(kind="area", subplots=True), np_ndarray_object),
+        assert_type(IRIS_DF.plot(kind="area", subplots=True), np_1darray_object),
         np.ndarray,
     )
 
@@ -408,9 +415,9 @@ def test_plot_area(close_figures: None) -> None:
 def test_plot_bar(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.bar(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="bar"), Axes), Axes)
-    check(assert_type(IRIS_DF.plot.bar(subplots=True), np_ndarray_object), np.ndarray)
+    check(assert_type(IRIS_DF.plot.bar(subplots=True), np_1darray_object), np.ndarray)
     check(
-        assert_type(IRIS_DF.plot(kind="bar", subplots=True), np_ndarray_object),
+        assert_type(IRIS_DF.plot(kind="bar", subplots=True), np_1darray_object),
         np.ndarray,
     )
 
@@ -418,9 +425,9 @@ def test_plot_bar(close_figures: None) -> None:
 def test_plot_barh(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.barh(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="barh"), Axes), Axes)
-    check(assert_type(IRIS_DF.plot.barh(subplots=True), np_ndarray_object), np.ndarray)
+    check(assert_type(IRIS_DF.plot.barh(subplots=True), np_1darray_object), np.ndarray)
     check(
-        assert_type(IRIS_DF.plot(kind="barh", subplots=True), np_ndarray_object),
+        assert_type(IRIS_DF.plot(kind="barh", subplots=True), np_1darray_object),
         np.ndarray,
     )
 
@@ -436,10 +443,10 @@ def test_plot_density(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.density(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="density"), Axes), Axes)
     check(
-        assert_type(IRIS_DF.plot.density(subplots=True), np_ndarray_object), np.ndarray
+        assert_type(IRIS_DF.plot.density(subplots=True), np_1darray_object), np.ndarray
     )
     check(
-        assert_type(IRIS_DF.plot(kind="density", subplots=True), np_ndarray_object),
+        assert_type(IRIS_DF.plot(kind="density", subplots=True), np_1darray_object),
         np.ndarray,
     )
 
@@ -456,14 +463,14 @@ def test_plot_hexbin(close_figures: None) -> None:
     check(
         assert_type(
             IRIS_DF.plot.hexbin(x="SepalLength", y="SepalWidth", subplots=True),
-            np_ndarray_object,
+            np_1darray_object,
         ),
         np.ndarray,
     )
     check(
         assert_type(
             IRIS_DF.plot(kind="hexbin", x="SepalLength", y="SepalWidth", subplots=True),
-            np_ndarray_object,
+            np_1darray_object,
         ),
         np.ndarray,
     )
@@ -472,9 +479,9 @@ def test_plot_hexbin(close_figures: None) -> None:
 def test_plot_hist(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.hist(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="hist"), Axes), Axes)
-    check(assert_type(IRIS_DF.plot.hist(subplots=True), np_ndarray_object), np.ndarray)
+    check(assert_type(IRIS_DF.plot.hist(subplots=True), np_1darray_object), np.ndarray)
     check(
-        assert_type(IRIS_DF.plot(subplots=True, kind="hist"), np_ndarray_object),
+        assert_type(IRIS_DF.plot(subplots=True, kind="hist"), np_1darray_object),
         np.ndarray,
     )
 
@@ -482,9 +489,9 @@ def test_plot_hist(close_figures: None) -> None:
 def test_plot_kde(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.kde(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="kde"), Axes), Axes)
-    check(assert_type(IRIS_DF.plot.kde(subplots=True), np_ndarray_object), np.ndarray)
+    check(assert_type(IRIS_DF.plot.kde(subplots=True), np_1darray_object), np.ndarray)
     check(
-        assert_type(IRIS_DF.plot(subplots=True, kind="kde"), np_ndarray_object),
+        assert_type(IRIS_DF.plot(subplots=True, kind="kde"), np_1darray_object),
         np.ndarray,
     )
 
@@ -504,14 +511,14 @@ def test_plot_pie(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot(kind="pie", y="SepalLength"), Axes), Axes)
     check(
         assert_type(
-            IRIS_DF.plot.pie(y="SepalLength", subplots=True), np_ndarray_object
+            IRIS_DF.plot.pie(y="SepalLength", subplots=True), np_1darray_object
         ),
         np.ndarray,
     )
 
     check(
         assert_type(
-            IRIS_DF.plot(kind="pie", y="SepalLength", subplots=True), np_ndarray_object
+            IRIS_DF.plot(kind="pie", y="SepalLength", subplots=True), np_1darray_object
         ),
         np.ndarray,
     )
@@ -540,7 +547,7 @@ def test_plot_scatter(close_figures: None) -> None:
     check(
         assert_type(
             IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth", subplots=True),
-            np_ndarray_object,
+            np_1darray_object,
         ),
         np.ndarray,
     )
@@ -549,7 +556,7 @@ def test_plot_scatter(close_figures: None) -> None:
             IRIS_DF.plot(
                 x="SepalLength", y="SepalWidth", subplots=True, kind="scatter"
             ),
-            np_ndarray_object,
+            np_1darray_object,
         ),
         np.ndarray,
     )
@@ -643,8 +650,58 @@ def test_plot_keywords(close_figures: None) -> None:
 def test_plot_subplot_changes_150() -> None:
     df = pd.DataFrame(np.random.standard_normal((25, 4)), columns=["a", "b", "c", "d"])
     check(
-        assert_type(df.plot(subplots=[("a", "b"), ("c", "d")]), np_ndarray_object),
+        assert_type(df.plot(subplots=[("a", "b"), ("c", "d")]), np_1darray_object),
         np.ndarray,
+    )
+
+
+def test_plot_subplots_layout(close_figures: None) -> None:
+    df, xy = IRIS_DF, ("SepalLength", "SepalWidth")
+    check(
+        assert_type(df.plot(subplots=True, layout=(-1, 2)), np_2darray_object),
+        np_2darray_object,
+    )
+    check(
+        assert_type(df.plot.line(subplots=True, layout=(-1, 2)), np_2darray_object),
+        np_2darray_object,
+    )
+    check(
+        assert_type(df.plot.bar(subplots=True, layout=(-1, 2)), np_2darray_object),
+        np_2darray_object,
+    )
+    check(
+        assert_type(df.plot.barh(subplots=True, layout=(-1, 2)), np_2darray_object),
+        np_2darray_object,
+    )
+    check(
+        assert_type(df.plot.hist(subplots=True, layout=(-1, 2)), np_2darray_object),
+        np_2darray_object,
+    )
+    check(
+        assert_type(df.plot.kde(subplots=True, layout=(-1, 2)), np_2darray_object),
+        np_2darray_object,
+    )
+    check(
+        assert_type(df.plot.area(subplots=True, layout=(-1, 2)), np_2darray_object),
+        np_2darray_object,
+    )
+    check(
+        assert_type(
+            df.plot.pie(y=xy[0], subplots=True, layout=(1, 1)), np_2darray_object
+        ),
+        np_2darray_object,
+    )
+    check(
+        assert_type(
+            df.plot.scatter(*xy, subplots=True, layout=(1, 1)), np_2darray_object
+        ),
+        np_2darray_object,
+    )
+    check(
+        assert_type(
+            df.plot.hexbin(*xy, subplots=True, layout=(1, 1)), np_2darray_object
+        ),
+        np_2darray_object,
     )
 
 
