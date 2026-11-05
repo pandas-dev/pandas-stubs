@@ -1661,10 +1661,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: DataFrame | Series | list[DataFrame | Series],
         on: _str | list[_str] | None = ...,
         how: MergeHow = "left",
-        lsuffix: _str = "",
-        rsuffix: _str = "",
+        lsuffix: _str | NoDefault = ...,
+        rsuffix: _str | NoDefault = ...,
         sort: _bool = False,
         validate: JoinValidate | None = ...,
+        *,
+        suffixes: Suffixes | NoDefault = ...,
     ) -> Self: ...
     def merge(
         self,
