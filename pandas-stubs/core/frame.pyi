@@ -479,12 +479,29 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
     ) -> Series: ...
     @overload
-    def __matmul__(self, other: DataFrame, /) -> Self: ...
+    def __matmul__(
+        self,
+        other: DataFrame | np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]],
+        /,
+    ) -> Self: ...
     @overload
-    def __matmul__(self, other: Series, /) -> Series: ...
+    def __matmul__(
+        self,
+        other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
+        /,
+    ) -> Series: ...
     @overload
-    def __matmul__(self, other: np_ndarray_num, /) -> Self: ...
-    def __rmatmul__(self, other: np_ndarray_num, /) -> Self: ...
+    def __rmatmul__(
+        self,
+        other: (
+            np_ndarray_num[tuple[int, int]] | Sequence[Sequence[SupportsSelfMul[Any]]]
+        ),
+        /,
+    ) -> Self: ...
+    @overload
+    def __rmatmul__(
+        self, other: np_ndarray_num[tuple[int]] | Sequence[SupportsSelfMul[Any]], /
+    ) -> Series: ...
     @overload
     @classmethod
     def from_dict(
