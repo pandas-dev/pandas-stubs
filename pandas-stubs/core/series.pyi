@@ -1159,7 +1159,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | np_1darray
             | Sequence[SupportsSelfMul[Any]]
         ),
-    ) -> np.number | np.bool: ...
+    ) -> Any: ...  # could be anything in case of `object_`
     @overload
     def dot(self, other: DataFrame) -> Series: ...
     @overload
@@ -1167,12 +1167,31 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self, other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]]
     ) -> np_1darray: ...
     @overload
-    def __matmul__(self, other: Series, /) -> Scalar: ...
+    def __matmul__(
+        self,
+        other: (
+            Series
+            | Index
+            | ExtensionArray
+            | np_1darray
+            | Sequence[SupportsSelfMul[Any]]
+        ),
+        /,
+    ) -> Any: ...
     @overload
     def __matmul__(self, other: DataFrame, /) -> Series: ...
     @overload
-    def __matmul__(self, other: np_ndarray_num, /) -> np_ndarray_num: ...
-    def __rmatmul__(self, other: np_ndarray_num, /) -> np_ndarray_num: ...
+    def __matmul__(
+        self, other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]], /
+    ) -> np_1darray: ...
+    @overload
+    def __rmatmul__(
+        self, other: np_1darray | Sequence[SupportsSelfMul[Any]], /
+    ) -> Any: ...
+    @overload
+    def __rmatmul__(
+        self, other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]], /
+    ) -> np_1darray: ...
     @overload
     def compare(
         self,
