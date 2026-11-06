@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 from pandas.testing import (
     assert_frame_equal,
+    assert_index_equal,
     assert_series_equal,
 )
 
@@ -38,3 +39,13 @@ def test_assert_frame_equal() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         assert_frame_equal(df1, df2, check_datetimelike_compat=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
+
+def test_assert_index_equal() -> None:
+    i1 = pd.date_range("2024-01-01", periods=3, freq="D")
+    i2 = pd.DatetimeIndex(["2024-01-01", "2024-01-02", "2024-01-03"])
+    # GH 2077
+    assert_index_equal(i1, i2, check_freq=False)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_index_equal(i1, i2, True, True, True, True, True, 0, 0, "", False)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
