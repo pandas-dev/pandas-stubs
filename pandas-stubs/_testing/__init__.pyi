@@ -52,6 +52,8 @@ def assert_index_equal(
     rtol: float = 1e-5,
     atol: float = 1e-8,
     obj: str = "Index",
+    *,
+    check_freq: bool | NoDefault = ...,
 ) -> None: ...
 def assert_class_equal(
     left: T, right: T, exact: bool | Literal["equiv"] = True, obj: str = "Input"
