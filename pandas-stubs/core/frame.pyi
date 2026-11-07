@@ -346,9 +346,6 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         ),
         /,
     ) -> _T: ...
-    @overload
-    def __getitem__(self, idx: tuple[slice, _IndexSliceTuple], /) -> Series: ...
-
     # Keep in sync with `DataFrame.__setitem__`
     @overload
     def __setitem__(
