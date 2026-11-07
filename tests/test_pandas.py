@@ -618,6 +618,73 @@ def test_isna() -> None:
         assert_type(nullable3, NAType | None)
 
 
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        (object(), False),
+        (None, True),
+        (np.nan, True),
+        (pd.DataFrame({"a": [1.0, np.nan]}), pd.DataFrame({"a": [False, True]})),
+        (pd.Series([1.0, np.nan]), pd.Series([False, True])),
+        (pd.Index([1.0, np.nan]), np.array([False, True])),
+        (pd.array([1, None], dtype="Int64"), np.array([False, True])),
+        (np.array([1.0, np.nan]), np.array([False, True])),
+        (np.array([[1.0, np.nan]]), np.array([[False, True]])),
+    ],
+)
+def test_isna_object(value: object, expected: object) -> None:
+    result = assert_type(
+        pd.isna(value),
+        "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+    )
+    alias_result = assert_type(
+        pd.isnull(value),
+        "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+    )
+    assert type(result) is type(expected)
+    assert type(alias_result) is type(expected)
+    np.testing.assert_equal(np.asarray(result), np.asarray(expected))
+    np.testing.assert_equal(np.asarray(alias_result), np.asarray(expected))
+
+
+@pytest.mark.parametrize(
+    "values, expected",
+    [
+        (np.array([1.0, np.nan]), np.array([False, True])),
+        (np.array(1.0), np.bool_(False)),
+        (np.array(None, dtype=object), np.array(True)),
+    ],
+)
+def test_isna_array_protocol(values: np_ndarray, expected: object) -> None:
+    class ArrayObject:
+        def __array__(
+            self, dtype: np.dtype[Any] | None = None, copy: bool | None = None
+        ) -> np_ndarray:
+            return np.array(values, dtype=dtype, copy=copy)
+
+    value = ArrayObject()
+    result = assert_type(
+        pd.isna(value),
+        "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+    )
+    alias_result = assert_type(
+        pd.isnull(value),
+        "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+    )
+    assert type(result) is type(expected)
+    assert type(alias_result) is type(expected)
+    np.testing.assert_equal(np.asarray(result), np.asarray(expected))
+    np.testing.assert_equal(np.asarray(alias_result), np.asarray(expected))
+
+
+def test_isnull_narrowing() -> None:
+    value: str | NAType | NaTType | None = random.choice(["value", None, pd.NA, pd.NaT])
+    if pd.isnull(value):
+        assert_type(value, NAType | NaTType | None)
+    else:
+        assert_type(value, str)
+
+
 # GH 55
 def test_read_xml() -> None:
     if TYPE_CHECKING:  # Skip running pytest

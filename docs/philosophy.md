@@ -188,6 +188,14 @@ pandas-stubs annotations are not too wide (allow adding a `Timestamp` to a
 time-based interval), mypy and pyright are configured to report unused ignore
 statements.
 
+## Missing-value checks on object inputs
+
+`pandas.isna` and its `isnull` alias accept `object` arguments. When an argument
+is typed as `object`, the result can be a Python or NumPy boolean, a boolean
+NumPy array, a `Series[bool]`, or a `DataFrame`. Narrow the input type first when
+a specific result type is needed. Existing overloads preserve precise results
+for known container types and type narrowing for supported nullable scalars.
+
 ## Using ignore comments
 
 Type checkers report errors
