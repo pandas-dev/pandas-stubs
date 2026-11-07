@@ -480,6 +480,16 @@ def test_types_fillna() -> None:
     check(assert_type(df.fillna(0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.fillna(0, axis=1, inplace=True), pd.DataFrame), pd.DataFrame)
 
+    missing = pd.DataFrame({"col": [pd.NA]})
+    filled = check(assert_type(missing.fillna(pd.NaT), pd.DataFrame), pd.DataFrame)
+    pd.testing.assert_frame_equal(filled, pd.DataFrame({"col": [pd.NaT]}, dtype=object))
+
+    timestamps = pd.DataFrame({"col": [pd.Timestamp("2020-01-01"), pd.NaT]})
+    unchanged = check(
+        assert_type(timestamps.fillna(pd.NaT), pd.DataFrame), pd.DataFrame
+    )
+    pd.testing.assert_frame_equal(unchanged, timestamps)
+
 
 def test_types_sort_index() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4]}, index=[5, 1, 3, 2])

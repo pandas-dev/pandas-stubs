@@ -228,6 +228,7 @@ from pandas._typing import (
     S2_contra,
     S2_NDT_contra,
     Scalar,
+    ScalarOrNA,
     ScalarT,
     SequenceNotStr,
     SeriesByT,
@@ -1442,7 +1443,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Self: ...
     def fillna(
         self,
-        value: Scalar | NAType | dict[Any, Any] | Series[S1] | DataFrame | None = ...,
+        value: ScalarOrNA | dict[Any, Any] | Series[S1] | DataFrame = ...,
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,

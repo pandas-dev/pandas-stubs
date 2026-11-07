@@ -374,6 +374,15 @@ def test_types_fillna() -> None:
     # GH 263
     check(assert_type(s.fillna(pd.NA), "pd.Series[float]"), pd.Series, float)
 
+    timestamps: pd.Series[pd.Timestamp] = pd.Series(
+        [pd.Timestamp("2020-01-01"), pd.NaT]
+    )
+    filled = check(
+        assert_type(timestamps.fillna(pd.NaT), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+    )
+    pd.testing.assert_series_equal(filled, timestamps)
+
 
 def test_types_sort_index() -> None:
     s = pd.Series([1, 2, 3], index=[2, 3, 1])
