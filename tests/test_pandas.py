@@ -11,6 +11,7 @@ from typing import (
     Any,
     Never,
     assert_type,
+    cast,
 )
 
 import numpy as np
@@ -616,6 +617,208 @@ def test_isna() -> None:
         assert_type(nullable3, NAType | None)
     if not pd.notna(nullable3):
         assert_type(nullable3, NAType | None)
+
+
+def test_isna_object() -> None:
+    check(
+        assert_type(
+            pd.isna(object()),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(object()),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, None)),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, None)),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, np.nan)),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, np.nan)),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, pd.DataFrame({"a": [1.0, np.nan]}))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, pd.DataFrame({"a": [1.0, np.nan]}))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, pd.Series([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, pd.Series([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.Series,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, pd.Index([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, pd.Index([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, pd.array([1, None], dtype="Int64"))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, pd.array([1, None], dtype="Int64"))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, np.array([[1.0, np.nan]]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, np.array([[1.0, np.nan]]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+
+def test_isna_array_protocol() -> None:
+    class ArrayObject:
+        def __init__(self, values: np_ndarray) -> None:
+            super().__init__()
+            self.values = values
+
+        def __array__(
+            self, dtype: np.dtype[Any] | None = None, copy: bool | None = None
+        ) -> np_ndarray:
+            return np.array(self.values, dtype=dtype, copy=copy)
+
+    check(
+        assert_type(
+            pd.isna(ArrayObject(np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(ArrayObject(np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(ArrayObject(np.array(1.0))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np.bool_,
+    )
+    check(
+        assert_type(
+            pd.isnull(ArrayObject(np.array(1.0))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np.bool_,
+    )
+
+    check(
+        assert_type(
+            pd.isna(ArrayObject(np.array(None, dtype=object))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(ArrayObject(np.array(None, dtype=object))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+
+def test_isnull_narrowing() -> None:
+    value: str | NAType | NaTType | None = random.choice(["value", None, pd.NA, pd.NaT])
+    if pd.isnull(value):
+        check(assert_type(value, NAType | NaTType | None), object)
+    else:
+        check(assert_type(value, str), str)
 
 
 # GH 55
