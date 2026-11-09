@@ -289,13 +289,13 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, idx: int, /
     ) -> IntervalT: ...
     @override
-    def __gt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
+    def __gt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     @override
-    def __ge__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
+    def __ge__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     @override
-    def __le__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
+    def __le__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     @override
-    def __lt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override]
+    def __lt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
     @overload  # type: ignore[override]
     @override
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
