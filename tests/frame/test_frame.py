@@ -254,6 +254,55 @@ def test_types_df_to_df_comparison() -> None:
     check(assert_type(df == df2, pd.DataFrame), pd.DataFrame)
 
 
+@pytest.mark.parametrize(
+    "values, scalar",
+    [
+        (["bar", "foo"], "foo"),
+        ([b"bar", b"foo"], b"foo"),
+        ([False, True], True),
+        ([1, 2], np.int64(2)),
+        ([1.0, 2.0], np.float64(2.0)),
+        (
+            [pd.Timestamp("2026-01-01"), pd.Timestamp("2026-01-02")],
+            pd.Timestamp("2026-01-02"),
+        ),
+        (
+            [datetime.datetime(2026, 1, 1), datetime.datetime(2026, 1, 2)],
+            datetime.datetime(2026, 1, 2),
+        ),
+        (
+            [datetime.date(2026, 1, 1), datetime.date(2026, 1, 2)],
+            datetime.date(2026, 1, 2),
+        ),
+        ([pd.Timedelta(days=1), pd.Timedelta(days=2)], pd.Timedelta(days=2)),
+        (
+            [datetime.timedelta(days=1), datetime.timedelta(days=2)],
+            datetime.timedelta(days=2),
+        ),
+        (
+            [np.datetime64("2026-01-01"), np.datetime64("2026-01-02")],
+            np.datetime64("2026-01-02"),
+        ),
+        ([np.timedelta64(1, "D"), np.timedelta64(2, "D")], np.timedelta64(2, "D")),
+    ],
+)
+def test_types_df_scalar_comparison(values: list[Scalar], scalar: Scalar) -> None:
+    df = pd.DataFrame({"col": values})
+
+    result_eq = check(assert_type(df.eq(scalar), pd.DataFrame), pd.DataFrame)
+    assert result_eq.equals(pd.DataFrame({"col": [False, True]}))
+    result_ne = check(assert_type(df.ne(scalar), pd.DataFrame), pd.DataFrame)
+    assert result_ne.equals(pd.DataFrame({"col": [True, False]}))
+    result_lt = check(assert_type(df.lt(scalar), pd.DataFrame), pd.DataFrame)
+    assert result_lt.equals(pd.DataFrame({"col": [True, False]}))
+    result_le = check(assert_type(df.le(scalar), pd.DataFrame), pd.DataFrame)
+    assert result_le.equals(pd.DataFrame({"col": [True, True]}))
+    result_gt = check(assert_type(df.gt(scalar), pd.DataFrame), pd.DataFrame)
+    assert result_gt.equals(pd.DataFrame({"col": [False, False]}))
+    result_ge = check(assert_type(df.ge(scalar), pd.DataFrame), pd.DataFrame)
+    assert result_ge.equals(pd.DataFrame({"col": [False, True]}))
+
+
 def test_types_head_tail() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df.head(1), pd.DataFrame), pd.DataFrame)
