@@ -136,10 +136,9 @@ _IndexIterScalar: TypeAlias = (
     | Timestamp
     | Timedelta
 )
+ScalarNoComplex: TypeAlias = _IndexIterScalar | np.integer | np.floating
 # This is wider than what is in pandas
-Scalar: TypeAlias = (
-    _IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
-)
+Scalar: TypeAlias = ScalarNoComplex | complex | np.complexfloating
 ScalarOrNA: TypeAlias = Scalar | NAType | NaTType | None
 IntStrT = TypeVar("IntStrT", int, str)
 
