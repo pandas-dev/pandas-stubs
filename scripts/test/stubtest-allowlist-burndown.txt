@@ -48,7 +48,6 @@ pandas._libs.tslibs.period.Period.to_timestamp
 pandas._libs.tslibs.timedeltas.Timedelta.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.__index__
 pandas._libs.tslibs.timestamps.Timestamp.astimezone
-pandas._libs.tslibs.timestamps.Timestamp.fromtimestamp
 pandas._libs.tslibs.timestamps.Timestamp.replace
 pandas._libs.tslibs.timestamps.Timestamp.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.utcfromtimestamp
