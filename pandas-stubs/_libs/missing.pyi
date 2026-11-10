@@ -116,7 +116,7 @@ class NAType:
     def __eq__(self, other: Index, /) -> BooleanArray: ...
     @overload
     def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: Scalar, /
+        self, other: Scalar | NAType, /
     ) -> NAType: ...
     @overload  # type: ignore[override]
     @override
@@ -126,7 +126,7 @@ class NAType:
     def __ne__(self, other: Index, /) -> BooleanArray: ...
     @overload
     def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
-        self, other: Scalar, /
+        self, other: Scalar | NAType, /
     ) -> NAType: ...
     @overload
     def __le__(self, other: Series, /) -> Series[bool]: ...
