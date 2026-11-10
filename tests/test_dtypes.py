@@ -128,31 +128,87 @@ def test_interval_dtype() -> None:
     )
     check(
         assert_type(
-            pd.IntervalDtype("int64", closed="both").closed,
-            Literal["both"],
+            pd.IntervalDtype("int64", closed="left"),
+            "pd.IntervalDtype[Literal['left']]",
         ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("int64", closed="right"),
+            "pd.IntervalDtype[Literal['right']]",
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("int64", closed="both"),
+            "pd.IntervalDtype[Literal['both']]",
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("int64", closed="neither"),
+            "pd.IntervalDtype[Literal['neither']]",
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed=None), pd.IntervalDtype),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("interval[int64, right]"),
+            pd.IntervalDtype,
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed="left").closed, Literal["left"]),
+        str,
+    )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed="right").closed, Literal["right"]),
+        str,
+    )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed="both").closed, Literal["both"]),
         str,
     )
     check(
         assert_type(
-            pd.IntervalDtype(subtype="float64", closed="left").closed,
-            Literal["left"],
+            pd.IntervalDtype("int64", closed="neither").closed,
+            Literal["neither"],
         ),
         str,
     )
-    assert (
-        assert_type(pd.IntervalDtype("int64", "neither").closed, Literal["neither"])
-        == "neither"
-    )
     check(assert_type(i_dt.closed, IntervalClosedType | None), type(None))
-    assert_type(
-        pd.IntervalDtype("int64", "right").closed,
-        Literal["right"],
+    dt = pd.IntervalDtype("int64", closed="both")
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(
+                [0, 1, 2],
+                closed="both",
+                dtype=dt,
+            ),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
     )
-    assert_type(
-        pd.IntervalDtype("int64", "neither").closed,
-        Literal["neither"],
+    check(
+        assert_type(
+            pd.array(
+                [pd.Interval(0, 1, closed="both")],
+                dtype=dt,
+            ),
+            "pd.arrays.IntervalArray",
+        ),
+        pd.arrays.IntervalArray,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.IntervalDtype("int64", closed="bad")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_int64_dtype() -> None:

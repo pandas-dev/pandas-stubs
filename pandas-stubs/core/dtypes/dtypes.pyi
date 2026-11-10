@@ -51,6 +51,7 @@ _ClosedT = TypeVar(
     "_ClosedT",
     bound=IntervalClosedType | None,
     default=IntervalClosedType | None,
+    covariant=True,
 )
 
 class BaseMaskedDtype(ExtensionDtype):
