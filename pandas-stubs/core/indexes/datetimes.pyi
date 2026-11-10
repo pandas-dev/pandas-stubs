@@ -76,7 +76,7 @@ class DatetimeIndex(
     # pyrefly: ignore[bad-override]
     def __add__(self, other: np_ndarray_dt, /) -> Never: ...
     @overload
-    def __add__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __add__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, other: ScalarArrayIndexTimedelta | BaseOffset, /
     ) -> Self: ...
     @overload  # type: ignore[override]
@@ -84,7 +84,7 @@ class DatetimeIndex(
     # pyrefly: ignore[bad-override]
     def __radd__(self, other: np_ndarray_dt, /) -> Never: ...
     @overload
-    def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, other: ScalarArrayIndexTimedelta | BaseOffset, /
     ) -> Self: ...
     @overload  # type: ignore[override]
@@ -93,11 +93,11 @@ class DatetimeIndex(
         self, other: ScalarArrayIndexDatetime, /
     ) -> TimedeltaIndex: ...
     @overload
-    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, other: ScalarArrayIndexTimedelta | BaseOffset, /
     ) -> Self: ...
     @override
-    def __rsub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __rsub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, other: ScalarArrayIndexDatetime, /
     ) -> TimedeltaIndex: ...
     @override

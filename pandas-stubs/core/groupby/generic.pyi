@@ -124,7 +124,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def nunique(self, dropna: bool = ...) -> Series[int]: ...
     # describe delegates to super() method but here it has keyword-only parameters
     @override
-    def describe(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def describe(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self,
         *,
         percentiles: Iterable[float] | None = ...,

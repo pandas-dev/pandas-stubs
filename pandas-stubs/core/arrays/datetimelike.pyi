@@ -74,7 +74,7 @@ class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
     @overload
     def __getitem__(self, key: SequenceIndexer | PositionalIndexerTuple, /) -> Self: ...
     @override
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, key: int | Sequence[int] | Sequence[bool] | slice, value: Any, /
     ) -> None: ...
     # TODO: pandas-dev/pandas-stubs#1589 import testing

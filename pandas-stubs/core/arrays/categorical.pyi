@@ -199,14 +199,14 @@ class Categorical(NDArrayBackedExtensionArray, Generic[CategoricalValueT]):
     @override
     def __eq__(self, other: Series, /) -> Series[bool]: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
     @overload
-    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[incompatible-method-override]
         self, other: object, /
     ) -> np_1darray_bool: ...
     @overload  # type: ignore[override]
     @override
     def __ne__(self, other: Series, /) -> Series[bool]: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
     @overload
-    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[incompatible-method-override]
         self, other: object, /
     ) -> np_1darray_bool: ...
     @overload
