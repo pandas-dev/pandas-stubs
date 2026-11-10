@@ -57,4 +57,4 @@ class CategoricalIndex(
     # `item` might be `S1` but not one of the categories, thus changing
     # the return type from `CategoricalIndex` to `Index`.
     @override
-    def insert(self, loc: int, item: object) -> Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def insert(self, loc: int, item: object) -> Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]

@@ -144,18 +144,18 @@ class MultiIndex(Index):
         verify_integrity: bool = True,
     ) -> MultiIndex: ...
     @override
-    def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, names: SequenceNotStr[Hashable] | None = None, deep: bool = False
     ) -> Self: ...
     @override
-    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @property
     @override
     def dtype(self) -> np.dtype: ...
     @property
     def dtypes(self) -> pd.Series[Dtype]: ...
     @override
-    def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @override
     def get_level_values(self, level: str | int) -> Index: ...
     @overload  # type: ignore[override]
@@ -163,18 +163,18 @@ class MultiIndex(Index):
     # pyrefly: ignore[bad-override]
     def unique(self, level: None = None) -> MultiIndex: ...
     @overload
-    def unique(  # ty: ignore[invalid-method-override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def unique(  # ty: ignore[incompatible-method-override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, level: Level
     ) -> Index: ...
     @override
-    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self,
         index: bool = True,
         name: list[HashableT] = ...,
         allow_duplicates: bool = False,
     ) -> pd.DataFrame: ...
     @override
-    def to_flat_index(self) -> Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def to_flat_index(self) -> Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     def remove_unused_levels(self) -> MultiIndex: ...
     @property
     def levshape(self) -> Shape: ...
@@ -184,7 +184,7 @@ class MultiIndex(Index):
         self, idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType, /
     ) -> Self: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, key: int, /
     ) -> tuple[Hashable, ...]: ...
     @overload  # type: ignore[override]
@@ -195,7 +195,7 @@ class MultiIndex(Index):
         self, other: Index | Sequence[Index]
     ) -> Index: ...
     @override
-    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     def swaplevel(self, i: int = -2, j: int = -1) -> Self: ...
     def reorder_levels(self, order: Sequence[Level]) -> MultiIndex: ...
     def sortlevel(
@@ -220,7 +220,7 @@ class MultiIndex(Index):
     # pyrefly: ignore[bad-override]
     def isin(self, values: Iterable[Any], level: Level) -> np_1darray_bool: ...
     @overload
-    def isin(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def isin(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, values: Collection[Iterable[Hashable]], level: None = None
     ) -> np_1darray_bool: ...
     @override
