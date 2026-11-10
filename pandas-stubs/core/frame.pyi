@@ -81,7 +81,10 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
-from typing_extensions import override
+from typing_extensions import (
+    deprecated,
+    override,
+)
 import xarray as xr
 
 from pandas._libs.lib import NoDefault
@@ -458,6 +461,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def style(self) -> Styler: ...
     def items(self) -> Iterator[tuple[Hashable, Series]]: ...
+    @deprecated("Use DataFrame.itertuples instead.")
     def iterrows(self) -> Iterator[tuple[Hashable, Series]]: ...
     @overload
     def itertuples(

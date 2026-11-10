@@ -166,6 +166,8 @@ with pytest_warns_bounded(UserWarning, match="foo", lower="1.2.99", upper="1.5.9
 
 See `docs/philosophy.md` sections "Testing the Type Stubs" and "Narrow vs. Wide Arguments" for full details.
 
+For a deprecated method, also add `@deprecated` (see `docs/philosophy.md`, "Deprecated methods").
+
 ## Validation After Editing
 
 **REQUIRED:** After editing stubs or tests, run the following command to validate your changes:
