@@ -188,6 +188,15 @@ pandas-stubs annotations are not too wide (allow adding a `Timestamp` to a
 time-based interval), mypy and pyright are configured to report unused ignore
 statements.
 
+## Deprecated methods
+
+The `@deprecated` message is a short hint naming the replacement, not a copy of
+pandas' warning; use `""` when no single replacement exists.
+Tests use `pytest_warns_bounded` with one warning-triggering statement per block.
+Each deprecated call carries all four checker ignores, with mypy's
+`# type: ignore[deprecated]` first. Removed methods are not restored.
+Argument deprecations are handled as before, without `@deprecated`.
+
 ## Using ignore comments
 
 Type checkers report errors

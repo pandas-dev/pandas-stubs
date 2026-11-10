@@ -119,4 +119,7 @@ def test_datetimeindex_indexer_between_time() -> None:
 
 def test_datetimeindex_snap() -> None:
     dti = pd.date_range("2023-01-01", "2023-02-01")
-    check(assert_type(dti.snap("MS"), pd.DatetimeIndex), pd.DatetimeIndex)
+    with pytest_warns_bounded(
+        Pandas4Warning, "snap is deprecated", lower="3.1.99", upper="3.99.99"
+    ):
+        check(assert_type(dti.snap("MS"), pd.DatetimeIndex), pd.DatetimeIndex)  # type: ignore[deprecated] # pyright: ignore[reportDeprecated] # pyrefly: ignore[deprecated] # ty: ignore[deprecated]
