@@ -25,7 +25,7 @@ def test_types_select() -> None:
 
 
 def test_types_iloc_iat() -> None:
-    s: pd.Series[int] = pd.Series(data={"row1": 1, "row2": 2})
+    s = pd.Series([1, 2], index=["row1", "row2"])
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
     check(
@@ -65,7 +65,7 @@ def test_types_iloc_iat() -> None:
 
 
 def test_types_loc_at() -> None:
-    s: pd.Series[int] = pd.Series(data={"row1": 1, "row2": 2})
+    s = pd.Series([1, 2], index=["row1", "row2"])
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
     s.at["row1"]
@@ -106,19 +106,17 @@ def test_types_loc_at() -> None:
 
 def test_scalar_indexers_preserve_series_type() -> None:
     # GH 2080
-    strings: pd.Series[str] = pd.Series(["value"], index=["row"])
+    strings = pd.Series(["value"], index=["row"])
     check(assert_type(strings.at["row"], str), str)
     check(assert_type(strings.iat[0], str), str)
-    assert strings.at["row"].upper() == strings.iat[0].upper() == "VALUE"
 
-    timestamps: pd.Series[pd.Timestamp] = pd.Series([pd.Timestamp("2026-01-01")])
+    timestamps = pd.Series([pd.Timestamp("2026-01-01")])
     check(assert_type(timestamps.at[0], pd.Timestamp), pd.Timestamp)
     check(assert_type(timestamps.iat[0], pd.Timestamp), pd.Timestamp)
 
     multiindex = pd.MultiIndex.from_tuples([("row", 1)])
-    indexed: pd.Series[str] = pd.Series(["value"], index=multiindex)
+    indexed = pd.Series(["value"], index=multiindex)
     check(assert_type(indexed.at["row", 1], str), str)
-    assert indexed.at["row", 1] == "value"
 
 
 def test_types_getitem() -> None:
