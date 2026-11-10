@@ -190,12 +190,14 @@ statements.
 
 ## Deprecated methods
 
-The `@deprecated` message is a short hint naming the replacement, not a copy of
-pandas' warning; use `""` when no single replacement exists.
-Tests use `pytest_warns_bounded` with one warning-triggering statement per block.
-Each deprecated call carries all four checker ignores, with mypy's
-`# type: ignore[deprecated]` first. Removed methods are not restored.
-Argument deprecations are handled as before, without `@deprecated`.
+Mark a method that pandas deprecates with `@deprecated` from `typing_extensions`.
+The message is a short hint naming the replacement, e.g.
+`"Use DataFrame.itertuples instead."`, or `""` when there is none; do not copy
+pandas' warning. Test the warning with `pytest_warns_bounded`, one statement per
+block, and put
+`# type: ignore[deprecated] # pyright: ignore[reportDeprecated] # pyrefly: ignore[deprecated] # ty: ignore[deprecated]`
+on each deprecated call. Removed methods are not restored; deprecated arguments
+get no `@deprecated`.
 
 ## Using ignore comments
 
