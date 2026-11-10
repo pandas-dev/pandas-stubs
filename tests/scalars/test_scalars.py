@@ -1416,6 +1416,9 @@ def test_timestamp_misc_methods() -> None:
 
     check(assert_type(pd.Timestamp.fromtimestamp(432.54), pd.Timestamp), pd.Timestamp)
     check(
+        assert_type(pd.Timestamp.fromtimestamp(ts=432.54), pd.Timestamp), pd.Timestamp
+    )
+    check(
         assert_type(
             pd.Timestamp.fromtimestamp(432.54, tz="America/Los_Angeles"), pd.Timestamp
         ),
