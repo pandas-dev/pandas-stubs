@@ -635,7 +635,7 @@ def test_isna() -> None:
     if not pd.isna(nullable_interval):
         check(assert_type(nullable_interval, "pd.Interval[int]"), pd.Interval)
 
-    nullable_bool = random.choice([np.bool_(True), None])
+    nullable_bool = random.choice([np.bool_(random.random() < 0.5), None])
     if pd.notna(nullable_bool):
         check(assert_type(nullable_bool, np.bool_), np.bool_)
     if not pd.isna(nullable_bool):
