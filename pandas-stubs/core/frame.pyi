@@ -1680,6 +1680,20 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         engine: Any = None,
         **kwargs: Any,
     ) -> Self: ...
+    @overload
+    def join(
+        self,
+        other: DataFrame | Series | list[DataFrame | Series],
+        on: _str | list[_str] | None = ...,
+        how: MergeHow = "left",
+        lsuffix: NoDefault = ...,
+        rsuffix: NoDefault = ...,
+        sort: _bool = False,
+        validate: JoinValidate | None = ...,
+        *,
+        suffixes: Suffixes | NoDefault = ...,
+    ) -> Self: ...
+    @overload
     def join(
         self,
         other: DataFrame | Series | list[DataFrame | Series],
