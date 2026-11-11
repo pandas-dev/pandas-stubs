@@ -862,7 +862,8 @@ def test_missing_array_protocol() -> None:
 
 
 def test_isnull_narrowing() -> None:
-    value: str | NAType | NaTType | None = random.choice(["value", None, pd.NA, pd.NaT])
+    values: list[str | NAType | NaTType | None] = ["value", None, pd.NA, pd.NaT]
+    value = values[0]
     if pd.isnull(value):
         check(assert_type(value, NAType | NaTType | None), object)
     else:
@@ -870,7 +871,8 @@ def test_isnull_narrowing() -> None:
 
 
 def test_notnull_narrowing() -> None:
-    value: str | NAType | NaTType | None = random.choice(["value", None, pd.NA, pd.NaT])
+    values: list[str | NAType | NaTType | None] = ["value", None, pd.NA, pd.NaT]
+    value = values[0]
     if pd.notnull(value):
         check(assert_type(value, str), str)
     else:

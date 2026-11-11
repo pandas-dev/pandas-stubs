@@ -81,7 +81,10 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
-from typing_extensions import override
+from typing_extensions import (
+    deprecated,
+    override,
+)
 import xarray as xr
 
 from pandas._libs.lib import NoDefault
@@ -180,7 +183,6 @@ from pandas._typing import (
     np_ndarray_bool,
     np_ndarray_dt,
     np_ndarray_float,
-    np_ndarray_num,
     np_ndarray_object,
     np_ndarray_td,
 )
@@ -360,19 +362,19 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
 
 class _iAtIndexerFrame(_iAtIndexer):
     @override
-    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | np.bool_ | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | np.bool_ | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @override
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, key: tuple[int, int], value: ScalarOrNA, /
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
     @override
-    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, key: tuple[Hashable, Hashable], /
     ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @override
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA, /
     ) -> None: ...
 
@@ -459,6 +461,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def style(self) -> Styler: ...
     def items(self) -> Iterator[tuple[Hashable, Series]]: ...
+    @deprecated("Use DataFrame.itertuples instead.")
     def iterrows(self) -> Iterator[tuple[Hashable, Series]]: ...
     @overload
     def itertuples(
@@ -479,12 +482,29 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
     ) -> Series: ...
     @overload
-    def __matmul__(self, other: DataFrame, /) -> Self: ...
+    def __matmul__(
+        self,
+        other: DataFrame | np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]],
+        /,
+    ) -> Self: ...
     @overload
-    def __matmul__(self, other: Series, /) -> Series: ...
+    def __matmul__(
+        self,
+        other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
+        /,
+    ) -> Series: ...
     @overload
-    def __matmul__(self, other: np_ndarray_num, /) -> Self: ...
-    def __rmatmul__(self, other: np_ndarray_num, /) -> Self: ...
+    def __rmatmul__(
+        self,
+        other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]],
+        /,
+    ) -> Self: ...
+    @overload
+    def __rmatmul__(
+        self,
+        other: np_1darray | Sequence[SupportsSelfMul[Any]],
+        /,
+    ) -> Series: ...
     @overload
     @classmethod
     def from_dict(

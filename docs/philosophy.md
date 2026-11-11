@@ -190,12 +190,25 @@ statements.
 
 ## Missing-value checks on object inputs
 
+TODO: pending pandas-dev/pandas#72008.
+
 `pandas.isna`, `pandas.notna`, and their aliases `isnull` and `notnull` accept
 `object` arguments. When an argument is typed as `object`, the result can be a
 Python or NumPy boolean, a boolean NumPy array, a `Series[bool]`, or a `DataFrame`.
 Narrow the input type first when a specific result type is needed. Existing
 overloads preserve precise results for known container types and type narrowing
 for supported nullable scalars.
+
+## Deprecated methods
+
+Mark a method that pandas deprecates with `@deprecated` from `typing_extensions`.
+The message is a short hint naming the replacement, e.g.
+`"Use DataFrame.itertuples instead."`, or `""` when there is none; do not copy
+pandas' warning. Test the warning with `pytest_warns_bounded`, one statement per
+block, and put
+`# type: ignore[deprecated] # pyright: ignore[reportDeprecated] # pyrefly: ignore[deprecated] # ty: ignore[deprecated]`
+on each deprecated call. Removed methods are not restored; deprecated arguments
+get no `@deprecated`.
 
 ## Using ignore comments
 
