@@ -188,17 +188,6 @@ pandas-stubs annotations are not too wide (allow adding a `Timestamp` to a
 time-based interval), mypy and pyright are configured to report unused ignore
 statements.
 
-## Missing-value checks on object inputs
-
-TODO: pending pandas-dev/pandas#72008.
-
-`pandas.isna`, `pandas.notna`, and their aliases `isnull` and `notnull` accept
-`object` arguments. When an argument is typed as `object`, the result can be a
-Python or NumPy boolean, a boolean NumPy array, a `Series[bool]`, or a `DataFrame`.
-Narrow the input type first when a specific result type is needed. Existing
-overloads preserve precise results for known container types and type narrowing
-for supported nullable scalars.
-
 ## Deprecated methods
 
 Mark a method that pandas deprecates with `@deprecated` from `typing_extensions`.
