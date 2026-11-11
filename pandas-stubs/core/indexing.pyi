@@ -8,11 +8,6 @@ from typing import (
     TypeAlias,
 )
 
-import numpy as np
-from pandas import (
-    Interval,
-    Period,
-)
 from pandas.core.base import IndexOpsMixin
 from typing_extensions import TypeVar
 
@@ -22,9 +17,9 @@ from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     Axis,
     AxisInt,
+    ExtScalarOrNA,
     MaskType,
     Scalar,
-    ScalarOrNA,
 )
 
 _IndexSliceTuple: TypeAlias = tuple[
@@ -50,7 +45,7 @@ class _iLocIndexer(_NDFrameIndexer): ...
 _ScalarT_co = TypeVar(
     "_ScalarT_co",
     covariant=True,
-    default=ScalarOrNA | np.bool_ | Period | Interval,
+    default=ExtScalarOrNA,
 )
 
 class _AtIndexer(NDFrameIndexerBase, Generic[_ScalarT_co]):
