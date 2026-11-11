@@ -2185,6 +2185,11 @@ def test_types_to_numpy() -> None:
     )
 
 
+def test_frame_array_shape() -> None:
+    df = pd.DataFrame([[1, 0], [0, 1]])
+    check(assert_type(df.__array__(), np_2darray), np_2darray)
+
+
 def test_to_markdown(tmp_path: Path) -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     check(assert_type(df.to_markdown(), str), str)
