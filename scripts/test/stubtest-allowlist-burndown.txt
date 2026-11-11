@@ -240,7 +240,6 @@ pandas.core.frame.DataFrame.tz_convert
 pandas.core.frame.DataFrame.tz_localize
 pandas.core.frame.DataFrame.where
 pandas.core.generic.NDFrame.__abs__
-pandas.core.generic.NDFrame.__array__
 pandas.core.generic.NDFrame.__init__
 pandas.core.generic.NDFrame.__nonzero__
 pandas.core.generic.NDFrame.convert_dtypes
@@ -348,7 +347,6 @@ pandas.core.resample._GroupByMixin.__init__
 pandas.core.reshape.concat.concat
 pandas.core.reshape.merge.merge
 pandas.core.reshape.pivot.pivot
-pandas.core.series.Series.__array__
 pandas.core.series.Series.__init__
 pandas.core.series.Series.aggregate
 pandas.core.series.Series.align
