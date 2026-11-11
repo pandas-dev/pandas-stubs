@@ -1013,6 +1013,7 @@ np_1darray_float: TypeAlias = np_1darray[np.floating]
 np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
+np_2darray_object: TypeAlias = np_2darray[np.object_]
 
 NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
