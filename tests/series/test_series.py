@@ -35,7 +35,10 @@ from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
 )
-from pandas.api.typing import NAType
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
 from pandas.api.typing.aliases import (
     DtypeObj,
     Scalar,
@@ -168,6 +171,21 @@ def test_types_init() -> None:
         ),
         pd.Series,
         pd.Interval,
+    )
+    check(
+        assert_type(pd.Series([pd.Timestamp(0), pd.NaT]), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(pd.Series([pd.Timedelta(0), pd.NaT]), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(pd.Series([pd.NaT]), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        NaTType,
     )
 
 
@@ -373,12 +391,11 @@ def test_types_fillna() -> None:
     # GH 263
     check(assert_type(s.fillna(pd.NA), "pd.Series[float]"), pd.Series, float)
 
-    timestamps: pd.Series[pd.Timestamp] = pd.Series(
-        [pd.Timestamp("2020-01-01"), pd.NaT]
-    )
+    timestamps = pd.Series([pd.Timestamp("2020-01-01"), pd.NaT])
     check(
         assert_type(timestamps.fillna(pd.NaT), "pd.Series[pd.Timestamp]"),
         pd.Series,
+        pd.Timestamp,
     )
 
 

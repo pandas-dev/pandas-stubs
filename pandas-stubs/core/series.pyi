@@ -482,11 +482,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool | None = None,
     ) -> Series[_str]: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
         data: (
             DatetimeIndex
-            | Sequence[np.datetime64 | datetime | date]
+            | Sequence[np.datetime64 | datetime | date | NaTType]
             | dict[HashableT1, np.datetime64 | datetime | date]
             | np.datetime64
             | datetime
@@ -540,7 +540,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cls,
         data: (
             TimedeltaIndex
-            | Sequence[np.timedelta64 | timedelta]
+            | Sequence[np.timedelta64 | timedelta | NaTType]
             | dict[HashableT1, np.timedelta64 | timedelta]
             | np.timedelta64
             | timedelta
