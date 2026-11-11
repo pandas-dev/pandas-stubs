@@ -307,6 +307,16 @@ def test_indexslice_getitem_multiindex_columns() -> None:
         [[1, 2, 3, 4]],
         columns=pd.MultiIndex.from_product([["a", "b"], ["a", "b"]]),
     )
+    df_three_levels = pd.DataFrame(
+        [list(range(8))],
+        columns=pd.MultiIndex.from_product([["a", "b"], [1, 2], ["x", "y"]]),
+    )
+    df_four_levels = pd.DataFrame(
+        [list(range(16))],
+        columns=pd.MultiIndex.from_product(
+            [["a", "b"], [1, 2], ["x", "y"], ["i", "j"]]
+        ),
+    )
 
     # TODO: astral-sh/ty#4695 remove when ty fixes the slice-tuple alternative on Python 3.11
     check(
@@ -336,7 +346,19 @@ def test_indexslice_getitem_multiindex_columns() -> None:
         pd.Series,
     )
     check(
+        assert_type(df_three_levels.loc[:, pd.IndexSlice["a", 1, :]], pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
         assert_type(df.loc[:, ("a", 1)], pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df_three_levels.loc[:, ("a", 1, "x")], pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df_four_levels.loc[:, ("a", 1, "x", "i")], pd.Series),
         pd.Series,
     )
 

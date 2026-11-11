@@ -309,17 +309,15 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         /,
     ) -> Series: ...
     @overload
-    def __getitem__(self, idx: tuple[slice, tuple[Scalar, Scalar]], /) -> Series: ...
+    def __getitem__(self, idx: tuple[slice, tuple[Scalar]], /) -> _T: ...
+    @overload
+    def __getitem__(self, idx: tuple[slice, tuple[Scalar, ...]], /) -> Series: ...
     @overload
     def __getitem__(self, key: Scalar, /) -> Series | _T: ...
     @overload
     def __getitem__(
         self,
-        key: (
-            tuple[Scalar, slice]
-            | tuple[slice, tuple[Scalar, Scalar, *tuple[Scalar, ...]]]
-            | tuple[Scalar, SequenceNotStr[Scalar]]
-        ),
+        key: tuple[Scalar, slice] | tuple[Scalar, SequenceNotStr[Scalar]],
         /,
     ) -> Series | _T: ...
     @overload
