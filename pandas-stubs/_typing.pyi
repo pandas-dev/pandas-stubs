@@ -141,6 +141,9 @@ Scalar: TypeAlias = (
     _IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
 )
 ScalarOrNA: TypeAlias = Scalar | NAType | NaTType | None
+ExtScalar: TypeAlias = Scalar | np.bool_ | Period | Interval
+ExtScalarOrNA: TypeAlias = ExtScalar | NAType | NaTType | None
+ExtScalarT = TypeVar("ExtScalarT", bound=ExtScalar, default=ExtScalar)
 IntStrT = TypeVar("IntStrT", int, str)
 
 # timestamp and timedelta convertible types

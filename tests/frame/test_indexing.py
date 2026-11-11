@@ -32,7 +32,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import ScalarOrNA
+from tests._typing import ExtScalarOrNA
 
 
 def test_types_getitem() -> None:
@@ -101,6 +101,14 @@ def test_types_setitem() -> None:
     df[["col1"]] = [[None], [pd.NA]]  # type: ignore[assignment,list-item]
     df[iter(["col1"])] = [[None], [pd.NA]]  # type: ignore[assignment]
 
+    period = pd.Period("2026-01", freq="M")
+    period_series = pd.Series([period])
+    df["scalar"] = period_series.iat[0]
+    df["periods"] = [period, period]
+    df["mapped_periods"] = {0: period}
+    df[["periods", "mapped_periods"]] = [[period, period], [period, period]]
+    check(assert_type(df["mapped_periods"], pd.Series), pd.Series, pd.Period)
+
 
 def test_types_setitem_mask() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4], 5: [6, 7]})
@@ -111,15 +119,18 @@ def test_types_setitem_mask() -> None:
 def test_types_iloc_iat() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(
-        assert_type(df.iloc[1, 1], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.iloc[1, 1], ExtScalarOrNA),
         np.integer,
     )
     check(assert_type(df.iloc[[1], [1]], pd.DataFrame), pd.DataFrame)
 
     check(
-        assert_type(df.iat[0, 0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.iat[0, 0], ExtScalarOrNA),
         np.integer,
     )
+
+    df.iat[0, 0] = df.iat[1, 0]
+    df.iloc[0, 0] = df.iat[1, 0]
 
     # https://github.com/microsoft/python-type-stubs/issues/31
     check(assert_type(df.iloc[:, [0]], pd.DataFrame), pd.DataFrame)
@@ -130,14 +141,17 @@ def test_types_loc_at() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df.loc[[0], "col1"], pd.Series), pd.Series)
     check(
-        assert_type(df.loc[0, "col1"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.loc[0, "col1"], ExtScalarOrNA),
         np.integer,
     )
 
     check(
-        assert_type(df.at[0, "col1"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.at[0, "col1"], ExtScalarOrNA),
         np.integer,
     )
+
+    df.at[0, "col1"] = df.at[1, "col1"]
+    df.loc[0, "col1"] = df.at[1, "col1"]
 
     df = pd.DataFrame(
         {
@@ -149,31 +163,31 @@ def test_types_loc_at() -> None:
     )
 
     check(
-        assert_type(df.loc[0, "flag"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.loc[0, "flag"], ExtScalarOrNA),
         np.bool_,
     )
     check(
-        assert_type(df.iloc[0, 1], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.iloc[0, 1], ExtScalarOrNA),
         NAType,
     )
     check(
-        assert_type(df.at[0, "ts"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.at[0, "ts"], ExtScalarOrNA),
         NaTType,
     )
     check(
-        assert_type(df.loc[0, "none"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.loc[0, "none"], ExtScalarOrNA),
         type(None),
     )
     check(
-        assert_type(df.iloc[0, 3], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.iloc[0, 3], ExtScalarOrNA),
         type(None),
     )
     check(
-        assert_type(df.at[0, "none"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.at[0, "none"], ExtScalarOrNA),
         type(None),
     )
     check(
-        assert_type(df.iat[0, 3], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.iat[0, 3], ExtScalarOrNA),
         type(None),
     )
 
@@ -181,27 +195,23 @@ def test_types_loc_at() -> None:
     check(
         assert_type(
             period_frame.loc[0, "period"],
-            ScalarOrNA | np.bool_ | pd.Period | pd.Interval,
+            ExtScalarOrNA,
         ),
         pd.Period,
     )
     check(
-        assert_type(
-            period_frame.iloc[0, 0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(period_frame.iloc[0, 0], ExtScalarOrNA),
         pd.Period,
     )
     check(
         assert_type(
             period_frame.at[0, "period"],
-            ScalarOrNA | np.bool_ | pd.Period | pd.Interval,
+            ExtScalarOrNA,
         ),
         pd.Period,
     )
     check(
-        assert_type(
-            period_frame.iat[0, 0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(period_frame.iat[0, 0], ExtScalarOrNA),
         pd.Period,
     )
 
@@ -209,27 +219,23 @@ def test_types_loc_at() -> None:
     check(
         assert_type(
             interval_frame.loc[0, "interval"],
-            ScalarOrNA | np.bool_ | pd.Period | pd.Interval,
+            ExtScalarOrNA,
         ),
         pd.Interval,
     )
     check(
-        assert_type(
-            interval_frame.iloc[0, 0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(interval_frame.iloc[0, 0], ExtScalarOrNA),
         pd.Interval,
     )
     check(
         assert_type(
             interval_frame.at[0, "interval"],
-            ScalarOrNA | np.bool_ | pd.Period | pd.Interval,
+            ExtScalarOrNA,
         ),
         pd.Interval,
     )
     check(
-        assert_type(
-            interval_frame.iat[0, 0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(interval_frame.iat[0, 0], ExtScalarOrNA),
         pd.Interval,
     )
 
@@ -283,7 +289,7 @@ def test_indexslice_getitem() -> None:
     check(
         assert_type(
             df.loc[pd.IndexSlice[2, 30], "z"],
-            ScalarOrNA | np.bool_ | pd.Period | pd.Interval,
+            ExtScalarOrNA,
         ),
         np.integer,
     )
@@ -542,7 +548,7 @@ def test_getsetitem_multiindex() -> None:
     check(
         assert_type(
             budget.loc["project A", multi_index],
-            ScalarOrNA | np.bool_ | pd.Period | pd.Interval,
+            ExtScalarOrNA,
         ),
         int,
     )
@@ -683,9 +689,7 @@ def test_loc_callable() -> None:
         return 1
 
     check(
-        assert_type(
-            df.loc[select3, "x"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(df.loc[select3, "x"], ExtScalarOrNA),
         np.integer,
     )
 
@@ -759,7 +763,7 @@ def test_frame_index_timestamp() -> None:
     check(assert_type(df.loc[[dt1], :], pd.DataFrame), pd.DataFrame)
     df2 = pd.DataFrame({"x": s})
     check(
-        assert_type(df2.loc[dt1, "x"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df2.loc[dt1, "x"], ExtScalarOrNA),
         np.integer,
     )
     check(assert_type(df2.loc[[dt1], "x"], pd.Series), pd.Series, np.integer)
@@ -804,7 +808,7 @@ def test_frame_at() -> None:
     df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]})
 
     check(
-        assert_type(df.at[0, "col1"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.at[0, "col1"], ExtScalarOrNA),
         float,
     )
     df.at[0, "col1"] = 999
@@ -814,9 +818,7 @@ def test_frame_at() -> None:
     df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]}, index=mi)
 
     check(
-        assert_type(
-            df.at[(2, 4), "col1"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(df.at[(2, 4), "col1"], ExtScalarOrNA),
         float,
     )
     df.at[(2, 4), "col1"] = 999
@@ -827,7 +829,7 @@ def test_frame_iat() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
     check(
-        assert_type(df.iat[0, 0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(df.iat[0, 0], ExtScalarOrNA),
         np.integer,
     )
     df.iat[0, 0] = 999

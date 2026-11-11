@@ -12,7 +12,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import ScalarOrNA
+from tests._typing import ExtScalarOrNA
 
 
 def test_types_select() -> None:
@@ -30,7 +30,7 @@ def test_types_iloc_iat() -> None:
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
     check(
-        assert_type(s.iat[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(s.iat[0], ExtScalarOrNA),
         np.integer,
     )
     s.iat[0] = 999
@@ -40,24 +40,20 @@ def test_types_iloc_iat() -> None:
 
     period_series = pd.Series([pd.Period("2020-01")])
     check(
-        assert_type(
-            period_series.iat[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(period_series.iat[0], ExtScalarOrNA),
         pd.Period,
     )
+    period_series.iat[0] = period_series.iat[0]
     interval_series = pd.Series([pd.Interval(0, 1)])
     check(
-        assert_type(
-            interval_series.iat[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(interval_series.iat[0], ExtScalarOrNA),
         pd.Interval,
     )
+    interval_series.iat[0] = interval_series.iat[0]
     missing_series = pd.Series([None], dtype=object)
     check(assert_type(missing_series.iloc[0], Any), type(None))
     check(
-        assert_type(
-            missing_series.iat[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(missing_series.iat[0], ExtScalarOrNA),
         type(None),
     )
 
@@ -82,29 +78,25 @@ def test_types_loc_at() -> None:
     s2.at[1] = 99
 
     check(
-        assert_type(s.at["row1"], ScalarOrNA | np.bool_ | pd.Period | pd.Interval),
+        assert_type(s.at["row1"], ExtScalarOrNA),
         np.integer,
     )
 
     period_series = pd.Series([pd.Period("2020-01")])
     check(
-        assert_type(
-            period_series.at[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(period_series.at[0], ExtScalarOrNA),
         pd.Period,
     )
+    period_series.at[0] = period_series.at[0]
     interval_series = pd.Series([pd.Interval(0, 1)])
     check(
-        assert_type(
-            interval_series.at[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(interval_series.at[0], ExtScalarOrNA),
         pd.Interval,
     )
+    interval_series.at[0] = interval_series.at[0]
     missing_series = pd.Series([None], dtype=object)
     check(
-        assert_type(
-            missing_series.at[0], ScalarOrNA | np.bool_ | pd.Period | pd.Interval
-        ),
+        assert_type(missing_series.at[0], ExtScalarOrNA),
         type(None),
     )
 

@@ -234,4 +234,4 @@ def test_groupby_old_spelling() -> None:
         upper="3.99.99",
         upper_exception=AttributeError,
     ):
-        _ = api_typing.RollingGroupby  # type: ignore[attr-defined,unused-ignore] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[unresolved-attribute]
+        _ = api_typing.RollingGroupby  # type: ignore[attr-defined,unused-ignore] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType,reportUnknownVariableType] # pyrefly: ignore[missing-attribute] # ty: ignore[missing-attribute]

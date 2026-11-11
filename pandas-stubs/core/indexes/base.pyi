@@ -646,26 +646,26 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
     @override
-    def __eq__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __eq__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @override
-    def __ne__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __ne__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     # The ordering operand is intentionally unconstrained: Index subclasses such
     # as IntervalIndex order generic IntervalT values, which checkers cannot
     # prove compatible with S1.
     @override
-    def __le__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __le__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self: Iterable[SupportsDunderLE[Any]], other: Index[S1] | S1, /
     ) -> np_1darray_bool: ...
     @override
-    def __ge__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __ge__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self: Iterable[SupportsDunderGE[Any]], other: Index[S1] | S1, /
     ) -> np_1darray_bool: ...
     @override
-    def __lt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __lt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self: Iterable[SupportsDunderLT[Any]], other: Index[S1] | S1, /
     ) -> np_1darray_bool: ...
     @override
-    def __gt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __gt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self: Iterable[SupportsDunderGT[Any]], other: Index[S1] | S1, /
     ) -> np_1darray_bool: ...
     @overload

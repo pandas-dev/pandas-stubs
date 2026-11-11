@@ -48,7 +48,6 @@ pandas._libs.tslibs.period.Period.to_timestamp
 pandas._libs.tslibs.timedeltas.Timedelta.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.__index__
 pandas._libs.tslibs.timestamps.Timestamp.astimezone
-pandas._libs.tslibs.timestamps.Timestamp.fromtimestamp
 pandas._libs.tslibs.timestamps.Timestamp.replace
 pandas._libs.tslibs.timestamps.Timestamp.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.utcfromtimestamp
@@ -261,18 +260,11 @@ pandas.core.groupby.generic.NamedAgg.column
 pandas.core.groupby.generic.SeriesGroupBy.describe
 pandas.core.groupby.groupby.GroupBy.__init__
 pandas.core.groupby.groupby.GroupBy.apply
-pandas.core.groupby.groupby.GroupBy.cummax
-pandas.core.groupby.groupby.GroupBy.cummin
 pandas.core.groupby.groupby.GroupBy.cumprod
 pandas.core.groupby.groupby.GroupBy.cumsum
-pandas.core.groupby.groupby.GroupBy.diff
-pandas.core.groupby.groupby.GroupBy.ewm
-pandas.core.groupby.groupby.GroupBy.expanding
 pandas.core.groupby.groupby.GroupBy.mean
 pandas.core.groupby.groupby.GroupBy.pct_change
 pandas.core.groupby.groupby.GroupBy.rank
-pandas.core.groupby.groupby.GroupBy.resample
-pandas.core.groupby.groupby.GroupBy.rolling
 pandas.core.groupby.groupby.GroupBy.shift
 pandas.core.groupby.groupby.GroupBy.size
 pandas.core.groupby.groupby.GroupByPlot.__call__

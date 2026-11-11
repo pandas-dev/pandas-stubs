@@ -32,14 +32,16 @@ Documentation = "https://pandas.pydata.org/pandas-docs/stable"
 
 [dependency-groups]
 dev = [
-  "mypy>=2.2.0",
+  # TODO: lift the cap once mypy 2.5 accepts the reflected-operand `Never` overloads
+  "mypy>=2.2.0,<2.5",
   "pandas==3.1.0",
   "numpy>=2.5.2;python_version>='3.12'",
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright==1.1.411",
-  "ty>=0.0.97",
-  "pyrefly>=1.4.0",
+  "ty>=0.0.100",
+  # TODO: lift the cap once pyrefly 1.5 accepts the reflected-operand `Never` overloads
+  "pyrefly>=1.4.0,<1.5",
   "poethepoet>=0.16.5",
   "loguru>=0.7.3; python_version < '4.0'",
   "typing-extensions>=4.5.0",
@@ -305,6 +307,7 @@ warn_unreachable = true
 # Suppressing errors
 ignore_errors = false
 enable_error_code = [
+  "deprecated",
   "ignore-without-code",  # same as in pandas
     # TODO: exhaust https://mypy.readthedocs.io/en/stable/error_code_list2.html
   "explicit-override"

@@ -3,35 +3,24 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from pandas import (
     DataFrame,
     Index,
-    Interval,
-    Period,
     Series,
 )
 from pandas.core.arrays import ExtensionArray
-from typing_extensions import (
-    TypeIs,
-    TypeVar,
-)
+from typing_extensions import TypeIs
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (
-    Scalar,
+    ExtScalarOrNA,
+    ExtScalarT,
     ScalarT,
     ShapeT,
     np_1darray_bool,
     np_ndarray,
     np_ndarray_bool,
-)
-
-_ScalarOrPandasT = TypeVar(
-    "_ScalarOrPandasT",
-    bound=Scalar | np.bool_ | Period | Interval,
-    default=Scalar | np.bool_ | Period | Interval,
 )
 
 @overload
@@ -45,9 +34,7 @@ def isna(obj: np_ndarray[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
 @overload
 def isna(obj: list[Any]) -> np_ndarray_bool: ...
 @overload
-def isna(
-    obj: Scalar | np.bool_ | Period | Interval | NaTType | NAType | None,
-) -> TypeIs[NaTType | NAType | None]: ...
+def isna(obj: ExtScalarOrNA) -> TypeIs[NaTType | NAType | None]: ...
 
 isnull = isna
 
@@ -62,8 +49,6 @@ def notna(obj: np_ndarray[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
 @overload
 def notna(obj: list[Any]) -> np_ndarray_bool: ...
 @overload
-def notna(
-    obj: _ScalarOrPandasT | NaTType | NAType | None,
-) -> TypeIs[_ScalarOrPandasT]: ...
+def notna(obj: ExtScalarT | NaTType | NAType | None) -> TypeIs[ExtScalarT]: ...
 
 notnull = notna
