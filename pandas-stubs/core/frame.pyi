@@ -1014,7 +1014,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def fillna(
         self,
-        value: Scalar | NAType | dict[Any, Any] | Series | DataFrame | None = ...,
+        value: ScalarOrNA | dict[Any, Any] | Series | DataFrame = ...,
         *,
         axis: Axis | None = ...,
         limit: int = ...,
