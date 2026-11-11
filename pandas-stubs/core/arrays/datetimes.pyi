@@ -46,7 +46,7 @@ class DatetimeArray(TimelikeOps, DatelikeOps):
     ) -> None: ...
     @property
     @override
-    def dtype(self) -> np.dtypes.DateTime64DType | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-property-type-override]
+    def dtype(self) -> np.dtypes.DateTime64DType | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-property-override]
     @property
     def tz(self) -> _tzinfo | None: ...
     @property

@@ -672,14 +672,16 @@ def test_types_median() -> None:
 
 def test_types_iterrows() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(
-        assert_type(df.iterrows(), "Iterator[tuple[Hashable, pd.Series]]"),
-        Iterable,
-        tuple,
-    )
-    for t1, t2 in df.iterrows():
-        check(assert_type(t1, Hashable), Hashable)
-        check(assert_type(t2, pd.Series), pd.Series)
+    with pytest_warns_bounded(
+        Pandas4Warning, "iterrows is deprecated", lower="3.1.99", upper="3.99.99"
+    ):
+        check(assert_type(df.iterrows(), "Iterator[tuple[Hashable, pd.Series]]"), Iterable, tuple)  # type: ignore[deprecated] # pyright: ignore[reportDeprecated] # pyrefly: ignore[deprecated] # ty: ignore[deprecated]
+    with pytest_warns_bounded(
+        Pandas4Warning, "iterrows is deprecated", lower="3.1.99", upper="3.99.99"
+    ):
+        t1, t2 = next(df.iterrows())  # type: ignore[deprecated] # pyright: ignore[reportDeprecated] # pyrefly: ignore[deprecated] # ty: ignore[deprecated]
+    check(assert_type(t1, Hashable), Hashable)
+    check(assert_type(t2, pd.Series), pd.Series)
 
 
 def test_types_itertuples() -> None:
@@ -737,7 +739,10 @@ def test_frame_iterator() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
 
     check(assert_type(next(df.items()), tuple[Hashable, pd.Series]), tuple)
-    check(assert_type(next(df.iterrows()), tuple[Hashable, pd.Series]), tuple)
+    with pytest_warns_bounded(
+        Pandas4Warning, "iterrows is deprecated", lower="3.1.99", upper="3.99.99"
+    ):
+        check(assert_type(next(df.iterrows()), tuple[Hashable, pd.Series]), tuple)  # type: ignore[deprecated] # pyright: ignore[reportDeprecated] # pyrefly: ignore[deprecated] # ty: ignore[deprecated]
     check(assert_type(next(df.itertuples()), PandasNamedTuple), tuple)
 
 
