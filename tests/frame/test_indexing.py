@@ -234,6 +234,13 @@ def test_types_loc_at() -> None:
     )
 
 
+def test_loc_scalar_chained_comparison() -> None:
+    df = pd.DataFrame({"x": [4.0, 4.0]})
+    a = df.loc[0, "x"]
+    b = df.loc[1, "x"]
+    check(assert_type(bool(a == b == 4.0), bool), bool)
+
+
 def test_types_boolean_indexing() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df[df > 1], pd.DataFrame), pd.DataFrame)
