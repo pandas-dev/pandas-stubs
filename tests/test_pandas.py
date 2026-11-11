@@ -756,7 +756,41 @@ def test_isna_object() -> None:
     )
 
 
-def test_isna_array_protocol() -> None:
+def test_notna_object() -> None:
+    class PlainObject:
+        pass
+
+    check(
+        assert_type(
+            pd.notna(PlainObject),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.notnull(PlainObject()),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.notna(cast(object, pd.Series([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.notnull(cast(object, pd.DataFrame({"a": [1.0, np.nan]}))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_missing_array_protocol() -> None:
     class ArrayObject:
         def __init__(self, values: np_ndarray) -> None:
             super().__init__()
@@ -811,6 +845,20 @@ def test_isna_array_protocol() -> None:
         ),
         np_ndarray_bool,
     )
+    check(
+        assert_type(
+            pd.notna(ArrayObject(np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.notnull(ArrayObject(np.array(None, dtype=object))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np.bool_,
+    )
 
 
 def test_isnull_narrowing() -> None:
@@ -819,6 +867,14 @@ def test_isnull_narrowing() -> None:
         check(assert_type(value, NAType | NaTType | None), object)
     else:
         check(assert_type(value, str), str)
+
+
+def test_notnull_narrowing() -> None:
+    value: str | NAType | NaTType | None = random.choice(["value", None, pd.NA, pd.NaT])
+    if pd.notnull(value):
+        check(assert_type(value, str), str)
+    else:
+        check(assert_type(value, NAType | NaTType | None), object)
 
 
 # GH 55
