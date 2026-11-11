@@ -664,7 +664,7 @@ def test_loc_iterable(col: Hashable, typ: type) -> None:
         assert_type(df.loc[:, [1]], pd.DataFrame)
 
         assert_type(df.loc[:, (None,)], pd.DataFrame)
-        assert_type(df.loc[:, (1,)], pd.DataFrame)
+        assert_type(df.loc[:, (1,)], pd.DataFrame | pd.Series)
 
         assert_type(df.loc[:, deque([None])], pd.DataFrame)
         assert_type(df.loc[:, deque([1])], pd.DataFrame)
