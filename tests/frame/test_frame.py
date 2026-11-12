@@ -2352,6 +2352,10 @@ def test_types_to_numpy() -> None:
 def test_frame_array_shape() -> None:
     df = pd.DataFrame([[1, 0], [0, 1]])
     check(assert_type(df.__array__(), np_2darray), np_2darray)
+    check(assert_type(df.__array__("f8"), np_2darray), np_2darray)
+    check(assert_type(df.__array__(np.dtype(np.float64)), np_2darray), np_2darray)
+    check(assert_type(df.__array__(copy=True), np_2darray), np_2darray)
+    check(assert_type(np.asarray(df, "f8"), np_ndarray), np.ndarray)
 
 
 def test_to_markdown(tmp_path: Path) -> None:
