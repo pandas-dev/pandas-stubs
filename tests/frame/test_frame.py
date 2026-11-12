@@ -254,6 +254,164 @@ def test_types_df_to_df_comparison() -> None:
     check(assert_type(df == df2, pd.DataFrame), pd.DataFrame)
 
 
+def test_types_df_scalar_comparison() -> None:
+    df_str = pd.DataFrame({"col": ["bar", "foo"]})
+    check(assert_type(df_str.eq("foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.ne("foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.lt("foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.le("foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.gt("foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str.ge("foo"), pd.DataFrame), pd.DataFrame)
+
+    df_bytes = pd.DataFrame({"col": [b"bar", b"foo"]})
+    check(assert_type(df_bytes.eq(b"foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bytes.ne(b"foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bytes.lt(b"foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bytes.le(b"foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bytes.gt(b"foo"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bytes.ge(b"foo"), pd.DataFrame), pd.DataFrame)
+
+    df_bool = pd.DataFrame({"col": [False, True]})
+    check(assert_type(df_bool.eq(True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.ne(True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.lt(True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.le(True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.gt(True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.ge(True), pd.DataFrame), pd.DataFrame)
+
+    df_int = pd.DataFrame({"col": [1, 2]})
+    check(assert_type(df_int.eq(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.ne(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.lt(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.le(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.gt(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.ge(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.eq(np.int64(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.ne(np.int64(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.lt(np.int64(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.le(np.int64(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.gt(np.int64(2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int.ge(np.int64(2)), pd.DataFrame), pd.DataFrame)
+
+    df_float = pd.DataFrame({"col": [1.0, 2.0]})
+    check(assert_type(df_float.eq(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.ne(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.lt(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.le(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.gt(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.ge(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.eq(np.float64(2.0)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.ne(np.float64(2.0)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.lt(np.float64(2.0)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.le(np.float64(2.0)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.gt(np.float64(2.0)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float.ge(np.float64(2.0)), pd.DataFrame), pd.DataFrame)
+
+    df_ts = pd.DataFrame({"col": pd.to_datetime(["2026-01-01", "2026-01-02"])})
+    check(assert_type(df_ts.eq(pd.Timestamp("2026-01-02")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.ne(pd.Timestamp("2026-01-02")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.lt(pd.Timestamp("2026-01-02")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.le(pd.Timestamp("2026-01-02")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.gt(pd.Timestamp("2026-01-02")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.ge(pd.Timestamp("2026-01-02")), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df_ts.eq(datetime.datetime(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.ne(datetime.datetime(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.lt(datetime.datetime(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.le(datetime.datetime(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.gt(datetime.datetime(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.ge(datetime.datetime(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.eq(np.datetime64("2026-01-02")), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.ne(np.datetime64("2026-01-02")), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.lt(np.datetime64("2026-01-02")), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.le(np.datetime64("2026-01-02")), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.gt(np.datetime64("2026-01-02")), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts.ge(np.datetime64("2026-01-02")), pd.DataFrame), pd.DataFrame
+    )
+
+    df_date = pd.DataFrame(
+        {"col": [datetime.date(2026, 1, 1), datetime.date(2026, 1, 2)]}
+    )
+    check(
+        assert_type(df_date.eq(datetime.date(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_date.ne(datetime.date(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_date.lt(datetime.date(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_date.le(datetime.date(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_date.gt(datetime.date(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_date.ge(datetime.date(2026, 1, 2)), pd.DataFrame), pd.DataFrame
+    )
+
+    df_td = pd.DataFrame({"col": pd.to_timedelta([1, 2], unit="D")})
+    check(assert_type(df_td.eq(pd.Timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.ne(pd.Timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.lt(pd.Timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.le(pd.Timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.gt(pd.Timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.ge(pd.Timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.eq(datetime.timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.ne(datetime.timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.lt(datetime.timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.le(datetime.timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.gt(datetime.timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.ge(datetime.timedelta(days=2)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.eq(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.ne(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.lt(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.le(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.gt(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td.ge(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_df_complex_scalar_comparison() -> None:
+    df = pd.DataFrame({"col": [1j, 2j]})
+    check(assert_type(df.eq(1j), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.ne(1j), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.eq(np.complex128(1j)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.ne(np.complex128(1j)), pd.DataFrame), pd.DataFrame)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.lt(1j)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.le(1j)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.gt(1j)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.ge(1j)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.lt(np.complex128(1j))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.le(np.complex128(1j))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.gt(np.complex128(1j))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.ge(np.complex128(1j))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+
 def test_types_head_tail() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df.head(1), pd.DataFrame), pd.DataFrame)

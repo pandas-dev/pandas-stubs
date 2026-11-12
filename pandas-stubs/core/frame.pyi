@@ -155,6 +155,7 @@ from pandas._typing import (
     Renamer,
     ReplaceValue,
     Scalar,
+    ScalarNoComplex,
     ScalarOrNA,
     ScalarT,
     SequenceNotStr,
@@ -2166,7 +2167,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def droplevel(self, level: Level | list[Level], axis: Axis = 0) -> Self: ...
     def eq(
         self,
-        other: complex | ListLike | DataFrame,
+        other: Scalar | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2218,7 +2219,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def ge(
         self,
-        other: complex | ListLike | DataFrame,
+        other: ScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2234,7 +2235,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def get(self, key: Hashable, default: _T) -> Series | _T: ...
     def gt(
         self,
-        other: complex | ListLike | DataFrame,
+        other: ScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2274,13 +2275,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def last_valid_index(self) -> Scalar: ...
     def le(
         self,
-        other: complex | ListLike | DataFrame,
+        other: ScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
     def lt(
         self,
-        other: complex | ListLike | DataFrame,
+        other: ScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2388,7 +2389,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     multiply = mul
     def ne(
         self,
-        other: complex | ListLike | DataFrame,
+        other: Scalar | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
