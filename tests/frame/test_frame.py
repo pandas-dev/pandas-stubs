@@ -1652,6 +1652,64 @@ def test_types_apply() -> None:
         np.integer,
     )
 
+    # pandas-dev/pandas-stubs#2105
+    check(
+        assert_type(
+            df.apply(returns_scalar, axis=1, raw=False, result_type=None, args=()),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(
+            df.apply(returns_scalar, axis="columns", raw=True), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(df.apply(returns_listlike_of_3, axis=1, raw=False), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_dict, axis="columns", raw=False), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            df.apply(func=returns_series, axis="columns", raw=False), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.apply(returns_series, axis=1, raw=False, result_type="reduce"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.apply(gethead, axis="columns", args=(1,)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.apply(returns_series, 1, False, result_type="expand"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.apply(returns_scalar, False, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_scalar, False, axis="columns")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_listlike_of_3, False, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_dict, False, axis="columns")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, False, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, False, axis="columns")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, False, axis=1, result_type="reduce")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, False, axis="columns", result_type="reduce")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
 
 def test_types_map() -> None:
     # GH774

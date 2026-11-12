@@ -1630,10 +1630,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
         func: Callable[..., S2 | NAType],
+        *,
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
-        *,
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Series[S2]: ...
@@ -1641,10 +1641,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         func: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
+        *,
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
-        *,
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Series: ...
@@ -1652,10 +1652,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         func: Callable[..., Series],
+        *,
         raw: _bool = ...,
         result_type: None = None,
         args: Any = ...,
-        *,
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Self: ...
@@ -1665,9 +1665,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         func: Callable[..., Series],
+        *,
         raw: _bool = ...,
         args: Any = ...,
-        *,
         axis: AxisColumn,
         result_type: Literal["reduce"],
         **kwargs: Any,
