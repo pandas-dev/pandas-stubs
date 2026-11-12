@@ -220,6 +220,15 @@ def test_hist(close_figures: None) -> None:
     check(assert_type(df.hist(by="Col4"), np_ndarray_object), np.ndarray)
 
 
+def test_series_hist(close_figures: None) -> None:
+    s = pd.Series([1, 2])
+    check(assert_type(s.hist(), Axes), Axes)
+    check(
+        assert_type(s.hist(by=["x", "y"]), Axes | np_ndarray_object),
+        np_ndarray_object,
+    )
+
+
 def test_boxplot(close_figures: None) -> None:
     np.random.seed(1234)
     df = pd.DataFrame(np.random.randn(10, 4), columns=["Col1", "Col2", "Col3", "Col4"])
