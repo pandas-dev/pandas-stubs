@@ -1422,6 +1422,15 @@ def test_types_apply() -> None:
     def returns_dict(_: pd.Series) -> dict[str, int]:
         return {"col4": 7, "col5": 8}
 
+    # GH 1001
+    @dataclass
+    class Row:
+        a: int
+        b: int
+
+    def make_row(row: pd.Series) -> Row:
+        return Row(a=row["a"], b=row["b"])
+
     # Misc checks
     check(assert_type(df.apply(np.exp), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(str), "pd.Series[str]"), pd.Series, str)
@@ -1508,6 +1517,23 @@ def test_types_apply() -> None:
     check(assert_type(df.apply(returns_series, axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series), pd.Series)
     check(assert_type(df.apply(returns_dict, axis=1), pd.Series), pd.Series)
+    rows = pd.DataFrame({"a": [1, 2, 3], "b": [2, 3, 4]})
+    check(assert_type(rows.apply(make_row, axis=1), pd.Series), pd.Series, Row)
+    check(assert_type(rows.apply(make_row, axis="columns"), pd.Series), pd.Series, Row)
+    check(
+        assert_type(
+            rows.apply(func=make_row, axis=1, raw=False, result_type=None), pd.Series
+        ),
+        pd.Series,
+        Row,
+    )
+    check(
+        assert_type(
+            rows.apply(lambda row: Row(a=row["a"], b=row["b"]), axis=1), pd.Series
+        ),
+        pd.Series,
+        Row,
+    )
 
     # Check various return types for result_type="expand" with axis=1
     check(
@@ -1654,51 +1680,7 @@ def test_types_apply() -> None:
         np.integer,
     )
 
-
-def test_types_apply_custom_object() -> None:
-    # GH 1001
-    @dataclass
-    class Row:
-        a: int
-        b: int
-
-    df = pd.DataFrame({"a": [1, 2, 3], "b": [2, 3, 4]})
-    expected = [Row(1, 2), Row(2, 3), Row(3, 4)]
-
-    def make_row(row: pd.Series) -> Row:
-        return Row(a=row["a"], b=row["b"])
-
-    result = check(assert_type(df.apply(make_row, axis=1), pd.Series), pd.Series, Row)
-    assert list(result) == expected
-
-    result = check(
-        assert_type(df.apply(make_row, axis="columns"), pd.Series), pd.Series, Row
-    )
-    assert list(result) == expected
-
-    result = check(
-        assert_type(
-            df.apply(func=make_row, axis=1, raw=False, result_type=None), pd.Series
-        ),
-        pd.Series,
-        Row,
-    )
-    assert list(result) == expected
-
-    result = check(
-        assert_type(
-            df.apply(lambda row: Row(a=row["a"], b=row["b"]), axis=1), pd.Series
-        ),
-        pd.Series,
-        Row,
-    )
-    assert list(result) == expected
-
-
-def test_types_apply_invalid_usage() -> None:
-    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
-
-    def make_object(row: pd.Series) -> object:
+    def make_object(_: pd.Series) -> object:
         return object()
 
     if TYPE_CHECKING_INVALID_USAGE:
