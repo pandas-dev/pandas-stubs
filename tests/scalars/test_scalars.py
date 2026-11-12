@@ -472,9 +472,9 @@ def test_timedelta_construction() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # These should be type errors now as they are not in TimeDeltaUnitChoices
-        pd.Timedelta(1, unit="Y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        pd.Timedelta(1, unit="y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        pd.Timedelta(1, unit="M")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.Timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.Timedelta(1, unit="y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.Timedelta(1, unit="M")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
@@ -1010,6 +1010,18 @@ def test_timestamp_construction() -> None:
         ),
         pd.Timestamp,
     )
+
+
+def test_nat_string_constructors() -> None:
+    check(assert_type(pd.Timestamp("NaT"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("2020-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.Timedelta("nat"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Period("NaT", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period(pd.NaT, freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period(None), NaTType), NaTType)
+    check(assert_type(pd.Period(None, freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("2020-01-01", freq="D"), pd.Period), pd.Period)
 
 
 def test_timestamp_dunder_methods() -> None:

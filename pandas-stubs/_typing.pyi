@@ -163,6 +163,7 @@ TimestampNonexistent: TypeAlias = (
 TimedeltaConvertibleTypes: TypeAlias = (
     Timedelta | datetime.timedelta | np.timedelta64 | np.integer | float | str
 )
+NaTStrings: TypeAlias = Literal["", "NaT", "nat", "NAT", "nan", "NaN", "NAN"]
 
 Timezone: TypeAlias = str | tzinfo  # Not used in pandas or the stubs
 
