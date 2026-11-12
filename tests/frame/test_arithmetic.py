@@ -1,8 +1,12 @@
 from __future__ import annotations
 
-from typing import assert_type
+from typing import (
+    assert_type,
+    cast,
+)
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 
 from tests import check
@@ -86,6 +90,8 @@ def test_types_dot() -> None:
     df1 = pd.DataFrame([[0, 1, -2, -1], [1, 1, 1, 1]])
     df2 = pd.DataFrame([[0, 1], [1, 2], [-1, -1], [2, 0]])
     s1 = pd.Series([1, 1, 2, 1])
+    n1_nd = cast("npt.NDArray[np.float64]", np.ones((4, 2)))  # erased shape type
+
     check(assert_type(df1 @ df2, pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.dot(df2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1 @ np.eye(4), pd.DataFrame), pd.DataFrame)
@@ -104,6 +110,31 @@ def test_types_dot() -> None:
     check(assert_type(df1.__rmatmul__(np.eye(2)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.__rmatmul__(np.ones(2)), pd.Series), pd.Series)
     check(assert_type(df1.dot(s1), pd.Series), pd.Series)
+
+    # pyrefly and ty infer `Unknown` here
+    # pyright and mypy select the first `tuple[Never, ...]` overloads
+    check(
+        # pyrefly:ignore[assert-type]
+        assert_type(
+            df1 @ n1_nd, pd.DataFrame | pd.Series
+        ),  # ty:ignore[type-assertion-failure]
+        pd.DataFrame,
+    )
+    check(
+        # pyrefly:ignore[assert-type]
+        assert_type(
+            df1.dot(n1_nd), pd.DataFrame | pd.Series
+        ),  # ty:ignore[type-assertion-failure]
+        pd.DataFrame,
+    )
+    check(
+        # pyrefly:ignore[assert-type]
+        assert_type(
+            df1.__rmatmul__(n1_nd), pd.DataFrame | pd.Series
+        ),  # ty:ignore[type-assertion-failure]
+        pd.DataFrame,
+    )
+
     list_like = [[0, 1], [1, 2], [-1, -1], [2, 0]]
     check(assert_type(df1.dot(list_like), pd.DataFrame), pd.DataFrame)
     time = pd.DataFrame({"HH": [1, 2, 3], "MM": [4, 5, 6]})

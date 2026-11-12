@@ -475,6 +475,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def itertuples(
         self, index: _bool = ..., name: None = None
     ) -> Iterator[tuple[Any, ...]]: ...
+    @overload  # workaround for overload bugs in mypy and pyright
+    def dot(
+        self,
+        other: np.ndarray[tuple[Never, Never, Never], Any],
+    ) -> Self | Series: ...
     @overload
     def dot(
         self,
@@ -485,6 +490,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
     ) -> Series: ...
+    @overload  # workaround for overload bugs in mypy and pyright
+    def __matmul__(
+        self,
+        other: np.ndarray[tuple[Never, Never, Never], Any],
+        /,
+    ) -> Self | Series: ...
     @overload
     def __matmul__(
         self,
@@ -497,6 +508,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
         /,
     ) -> Series: ...
+    @overload  # workaround for overload bugs in mypy and pyright
+    def __rmatmul__(
+        self,
+        other: np.ndarray[tuple[Never, Never, Never], Any],
+        /,
+    ) -> Self | Series: ...
     @overload
     def __rmatmul__(
         self,
