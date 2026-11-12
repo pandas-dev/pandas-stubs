@@ -32,6 +32,7 @@ from pandas._typing import (
     np_1darray_object,
     np_2darray_object,
     np_ndarray_float,
+    np_ndarray_object,
 )
 
 @type_check_only
@@ -96,7 +97,7 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
+    column: str,
     by: Hashable | ListLikeHashable,
     ax: Axes | None = None,
     fontsize: float | str | None = None,
@@ -109,6 +110,22 @@ def boxplot(
     backend: str | None = None,
     **kwargs: Any,
 ) -> Axes: ...
+@overload
+def boxplot(
+    data: DataFrame,
+    column: Hashable | ListLikeHashable,
+    by: Hashable | ListLikeHashable,
+    ax: Axes | None = None,
+    fontsize: float | str | None = None,
+    rot: float = 0,
+    grid: bool = True,
+    figsize: tuple[float, float] | None = None,
+    layout: tuple[int, int] | None = None,
+    *,
+    return_type: None = None,
+    backend: str | None = None,
+    **kwargs: Any,
+) -> Axes | np_ndarray_object: ...
 @overload
 def boxplot(
     data: DataFrame,

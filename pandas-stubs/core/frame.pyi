@@ -1878,8 +1878,25 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         return_type: None = None,
         backend: _str | None = None,
+        column: str,
         **kwargs: Any,
     ) -> PlotAxes: ...
+    @overload
+    def boxplot(
+        self,
+        by: Hashable | ListLikeHashable,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: None = None,
+        backend: _str | None = None,
+        column: Hashable | ListLikeHashable | None = None,
+        **kwargs: Any,
+    ) -> PlotAxes | np_ndarray_object: ...
     @overload
     def boxplot(
         self,
