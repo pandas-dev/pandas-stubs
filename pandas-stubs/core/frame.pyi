@@ -1659,6 +1659,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Self: ...
+    @overload
+    def apply(
+        self,
+        # TODO: remove S2 when python/mypy#21768 is resolved
+        func: Callable[..., S2 | _T],
+        *,
+        axis: AxisColumn,
+        raw: _bool = ...,
+        result_type: None = None,
+        args: SequenceNotStr[Any] = ...,
+        **kwargs: Any,
+    ) -> Series: ...
 
     # apply() overloads with keyword axis=1 and keyword result_type
     @overload
