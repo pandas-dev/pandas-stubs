@@ -90,6 +90,7 @@ import xarray as xr
 from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S2,
     AggFuncTypeBase,
@@ -112,6 +113,7 @@ from pandas._typing import (
     CovariantList,
     DropKeep,
     Dtype,
+    ExtScalar,
     FilePath,
     FillnaOptions,
     FloatFormatType,
@@ -2167,7 +2169,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def droplevel(self, level: Level | list[Level], axis: Axis = 0) -> Self: ...
     def eq(
         self,
-        other: Scalar | ListLike | DataFrame,
+        other: ExtScalar | NAType | NaTType | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2219,7 +2221,16 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def ge(
         self,
-        other: ScalarNoComplex | ListLike | DataFrame,
+        other: (
+            ScalarNoComplex
+            | np.bool_
+            | Period
+            | Interval
+            | NAType
+            | NaTType
+            | ListLike
+            | DataFrame
+        ),
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2235,7 +2246,16 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def get(self, key: Hashable, default: _T) -> Series | _T: ...
     def gt(
         self,
-        other: ScalarNoComplex | ListLike | DataFrame,
+        other: (
+            ScalarNoComplex
+            | np.bool_
+            | Period
+            | Interval
+            | NAType
+            | NaTType
+            | ListLike
+            | DataFrame
+        ),
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2275,13 +2295,31 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def last_valid_index(self) -> Scalar: ...
     def le(
         self,
-        other: ScalarNoComplex | ListLike | DataFrame,
+        other: (
+            ScalarNoComplex
+            | np.bool_
+            | Period
+            | Interval
+            | NAType
+            | NaTType
+            | ListLike
+            | DataFrame
+        ),
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
     def lt(
         self,
-        other: ScalarNoComplex | ListLike | DataFrame,
+        other: (
+            ScalarNoComplex
+            | np.bool_
+            | Period
+            | Interval
+            | NAType
+            | NaTType
+            | ListLike
+            | DataFrame
+        ),
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2389,7 +2427,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     multiply = mul
     def ne(
         self,
-        other: Scalar | ListLike | DataFrame,
+        other: ExtScalar | NAType | NaTType | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
