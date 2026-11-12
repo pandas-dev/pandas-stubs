@@ -11,13 +11,14 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
+    KeysView,
     Mapping,
     MutableMapping,
     MutableSequence,
     Sequence,
+    ValuesView,
 )
 import datetime as dt
-import sys
 from typing import (
     Any,
     ClassVar,
@@ -80,7 +81,10 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
-from typing_extensions import override
+from typing_extensions import (
+    deprecated,
+    override,
+)
 import xarray as xr
 
 from pandas._libs.lib import NoDefault
@@ -151,6 +155,7 @@ from pandas._typing import (
     Renamer,
     ReplaceValue,
     Scalar,
+    ScalarNoComplex,
     ScalarOrNA,
     ScalarT,
     SequenceNotStr,
@@ -172,13 +177,13 @@ from pandas._typing import (
     ValueKeyFunc,
     WriteBuffer,
     XMLParsers,
+    np_1darray,
     np_2darray,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_dt,
     np_ndarray_float,
-    np_ndarray_num,
     np_ndarray_object,
     np_ndarray_td,
 )
@@ -199,6 +204,21 @@ _iLocSetItemKey: TypeAlias = (
     | tuple[IndexType, IndexType]
     | tuple[int, IndexType]
 )
+_KeyT = TypeVar("_KeyT")
+# Iterable minus set/dict (pandas raises on those).
+# Sequence also matches str/bytes, which are routed earlier as labels.
+_ListLikeKey: TypeAlias = (
+    # python/mypy#22342: list literals are checked against list[int]/list[bool]
+    list[_KeyT]
+    | Sequence[_KeyT]
+    | Iterator[_KeyT]
+    | KeysView[_KeyT]
+    | ValuesView[_KeyT]
+    | Index
+    | Series
+    | np_ndarray
+    | ExtensionArray
+)
 _LocSetItemKey: TypeAlias = (
     Expression
     | MaskType
@@ -206,9 +226,9 @@ _LocSetItemKey: TypeAlias = (
     | _IndexSliceTuple
     | tuple[
         IndexOpsMixin | MaskType | Scalar | Sequence[Scalar] | slice,
-        Hashable | Iterable[Hashable],
+        Hashable | _ListLikeKey[Hashable],
     ]
-    | Iterable[Scalar]
+    | _ListLikeKey[Scalar]
     | IndexingInt
     | slice
 )
@@ -319,7 +339,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | _IndexSliceTuple
                 | Callable[..., Any],
                 MaskType
-                | Iterable[HashableT]
+                | _ListLikeKey[HashableT]
                 | IndexType
                 | Callable[..., Any]
                 | _IndexSliceTuple,
@@ -343,19 +363,19 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
 
 class _iAtIndexerFrame(_iAtIndexer):
     @override
-    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | np.bool_ | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | np.bool_ | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @override
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, key: tuple[int, int], value: ScalarOrNA, /
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
     @override
-    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, key: tuple[Hashable, Hashable], /
     ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
     @override
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, key: tuple[Hashable, Hashable], value: ScalarOrNA, /
     ) -> None: ...
 
@@ -364,18 +384,12 @@ class _GetItemHack:
     def __getitem__(self, key: Expression, /) -> Self: ...
     @overload
     def __getitem__(self, key: Scalar | tuple[Hashable, ...], /) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    # With python 3.12+, the second overload needs a type-ignore statement
-    if sys.version_info >= (3, 12):
-        @overload
-        def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-            self, key: Iterable[Hashable] | slice, /
-        ) -> Self: ...
-    else:
-        @overload
-        def __getitem__(  # pyright: ignore[reportOverlappingOverload]
-            self, key: Iterable[Hashable] | slice, /
-        ) -> Self: ...
-
+    @overload
+    def __getitem__(  # type: ignore[overload-overlap]
+        self,
+        key: _ListLikeKey[Hashable] | DataFrame | slice,
+        /,
+    ) -> Self: ...
     @overload
     def __getitem__(self, key: Hashable, /) -> Series: ...
 
@@ -439,6 +453,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dtype: Dtype | None = None,
         copy: _bool | None = None,
     ) -> Self: ...
+    @override
+    def __array__(
+        self, dtype: _str | np.dtype | None = ..., copy: _bool | None = ...
+    ) -> np_2darray: ...
     def __arrow_c_stream__(self, requested_schema: object | None = None) -> object: ...
     @property
     def axes(self) -> list[Index]: ...
@@ -448,6 +466,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def style(self) -> Styler: ...
     def items(self) -> Iterator[tuple[Hashable, Series]]: ...
+    @deprecated("Use DataFrame.itertuples instead.")
     def iterrows(self) -> Iterator[tuple[Hashable, Series]]: ...
     @overload
     def itertuples(
@@ -460,17 +479,37 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def dot(
         self,
-        other: DataFrame | ArrayLike | Sequence[Sequence[SupportsSelfMul[Any]]],
+        other: DataFrame | np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]],
     ) -> Self: ...
     @overload
-    def dot(self, other: Series | Sequence[SupportsSelfMul[Any]]) -> Series: ...
+    def dot(
+        self,
+        other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
+    ) -> Series: ...
     @overload
-    def __matmul__(self, other: DataFrame, /) -> Self: ...
+    def __matmul__(
+        self,
+        other: DataFrame | np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]],
+        /,
+    ) -> Self: ...
     @overload
-    def __matmul__(self, other: Series, /) -> Series: ...
+    def __matmul__(
+        self,
+        other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
+        /,
+    ) -> Series: ...
     @overload
-    def __matmul__(self, other: np_ndarray_num, /) -> Self: ...
-    def __rmatmul__(self, other: np_ndarray_num, /) -> Self: ...
+    def __rmatmul__(
+        self,
+        other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]],
+        /,
+    ) -> Self: ...
+    @overload
+    def __rmatmul__(
+        self,
+        other: np_1darray | Sequence[SupportsSelfMul[Any]],
+        /,
+    ) -> Series: ...
     @overload
     @classmethod
     def from_dict(
@@ -976,16 +1015,17 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def fillna(
         self,
-        value: Scalar | NAType | dict[Any, Any] | Series | DataFrame | None = ...,
+        value: ScalarOrNA | dict[Any, Any] | Series | DataFrame = ...,
         *,
         axis: Axis | None = ...,
         limit: int = ...,
         inplace: bool = False,
     ) -> Self: ...
+    @final
     def replace(
         self,
         to_replace: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
-        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] | NoDefault = ...,
         *,
         inplace: bool = False,
         regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
@@ -1653,6 +1693,20 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         engine: Any = None,
         **kwargs: Any,
     ) -> Self: ...
+    @overload
+    def join(
+        self,
+        other: DataFrame | Series | list[DataFrame | Series],
+        on: _str | list[_str] | None = ...,
+        how: MergeHow = "left",
+        lsuffix: NoDefault = ...,
+        rsuffix: NoDefault = ...,
+        sort: _bool = False,
+        validate: JoinValidate | None = ...,
+        *,
+        suffixes: Suffixes | NoDefault = ...,
+    ) -> Self: ...
+    @overload
     def join(
         self,
         other: DataFrame | Series | list[DataFrame | Series],
@@ -1837,8 +1891,25 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         return_type: None = None,
         backend: _str | None = None,
+        column: str,
         **kwargs: Any,
     ) -> PlotAxes: ...
+    @overload
+    def boxplot(
+        self,
+        by: Hashable | ListLikeHashable,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: None = None,
+        backend: _str | None = None,
+        column: Hashable | ListLikeHashable | None = None,
+        **kwargs: Any,
+    ) -> PlotAxes | np_ndarray_object: ...
     @overload
     def boxplot(
         self,
@@ -2108,7 +2179,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def droplevel(self, level: Level | list[Level], axis: Axis = 0) -> Self: ...
     def eq(
         self,
-        other: complex | ListLike | DataFrame,
+        other: Scalar | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2160,7 +2231,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def ge(
         self,
-        other: complex | ListLike | DataFrame,
+        other: ScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2176,7 +2247,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def get(self, key: Hashable, default: _T) -> Series | _T: ...
     def gt(
         self,
-        other: complex | ListLike | DataFrame,
+        other: ScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2216,13 +2287,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def last_valid_index(self) -> Scalar: ...
     def le(
         self,
-        other: complex | ListLike | DataFrame,
+        other: ScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
     def lt(
         self,
-        other: complex | ListLike | DataFrame,
+        other: ScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2330,7 +2401,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     multiply = mul
     def ne(
         self,
-        other: complex | ListLike | DataFrame,
+        other: Scalar | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...

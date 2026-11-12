@@ -14,6 +14,9 @@ from pandas.core.window.rolling import (
 from typing_extensions import override
 
 from pandas._typing import (
+    EWMAggFuncTypeFrame,
+    EWMAggFuncTypeSeriesToFrame,
+    EWMAggName,
     NDFrameT,
     WindowingEngine,
     WindowingEngineKwargs,
@@ -51,14 +54,21 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
     @override
     def aggregate(
         self: BaseWindow[Series],
-        func: str,
+        func: EWMAggName,
         *args: Any,
         **kwargs: Any,
     ) -> Series: ...
     @overload
-    def aggregate(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def aggregate(
+        self: BaseWindow[Series],
+        func: EWMAggFuncTypeSeriesToFrame[Any],
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def aggregate(
         self: BaseWindow[DataFrame],
-        func: str,
+        func: EWMAggFuncTypeFrame[Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...

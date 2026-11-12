@@ -35,7 +35,10 @@ from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
 )
-from pandas.api.typing import NAType
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
 from pandas.api.typing.aliases import (
     DtypeObj,
     Scalar,
@@ -69,7 +72,6 @@ from tests._typing import (
     np_1darray_object,
     np_1darray_str,
     np_1darray_td,
-    np_ndarray_num,
 )
 from tests.dtypes import (
     ASTYPE_BOOL_ARGS,
@@ -169,6 +171,21 @@ def test_types_init() -> None:
         ),
         pd.Series,
         pd.Interval,
+    )
+    check(
+        assert_type(pd.Series([pd.Timestamp(0), pd.NaT]), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(pd.Series([pd.Timedelta(0), pd.NaT]), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(pd.Series([pd.NaT]), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        NaTType,
     )
 
 
@@ -373,6 +390,13 @@ def test_types_fillna() -> None:
     )
     # GH 263
     check(assert_type(s.fillna(pd.NA), "pd.Series[float]"), pd.Series, float)
+
+    timestamps = pd.Series([pd.Timestamp("2020-01-01"), pd.NaT])
+    check(
+        assert_type(timestamps.fillna(pd.NaT), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
 
 
 def test_types_sort_index() -> None:
@@ -1431,6 +1455,10 @@ def test_types_aggregate() -> None:
     check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series, np.integer)
     check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series, np.integer)
 
+    # aggregate resolves a string `func` via getattr, so the set of valid
+    # strings is open-ended and not limited to reduction kernels.
+    check(assert_type(s.aggregate("argmax"), int), np.integer)
+
 
 def test_types_transform() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
@@ -1446,6 +1474,11 @@ def test_types_transform() -> None:
     )
     check(assert_type(s.transform({"index": "abs"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.transform({"index": abs}), pd.DataFrame), pd.DataFrame)
+
+    # transform resolves a string `func` via getattr, like aggregate, so
+    # these are not restricted to a closed set of kernels.
+    check(assert_type(s.transform("round"), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.transform("clip"), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_describe() -> None:
@@ -1695,12 +1728,18 @@ def test_types_dot() -> None:
     s2 = pd.Series([-1, 2, -3, 4])
     df1 = pd.DataFrame([[0, 1], [-2, 3], [4, -5], [6, 7]])
     n1 = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
-    check(assert_type(s1.dot(s2), Scalar), np.int64)
-    check(assert_type(s1 @ s2, Scalar), np.int64)
-    check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
-    check(assert_type(s1 @ df1, pd.Series), pd.Series)
-    check(assert_type(s1.dot(n1), np_ndarray_num), np.ndarray)
-    check(assert_type(s1 @ n1, np_ndarray_num), np.ndarray)
+    check(assert_type(s1.dot(s2), Any), np.int64)
+    check(assert_type(s1.dot(df1), pd.Series), pd.Series, np.int64)
+    check(assert_type(s1.dot(np.ones(4)), Any), np.float64)
+    check(assert_type(s1.dot(np.eye(4)), np_1darray), np_1darray)
+    check(assert_type(s1.dot(n1), Any), np.ndarray)
+    check(assert_type(s1 @ s2, Any), np.int64)
+    check(assert_type(s1 @ df1, pd.Series), pd.Series, np.int64)
+    check(assert_type(s1 @ np.ones(4), Any), np.float64)
+    check(assert_type(s1 @ np.eye(4), np_1darray), np_1darray)
+    check(assert_type(s1 @ n1, Any), np.ndarray)
+    check(assert_type([0, 1, 2, 3] @ s1, Any), np.int64)
+    check(assert_type([[0, 1, 2, 3], [4, 5, 6, 7]] @ s1, np_1darray), np_1darray)
 
 
 def test_series_min_max_sub_axis() -> None:
@@ -2542,202 +2581,177 @@ def test_types_to_numpy() -> None:
         )
 
     # np.dtypes signed int instances
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int8DType()), np_1darray[np.int8]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.int8,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int16DType()), np_1darray[np.int16]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.int16,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int32DType()), np_1darray[np.int32]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.int32,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Int64DType()), np_1darray[np.int64]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.int64,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.IntDType()), np_1darray[np.intc]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.intc,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongDType()), np_1darray[np.long]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.long,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongLongDType()),
             np_1darray[np.longlong],
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.longlong,
     )
 
     # np.dtypes unsigned int instances
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt8DType()), np_1darray[np.uint8]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.uint8,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt16DType()), np_1darray[np.uint16]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.uint16,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt32DType()), np_1darray[np.uint32]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.uint32,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UInt64DType()), np_1darray[np.uint64]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.uint64,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.UIntDType()), np_1darray[np.uintc]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.uintc,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.ULongDType()), np_1darray[np.ulong]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.ulong,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.ULongLongDType()),
             np_1darray[np.ulonglong],
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.ulonglong,
     )
 
     # np.dtypes float instances
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Float16DType()), np_1darray[np.float16]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.float16,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Float32DType()), np_1darray[np.float32]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.float32,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_timedelta.to_numpy(dtype=np.dtypes.Float64DType()), np_1darray[np.float64]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.float64,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.LongDoubleDType()),
             np_1darray[np.longdouble],
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.longdouble,
     )
 
     # np.dtypes complex instances
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Complex64DType()),
             np_1darray[np.complex64],
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.complex64,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.Complex128DType()),
             np_1darray[np.complex128],
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.complex128,
     )
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.CLongDoubleDType()),
             np_1darray[np.clongdouble],
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.clongdouble,
     )
 
     # np.dtypes.BytesDType(size) — fixed-width bytes
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
         assert_type(
             s_td_small.to_numpy(dtype=np.dtypes.BytesDType(4)), np_1darray[np.bytes_]
-        ),  # ty: ignore[type-assertion-failure]
+        ),
         np_1darray,
         np.bytes_,
     )
     # np.dtypes.StrDType(size) — fixed-width unicode
-    # TODO: remove the ignore astral-sh/ty#4364
     check(
-        assert_type(
-            s_td_small.to_numpy(dtype=np.dtypes.StrDType(4)), np_1darray_str
-        ),  # ty: ignore[type-assertion-failure]
+        assert_type(s_td_small.to_numpy(dtype=np.dtypes.StrDType(4)), np_1darray_str),
         np_1darray,
         np.str_,
     )

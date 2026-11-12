@@ -97,16 +97,18 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @overload
     def __getitem__(self, item: SequenceIndexer, /) -> Self: ...
     @override
-    def __eq__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def item(self, index: int | None = None) -> IntervalOrNA: ...
     @override
-    def __ne__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __eq__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
+    @override
+    def __ne__(self, other: object, /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @property
     @override
     def dtype(self) -> IntervalDtype: ...
     @override
     def shift(self, periods: int = 1, fill_value: object = ...) -> IntervalArray: ...
     @override
-    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override] # ty: ignore[invalid-method-override]
+    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override] # ty: ignore[lost-keyword-for-regular-parameter]
         self,
         indices: TakeIndexer,
         *,
@@ -141,4 +143,4 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def overlaps(self, other: Interval) -> np_1darray_bool: ...
     @property
     @override
-    def is_empty(self) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-property-type-override]
+    def is_empty(self) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-property-override]

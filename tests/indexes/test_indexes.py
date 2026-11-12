@@ -9,6 +9,7 @@ from collections.abc import (
     Sequence,
 )
 import datetime as dt
+import re
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -1190,6 +1191,14 @@ def test_getitem() -> None:
     check(assert_type(i0[0], str), str)
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        st = {"a"}
+        dc = {"a": 1}
+        _0 = i0[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _1 = i0[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _2 = mi[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _3 = mi[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+
 
 def test_append_mix() -> None:
     """Test pd.Index.append with mixed types"""
@@ -1452,11 +1461,6 @@ def test_disallow_empty_index() -> None:
         _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
-def test_periodindex_shift() -> None:
-    ind = pd.period_range(start="2022-06-01", periods=10)
-    check(assert_type(ind.shift(1), pd.PeriodIndex), pd.PeriodIndex)
-
-
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
     check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
@@ -1595,26 +1599,6 @@ def test_index_searchsorted() -> None:
     check(assert_type(idx.searchsorted(1, sorter=range(3)), np.intp), np.intp)
 
 
-def test_period_index_constructor() -> None:
-    check(
-        assert_type(pd.PeriodIndex(["2000"], dtype="period[D]"), pd.PeriodIndex),
-        pd.PeriodIndex,
-    )
-    check(
-        assert_type(
-            pd.PeriodIndex(["2000"], freq="D", name="foo", copy=True), pd.PeriodIndex
-        ),
-        pd.PeriodIndex,
-    )
-
-
-def test_period_index_asof_locs() -> None:
-    idx = pd.PeriodIndex(["2000", "2001"], freq="D")
-    where = pd.DatetimeIndex(["2023-05-30 00:12:00", "2023-06-01 00:00:00"])
-    mask = np.ones(2, dtype=bool)
-    check(assert_type(idx.asof_locs(where, mask), np_1darray_intp), np_1darray_intp)
-
-
 def test_array_property() -> None:
     """Test that Index.array and semantic Index.array return ExtensionArray and its subclasses"""
     # casting due to pandas-dev/pandas-stubs#1383
@@ -1708,6 +1692,48 @@ def test_multiindex_swaplevel() -> None:
     """Test that MultiIndex.swaplevel returns MultiIndex"""
     mi = pd.MultiIndex.from_product([["a", "b"], [1, 2]], names=["let", "num"])
     check(assert_type(mi.swaplevel(0, 1), "pd.MultiIndex"), pd.MultiIndex)
+
+
+def test_index_replace_scalar() -> None:
+    index = pd.Index([1, 2, 3], name="source")
+
+    check(assert_type(index.replace(2, "two"), pd.Index), pd.Index)
+
+
+def test_index_replace_mapping_and_list() -> None:
+    index = pd.Index([1, 2, 3])
+
+    check(assert_type(index.replace({1: 10, 3: 30}), pd.Index), pd.Index)
+    check(assert_type(index.replace([1, 3], [10, 30]), pd.Index), pd.Index)
+    check(assert_type(index.replace(pd.Series({1: 10, 3: 30})), pd.Index), pd.Index)
+
+
+def test_index_replace_regex() -> None:
+    index = pd.Index(["alpha", "beta"])
+
+    check(assert_type(index.replace(re.compile("^a"), "x", True), pd.Index), pd.Index)
+    check(assert_type(index.replace(value="x", regex="^a"), pd.Index), pd.Index)
+
+
+def test_multiindex_replace_unsupported() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.MultiIndex.from_tuples([(1, 2)]).replace(1, 3), Never)
+
+
+def test_index_replace_pandas_scalars() -> None:
+    periods = pd.period_range("2026-01", periods=2, freq="M")
+    period = pd.Period("2026-03", freq="M")
+    check(assert_type(periods.replace(periods[0], period), pd.Index), pd.Index)
+
+    intervals = pd.IntervalIndex.from_breaks([0, 1, 2])
+    interval = pd.Interval(2, 3)
+    check(assert_type(intervals.replace(intervals[0], interval), pd.Index), pd.Index)
+
+    timestamp = pd.Timestamp("2026-01-01")
+    dates = pd.DatetimeIndex([pd.NaT, timestamp])
+    check(assert_type(dates.replace(pd.NaT, timestamp), pd.Index), pd.Index)
 
 
 def test_index_where() -> None:

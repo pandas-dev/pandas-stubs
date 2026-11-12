@@ -29,7 +29,7 @@ class TimedeltaArray(TimelikeOps):
     __array_priority__: int = ...
     @property
     @override
-    def dtype(self) -> np.dtypes.TimeDelta64DType: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-property-type-override]
+    def dtype(self) -> np.dtypes.TimeDelta64DType: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-property-override]
     def __init__(
         self,
         values: AnyArrayLike,
@@ -37,6 +37,8 @@ class TimedeltaArray(TimelikeOps):
         freq: Frequency | None = None,
         copy: bool = ...,
     ) -> None: ...
+    @override
+    def item(self, index: int | None = None) -> Timedelta | NaTType: ...
     @overload
     def sum(
         self,
@@ -110,9 +112,9 @@ class TimedeltaArray(TimelikeOps):
     @overload
     def __rfloordiv__(self, other: Any, /) -> Self: ...
     @override
-    def __divmod__(self, other: Any, /) -> tuple[np_1darray_int64, TimedeltaArray]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __divmod__(self, other: Any, /) -> tuple[np_1darray_int64, TimedeltaArray]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @override
-    def __rdivmod__(self, other: Any, /) -> tuple[np_1darray_int64, TimedeltaArray]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __rdivmod__(self, other: Any, /) -> tuple[np_1darray_int64, TimedeltaArray]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     def __neg__(self) -> Self: ...
     def __pos__(self) -> Self: ...
     def __abs__(self) -> Self: ...

@@ -941,6 +941,8 @@ def test_timedelta_cmp_array() -> None:
 
 def test_timestamp_construction() -> None:
     check(assert_type(pd.Timestamp("2000-1-1"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.Timestamp(pd.NaT), NaTType), NaTType)
+    check(assert_type(pd.Timestamp(None), NaTType), NaTType)
     check(
         assert_type(pd.Timestamp("2000-1-1", tz="America/Los_Angeles"), pd.Timestamp),
         pd.Timestamp,
@@ -1413,6 +1415,9 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts.to_numpy(), np.datetime64), np.datetime64)
 
     check(assert_type(pd.Timestamp.fromtimestamp(432.54), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.Timestamp.fromtimestamp(ts=432.54), pd.Timestamp), pd.Timestamp
+    )
     check(
         assert_type(
             pd.Timestamp.fromtimestamp(432.54, tz="America/Los_Angeles"), pd.Timestamp

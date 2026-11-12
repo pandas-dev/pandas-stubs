@@ -29,6 +29,8 @@ from pandas._typing import (
     HashableT2,
     HashableT3,
     ListLikeHashable,
+    np_1darray_object,
+    np_2darray_object,
     np_ndarray_float,
     np_ndarray_object,
 )
@@ -95,7 +97,7 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
+    column: str,
     by: Hashable | ListLikeHashable,
     ax: Axes | None = None,
     fontsize: float | str | None = None,
@@ -108,6 +110,22 @@ def boxplot(
     backend: str | None = None,
     **kwargs: Any,
 ) -> Axes: ...
+@overload
+def boxplot(
+    data: DataFrame,
+    column: Hashable | ListLikeHashable,
+    by: Hashable | ListLikeHashable,
+    ax: Axes | None = None,
+    fontsize: float | str | None = None,
+    rot: float = 0,
+    grid: bool = True,
+    figsize: tuple[float, float] | None = None,
+    layout: tuple[int, int] | None = None,
+    *,
+    return_type: None = None,
+    backend: str | None = None,
+    **kwargs: Any,
+) -> Axes | np_ndarray_object: ...
 @overload
 def boxplot(
     data: DataFrame,
@@ -292,7 +310,7 @@ class PlotAccessor:
         subplots: Literal[True] | Sequence[Iterable[HashableT1]],
         sharex: bool | None = None,
         sharey: bool = False,
-        layout: tuple[int, int] | None = None,
+        layout: None = None,
         figsize: tuple[float, float] | None = None,
         use_index: bool = True,
         title: Sequence[str] | None = None,
@@ -322,7 +340,61 @@ class PlotAccessor:
         include_bool: bool = False,
         backend: str | None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        data: Series | DataFrame | None = ...,
+        x: Hashable = None,
+        y: Hashable | Sequence[Hashable] = None,
+        kind: Literal[
+            "line",
+            "bar",
+            "barh",
+            "hist",
+            "kde",
+            "density",
+            "area",
+            "pie",
+            "scatter",
+            "hexbin",
+        ] = "line",
+        ax: Axes | None = None,
+        subplots: Literal[True] | Sequence[Iterable[HashableT1]],
+        sharex: bool | None = None,
+        sharey: bool = False,
+        layout: tuple[int, int],
+        figsize: tuple[float, float] | None = None,
+        use_index: bool = True,
+        title: Sequence[str] | None = None,
+        grid: bool | None = None,
+        legend: bool | Literal["reverse"] = False,
+        style: str | list[str] | dict[HashableT2, str] | None = None,
+        logx: bool | Literal["sym"] = False,
+        logy: bool | Literal["sym"] = False,
+        loglog: bool | Literal["sym"] = False,
+        xticks: Sequence[float] | None = None,
+        yticks: Sequence[float] | None = None,
+        xlim: tuple[float, float] | list[float] | None = None,
+        ylim: tuple[float, float] | list[float] | None = None,
+        xlabel: str | None = None,
+        ylabel: str | None = None,
+        rot: float | None = None,
+        fontsize: float | None = None,
+        colormap: str | Colormap | None = None,
+        colorbar: bool = False,
+        position: float = 0.5,
+        table: bool | Series | DataFrame = False,
+        yerr: DataFrame | Series | ArrayLike | dict[Any, Any] | str | None = None,
+        xerr: DataFrame | Series | ArrayLike | dict[Any, Any] | str | None = None,
+        stacked: bool = False,
+        secondary_y: bool | list[HashableT3] | tuple[HashableT3, ...] = False,
+        mark_right: bool = True,
+        include_bool: bool = False,
+        backend: str | None = None,
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def __call__(
         self,
@@ -384,8 +456,20 @@ class PlotAccessor:
         color: _PlotAccessorColor | None = None,
         *,
         subplots: Literal[True],
+        layout: None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def line(
+        self,
+        x: Hashable = None,
+        y: Hashable = None,
+        color: _PlotAccessorColor | None = None,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def bar(
         self,
@@ -404,8 +488,20 @@ class PlotAccessor:
         color: _PlotAccessorColor | None = None,
         *,
         subplots: Literal[True],
+        layout: None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def bar(
+        self,
+        x: Hashable = None,
+        y: Hashable = None,
+        color: _PlotAccessorColor | None = None,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def barh(
         self,
@@ -423,8 +519,20 @@ class PlotAccessor:
         color: _PlotAccessorColor | None = None,
         *,
         subplots: Literal[True],
+        layout: None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def barh(
+        self,
+        x: Hashable = None,
+        y: Hashable = None,
+        color: _PlotAccessorColor | None = None,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def box(
         self,
@@ -457,8 +565,19 @@ class PlotAccessor:
         bins: int = 10,
         *,
         subplots: Literal[True],
+        layout: None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def hist(
+        self,
+        by: Hashable | list[HashableT] | None = None,
+        bins: int = 10,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def kde(
         self,
@@ -487,8 +606,25 @@ class PlotAccessor:
         ind: np_ndarray_float | int | None = None,
         *,
         subplots: Literal[True],
+        layout: None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def kde(
+        self,
+        bw_method: (
+            Literal["scott", "silverman"]
+            | float
+            | Callable[[gaussian_kde], float]
+            | None
+        ) = None,
+        weights: np_ndarray_float | Series[float] | None = None,
+        ind: np_ndarray_float | int | None = None,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def area(
         self,
@@ -507,16 +643,42 @@ class PlotAccessor:
         stacked: bool = True,
         *,
         subplots: Literal[True],
+        layout: None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def area(
+        self,
+        x: Hashable | None = None,
+        y: Hashable | None = None,
+        stacked: bool = True,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def pie(
         self, y: Hashable, *, subplots: Literal[False] | None = None, **kwargs: Any
     ) -> Axes: ...
     @overload
     def pie(
-        self, y: Hashable, *, subplots: Literal[True], **kwargs: Any
-    ) -> np_ndarray_object: ...
+        self,
+        y: Hashable,
+        *,
+        subplots: Literal[True],
+        layout: None = None,
+        **kwargs: Any,
+    ) -> np_1darray_object: ...
+    @overload
+    def pie(
+        self,
+        y: Hashable,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def scatter(
         self,
@@ -537,8 +699,21 @@ class PlotAccessor:
         c: Hashable | list[str] = None,
         *,
         subplots: Literal[True],
+        layout: None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def scatter(
+        self,
+        x: Hashable,
+        y: Hashable,
+        s: Hashable | Sequence[float] | None = None,
+        c: Hashable | list[str] = None,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
     @overload
     def hexbin(
         self,
@@ -561,7 +736,21 @@ class PlotAccessor:
         gridsize: int | tuple[int, int] | None = None,
         *,
         subplots: Literal[True],
+        layout: None = None,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_1darray_object: ...
+    @overload
+    def hexbin(
+        self,
+        x: Hashable,
+        y: Hashable,
+        C: Hashable | None = None,
+        reduce_C_function: Callable[[list[Any]], float] | None = None,
+        gridsize: int | tuple[int, int] | None = None,
+        *,
+        subplots: Literal[True],
+        layout: tuple[int, int],
+        **kwargs: Any,
+    ) -> np_2darray_object: ...
 
     density = kde
