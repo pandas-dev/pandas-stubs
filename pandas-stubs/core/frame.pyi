@@ -159,6 +159,7 @@ from pandas._typing import (
     ScalarT,
     SequenceNotStr,
     SeriesByT,
+    ShapeT,
     SortKind,
     StataDateFormat,
     StorageOptions,
@@ -177,7 +178,9 @@ from pandas._typing import (
     WriteBuffer,
     XMLParsers,
     np_1darray,
+    np_1darray_object,
     np_2darray,
+    np_2darray_object,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -1799,9 +1802,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     @property
     def plot(self) -> PlotAccessor: ...
+    @overload
     def hist(
         self,
-        by: _str | ListLike | None = None,
+        by: None = None,
         bins: int | Sequence[int] = 10,
         *,
         grid: _bool = True,
@@ -1809,7 +1813,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         xrot: float | None = None,
         ylabelsize: float | str | None = None,
         yrot: float | None = None,
-        ax: PlotAxes | None = None,
+        ax: None = None,
         sharex: _bool = False,
         sharey: _bool = False,
         figsize: tuple[float, float] | None = None,
@@ -1817,7 +1821,67 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         backend: _str | None = None,
         legend: bool = False,
         **kwargs: Any,
-    ) -> np_ndarray_object: ...
+    ) -> np_2darray_object: ...
+    @overload
+    def hist(
+        self,
+        by: None = None,
+        bins: int | Sequence[int] = 10,
+        *,
+        grid: _bool = True,
+        xlabelsize: float | str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | str | None = None,
+        yrot: float | None = None,
+        ax: PlotAxes,
+        sharex: _bool = False,
+        sharey: _bool = False,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        backend: _str | None = None,
+        legend: bool = False,
+        **kwargs: Any,
+    ) -> np_1darray_object: ...
+    @overload
+    def hist(
+        self,
+        by: None = None,
+        bins: int | Sequence[int] = 10,
+        *,
+        grid: _bool = True,
+        xlabelsize: float | str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | str | None = None,
+        yrot: float | None = None,
+        ax: np_ndarray_object[ShapeT],
+        sharex: _bool = False,
+        sharey: _bool = False,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        backend: _str | None = None,
+        legend: bool = False,
+        **kwargs: Any,
+    ) -> np_ndarray_object[ShapeT]: ...
+    @overload
+    def hist(
+        self,
+        by: _str | ListLike,
+        bins: int | Sequence[int] = 10,
+        *,
+        grid: _bool = True,
+        xlabelsize: float | str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | str | None = None,
+        yrot: float | None = None,
+        ax: PlotAxes | np_ndarray_object | None = None,
+        sharex: _bool = False,
+        sharey: _bool = False,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        backend: _str | None = None,
+        legend: bool = False,
+        **kwargs: Any,
+    ) -> PlotAxes | np_ndarray_object: ...
 
     # Keep in sync with `pd.plotting.boxplot`
     @overload
