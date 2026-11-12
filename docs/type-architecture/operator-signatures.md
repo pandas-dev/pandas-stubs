@@ -23,6 +23,12 @@ assuming alias coverage.
 
 ## Dunder parameters
 
+`DataFrame` ordering dunders accept non-complex scalar, list-like and `DataFrame`
+operands and return `Self`. The scalar restriction applies to the DataFrame dunder
+boundary. A NumPy complex scalar can still make an ordering expression type-check
+through NumPy's reflected comparison signatures, which accept array-like objects.
+Direct DataFrame dunder calls test the operand restriction without that fallback.
+
 Binary dunders use a positional-only `other` parameter:
 
 ```python

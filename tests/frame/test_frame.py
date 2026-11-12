@@ -412,6 +412,286 @@ def test_types_df_complex_scalar_comparison() -> None:
         df.ge(np.complex128(1j))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
+def test_types_df_ordering_scalar() -> None:
+    df_str = pd.DataFrame({"col": ["bar", "foo"]})
+    check(assert_type(df_str < "foo", pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str <= "foo", pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str > "foo", pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_str >= "foo", pd.DataFrame), pd.DataFrame)
+
+    df_bytes = pd.DataFrame({"col": [b"bar", b"foo"]})
+    check(assert_type(df_bytes < b"foo", pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bytes <= b"foo", pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bytes > b"foo", pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bytes >= b"foo", pd.DataFrame), pd.DataFrame)
+
+    df_bool = pd.DataFrame({"col": [False, True]})
+    check(assert_type(df_bool < True, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool <= True, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool > True, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool >= True, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool < np.bool_(True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool <= np.bool_(True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool > np.bool_(True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool >= np.bool_(True), pd.DataFrame), pd.DataFrame)
+
+    df_int = pd.DataFrame({"col": [1, 2]})
+    check(assert_type(df_int < 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int <= 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int > 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int >= 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int < np.int64(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int <= np.int64(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int > np.int64(2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_int >= np.int64(2), pd.DataFrame), pd.DataFrame)
+
+    df_float = pd.DataFrame({"col": [1.0, 2.0]})
+    check(assert_type(df_float < 2.0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float <= 2.0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float > 2.0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float >= 2.0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float < np.float64(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float <= np.float64(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float > np.float64(2.0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_float >= np.float64(2.0), pd.DataFrame), pd.DataFrame)
+
+    df_ts = pd.DataFrame({"col": pd.to_datetime(["2026-01-01", "2026-01-02"])})
+    check(assert_type(df_ts < pd.Timestamp("2026-01-02"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts <= pd.Timestamp("2026-01-02"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts > pd.Timestamp("2026-01-02"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts >= pd.Timestamp("2026-01-02"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df_ts < datetime.datetime(2026, 1, 2), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts <= datetime.datetime(2026, 1, 2), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts > datetime.datetime(2026, 1, 2), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df_ts >= datetime.datetime(2026, 1, 2), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(df_ts < np.datetime64("2026-01-02"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts <= np.datetime64("2026-01-02"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts > np.datetime64("2026-01-02"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts >= np.datetime64("2026-01-02"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts < pd.NaT, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts <= pd.NaT, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts > pd.NaT, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts >= pd.NaT, pd.DataFrame), pd.DataFrame)
+
+    df_date = pd.DataFrame(
+        {"col": [datetime.date(2026, 1, 1), datetime.date(2026, 1, 2)]}
+    )
+    check(assert_type(df_date < datetime.date(2026, 1, 2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_date <= datetime.date(2026, 1, 2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_date > datetime.date(2026, 1, 2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_date >= datetime.date(2026, 1, 2), pd.DataFrame), pd.DataFrame)
+
+    df_td = pd.DataFrame({"col": pd.to_timedelta([1, 2], unit="D")})
+    check(assert_type(df_td < pd.Timedelta(days=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td <= pd.Timedelta(days=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td > pd.Timedelta(days=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td >= pd.Timedelta(days=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td < datetime.timedelta(days=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td <= datetime.timedelta(days=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td > datetime.timedelta(days=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td >= datetime.timedelta(days=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td < np.timedelta64(2, "D"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td <= np.timedelta64(2, "D"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td > np.timedelta64(2, "D"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_td >= np.timedelta64(2, "D"), pd.DataFrame), pd.DataFrame)
+
+    df_period = pd.DataFrame({"col": pd.period_range("2026-01", periods=2, freq="M")})
+    check(
+        assert_type(df_period < pd.Period("2026-02", freq="M"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period <= pd.Period("2026-02", freq="M"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period > pd.Period("2026-02", freq="M"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period >= pd.Period("2026-02", freq="M"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    df_interval = pd.DataFrame({"col": [pd.Interval(0, 1), pd.Interval(1, 2)]})
+    check(assert_type(df_interval < pd.Interval(1, 2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval <= pd.Interval(1, 2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval > pd.Interval(1, 2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval >= pd.Interval(1, 2), pd.DataFrame), pd.DataFrame)
+
+    df_nullable = pd.DataFrame({"col": pd.array([1, 2], dtype="Int64")})
+    check(assert_type(df_nullable < pd.NA, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable <= pd.NA, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable > pd.NA, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable >= pd.NA, pd.DataFrame), pd.DataFrame)
+
+
+def test_types_df_ordering_listlike() -> None:
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    check(assert_type(df < [2, 3], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df <= [2, 3], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df > [2, 3], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df >= [2, 3], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with tuple is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(df < (2, 3), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with tuple is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(df <= (2, 3), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with tuple is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(df > (2, 3), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with tuple is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(df >= (2, 3), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with range is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(df < range(2, 4), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with range is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(df <= range(2, 4), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with range is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(df > range(2, 4), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with range is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(df >= range(2, 4), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df < np.array([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df <= np.array([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df > np.array([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df >= np.array([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df < pd.Index([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df <= pd.Index([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df > pd.Index([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df >= pd.Index([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df < pd.Series([2, 3], index=["a", "b"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df <= pd.Series([2, 3], index=["a", "b"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df > pd.Series([2, 3], index=["a", "b"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df >= pd.Series([2, 3], index=["a", "b"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df < pd.array([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df <= pd.array([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df > pd.array([2, 3]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df >= pd.array([2, 3]), pd.DataFrame), pd.DataFrame)
+
+    check(assert_type(df < [2j, 3j], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df <= [2j, 3j], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df > [2j, 3j], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df >= [2j, 3j], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df < np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df <= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df > np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df >= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_df_ordering_reflected() -> None:
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    check(assert_type(2 < df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(2 <= df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(2 > df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(2 >= df, pd.DataFrame), pd.DataFrame)
+    check(assert_type([2, 3] < df, pd.DataFrame), pd.DataFrame)
+    check(assert_type([2, 3] <= df, pd.DataFrame), pd.DataFrame)
+    check(assert_type([2, 3] > df, pd.DataFrame), pd.DataFrame)
+    check(assert_type([2, 3] >= df, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with tuple is deprecated", upper="3.99.99"
+    ):
+        check(assert_type((2, 3) < df, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with tuple is deprecated", upper="3.99.99"
+    ):
+        check(assert_type((2, 3) <= df, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with tuple is deprecated", upper="3.99.99"
+    ):
+        check(assert_type((2, 3) > df, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with tuple is deprecated", upper="3.99.99"
+    ):
+        check(assert_type((2, 3) >= df, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with range is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(range(2, 4) < df, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with range is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(range(2, 4) <= df, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with range is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(range(2, 4) > df, pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        Pandas4Warning, "Operation with range is deprecated", upper="3.99.99"
+    ):
+        check(assert_type(range(2, 4) >= df, pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.Series([2, 3], index=["a", "b"]) < df, pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.Series([2, 3], index=["a", "b"]) <= df, pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.Series([2, 3], index=["a", "b"]) > df, pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.Series([2, 3], index=["a", "b"]) >= df, pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.Index([2, 3]) < df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.Index([2, 3]) <= df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.Index([2, 3]) > df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.Index([2, 3]) >= df, pd.DataFrame), pd.DataFrame)
+
+
+def test_types_df_ordering_complex_scalar() -> None:
+    df = pd.DataFrame({"col": [1, 2]})
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = df < 1j  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _4 = 1j < df  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _1 = df <= 1j  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _5 = 1j <= df  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _2 = df > 1j  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _6 = 1j > df  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _3 = df >= 1j  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _7 = 1j >= df  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        df.__lt__(np.complex128(1j))  # type: ignore[operator] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.__le__(np.complex128(1j))  # type: ignore[operator] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.__gt__(np.complex128(1j))  # type: ignore[operator] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        df.__ge__(np.complex128(1j))  # type: ignore[operator] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+
 def test_types_head_tail() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df.head(1), pd.DataFrame), pd.DataFrame)
@@ -4380,6 +4660,10 @@ def test_frame_subclass() -> None:
     check(assert_type(df.iloc[1:2], MyClass), MyClass)
     check(assert_type(df.loc[:, ["a", "b"]], MyClass), MyClass)
     check(assert_type(df[["a", "b"]], MyClass), MyClass)
+    check(assert_type(df < 2, MyClass), MyClass)
+    check(assert_type(df <= 2, MyClass), MyClass)
+    check(assert_type(df > 2, MyClass), MyClass)
+    check(assert_type(df >= 2, MyClass), MyClass)
 
 
 def test_frame_iloc_series_bool() -> None:

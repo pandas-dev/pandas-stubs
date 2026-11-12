@@ -90,6 +90,7 @@ import xarray as xr
 from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S2,
     AggFuncTypeBase,
@@ -1953,6 +1954,66 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # methods
     @final
     def abs(self) -> Self: ...
+    @override
+    def __lt__(
+        self,
+        other: (
+            ScalarNoComplex
+            | np.bool_
+            | Period
+            | Interval
+            | NAType
+            | NaTType
+            | ListLike
+            | DataFrame
+        ),
+        /,
+    ) -> Self: ...
+    @override
+    def __le__(
+        self,
+        other: (
+            ScalarNoComplex
+            | np.bool_
+            | Period
+            | Interval
+            | NAType
+            | NaTType
+            | ListLike
+            | DataFrame
+        ),
+        /,
+    ) -> Self: ...
+    @override
+    def __gt__(
+        self,
+        other: (
+            ScalarNoComplex
+            | np.bool_
+            | Period
+            | Interval
+            | NAType
+            | NaTType
+            | ListLike
+            | DataFrame
+        ),
+        /,
+    ) -> Self: ...
+    @override
+    def __ge__(
+        self,
+        other: (
+            ScalarNoComplex
+            | np.bool_
+            | Period
+            | Interval
+            | NAType
+            | NaTType
+            | ListLike
+            | DataFrame
+        ),
+        /,
+    ) -> Self: ...
     def __add__(self, other: Any, /) -> Self: ...
     def add(
         self,
