@@ -1662,13 +1662,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        # Keep S2 in the fallback so mypy preserves the more specific overloads.
+        # TODO: remove S2 when python/mypy#21768 is resolved
         func: Callable[..., S2 | _T],
         *,
         axis: AxisColumn,
-        raw: Literal[False] = False,
+        raw: _bool = ...,
         result_type: None = None,
-        args: tuple[Any, ...] = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Series: ...
 

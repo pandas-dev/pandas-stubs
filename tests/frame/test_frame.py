@@ -1431,6 +1431,12 @@ def test_types_apply() -> None:
     def make_row(row: pd.Series) -> Row:
         return Row(a=row["a"], b=row["b"])
 
+    def make_row_raw(values: np.ndarray) -> Row:
+        return Row(a=int(values[0]), b=int(values[1]))
+
+    def make_row_extra(row: pd.Series, extra: int) -> Row:
+        return Row(a=int(row["a"]) + extra, b=int(row["b"]))
+
     # Misc checks
     check(assert_type(df.apply(np.exp), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(str), "pd.Series[str]"), pd.Series, str)
@@ -1531,6 +1537,16 @@ def test_types_apply() -> None:
         assert_type(
             rows.apply(lambda row: Row(a=row["a"], b=row["b"]), axis=1), pd.Series
         ),
+        pd.Series,
+        Row,
+    )
+    check(
+        assert_type(rows.apply(make_row_raw, axis=1, raw=True), pd.Series),
+        pd.Series,
+        Row,
+    )
+    check(
+        assert_type(rows.apply(make_row_extra, axis=1, args=[1]), pd.Series),
         pd.Series,
         Row,
     )
