@@ -216,8 +216,12 @@ def test_bootstrap_plot(close_figures: None) -> None:
 
 def test_hist(close_figures: None) -> None:
     df = pd.DataFrame({"Col1": [1, 2], "Col4": [2, 1]})
-    check(assert_type(df.hist(), np_ndarray_object), np.ndarray)
-    check(assert_type(df.hist(by="Col4"), np_ndarray_object), np.ndarray)
+    check(assert_type(df.hist(), np_2darray_object), np_2darray_object)
+    check(assert_type(df.hist(by="Col4"), Axes | np_ndarray_object), np_1darray_object)
+    _, ax = plt.subplots()
+    check(assert_type(df[["Col1"]].hist(ax=ax), np_1darray_object), np_1darray_object)
+    axs: np_2darray_object = plt.subplots(1, 2, squeeze=False)[1]
+    check(assert_type(df.hist(ax=axs), np_2darray_object), np_2darray_object)
 
 
 def test_series_hist(close_figures: None) -> None:
