@@ -1040,8 +1040,13 @@ def test_nat_string_constructors() -> None:
     check(assert_type(pd.Period(pd.NaT, freq="D"), NaTType), NaTType)
     check(assert_type(pd.Period(None), NaTType), NaTType)
     check(assert_type(pd.Period(None, freq="D"), NaTType), NaTType)
-    check(assert_type(pd.Period(None, "D", year=2012, day=1, month=1), pd.Period), pd.Period)
+    check(
+        assert_type(pd.Period(None, "D", year=2012, day=1, month=1), pd.Period),
+        pd.Period,
+    )
     check(assert_type(pd.Period("2020-01-01", freq="D"), pd.Period), pd.Period)
+
+
 def test_timestamp_dunder_methods() -> None:
     ts = pd.Timestamp(year=2026, month=8, day=15, hour=7, tz="Europe/Berlin")
 
