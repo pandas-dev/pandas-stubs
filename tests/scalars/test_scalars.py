@@ -1013,17 +1013,35 @@ def test_timestamp_construction() -> None:
 
 
 def test_nat_string_constructors() -> None:
+    check(assert_type(pd.Timestamp(""), NaTType), NaTType)
     check(assert_type(pd.Timestamp("NaT"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("nat"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NAT"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("nan"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NaN"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NAN"), NaTType), NaTType)
     check(assert_type(pd.Timestamp("2020-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.Timedelta(""), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NaT"), NaTType), NaTType)
     check(assert_type(pd.Timedelta("nat"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NAT"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("nan"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NaN"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NAN"), NaTType), NaTType)
     check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Period("", freq="D"), NaTType), NaTType)
     check(assert_type(pd.Period("NaT", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("nat", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NAT", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("nan", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NaN", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NAN", freq="D"), NaTType), NaTType)
     check(assert_type(pd.Period(pd.NaT, freq="D"), NaTType), NaTType)
     check(assert_type(pd.Period(None), NaTType), NaTType)
     check(assert_type(pd.Period(None, freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period(None, "D", year=2012, day=1, month=1), pd.Period), pd.Period)
     check(assert_type(pd.Period("2020-01-01", freq="D"), pd.Period), pd.Period)
-
-
 def test_timestamp_dunder_methods() -> None:
     ts = pd.Timestamp(year=2026, month=8, day=15, hour=7, tz="Europe/Berlin")
 
