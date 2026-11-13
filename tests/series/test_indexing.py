@@ -12,7 +12,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import ExtScalarOrNA
 
 
 def test_types_select() -> None:
@@ -26,38 +25,29 @@ def test_types_select() -> None:
 
 
 def test_types_iloc_iat() -> None:
-    s = pd.Series(data={"row1": 1, "row2": 2})
+    s = pd.Series([1, 2], index=["row1", "row2"])
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
-    check(
-        assert_type(s.iat[0], ExtScalarOrNA),
-        np.integer,
-    )
+    check(assert_type(s.iat[0], int), np.integer)
     s.iat[0] = 999
     s2.loc[0]
     s2.iat[0]
     s2.iat[0] = None
 
     period_series = pd.Series([pd.Period("2020-01")])
-    check(
-        assert_type(period_series.iat[0], ExtScalarOrNA),
-        pd.Period,
-    )
+    check(assert_type(period_series.iat[0], pd.Period), pd.Period)
     period_series.iat[0] = period_series.iat[0]
     interval_series = pd.Series([pd.Interval(0, 1)])
-    check(
-        assert_type(interval_series.iat[0], ExtScalarOrNA),
-        pd.Interval,
-    )
+    check(assert_type(interval_series.iat[0], "pd.Interval[int]"), pd.Interval)
     interval_series.iat[0] = interval_series.iat[0]
+    bool_series = pd.Series([True])
+    bool_series.iat[0] = np.bool_(False)
     missing_series = pd.Series([None], dtype=object)
     check(assert_type(missing_series.iloc[0], Any), type(None))
-    check(
-        assert_type(missing_series.iat[0], ExtScalarOrNA),
-        type(None),
-    )
+    check(assert_type(missing_series.iat[0], Any), type(None))
 
     if TYPE_CHECKING_INVALID_USAGE:
+        s.iat[0] = [1, 2]  # type: ignore[assignment] # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
         s.iat[0, 0]  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
         st = {"a"}
         dc = {"a": 1}
@@ -68,7 +58,7 @@ def test_types_iloc_iat() -> None:
 
 
 def test_types_loc_at() -> None:
-    s = pd.Series(data={"row1": 1, "row2": 2})
+    s = pd.Series([1, 2], index=["row1", "row2"])
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
     s.at["row1"]
@@ -77,28 +67,18 @@ def test_types_loc_at() -> None:
     s2.at[1]
     s2.at[1] = 99
 
-    check(
-        assert_type(s.at["row1"], ExtScalarOrNA),
-        np.integer,
-    )
+    check(assert_type(s.at["row1"], int), np.integer)
 
     period_series = pd.Series([pd.Period("2020-01")])
-    check(
-        assert_type(period_series.at[0], ExtScalarOrNA),
-        pd.Period,
-    )
+    check(assert_type(period_series.at[0], pd.Period), pd.Period)
     period_series.at[0] = period_series.at[0]
     interval_series = pd.Series([pd.Interval(0, 1)])
-    check(
-        assert_type(interval_series.at[0], ExtScalarOrNA),
-        pd.Interval,
-    )
+    check(assert_type(interval_series.at[0], "pd.Interval[int]"), pd.Interval)
     interval_series.at[0] = interval_series.at[0]
+    bool_series = pd.Series([True])
+    bool_series.at[0] = np.bool_(False)
     missing_series = pd.Series([None], dtype=object)
-    check(
-        assert_type(missing_series.at[0], ExtScalarOrNA),
-        type(None),
-    )
+    check(assert_type(missing_series.at[0], Any), type(None))
 
     if TYPE_CHECKING_INVALID_USAGE:
         st = {"a"}
@@ -107,6 +87,21 @@ def test_types_loc_at() -> None:
         _3 = s2.loc[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
         s2.loc[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
         s2.loc[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+
+
+def test_scalar_indexers_preserve_series_type() -> None:
+    # GH 2080
+    strings = pd.Series(["value"], index=["row"])
+    check(assert_type(strings.at["row"], str), str)
+    check(assert_type(strings.iat[0], str), str)
+
+    timestamps = pd.Series([pd.Timestamp("2026-01-01")])
+    check(assert_type(timestamps.at[0], pd.Timestamp), pd.Timestamp)
+    check(assert_type(timestamps.iat[0], pd.Timestamp), pd.Timestamp)
+
+    multiindex = pd.MultiIndex.from_tuples([("row", 1)])
+    indexed = pd.Series(["value"], index=multiindex)
+    check(assert_type(indexed.at["row", 1], str), str)
 
 
 def test_types_getitem() -> None:

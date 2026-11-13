@@ -35,7 +35,10 @@ from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
 )
-from pandas.api.typing import NAType
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
 from pandas.api.typing.aliases import (
     DtypeObj,
     Scalar,
@@ -69,7 +72,7 @@ from tests._typing import (
     np_1darray_object,
     np_1darray_str,
     np_1darray_td,
-    np_ndarray_num,
+    np_ndarray,
 )
 from tests.dtypes import (
     ASTYPE_BOOL_ARGS,
@@ -169,6 +172,21 @@ def test_types_init() -> None:
         ),
         pd.Series,
         pd.Interval,
+    )
+    check(
+        assert_type(pd.Series([pd.Timestamp(0), pd.NaT]), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(pd.Series([pd.Timedelta(0), pd.NaT]), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(pd.Series([pd.NaT]), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        NaTType,
     )
 
 
@@ -373,6 +391,13 @@ def test_types_fillna() -> None:
     )
     # GH 263
     check(assert_type(s.fillna(pd.NA), "pd.Series[float]"), pd.Series, float)
+
+    timestamps = pd.Series([pd.Timestamp("2020-01-01"), pd.NaT])
+    check(
+        assert_type(timestamps.fillna(pd.NaT), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
 
 
 def test_types_sort_index() -> None:
@@ -1704,12 +1729,18 @@ def test_types_dot() -> None:
     s2 = pd.Series([-1, 2, -3, 4])
     df1 = pd.DataFrame([[0, 1], [-2, 3], [4, -5], [6, 7]])
     n1 = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
-    check(assert_type(s1.dot(s2), Scalar), np.int64)
-    check(assert_type(s1 @ s2, Scalar), np.int64)
-    check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
-    check(assert_type(s1 @ df1, pd.Series), pd.Series)
-    check(assert_type(s1.dot(n1), np_ndarray_num), np.ndarray)
-    check(assert_type(s1 @ n1, np_ndarray_num), np.ndarray)
+    check(assert_type(s1.dot(s2), Any), np.int64)
+    check(assert_type(s1.dot(df1), pd.Series), pd.Series, np.int64)
+    check(assert_type(s1.dot(np.ones(4)), Any), np.float64)
+    check(assert_type(s1.dot(np.eye(4)), np_1darray), np_1darray)
+    check(assert_type(s1.dot(n1), Any), np.ndarray)
+    check(assert_type(s1 @ s2, Any), np.int64)
+    check(assert_type(s1 @ df1, pd.Series), pd.Series, np.int64)
+    check(assert_type(s1 @ np.ones(4), Any), np.float64)
+    check(assert_type(s1 @ np.eye(4), np_1darray), np_1darray)
+    check(assert_type(s1 @ n1, Any), np.ndarray)
+    check(assert_type([0, 1, 2, 3] @ s1, Any), np.int64)
+    check(assert_type([[0, 1, 2, 3], [4, 5, 6, 7]] @ s1, np_1darray), np_1darray)
 
 
 def test_series_min_max_sub_axis() -> None:
@@ -2060,6 +2091,19 @@ def test_dtype_type() -> None:
     s3 = pd.Series([1, 2, 3])
     check(assert_type(s3.dtype, DtypeObj), np.dtype)
     check(assert_type(s3.dtype.kind, _DTypeKind), str)
+
+
+def test_series_array() -> None:
+    s = pd.Series([1, 2, 3])
+    check(assert_type(s.__array__(), np_1darray), np_1darray, np.integer)
+    check(assert_type(s.__array__("f8"), np_1darray), np_1darray, np.float64)
+    check(
+        assert_type(s.__array__(np.dtype(np.float64)), np_1darray),
+        np_1darray,
+        np.float64,
+    )
+    check(assert_type(s.__array__(copy=True), np_1darray), np_1darray, np.integer)
+    check(assert_type(np.asarray(s, "f8"), np_ndarray), np.ndarray, np.float64)
 
 
 def test_types_to_numpy() -> None:

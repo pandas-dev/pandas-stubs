@@ -47,10 +47,7 @@ from _typeshed import (
     SupportsRAdd,
     SupportsRMul,
 )
-from matplotlib.axes import (
-    Axes as PlotAxes,
-    SubplotBase,
-)
+from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas import (
     Index,
@@ -228,6 +225,7 @@ from pandas._typing import (
     S2_contra,
     S2_NDT_contra,
     Scalar,
+    ScalarOrNA,
     ScalarT,
     SequenceNotStr,
     SeriesByT,
@@ -258,6 +256,7 @@ from pandas._typing import (
     np_1darray_object,
     np_1darray_str,
     np_1darray_td,
+    np_2darray,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -265,6 +264,7 @@ from pandas._typing import (
     np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_num,
+    np_ndarray_object,
     np_ndarray_str,
     np_ndarray_td,
 )
@@ -480,11 +480,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool | None = None,
     ) -> Series[_str]: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
         data: (
             DatetimeIndex
-            | Sequence[np.datetime64 | datetime | date]
+            | Sequence[np.datetime64 | datetime | date | NaTType]
             | dict[HashableT1, np.datetime64 | datetime | date]
             | np.datetime64
             | datetime
@@ -538,7 +538,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cls,
         data: (
             TimedeltaIndex
-            | Sequence[np.timedelta64 | timedelta]
+            | Sequence[np.timedelta64 | timedelta | NaTType]
             | dict[HashableT1, np.timedelta64 | timedelta]
             | np.timedelta64
             | timedelta
@@ -692,7 +692,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Any: ...
     @override
     def __array__(
-        self, dtype: _str | np.dtype = ..., copy: bool | None = ...
+        self, dtype: _str | np.dtype | None = ..., copy: bool | None = ...
     ) -> np_1darray: ...
     @final
     def __getattr__(self, name: _str, /) -> S1: ...
@@ -1149,21 +1149,48 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def diff(self: Iterable[SupportsSelfSub[S2]], periods: int = ...) -> Series[S2]: ...
     def autocorr(self, lag: int = 1) -> float: ...
     @overload
-    def dot(self, other: Series[S1]) -> Scalar: ...
-    @overload
-    def dot(self, other: DataFrame) -> Series[S1]: ...
-    @overload
     def dot(
         self,
-        other: ArrayLike | dict[_str, np_ndarray_num] | Sequence[S1] | Index[S1],
-    ) -> np_ndarray_num: ...
+        other: (
+            Series
+            | Index
+            | ExtensionArray
+            | np_1darray
+            | Sequence[SupportsSelfMul[Any]]
+        ),
+    ) -> Any: ...  # could be anything in case of `object_`
     @overload
-    def __matmul__(self, other: Series, /) -> Scalar: ...
+    def dot(self, other: DataFrame) -> Series: ...
+    @overload
+    def dot(
+        self, other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]]
+    ) -> np_1darray: ...
+    @overload
+    def __matmul__(
+        self,
+        other: (
+            Series
+            | Index
+            | ExtensionArray
+            | np_1darray
+            | Sequence[SupportsSelfMul[Any]]
+        ),
+        /,
+    ) -> Any: ...
     @overload
     def __matmul__(self, other: DataFrame, /) -> Series: ...
     @overload
-    def __matmul__(self, other: np_ndarray_num, /) -> np_ndarray_num: ...
-    def __rmatmul__(self, other: np_ndarray_num, /) -> np_ndarray_num: ...
+    def __matmul__(
+        self, other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]], /
+    ) -> np_1darray: ...
+    @overload
+    def __rmatmul__(
+        self, other: np_1darray | Sequence[SupportsSelfMul[Any]], /
+    ) -> Any: ...
+    @overload
+    def __rmatmul__(
+        self, other: np_2darray | Sequence[Sequence[SupportsSelfMul[Any]]], /
+    ) -> np_1darray: ...
     @overload
     def compare(
         self,
@@ -1442,7 +1469,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Self: ...
     def fillna(
         self,
-        value: Scalar | NAType | dict[Any, Any] | Series[S1] | DataFrame | None = ...,
+        value: ScalarOrNA | dict[Any, Any] | Series[S1] | DataFrame = ...,
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
@@ -1545,9 +1572,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @property
     def plot(self) -> PlotAccessor: ...
     sparse = ...
+    @overload
     def hist(
         self,
-        by: object | None = None,
+        by: None = None,
         ax: PlotAxes | None = None,
         grid: _bool = True,
         xlabelsize: float | _str | None = None,
@@ -1559,7 +1587,23 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         backend: _str | None = None,
         legend: _bool = False,
         **kwargs: Any,
-    ) -> SubplotBase: ...
+    ) -> PlotAxes: ...
+    @overload
+    def hist(
+        self,
+        by: object,
+        ax: PlotAxes | None = None,
+        grid: _bool = True,
+        xlabelsize: float | _str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | _str | None = None,
+        yrot: float | None = None,
+        figsize: tuple[float, float] | None = None,
+        bins: int | Sequence[int] = 10,
+        backend: _str | None = None,
+        legend: _bool = False,
+        **kwargs: Any,
+    ) -> PlotAxes | np_ndarray_object: ...
     @final
     def droplevel(self, level: Level | list[Level], axis: AxisIndex = 0) -> Self: ...
     def pop(self, item: Hashable) -> S1: ...
@@ -4513,10 +4557,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @final
     def __invert__(self) -> Series[bool]: ...
     @property
-    def at(self) -> _AtIndexer: ...
+    def at(self) -> _AtIndexer[S1]: ...
     cat = _CatDescriptor()
     @property
-    def iat(self) -> _iAtIndexer: ...
+    def iat(self) -> _iAtIndexer[S1]: ...
     @property
     def iloc(self) -> _iLocIndexerSeries[S1]: ...
     @property

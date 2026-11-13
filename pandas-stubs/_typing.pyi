@@ -137,9 +137,8 @@ _IndexIterScalar: TypeAlias = (
     | Timedelta
 )
 # This is wider than what is in pandas
-Scalar: TypeAlias = (
-    _IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
-)
+ScalarNoComplex: TypeAlias = _IndexIterScalar | np.integer | np.floating
+Scalar: TypeAlias = ScalarNoComplex | complex | np.complexfloating
 ScalarOrNA: TypeAlias = Scalar | NAType | NaTType | None
 ExtScalar: TypeAlias = Scalar | np.bool_ | Period | Interval
 ExtScalarOrNA: TypeAlias = ExtScalar | NAType | NaTType | None
@@ -1016,6 +1015,7 @@ np_1darray_float: TypeAlias = np_1darray[np.floating]
 np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
+np_2darray_object: TypeAlias = np_2darray[np.object_]
 
 NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])

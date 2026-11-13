@@ -108,6 +108,8 @@ def test_types_setitem() -> None:
     df["mapped_periods"] = {0: period}
     df[["periods", "mapped_periods"]] = [[period, period], [period, period]]
     check(assert_type(df["mapped_periods"], pd.Series), pd.Series, pd.Period)
+    if TYPE_CHECKING_INVALID_USAGE:
+        df["invalid"] = {1, 2}  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
 
 
 def test_types_setitem_mask() -> None:
@@ -152,6 +154,9 @@ def test_types_loc_at() -> None:
 
     df.at[0, "col1"] = df.at[1, "col1"]
     df.loc[0, "col1"] = df.at[1, "col1"]
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.at[0, "col1"] = [1, 2]  # type: ignore[assignment] # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        df.loc[0, "col1"] = object()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
 
     df = pd.DataFrame(
         {
@@ -238,6 +243,13 @@ def test_types_loc_at() -> None:
         assert_type(interval_frame.iat[0, 0], ExtScalarOrNA),
         pd.Interval,
     )
+
+
+def test_loc_scalar_chained_comparison() -> None:
+    df = pd.DataFrame({"x": [4.0, 4.0]})
+    a = df.loc[0, "x"]
+    b = df.loc[1, "x"]
+    check(assert_type(bool(a == b == 4.0), bool), bool)
 
 
 def test_types_boolean_indexing() -> None:
