@@ -40,8 +40,6 @@ pandas._libs.tslibs.offsets.BusinessHour.rollforward
 pandas._libs.tslibs.offsets.DateOffset
 pandas._libs.tslibs.offsets.DateOffset.__init__
 pandas._libs.tslibs.offsets.YearEnd.__new__
-pandas._libs.tslibs.period.Period.__init__
-pandas._libs.tslibs.period.Period.__new__
 pandas._libs.tslibs.period.Period.asfreq
 pandas._libs.tslibs.period.Period.now
 pandas._libs.tslibs.period.Period.to_timestamp
