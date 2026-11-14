@@ -1990,7 +1990,7 @@ def test_crosstab_args() -> None:
 
     def m(x: pd.Series) -> float:
         # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
-        return x.sum() / len(x)  # ty: ignore[unsound-return-statement]
+        return x.sum() / len(x)  # ty: ignore[unsound-return]
 
     check(
         assert_type(pd.crosstab(a, b, values=values, aggfunc=m), pd.DataFrame),
@@ -2305,7 +2305,7 @@ def test_pivot_table() -> None:
 
     def f(x: pd.Series) -> float:
         # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
-        return x.sum()  # ty: ignore[unsound-return-statement]
+        return x.sum()  # ty: ignore[unsound-return]
 
     check(
         assert_type(

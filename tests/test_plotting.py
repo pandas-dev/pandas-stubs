@@ -5,6 +5,7 @@ from typing import (
     Any,
     TypeAlias,
     assert_type,
+    cast,
 )
 
 from matplotlib.axes import Axes
@@ -220,7 +221,7 @@ def test_hist(close_figures: None) -> None:
     check(assert_type(df.hist(by="Col4"), Axes | np_ndarray_object), np_1darray_object)
     _, ax = plt.subplots()
     check(assert_type(df[["Col1"]].hist(ax=ax), np_1darray_object), np_1darray_object)
-    axs: np_2darray_object = plt.subplots(1, 2, squeeze=False)[1]
+    axs = cast(np_2darray_object, plt.subplots(1, 2, squeeze=False)[1])
     check(assert_type(df.hist(ax=axs), np_2darray_object), np_2darray_object)
 
 
