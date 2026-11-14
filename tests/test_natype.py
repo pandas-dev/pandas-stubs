@@ -133,11 +133,13 @@ def test_arithmetic() -> None:
     check(assert_type(na == s_int, "pd.Series[bool]"), pd.Series)
     check(assert_type(na == idx_int, BooleanArray), BooleanArray)
     check(assert_type(na == 1, NAType), NAType)
+    check(assert_type(na == na, NAType), NAType)
 
     # __ne__
     check(assert_type(na != s_int, "pd.Series[bool]"), pd.Series)
     check(assert_type(na != idx_int, BooleanArray), BooleanArray)
     check(assert_type(na != 1, NAType), NAType)
+    check(assert_type(na != na, NAType), NAType)
 
     # __le__
     check(assert_type(na <= s_int, "pd.Series[bool]"), pd.Series)

@@ -18,6 +18,7 @@ from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
+    NaTStrings,
     PeriodFrequency,
     ShapeT,
     np_1darray_bool,
@@ -41,8 +42,29 @@ class PeriodMixin:
     def start_time(self) -> Timestamp: ...
 
 class Period(PeriodMixin):
-    def __init__(
-        self,
+    @overload
+    def __new__(  # type: ignore[misc, overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        cls,
+        value: NaTStrings | NaTType,
+        freq: PeriodFrequency | None = None,
+        ordinal: int | None = None,
+        year: int | None = None,
+        month: int | None = None,
+        quarter: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+    ) -> NaTType: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        value: None = None,
+        freq: PeriodFrequency | None = None,
+    ) -> NaTType: ...
+    @overload
+    def __new__(
+        cls,
         value: (
             Period | str | datetime.datetime | datetime.date | Timestamp | None
         ) = None,
@@ -55,7 +77,7 @@ class Period(PeriodMixin):
         hour: int | None = None,
         minute: int | None = None,
         second: int | None = None,
-    ) -> None: ...
+    ) -> Self: ...
     @overload
     def __sub__(self, other: PeriodAddSub, /) -> Period: ...
     @overload

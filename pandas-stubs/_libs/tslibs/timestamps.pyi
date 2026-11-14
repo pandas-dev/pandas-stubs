@@ -34,6 +34,7 @@ from pandas._libs.tslibs import (
 )
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
+    NaTStrings,
     PeriodFrequency,
     ShapeT,
     TimestampNonexistent,
@@ -53,14 +54,14 @@ TimeZones: TypeAlias = str | _tzinfo | int | None
 class Timestamp(datetime, SupportsIndex):
     # invalid-mutable-override is only enabled by ty_all.
     # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-    min: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+    min: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[incompatible-mutable-override,unused-ignore-comment,unused-ignore-comment]
         Timestamp
     ]
-    max: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+    max: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[incompatible-mutable-override,unused-ignore-comment,unused-ignore-comment]
         Timestamp
     ]
 
-    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[incompatible-mutable-override,unused-ignore-comment,unused-ignore-comment]
         Timedelta
     ]
     value: int
@@ -68,6 +69,24 @@ class Timestamp(datetime, SupportsIndex):
     def __new__(  # type: ignore[misc]
         cls,
         ts_input: NaTType | None,
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        microsecond: int | None = None,
+        tzinfo: _tzinfo | None = None,
+        *,
+        nanosecond: int | None = None,
+        tz: TimeZones = None,
+        unit: str | int | None = None,
+        fold: Literal[0, 1] | None = None,
+    ) -> NaTType: ...
+    @overload
+    def __new__(  # type: ignore[misc, overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        cls,
+        ts_input: NaTStrings,
         year: int | None = None,
         month: int | None = None,
         day: int | None = None,
@@ -132,13 +151,13 @@ class Timestamp(datetime, SupportsIndex):
         @classmethod
         @override
         # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override-param-name] # ty: ignore[invalid-method-override,unused-ignore-comment,unused-ignore-comment]
-            cls, t: float, tz: _tzinfo | str | None = None
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override-param-name] # ty: ignore[incompatible-method-override,lost-keyword-for-regular-parameter,unused-ignore-comment,unused-ignore-comment]
+            cls, ts: float, tz: _tzinfo | str | None = None
         ) -> Self: ...
     else:
         @classmethod
         @override
-        def fromtimestamp(cls, t: float, tz: _tzinfo | str | None = None) -> Self: ...
+        def fromtimestamp(cls, ts: float, tz: _tzinfo | str | None = None) -> Self: ...
 
     @classmethod
     @override
@@ -156,7 +175,7 @@ class Timestamp(datetime, SupportsIndex):
     # error: Signature of "combine" incompatible with supertype "datetime"
     @classmethod
     @override
-    def combine(cls, date: _date, time: _time) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def combine(cls, date: _date, time: _time) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @classmethod
     @override
     def fromisoformat(cls, date_string: str) -> Self: ...
@@ -180,7 +199,7 @@ class Timestamp(datetime, SupportsIndex):
     # Here it is restricted to be 0 or 1 using a Literal
     # Violation of Liskov substitution principle
     @override
-    def replace(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def replace(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self,
         year: int | None = None,
         month: int | None = None,
@@ -198,7 +217,7 @@ class Timestamp(datetime, SupportsIndex):
     @override
     def ctime(self) -> str: ...
     @override
-    def isoformat(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def isoformat(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self,
         sep: str = "T",
         timespec: Literal[
@@ -213,7 +232,7 @@ class Timestamp(datetime, SupportsIndex):
     ) -> str: ...
     @classmethod
     @override
-    def strptime(cls, date_string: Never, format: Never) -> Never: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def strptime(cls, date_string: Never, format: Never) -> Never: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @override
     def utcoffset(self) -> timedelta | None: ...
     @override

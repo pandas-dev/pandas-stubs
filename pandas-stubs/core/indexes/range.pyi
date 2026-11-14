@@ -54,16 +54,16 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
         self, sort: bool = False, use_na_sentinel: bool = True
     ) -> tuple[np_1darray_intp, RangeIndex]: ...
     @override
-    def all(self, axis: None = None, out: None = None, keepdims: Literal[False] = False) -> bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def all(self, axis: None = None, out: None = None, keepdims: Literal[False] = False) -> bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @override
-    def any(self, axis: None = None, out: None = None, keepdims: Literal[False] = False) -> bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def any(self, axis: None = None, out: None = None, keepdims: Literal[False] = False) -> bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @overload  # type: ignore[override]
     @override
     def union(  # pyrefly: ignore[bad-override]
         self, other: Sequence[int] | Index[int] | Self, sort: bool | None = None
     ) -> Index[int] | Self: ...
     @overload
-    def union(  # ty: ignore[invalid-method-override]
+    def union(  # ty: ignore[incompatible-method-override]
         self, other: Sequence[HashableT] | Index, sort: bool | None = None
     ) -> Index: ...
     @overload  # type: ignore[override]
@@ -72,11 +72,11 @@ class RangeIndex(IndexSubclassBase[int, np.int64]):
         self, idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType, /
     ) -> Index: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, idx: int, /
     ) -> int: ...
     @override
-    def where(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def where(  # type: ignore[override] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self,
         cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
         other: Scalar | AnyArrayLike | None = None,

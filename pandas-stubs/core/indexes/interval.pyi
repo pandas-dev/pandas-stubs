@@ -261,7 +261,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, key: object, /
     ) -> Literal[False]: ...
     @override
-    def astype(self, dtype: DtypeArg, copy: bool = True) -> IntervalIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def astype(self, dtype: DtypeArg, copy: bool = True) -> IntervalIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @property
     def is_overlapping(self) -> bool: ...
     @property
@@ -285,24 +285,24 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         /,
     ) -> IntervalIndex[IntervalT]: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, idx: int, /
     ) -> IntervalT: ...
     @override
-    def __gt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __gt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
     @override
-    def __ge__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __ge__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
     @override
-    def __le__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __le__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
     @override
-    def __lt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __lt__(self, other: IntervalT | Index[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
     @overload  # type: ignore[override]
     @override
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT], /) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyrefly: ignore[bad-override]
     @overload
     def __eq__(self, other: pd.Series[IntervalT], /) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[incompatible-method-override]
         self, other: object, /
     ) -> Literal[False]: ...
     @overload  # type: ignore[override]
@@ -311,7 +311,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     @overload
     def __ne__(self, other: pd.Series[IntervalT], /) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[invalid-method-override]
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride,reportOverlappingOverload] # ty: ignore[incompatible-method-override]
         self, other: object, /
     ) -> Literal[True]: ...
     @override

@@ -40,15 +40,12 @@ pandas._libs.tslibs.offsets.BusinessHour.rollforward
 pandas._libs.tslibs.offsets.DateOffset
 pandas._libs.tslibs.offsets.DateOffset.__init__
 pandas._libs.tslibs.offsets.YearEnd.__new__
-pandas._libs.tslibs.period.Period.__init__
-pandas._libs.tslibs.period.Period.__new__
 pandas._libs.tslibs.period.Period.asfreq
 pandas._libs.tslibs.period.Period.now
 pandas._libs.tslibs.period.Period.to_timestamp
 pandas._libs.tslibs.timedeltas.Timedelta.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.__index__
 pandas._libs.tslibs.timestamps.Timestamp.astimezone
-pandas._libs.tslibs.timestamps.Timestamp.fromtimestamp
 pandas._libs.tslibs.timestamps.Timestamp.replace
 pandas._libs.tslibs.timestamps.Timestamp.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.utcfromtimestamp
@@ -212,7 +209,6 @@ pandas.core.frame.DataFrame.filter
 pandas.core.frame.DataFrame.hist
 pandas.core.frame.DataFrame.infer_objects
 pandas.core.frame.DataFrame.interpolate
-pandas.core.frame.DataFrame.join
 pandas.core.frame.DataFrame.map
 pandas.core.frame.DataFrame.mask
 pandas.core.frame.DataFrame.merge
@@ -240,7 +236,6 @@ pandas.core.frame.DataFrame.tz_convert
 pandas.core.frame.DataFrame.tz_localize
 pandas.core.frame.DataFrame.where
 pandas.core.generic.NDFrame.__abs__
-pandas.core.generic.NDFrame.__array__
 pandas.core.generic.NDFrame.__init__
 pandas.core.generic.NDFrame.__nonzero__
 pandas.core.generic.NDFrame.convert_dtypes
@@ -341,7 +336,6 @@ pandas.core.resample._GroupByMixin.__init__
 pandas.core.reshape.concat.concat
 pandas.core.reshape.merge.merge
 pandas.core.reshape.pivot.pivot
-pandas.core.series.Series.__array__
 pandas.core.series.Series.__init__
 pandas.core.series.Series.aggregate
 pandas.core.series.Series.align

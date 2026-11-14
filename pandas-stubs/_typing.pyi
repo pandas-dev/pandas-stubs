@@ -137,10 +137,11 @@ _IndexIterScalar: TypeAlias = (
     | Timedelta
 )
 # This is wider than what is in pandas
-Scalar: TypeAlias = (
-    _IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
-)
+ScalarNoComplex: TypeAlias = _IndexIterScalar | np.integer | np.floating
+Scalar: TypeAlias = ScalarNoComplex | complex | np.complexfloating
 ScalarOrNA: TypeAlias = Scalar | NAType | NaTType | None
+ExtScalar: TypeAlias = Scalar | np.bool_ | Period | Interval
+ExtScalarOrNA: TypeAlias = ExtScalar | NAType | NaTType | None
 IntStrT = TypeVar("IntStrT", int, str)
 
 # timestamp and timedelta convertible types
@@ -162,6 +163,7 @@ TimestampNonexistent: TypeAlias = (
 TimedeltaConvertibleTypes: TypeAlias = (
     Timedelta | datetime.timedelta | np.timedelta64 | np.integer | float | str
 )
+NaTStrings: TypeAlias = Literal["", "NaT", "nat", "NAT", "nan", "NaN", "NAN"]
 
 Timezone: TypeAlias = str | tzinfo  # Not used in pandas or the stubs
 
@@ -1013,6 +1015,7 @@ np_1darray_float: TypeAlias = np_1darray[np.floating]
 np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
+np_2darray_object: TypeAlias = np_2darray[np.object_]
 
 NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])

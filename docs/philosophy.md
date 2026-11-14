@@ -188,6 +188,17 @@ pandas-stubs annotations are not too wide (allow adding a `Timestamp` to a
 time-based interval), mypy and pyright are configured to report unused ignore
 statements.
 
+## Deprecated methods
+
+Mark a method that pandas deprecates with `@deprecated` from `typing_extensions`.
+The message is a short hint naming the replacement, e.g.
+`"Use DataFrame.itertuples instead."`, or `""` when there is none; do not copy
+pandas' warning. Test the warning with `pytest_warns_bounded`, one statement per
+block, and put
+`# type: ignore[deprecated] # pyright: ignore[reportDeprecated] # pyrefly: ignore[deprecated] # ty: ignore[deprecated]`
+on each deprecated call. Removed methods are not restored; deprecated arguments
+get no `@deprecated`.
+
 ## Using ignore comments
 
 Type checkers report errors

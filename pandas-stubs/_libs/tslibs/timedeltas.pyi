@@ -27,6 +27,7 @@ from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     Frequency,
     Just,
+    NaTStrings,
     ShapeT,
     TimeUnit,
     np_1darray_bool,
@@ -90,19 +91,43 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
 class Timedelta(timedelta):
     # invalid-mutable-override is only enabled by ty_all.
     # TODO: reduce the double unused-ignore-comment when astral-sh/ty#2681 is resolved
-    min: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+    min: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[incompatible-mutable-override,unused-ignore-comment,unused-ignore-comment]
         Timedelta
     ]
-    max: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+    max: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[incompatible-mutable-override,unused-ignore-comment,unused-ignore-comment]
         Timedelta
     ]
-    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[invalid-mutable-override,unused-ignore-comment,unused-ignore-comment]
+    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride] # ty: ignore[incompatible-mutable-override,unused-ignore-comment,unused-ignore-comment]
         Timedelta
     ]
     value: int
+    @overload
+    def __new__(  # type: ignore[misc, overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        cls,
+        value: NaTStrings,
+        unit: TimeDeltaUnitChoices | None = None,
+        *,
+        days: float | np.integer | np.floating = ...,
+        seconds: float | np.integer | np.floating = ...,
+        microseconds: float | np.integer | np.floating = ...,
+        milliseconds: float | np.integer | np.floating = ...,
+        minutes: float | np.integer | np.floating = ...,
+        nanoseconds: float | np.integer | np.floating = ...,
+        hours: float | np.integer | np.floating = ...,
+        weeks: float | np.integer | np.floating = ...,
+    ) -> NaTType: ...
+    @overload
     def __new__(
         cls,
-        value: str | float | Timedelta | Tick | timedelta | np.timedelta64 = ...,
+        value: (
+            str  # noqa: PYI041 int is not float inside overloads
+            | int
+            | float
+            | Timedelta
+            | Tick
+            | timedelta
+            | np.timedelta64
+        ) = ...,
         unit: TimeDeltaUnitChoices | None = None,
         *,
         days: float | np.integer | np.floating = ...,
@@ -263,7 +288,7 @@ class Timedelta(timedelta):
         self, other: np_ndarray[ShapeT, np.integer | np.floating], /
     ) -> np_ndarray_td[ShapeT]: ...
     @overload
-    def __truediv__(  # ty: ignore[invalid-method-override]
+    def __truediv__(  # ty: ignore[incompatible-method-override]
         self, other: np_ndarray_td[ShapeT], /
     ) -> np_ndarray_float[ShapeT]: ...
     @overload
