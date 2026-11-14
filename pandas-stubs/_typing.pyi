@@ -509,11 +509,11 @@ BuiltinStrDtypeArg: TypeAlias = type[str] | Literal["str"]
 PandasBaseStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string"]
 if TYPE_CHECKING:
     PandasStrDtypeArg: TypeAlias = (
-        pd.StringDtype[Literal["python"]] | Literal["string[python]"]
+        pd.StringDtype[Literal["python"], NAType | float] | Literal["string[python]"]
     )
     # PyArrow string type and its string alias
     PyArrowStrDtypeArg: TypeAlias = (
-        pd.StringDtype[Literal["pyarrow"]] | Literal["string[pyarrow]"]
+        pd.StringDtype[Literal["pyarrow"], NAType | float] | Literal["string[pyarrow]"]
     )
 else:
     PandasStrDtypeArg: TypeAlias = pd.StringDtype | Literal["string[python]"]

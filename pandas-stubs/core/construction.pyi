@@ -5,6 +5,7 @@ from datetime import (
 )
 from typing import (
     Any,
+    Literal,
     Never,
     TypeAlias,
     overload,
@@ -54,11 +55,9 @@ from pandas._typing import (
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
     NumpyTimestampDtypeArg,
-    PandasBaseStrDtypeArg,
     PandasBooleanDtypeArg,
     PandasFloatDtypeArg,
     PandasIntDtypeArg,
-    PandasStrDtypeArg,
     PandasTimestampDtypeArg,
     PandasUIntDtypeArg,
     PyArrowNotStrDtypeArg,
@@ -262,23 +261,59 @@ def array(  # type: ignore[overload-overlap]
     copy: bool = True,
 ) -> TimedeltaArray: ...
 @overload
-def array(  # type: ignore[overload-overlap]
-    data: _NaNStrData, dtype: StringDtype[Never], copy: bool = True
-) -> BaseStringArray: ...
+def array(
+    data: _NaNStrData,
+    dtype: StringDtype[Literal["pyarrow"], NAType] | Literal["string[pyarrow]"],
+    copy: bool = True,
+) -> ArrowStringArray[NAType]: ...
 @overload
 def array(
-    data: _NaNStrData, dtype: PyArrowStrDtypeArg, copy: bool = True
-) -> ArrowStringArray: ...
+    data: _NaNStrData,
+    dtype: StringDtype[Literal["pyarrow"], float],
+    copy: bool = True,
+) -> ArrowStringArray[float]: ...
 @overload
 def array(
-    data: _NaNStrData, dtype: PandasStrDtypeArg, copy: bool = True
-) -> StringArray: ...
+    data: _NaNStrData,
+    dtype: StringDtype[Literal["pyarrow"], NAType | float] | Literal["string[pyarrow]"],
+    copy: bool = True,
+) -> ArrowStringArray[NAType | float]: ...
+@overload
+def array(
+    data: _NaNStrData,
+    dtype: StringDtype[Literal["python"], NAType] | Literal["string[python]"],
+    copy: bool = True,
+) -> StringArray[NAType]: ...
+@overload
+def array(
+    data: _NaNStrData,
+    dtype: StringDtype[Literal["python"], float],
+    copy: bool = True,
+) -> StringArray[float]: ...
+@overload
+def array(
+    data: _NaNStrData,
+    dtype: StringDtype[Literal["python"], NAType | float] | Literal["string[python]"],
+    copy: bool = True,
+) -> StringArray[NAType | float]: ...
 @overload
 def array(  # type: ignore[overload-overlap]
     data: _NaNStrData,
-    dtype: BuiltinStrDtypeArg | PandasBaseStrDtypeArg,
+    dtype: BuiltinStrDtypeArg | Literal["string"] | StringDtype[None, NAType],
     copy: bool = True,
 ) -> BaseStringArray: ...
+@overload
+def array(
+    data: _NaNStrData,
+    dtype: StringDtype[None, float],
+    copy: bool = True,
+) -> BaseStringArray[None, float]: ...
+@overload
+def array(
+    data: _NaNStrData,
+    dtype: StringDtype[Literal["python", "pyarrow"] | None, NAType | float],
+    copy: bool = True,
+) -> BaseStringArray[Literal["python", "pyarrow"] | None, NAType | float]: ...
 @overload
 def array(
     data: Sequence[_NAStrElement] | np_ndarray_str | BaseStringArray,

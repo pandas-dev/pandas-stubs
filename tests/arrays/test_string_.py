@@ -1,6 +1,5 @@
 from typing import (
     TYPE_CHECKING,
-    Any,
     Literal,
     assert_type,
 )
@@ -30,21 +29,28 @@ def test_construction_dtype(
     data: tuple[str, ...], dtype: PandasStrDtypeArg, target_dtype: type
 ) -> None:
     dtype_notna = target_dtype if data else None
-    check(assert_type(pd.array([*data], dtype), StringArray), StringArray, dtype_notna)
     check(
-        assert_type(pd.array([*data, *data], dtype), StringArray),
+        assert_type(pd.array([*data], dtype), "StringArray[NAType | float]"),
+        StringArray,
+        dtype_notna,
+    )
+    check(
+        assert_type(pd.array([*data, *data], dtype), "StringArray[NAType | float]"),
         StringArray,
         dtype_notna,
     )
 
     dtype_na = target_dtype if data else NAType
     check(
-        assert_type(pd.array([*data, np.nan], dtype), StringArray),
+        assert_type(pd.array([*data, np.nan], dtype), "StringArray[NAType | float]"),
         StringArray,
         dtype_na,
     )
     check(
-        assert_type(pd.array([*data, *data, np.nan], dtype), StringArray),
+        assert_type(
+            pd.array([*data, *data, np.nan], dtype),
+            "StringArray[NAType | float]",
+        ),
         StringArray,
         dtype_na,
     )
@@ -115,12 +121,30 @@ def test_dtype() -> None:
 
 def test_item() -> None:
     na_dtype = pd.StringDtype("python")
-    check(assert_type(pd.array(["a"], na_dtype).item(), Any), str)
-    check(assert_type(pd.array([None], na_dtype).item(), Any), NAType)
+    na_arr = pd.array([None], na_dtype)
+
+    check(assert_type(na_arr[0], str | NAType), NAType)
+    check(assert_type(na_arr[:1], StringArray), StringArray)
+    check(assert_type(na_arr.dtype.na_value, NAType), NAType)
 
     nan_dtype = pd.StringDtype("python", na_value=np.nan)
-    check(assert_type(pd.array(["a"], nan_dtype).item(), Any), str)
-    check(assert_type(pd.array([None], nan_dtype).item(0), Any), float)
+    nan_arr = pd.array([None], nan_dtype)
+
+    check(assert_type(nan_arr[0], str | float), float)
+    check(assert_type(nan_arr[:1], "StringArray[float]"), StringArray)
+    check(assert_type(nan_arr.dtype.na_value, float), float)
+
+    explicit_na_arr = pd.array([None], pd.StringDtype("python", na_value=pd.NA))
+    check(assert_type(explicit_na_arr[0], str | NAType), NAType)
+    check(assert_type(explicit_na_arr.dtype.na_value, NAType), NAType)
+
+    direct_arr = StringArray(np.array([None], dtype=np.object_))
+    check(assert_type(direct_arr[0], str | NAType), NAType)
+
+    if TYPE_CHECKING:
+        assert_type(na_arr.item(), str | NAType)
+        assert_type(nan_arr.item(), str | float)
+        assert_type(explicit_na_arr.item(0), str | NAType)
 
 
 def test_assign() -> None:

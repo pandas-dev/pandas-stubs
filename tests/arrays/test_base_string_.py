@@ -14,7 +14,11 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas.core.arrays.string_ import BaseStringArray
+from pandas.core.arrays.string_ import (
+    BaseStringArray,
+    StringArray,
+)
+from pandas.core.arrays.string_arrow import ArrowStringArray
 import pytest
 
 from pandas._libs.missing import NAType
@@ -113,9 +117,47 @@ def test_construction_dtype(
     if TYPE_CHECKING:
         assert_type(pd.array([], str), BaseStringArray)
         assert_type(pd.array([], "str"), BaseStringArray)
+        assert_type(pd.array(["1"], "string"), BaseStringArray)
+        assert_type(pd.array(["1"], "string[python]"), StringArray[NAType])
+        assert_type(pd.array(["1"], "string[pyarrow]"), ArrowStringArray[NAType])
 
         assert_type(pd.array([], pd.StringDtype()), BaseStringArray)
         assert_type(pd.array([], "string"), BaseStringArray)
+        assert_type(pd.array(["1"], pd.StringDtype()), BaseStringArray)
+        assert_type(pd.array(["1"], pd.StringDtype("python")), StringArray[NAType])
+        assert_type(
+            pd.array(["1"], pd.StringDtype("pyarrow")), ArrowStringArray[NAType]
+        )
+        assert_type(
+            pd.array(["1"], pd.StringDtype(na_value=np.nan)),
+            BaseStringArray[None, float],
+        )
+        assert_type(
+            pd.array(["1"], pd.StringDtype("python", na_value=np.nan)),
+            StringArray[float],
+        )
+        assert_type(
+            pd.array(["1"], pd.StringDtype("pyarrow", na_value=np.nan)),
+            ArrowStringArray[float],
+        )
+        assert_type(
+            pd.array(["1"], pd.StringDtype("python", na_value=pd.NA)),
+            StringArray[NAType],
+        )
+        assert_type(
+            pd.array(["1"], pd.StringDtype("pyarrow", na_value=pd.NA)),
+            ArrowStringArray[NAType],
+        )
+
+        plain_dtype: pd.StringDtype = pd.StringDtype()
+        assert_type(pd.array(["1"], plain_dtype), BaseStringArray)
+        broad_dtype: pd.StringDtype[
+            Literal["python", "pyarrow"] | None, NAType | float
+        ] = pd.StringDtype()
+        assert_type(
+            pd.array(["1"], broad_dtype),
+            BaseStringArray[Literal["python", "pyarrow"] | None, NAType | float],
+        )
 
         assert_type(pd.array([np.nan], pd.StringDtype()), BaseStringArray)
         assert_type(pd.array([np.nan], "string"), BaseStringArray)
@@ -154,7 +196,7 @@ def test_dtype() -> None:
 
     arr_str = pd.array([pd.NA], str)
     check(assert_type(arr_str, BaseStringArray), BaseStringArray, float)
-    assert pd.isna(assert_type(arr_str.dtype.na_value, NAType | float))
+    assert pd.isna(assert_type(arr_str.dtype.na_value, NAType))
 
     arr_str = pd.array([pd.NA], pd.StringDtype(na_value=pd.NA))
     check(assert_type(arr_str, BaseStringArray), BaseStringArray, NAType)
