@@ -3,12 +3,13 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
+    Generic,
     Self,
     TypeAlias,
-    TypeVar,
 )
 
 from pandas.core.base import IndexOpsMixin
+from typing_extensions import TypeVar
 
 from pandas._libs.indexing import NDFrameIndexerBase
 from pandas._libs.missing import NAType
@@ -16,6 +17,7 @@ from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     Axis,
     AxisInt,
+    ExtScalarOrNA,
     MaskType,
     Scalar,
 )
@@ -40,14 +42,20 @@ class _NDFrameIndexer(NDFrameIndexerBase):
 class _LocIndexer(_NDFrameIndexer): ...
 class _iLocIndexer(_NDFrameIndexer): ...
 
-class _AtIndexer(NDFrameIndexerBase):
-    def __getitem__(self, key: Hashable, /) -> Scalar: ...
+_ScalarT_co = TypeVar(
+    "_ScalarT_co",
+    covariant=True,
+    default=ExtScalarOrNA,
+)
+
+class _AtIndexer(NDFrameIndexerBase, Generic[_ScalarT_co]):
+    def __getitem__(self, key: Hashable, /) -> _ScalarT_co: ...
     def __setitem__(
         self, key: Hashable, value: Scalar | NAType | NaTType | None, /
     ) -> None: ...
 
-class _iAtIndexer(NDFrameIndexerBase):
-    def __getitem__(self, key: int, /) -> Scalar: ...
+class _iAtIndexer(NDFrameIndexerBase, Generic[_ScalarT_co]):
+    def __getitem__(self, key: int, /) -> _ScalarT_co: ...
     def __setitem__(
         self, key: int, value: Scalar | NAType | NaTType | None, /
     ) -> None: ...

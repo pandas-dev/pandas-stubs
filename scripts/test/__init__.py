@@ -2,6 +2,7 @@ import dataclasses
 from functools import partial
 from typing import (
     TYPE_CHECKING,
+    Final,
     Literal,
     get_args,
 )
@@ -12,12 +13,15 @@ from scripts.test import _step
 if TYPE_CHECKING:
     from scripts._job import Step
 
+_PERMANENT_ALLOWLIST: Final = "scripts/test/stubtest-allowlist-permanent.txt"
+_BURNDOWN_ALLOWLIST: Final = "scripts/test/stubtest-allowlist-burndown.txt"
 _SRC_STEPS = [
     _step.ty_src,
     _step.pyrefly_src,
     _step.mypy_src,
     _step.pyright_src,
     _step.pytest,
+    _step.pytest_architecture,
     _step.style,
 ]
 _DIST_STEPS = [
@@ -56,11 +60,26 @@ def run_tests(
     run_job(steps)
 
 
-def stubtest(allowlist: str, check_missing: bool, nightly: bool) -> None:
+def stubtest(
+    allowlist: str = "",
+    *,
+    check_missing: bool = False,
+    nightly: bool = False,
+    no_allowlist: bool = False,
+) -> None:
+    if no_allowlist:
+        allowlists = []
+    elif allowlist:
+        allowlists = [allowlist]
+    else:
+        allowlists = [_PERMANENT_ALLOWLIST]
+        # The burn-down list is pinned to one Python and pandas version; nightly is a moving runtime
+        if not nightly:
+            allowlists.append(_BURNDOWN_ALLOWLIST)
     stubtest = dataclasses.replace(
         _step.stubtest,
         run=partial(
-            _step.stubtest.run, allowlist=allowlist, check_missing=check_missing
+            _step.stubtest.run, allowlists=allowlists, check_missing=check_missing
         ),
     )
     steps = _DIST_STEPS[:2]
@@ -80,3 +99,8 @@ def pytest(nightly: bool) -> None:
 def mypy_src(mypy_nightly: bool) -> None:
     steps = [_step.mypy_nightly] if mypy_nightly else []
     run_job([*steps, _step.mypy_src])
+
+
+def pyrefly_src(pyrefly_pre_release: bool) -> None:
+    steps = [_step.pyrefly_pre_release] if pyrefly_pre_release else []
+    run_job([*steps, _step.pyrefly_src])

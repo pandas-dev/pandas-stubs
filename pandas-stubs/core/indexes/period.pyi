@@ -1,6 +1,11 @@
-from collections.abc import Hashable
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 import datetime
 from typing import (
+    Literal,
+    Never,
     Self,
     overload,
 )
@@ -22,6 +27,7 @@ from pandas._libs.tslibs import (
     Period,
 )
 from pandas._typing import (
+    AnyArrayLikeInt,
     AxesData,
     Dtype,
     Frequency,
@@ -31,6 +37,14 @@ from pandas._typing import (
 )
 
 class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps):
+    @override
+    def any(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
+    @override
+    def all(
+        self, axis: None = None, out: None = None, keepdims: Literal[False] = False
+    ) -> Never: ...
     def __new__(
         cls,
         data: AxesData | None = None,
@@ -39,15 +53,23 @@ class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps
         copy: bool = False,
         name: Hashable | None = None,
     ) -> Self: ...
+    @classmethod
+    def from_ordinals(
+        cls,
+        ordinals: AnyArrayLikeInt | Sequence[int],
+        *,
+        freq: Frequency,
+        name: Hashable | None = None,
+    ) -> Self: ...
     @property
     @override
     def values(self) -> np_1darray_object: ...
     @override
-    def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, other: ScalarArrayIndexPeriod, /
     ) -> Self: ...
     @override
-    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, other: ScalarArrayIndexPeriod, /
     ) -> Self: ...
     @overload  # type: ignore[override]
@@ -60,7 +82,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps
     @overload
     def __sub__(self, other: NaTType, /) -> NaTType: ...
     @overload
-    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, other: TimedeltaIndex | pd.Timedelta, /
     ) -> Self: ...
     @overload  # type: ignore[override]
@@ -69,7 +91,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[Period, np.object_], PeriodIndexFieldOps
     @overload
     def __rsub__(self, other: Self, /) -> Index: ...
     @overload
-    def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
+    def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[incompatible-method-override]
         self, other: NaTType, /
     ) -> NaTType: ...
     @override

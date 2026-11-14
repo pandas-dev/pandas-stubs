@@ -1,5 +1,6 @@
 from typing import (
     TYPE_CHECKING,
+    Any,
     Literal,
     assert_type,
 )
@@ -110,6 +111,16 @@ def test_dtype() -> None:
     arr = pd.array(["a"], "string[python]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['python']]"), pd.StringDtype)
     assert assert_type(arr.dtype.storage, Literal["python"]) == "python"
+
+
+def test_item() -> None:
+    na_dtype = pd.StringDtype("python")
+    check(assert_type(pd.array(["a"], na_dtype).item(), Any), str)
+    check(assert_type(pd.array([None], na_dtype).item(), Any), NAType)
+
+    nan_dtype = pd.StringDtype("python", na_value=np.nan)
+    check(assert_type(pd.array(["a"], nan_dtype).item(), Any), str)
+    check(assert_type(pd.array([None], nan_dtype).item(0), Any), float)
 
 
 def test_assign() -> None:

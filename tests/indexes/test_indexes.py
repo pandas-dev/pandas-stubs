@@ -9,6 +9,7 @@ from collections.abc import (
     Sequence,
 )
 import datetime as dt
+import re
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -34,17 +35,15 @@ import pytest
 from pandas._libs.tslibs.offsets import BaseOffset
 
 from tests import (
-    PD_LTE_31,
     TYPE_CHECKING_INVALID_USAGE,
-    WINDOWS,
     check,
-    pytest_warns_conditioned,
 )
 from tests._typing import (
     np_1darray,
     np_1darray_bool,
     np_1darray_int64,
     np_1darray_intp,
+    np_ndarray,
     np_ndarray_dt,
 )
 
@@ -68,6 +67,51 @@ def test_index_duplicated() -> None:
     ind = df.index
     duplicated = ind.duplicated("first")
     check(assert_type(duplicated, np_1darray_bool), np_1darray_bool)
+
+
+def test_index_any_all() -> None:
+    ind = pd.Index([0, 1, 2])
+    check(assert_type(ind.any(), np.bool), np.bool)
+    check(assert_type(ind.all(), np.bool), np.bool)
+    check(assert_type(pd.Index([1.5, 0.0]).any(), np.bool), np.bool)
+    check(assert_type(pd.Index([True, False]).all(), np.bool), np.bool)
+    check(assert_type(pd.to_timedelta(["1D", "0D"]).any(), np.bool), np.bool)
+    check(assert_type(pd.Index(["a", ""], dtype=object).all(), np.bool), np.bool)
+    # numpy-compatible arguments are accepted positionally and by keyword,
+    # but only with their default values
+    check(assert_type(ind.any(None), np.bool), np.bool)
+    check(assert_type(ind.any(None, None, False), np.bool), np.bool)
+    check(assert_type(ind.all(axis=None), np.bool), np.bool)
+    check(assert_type(ind.all(axis=None, out=None, keepdims=False), np.bool), np.bool)
+
+    check(assert_type(pd.RangeIndex(3).any(), bool), bool)
+    check(assert_type(pd.RangeIndex(3).all(), bool), bool)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # ValueError: the 'axis' parameter is not supported in the pandas implementation of any()
+        ind.any(axis=0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        # ValueError: the 'keepdims' parameter is not supported in the pandas implementation of all()
+        ind.all(keepdims=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+        def _any_all_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
+            # TypeError: cannot perform any with MultiIndex
+            assert_type(pd.MultiIndex.from_tuples([(0, 1)]).any(), Never)
+
+        def _any_all_invalid1() -> None:  # pyright: ignore[reportUnusedFunction]
+            # TypeError: datetime64 type does not support operation 'all'
+            assert_type(pd.DatetimeIndex(["2024-01-01"]).all(), Never)
+
+        def _any_all_invalid2() -> None:  # pyright: ignore[reportUnusedFunction]
+            # TypeError: 'PeriodArray' with dtype period[D] does not support operation 'any'
+            assert_type(pd.period_range("2024", periods=1, freq="D").any(), Never)
+
+        def _any_all_invalid3() -> None:  # pyright: ignore[reportUnusedFunction]
+            # TypeError: 'Categorical' with dtype category does not support operation 'all'
+            assert_type(pd.CategoricalIndex(["a"]).all(), Never)
+
+        def _any_all_invalid4() -> None:  # pyright: ignore[reportUnusedFunction]
+            # TypeError: 'IntervalArray' with dtype interval[int64, right] does not support operation 'any'
+            assert_type(pd.interval_range(0, 2).any(), Never)
 
 
 def test_index_isin() -> None:
@@ -110,8 +154,8 @@ def test_index_isin() -> None:
         assert_type(mi.isin({(1, "red"): 0, (3, "red"): 0}), np_1darray_bool),
         np_1darray_bool,
     )
-    if PD_LTE_31:
-        # TODO: pandas-dev/pandas#66540 pandas bug on nightly
+    # TODO: pandas-dev/pandas#66514 drop pytest.raises once fixed
+    with pytest.raises(TypeError, match="has no len"):
         check(
             assert_type(
                 mi.isin({iter((1, "red")): 0, (3, "red"): 0}.keys()), np_1darray_bool
@@ -123,8 +167,8 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin(iter([["1"]]), 1), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin({1: 0}.keys(), 0), np_1darray_bool), np_1darray_bool)
 
-    if PD_LTE_31:
-        # TODO: pandas-dev/pandas#66514 pandas bug on nightly
+    # TODO: pandas-dev/pandas#66514 drop pytest.raises once fixed
+    with pytest.raises(TypeError, match="has no len"):
         check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -369,6 +413,20 @@ def test_index_neg() -> None:
     check(assert_type(-idx, "pd.Index[int]"), pd.Index)
 
 
+def test_index_array() -> None:
+    idx = pd.Index([1, 2, 3])
+    check(assert_type(idx.__array__(), np_1darray), np_1darray, np.integer)
+    check(assert_type(idx.__array__(dtype="f8"), np_1darray), np_1darray, np.float64)
+    check(
+        assert_type(idx.__array__(dtype=np.dtype(np.float64)), np_1darray),
+        np_1darray,
+        np.float64,
+    )
+
+    check(assert_type(idx.__array__(copy=True), np_1darray), np_1darray, np.integer)
+    check(assert_type(np.asarray(idx, "f8"), np_ndarray), np.ndarray, np.float64)
+
+
 def test_types_to_numpy() -> None:
     idx = pd.Index([1, 2])
     check(assert_type(idx.to_numpy(), np_1darray), np_1darray)
@@ -448,6 +506,53 @@ def test_interval_range() -> None:
     )
     check(
         assert_type(pd.interval_range(0.0, 10), "pd.IntervalIndex[pd.Interval[float]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    # TODO: facebook/pyrefly#5317
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.interval_range(  # pyrefly: ignore[no-matching-overload]
+                start=0, periods=4, freq=1.5
+            ),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(0.0, 3.0, freq=0.5),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    # TODO: facebook/pyrefly#5317
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.interval_range(  # pyrefly: ignore[no-matching-overload]
+                end=6, periods=4, freq=1.5
+            ),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    # TODO: facebook/pyrefly#5317
+    check(
+        assert_type(  # pyrefly: ignore[assert-type]
+            pd.interval_range(0, None, 4, 1.5),  # pyrefly: ignore[no-matching-overload]
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(0.0, 3.0, None, 0.5, "x", "left"),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
         pd.IntervalIndex,
         pd.Interval,
     )
@@ -1101,6 +1206,14 @@ def test_getitem() -> None:
     check(assert_type(i0[0], str), str)
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        st = {"a"}
+        dc = {"a": 1}
+        _0 = i0[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _1 = i0[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _2 = mi[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _3 = mi[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+
 
 def test_append_mix() -> None:
     """Test pd.Index.append with mixed types"""
@@ -1363,14 +1476,8 @@ def test_disallow_empty_index() -> None:
         _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
-def test_periodindex_shift() -> None:
-    ind = pd.period_range(start="2022-06-01", periods=10)
-    check(assert_type(ind.shift(1), pd.PeriodIndex), pd.PeriodIndex)
-
-
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
-    # broken on 3.0.0.dev0 as of 20250813, fix with pandas-dev/pandas/issues/62094
     check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
@@ -1507,26 +1614,6 @@ def test_index_searchsorted() -> None:
     check(assert_type(idx.searchsorted(1, sorter=range(3)), np.intp), np.intp)
 
 
-def test_period_index_constructor() -> None:
-    check(
-        assert_type(pd.PeriodIndex(["2000"], dtype="period[D]"), pd.PeriodIndex),
-        pd.PeriodIndex,
-    )
-    check(
-        assert_type(
-            pd.PeriodIndex(["2000"], freq="D", name="foo", copy=True), pd.PeriodIndex
-        ),
-        pd.PeriodIndex,
-    )
-
-
-def test_period_index_asof_locs() -> None:
-    idx = pd.PeriodIndex(["2000", "2001"], freq="D")
-    where = pd.DatetimeIndex(["2023-05-30 00:12:00", "2023-06-01 00:00:00"])
-    mask = np.ones(2, dtype=bool)
-    check(assert_type(idx.asof_locs(where, mask), np_1darray_intp), np_1darray_intp)
-
-
 def test_array_property() -> None:
     """Test that Index.array and semantic Index.array return ExtensionArray and its subclasses"""
     # casting due to pandas-dev/pandas-stubs#1383
@@ -1622,6 +1709,48 @@ def test_multiindex_swaplevel() -> None:
     check(assert_type(mi.swaplevel(0, 1), "pd.MultiIndex"), pd.MultiIndex)
 
 
+def test_index_replace_scalar() -> None:
+    index = pd.Index([1, 2, 3], name="source")
+
+    check(assert_type(index.replace(2, "two"), pd.Index), pd.Index)
+
+
+def test_index_replace_mapping_and_list() -> None:
+    index = pd.Index([1, 2, 3])
+
+    check(assert_type(index.replace({1: 10, 3: 30}), pd.Index), pd.Index)
+    check(assert_type(index.replace([1, 3], [10, 30]), pd.Index), pd.Index)
+    check(assert_type(index.replace(pd.Series({1: 10, 3: 30})), pd.Index), pd.Index)
+
+
+def test_index_replace_regex() -> None:
+    index = pd.Index(["alpha", "beta"])
+
+    check(assert_type(index.replace(re.compile("^a"), "x", True), pd.Index), pd.Index)
+    check(assert_type(index.replace(value="x", regex="^a"), pd.Index), pd.Index)
+
+
+def test_multiindex_replace_unsupported() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.MultiIndex.from_tuples([(1, 2)]).replace(1, 3), Never)
+
+
+def test_index_replace_pandas_scalars() -> None:
+    periods = pd.period_range("2026-01", periods=2, freq="M")
+    period = pd.Period("2026-03", freq="M")
+    check(assert_type(periods.replace(periods[0], period), pd.Index), pd.Index)
+
+    intervals = pd.IntervalIndex.from_breaks([0, 1, 2])
+    interval = pd.Interval(2, 3)
+    check(assert_type(intervals.replace(intervals[0], interval), pd.Index), pd.Index)
+
+    timestamp = pd.Timestamp("2026-01-01")
+    dates = pd.DatetimeIndex([pd.NaT, timestamp])
+    check(assert_type(dates.replace(pd.NaT, timestamp), pd.Index), pd.Index)
+
+
 def test_index_where() -> None:
     """Test Index.where with multiple types of other GH1419."""
     idx = pd.Index(range(48))
@@ -1631,14 +1760,12 @@ def test_index_where() -> None:
     check(
         assert_type(val_idx, "pd.Index[int]"),
         pd.Index,
-        int if PD_LTE_31 else np.integer,
+        np.integer,
     )
 
     val_sr = idx.where(mask, idx.to_series())
 
-    check(
-        assert_type(val_sr, "pd.Index[int]"), pd.Index, int if PD_LTE_31 else np.int64
-    )
+    check(assert_type(val_sr, "pd.Index[int]"), pd.Index, np.int64)
 
 
 def test_datetimeindex_where() -> None:
@@ -1653,17 +1780,17 @@ def test_datetimeindex_where() -> None:
     )
     check(assert_type(val_sr, DatetimeIndex), DatetimeIndex)
 
-    val_idx_scalar = datetime_index.where(mask, pd.Index([0, 1]))
+    val_idx_scalar = datetime_index.where(mask, pd.Index(range(len(datetime_index))))
     check(assert_type(val_idx_scalar, pd.Index), pd.Index)
 
-    val_sr_scalar = datetime_index.where(mask, pd.Series([0, 1]))
+    val_sr_scalar = datetime_index.where(mask, pd.Series(range(len(datetime_index))))
     check(assert_type(val_sr_scalar, pd.Index), pd.Index)
 
     val_scalar = datetime_index.where(mask, 1)
     check(assert_type(val_scalar, pd.Index), pd.Index)
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
-    check(assert_type(val_range, pd.Index), pd.RangeIndex if PD_LTE_31 else pd.Index)
+    check(assert_type(val_range, pd.Index), pd.Index)
 
 
 def test_index_set_names() -> None:
@@ -1911,7 +2038,7 @@ def test_get_loc_named_tuples() -> None:
             flat_midx_unsorted_dupes.get_loc(NamedIndex("i1", "i2")),
             int | slice | np_1darray_bool,
         ),
-        slice if PD_LTE_31 else np_1darray_bool,
+        np_1darray_bool,
     )
 
 
@@ -2015,18 +2142,15 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    with pytest_warns_conditioned(
-        RuntimeWarning, "overflow encountered in scalar multiply", WINDOWS
-    ):
-        check(
-            assert_type(
-                pd.period_range(start="2017-01-01", end="2017-02-01", freq="D").diff(),
-                pd.Index,  # "pd.Index[BaseOffset]" has dtype object
-            ),
-            pd.Index,
-            BaseOffset,
-            index_to_check_for_type=-1,
-        )
+    check(
+        assert_type(
+            pd.period_range(start="2017-01-01", end="2017-02-01", freq="D").diff(),
+            pd.Index,  # "pd.Index[BaseOffset]" has dtype object
+        ),
+        pd.Index,
+        BaseOffset,
+        index_to_check_for_type=-1,
+    )
     # bool -> Any
     check(
         assert_type(pd.Index([True, True, False, False, True]).diff(), pd.Index),
@@ -2051,30 +2175,13 @@ def test_diff() -> None:
     # Any -> Any
     s_o = ind.astype(object)
     assert_type(s_o, pd.Index)
-    # TODO: remove the ignore astral-sh/ty#4055
-    check(
-        assert_type(s_o.diff(), pd.Index),  # ty: ignore[type-assertion-failure]
-        pd.Index,
-        float,
-    )
+    check(assert_type(s_o.diff(), pd.Index), pd.Index, float)
     mi = pd.MultiIndex.from_arrays(
         [range(4), pd.date_range("2026-01-30", "2026-02-02")], names=["a", "b"]
     )
-    # TODO: remove the ignore astral-sh/ty#4055
+    check(assert_type(mi.get_level_values("a").diff(), pd.Index), pd.Index, float)
     check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            mi.get_level_values("a").diff(),
-            pd.Index,
-        ),
-        pd.Index,
-        float,
-    )
-    # TODO: remove the ignore astral-sh/ty#4055
-    check(
-        assert_type(  # ty: ignore[type-assertion-failure]
-            mi.get_level_values("b").diff(),
-            pd.Index,
-        ),
+        assert_type(mi.get_level_values("b").diff(), pd.Index),
         pd.Index,
         pd.Timedelta,
         index_to_check_for_type=-1,
@@ -2094,3 +2201,25 @@ def test_diff() -> None:
         def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
             # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
             assert_type(pd.Index([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
+
+
+def test_to_flat_index() -> None:
+    idx = pd.Index([1, 2, 3])
+    check(assert_type(idx.to_flat_index(), "pd.Index[int]"), pd.Index, np.integer)
+
+    dti = pd.date_range("2020-01-01", periods=3)
+    check(
+        assert_type(dti.to_flat_index(), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+        pd.Timestamp,
+    )
+
+    tdi = pd.timedelta_range("1D", periods=3)
+    check(
+        assert_type(tdi.to_flat_index(), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
+
+    mi = pd.MultiIndex.from_tuples([("a", 1), ("b", 2)])
+    check(assert_type(mi.to_flat_index(), pd.Index), pd.Index, tuple)

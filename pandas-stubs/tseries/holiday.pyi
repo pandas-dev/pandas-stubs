@@ -18,6 +18,7 @@ from pandas import (
 
 from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timestamps import Timestamp
+from pandas._typing import DateAndDatetimeLike
 
 def next_monday(dt: datetime) -> datetime: ...
 def next_monday_or_tuesday(dt: datetime) -> datetime: ...
@@ -90,18 +91,25 @@ class AbstractHolidayCalendar:
     @overload
     def holidays(
         self,
-        start: datetime | None = None,
-        end: datetime | None = None,
+        start: DateAndDatetimeLike | str | None = None,
+        end: DateAndDatetimeLike | str | None = None,
         *,
         return_name: Literal[True],
-    ) -> Series: ...
+    ) -> Series[str]: ...
     @overload
     def holidays(
         self,
-        start: datetime | None = None,
-        end: datetime | None = None,
+        start: DateAndDatetimeLike | str | None = None,
+        end: DateAndDatetimeLike | str | None = None,
         return_name: Literal[False] = False,
     ) -> DatetimeIndex: ...
+    @overload
+    def holidays(
+        self,
+        start: DateAndDatetimeLike | str | None,
+        end: DateAndDatetimeLike | str | None,
+        return_name: Literal[True],
+    ) -> Series[str]: ...
     @staticmethod
     def merge_class(
         base: AbstractHolidayCalendar | type[AbstractHolidayCalendar] | list[Holiday],

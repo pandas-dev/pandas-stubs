@@ -124,7 +124,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def nunique(self, dropna: bool = ...) -> Series[int]: ...
     # describe delegates to super() method but here it has keyword-only parameters
     @override
-    def describe(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
+    def describe(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self,
         *,
         percentiles: Iterable[float] | None = ...,
@@ -361,38 +361,39 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def value_counts(
         self: DataFrameGroupBy[ByT, Literal[True]],
-        subset: ListLike | None = ...,
+        subset: ListLike | None = None,
         normalize: Literal[False] = False,
-        sort: bool = ...,
-        ascending: bool = ...,
-        dropna: bool = ...,
+        sort: bool = True,
+        ascending: bool = False,
+        dropna: bool = True,
     ) -> Series[int]: ...
     @overload
     def value_counts(
         self: DataFrameGroupBy[ByT, Literal[True]],
         subset: ListLike | None,
         normalize: Literal[True],
-        sort: bool = ...,
-        ascending: bool = ...,
-        dropna: bool = ...,
+        sort: bool = True,
+        ascending: bool = False,
+        dropna: bool = True,
+    ) -> Series[float]: ...
+    @overload
+    def value_counts(
+        self: DataFrameGroupBy[ByT, Literal[True]],
+        subset: ListLike | None = None,
+        *,
+        normalize: Literal[True],
+        sort: bool = True,
+        ascending: bool = False,
+        dropna: bool = True,
     ) -> Series[float]: ...
     @overload
     def value_counts(
         self: DataFrameGroupBy[ByT, Literal[False]],
-        subset: ListLike | None = ...,
-        normalize: Literal[False] = False,
-        sort: bool = ...,
-        ascending: bool = ...,
-        dropna: bool = ...,
-    ) -> DataFrame: ...
-    @overload
-    def value_counts(
-        self: DataFrameGroupBy[ByT, Literal[False]],
-        subset: ListLike | None,
-        normalize: Literal[True],
-        sort: bool = ...,
-        ascending: bool = ...,
-        dropna: bool = ...,
+        subset: ListLike | None = None,
+        normalize: bool = False,
+        sort: bool = True,
+        ascending: bool = False,
+        dropna: bool = True,
     ) -> DataFrame: ...
     def take(self, indices: TakeIndexer, **kwargs: Any) -> DataFrame: ...
     @overload

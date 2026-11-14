@@ -28,6 +28,7 @@ from pandas._libs.tslibs.offsets import (
     SingleConstructorOffset,
 )
 from pandas._typing import (
+    IntervalClosedType,
     NumpyTimedeltaDtypeArg,
     NumpyTimestampDtypeArg,
     Ordered,
@@ -46,6 +47,12 @@ CategoricalValueT = TypeVar(
     "CategoricalValueT", str, int, float, object, default=object
 )
 CategoricalValueT1 = TypeVar("CategoricalValueT1", str, int, float)
+_ClosedT = TypeVar(
+    "_ClosedT",
+    bound=IntervalClosedType | None,
+    default=IntervalClosedType | None,
+    covariant=True,
+)
 
 class BaseMaskedDtype(ExtensionDtype):
     @property
@@ -94,10 +101,16 @@ class PeriodDtype(PandasExtensionDtype):
     @override
     def na_value(self) -> NaTType: ...
 
-class IntervalDtype(PandasExtensionDtype):
-    def __init__(self, subtype: str | npt.DTypeLike | None = ...) -> None: ...
+class IntervalDtype(PandasExtensionDtype, Generic[_ClosedT]):
+    def __init__(
+        self,
+        subtype: str | npt.DTypeLike | None = None,
+        closed: _ClosedT | None = None,
+    ) -> None: ...
     @property
     def subtype(self) -> np.dtype | None: ...
+    @property
+    def closed(self) -> _ClosedT: ...
 
 class SparseDtype(ExtensionDtype):
     @overload

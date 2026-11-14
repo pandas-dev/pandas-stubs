@@ -15,13 +15,13 @@ from typing import (
     Generic,
     Literal,
     Protocol,
+    Self,
     TypeAlias,
     overload,
     type_check_only,
 )
 
 import numpy as np
-from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.floating import FloatingArray
@@ -53,6 +53,7 @@ from pandas._typing import (
     Label,
     Scalar,
     ScalarT,
+    ShapeT,
     SupportsDType,
     np_1darray,
     np_ndarray,
@@ -136,7 +137,7 @@ ScalarArrayIndexReal: TypeAlias = (
     float
     | Sequence[float | NumpyRealScalar]
     | NumpyRealScalar
-    | npt.NDArray[NumpyRealScalar]
+    | np_ndarray[ShapeT, NumpyRealScalar]
     | ExtensionArray
     | IndexReal
 )
@@ -149,7 +150,7 @@ ScalarArrayIndexComplex: TypeAlias = (
     complex
     | Sequence[complex | NumpyComplexScalar]
     | NumpyComplexScalar
-    | npt.NDArray[NumpyComplexScalar]
+    | np_ndarray[ShapeT, NumpyComplexScalar]
     | ExtensionArray
     | IndexComplex
 )
@@ -211,6 +212,22 @@ Orderables: TypeAlias = OrderableScalars | OrderableTimes
 OrderableScalarT = TypeVar("OrderableScalarT", bound=OrderableScalars)
 OrderableTimesT = TypeVar("OrderableTimesT", bound=OrderableTimes)
 OrderableT = TypeVar("OrderableT", bound=Orderables, default=Any)
+
+@type_check_only
+class SupportsSelfAdd(Protocol[T_co]):
+    def __add__(self, value: Self, /) -> T_co: ...
+
+@type_check_only
+class SupportsSelfSub(Protocol[T_co]):
+    def __sub__(self, x: Self, /) -> T_co: ...
+
+@type_check_only
+class SupportsSelfMul(Protocol[T_co]):
+    def __mul__(self, value: Self, /) -> T_co: ...
+
+@type_check_only
+class SupportsTruedivInt(Protocol[T_co]):
+    def __truediv__(self, value: int, /) -> T_co: ...
 
 @type_check_only
 class ElementOpsMixin(Generic[S2]):

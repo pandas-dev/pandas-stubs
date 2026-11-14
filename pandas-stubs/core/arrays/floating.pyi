@@ -4,6 +4,7 @@ from typing import (
     Literal,
 )
 
+import numpy as np
 from pandas import Index
 from pandas.core.arrays.numeric import (
     NumericArray,
@@ -11,6 +12,7 @@ from pandas.core.arrays.numeric import (
 )
 from typing_extensions import override
 
+from pandas._libs.missing import NAType
 from pandas._typing import (
     InterpolateOptions,
     np_ndarray_bool,
@@ -30,6 +32,8 @@ class FloatingArray(NumericArray):
     ) -> None: ...
     @override
     def __iter__(self) -> Iterator[float]: ...
+    @override
+    def item(self, index: int | None = None) -> np.floating | NAType: ...
     @override
     def interpolate(
         self,

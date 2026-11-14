@@ -18,7 +18,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import (
     DataFrameGroupBy,
@@ -31,30 +30,26 @@ from pandas.core.groupby.indexing import (
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.api import Index
 from pandas.core.resample import (
-    DatetimeIndexResamplerGroupby,
-    PeriodIndexResamplerGroupby,
-    TimedeltaIndexResamplerGroupby,
+    DatetimeIndexResamplerGroupBy,
+    PeriodIndexResamplerGroupBy,
+    TimedeltaIndexResamplerGroupBy,
 )
 from pandas.core.series import Series
 from pandas.core.window import (
-    ExpandingGroupby,
-    ExponentialMovingWindowGroupby,
-    RollingGroupby,
+    ExpandingGroupBy,
+    ExponentialMovingWindowGroupBy,
+    RollingGroupBy,
 )
 from typing_extensions import override
 
-from pandas._libs.lib import NoDefault
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
     AnyArrayLike,
-    Axis,
-    AxisInt,
     CalculationMethod,
     CovariantList,
     Dtype,
     Frequency,
-    IndexLabel,
     IntervalClosedType,
     MaskType,
     NDFrameT,
@@ -75,9 +70,9 @@ from pandas._typing import (
 from pandas.plotting import PlotAccessor
 
 ResamplerGroupBy: TypeAlias = (
-    DatetimeIndexResamplerGroupby[NDFrameT]
-    | PeriodIndexResamplerGroupby[NDFrameT]
-    | TimedeltaIndexResamplerGroupby[NDFrameT]
+    DatetimeIndexResamplerGroupBy[NDFrameT]
+    | PeriodIndexResamplerGroupBy[NDFrameT]
+    | TimedeltaIndexResamplerGroupBy[NDFrameT]
 )
 
 class GroupBy(BaseGroupBy[NDFrameT]):
@@ -218,59 +213,47 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def resample(
         self,
         rule: Frequency | dt.timedelta,
-        how: str | None = ...,
-        fill_method: str | None = ...,
-        limit: int | None = ...,
-        kind: str | None = ...,
-        on: Hashable | None = ...,
+        closed: Literal["left", "right"] | None = None,
+        label: Literal["left", "right"] | None = None,
+        convention: TimestampConvention | None = None,
+        on: Hashable | None = None,
+        origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
+        offset: TimedeltaConvertibleTypes | None = None,
+        group_keys: bool = False,
         *,
-        closed: Literal["left", "right"] | None = ...,
-        label: Literal["left", "right"] | None = ...,
-        axis: Axis = ...,
-        convention: TimestampConvention | None = ...,
-        origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
-        offset: TimedeltaConvertibleTypes | None = ...,
-        group_keys: bool = ...,
-        **kwargs: Any,
+        include_groups: Literal[False] = False,
+        obj: DataFrame | Series | None = None,
+        level: Hashable | None = None,
+        dropna: bool = True,
     ) -> ResamplerGroupBy[NDFrameT]: ...
     @final
     def rolling(
         self,
-        window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None = ...,
+        window: int | dt.timedelta | str | BaseOffset | BaseIndexer,
         min_periods: int | None = None,
         center: bool | None = False,
         win_type: str | None = None,
-        axis: Axis = 0,
         on: str | Index | None = None,
         closed: IntervalClosedType | None = None,
         method: CalculationMethod = "single",
-        *,
-        selection: IndexLabel | None = None,
-    ) -> RollingGroupby[NDFrameT]: ...
+    ) -> RollingGroupBy[NDFrameT]: ...
     @final
     def expanding(
-        self,
-        min_periods: int = ...,
-        axis: Axis = ...,
-        method: CalculationMethod = ...,
-        selection: IndexLabel | None = ...,
-    ) -> ExpandingGroupby[NDFrameT]: ...
+        self, min_periods: int = 1, method: CalculationMethod = "single"
+    ) -> ExpandingGroupBy[NDFrameT]: ...
     @final
     def ewm(
         self,
-        com: float | None = ...,
-        span: float | None = ...,
-        halflife: TimedeltaConvertibleTypes | None = ...,
-        alpha: float | None = ...,
-        min_periods: int | None = ...,
-        adjust: bool = ...,
-        ignore_na: bool = ...,
-        axis: Axis = ...,
-        times: str | np_ndarray_dt | Series | np.timedelta64 | None = ...,
-        method: CalculationMethod = ...,
-        *,
-        selection: IndexLabel | None = ...,
-    ) -> ExponentialMovingWindowGroupby[NDFrameT]: ...
+        com: float | None = None,
+        span: float | None = None,
+        halflife: TimedeltaConvertibleTypes | None = None,
+        alpha: float | None = None,
+        min_periods: int | None = 0,
+        adjust: bool = True,
+        ignore_na: bool = False,
+        times: np_ndarray_dt | Series | None = None,  # pandas-dev/pandas#48842
+        method: CalculationMethod = "single",
+    ) -> ExponentialMovingWindowGroupBy[NDFrameT]: ...
     @final
     def ffill(self, limit: int | None = ...) -> NDFrameT: ...
     @final
@@ -298,35 +281,25 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         ascending: bool = True,
         na_option: str = "keep",
         pct: bool = False,
-        axis: AxisInt | NoDefault = 0,
+        numeric_only: bool = False,
     ) -> NDFrameT: ...
     @final
-    def cumprod(
-        self, axis: Axis | NoDefault = ..., *args: Any, **kwargs: Any
-    ) -> NDFrameT: ...
+    def cumprod(self, numeric_only: bool = False, skipna: bool = True) -> NDFrameT: ...
     @final
-    def cumsum(
-        self, axis: Axis | NoDefault = ..., *args: Any, **kwargs: Any
-    ) -> NDFrameT: ...
+    def cumsum(self, numeric_only: bool = False, skipna: bool = True) -> NDFrameT: ...
     @final
     def cummin(
-        self,
-        axis: AxisInt | NoDefault = ...,
-        numeric_only: bool = False,
-        **kwargs: Any,
+        self, numeric_only: bool = False, skipna: bool = True, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cummax(
-        self,
-        axis: AxisInt | NoDefault = ...,
-        numeric_only: bool = False,
-        **kwargs: Any,
+        self, numeric_only: bool = False, skipna: bool = True, **kwargs: Any
     ) -> NDFrameT: ...
     @overload
     def shift(
         self,
         periods: int | Sequence[int] = 1,
-        axis: Axis | NoDefault = 0,
+        freq: None = None,
         fill_value: Scalar | None = None,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
@@ -335,20 +308,11 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
-        axis: Axis | NoDefault = 0,
-        suffix: str | None = ...,
-    ) -> NDFrameT: ...
-    @overload
-    def shift(
-        self,
-        periods: int | Sequence[int] = 1,
-        freq: None = None,
-        axis: Axis | NoDefault = 0,
-        fill_value: None = None,
+        *,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
-    def diff(self, periods: int = 1, axis: AxisInt | NoDefault = 0) -> NDFrameT: ...
+    def diff(self, periods: int = 1) -> NDFrameT: ...
     @final
     def pct_change(
         self,

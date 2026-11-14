@@ -9,6 +9,8 @@ from pandas.core.series import Series
 import pyarrow as pa
 from typing_extensions import override
 
+from pandas._libs.tslibs.nattype import NaTType
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.period import (
     Period,
     PeriodMixin,
@@ -37,6 +39,8 @@ class PeriodArray(DatelikeOps, PeriodMixin):
         dtype: PeriodDtype | None = None,
         copy: bool = False,
     ) -> None: ...
+    @override
+    def item(self, index: int | None = None) -> Period | NaTType: ...
     @property
     @override
     def dtype(self) -> PeriodDtype: ...
@@ -47,6 +51,10 @@ class PeriodArray(DatelikeOps, PeriodMixin):
     def __arrow_array__(
         self, type: DtypeArg | None = None
     ) -> pa.ExtensionArray[Any]: ...
+    @property
+    def freq(self) -> BaseOffset: ...
+    @property
+    def freqstr(self) -> str: ...
     @property
     def year(self) -> np_1darray_int64: ...
     @property
@@ -88,10 +96,10 @@ class PeriodArray(DatelikeOps, PeriodMixin):
     def is_leap_year(self) -> np_1darray_bool: ...
     @property
     @override
-    def start_time(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def start_time(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-property-override]
     @property
     @override
-    def end_time(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def end_time(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-property-override]
     def to_timestamp(
         self, freq: PeriodFrequency | None = None, how: str = ...
     ) -> DatetimeArray: ...

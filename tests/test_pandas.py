@@ -3,6 +3,7 @@
 # TODO: pandas-dev/pandas#55023
 from __future__ import annotations
 
+from contextlib import AbstractContextManager
 import datetime as dt
 import random
 from typing import (
@@ -10,6 +11,7 @@ from typing import (
     Any,
     Never,
     assert_type,
+    cast,
 )
 
 import numpy as np
@@ -22,12 +24,16 @@ from pandas.api.typing import (
 )
 from pandas.api.typing.aliases import Scalar
 from pandas.core.arrays.integer import IntegerArray
+from pandas.core.generic import NDFrame
 import pandas.util as pdutil
 import pytest
+
+from pandas.errors import Pandas4Warning
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 from tests._typing import (
     np_1darray,
@@ -110,34 +116,55 @@ def test_types_to_datetime() -> None:
     )
 
 
+def pytest_warns_concat_none() -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning,
+        "Passing None in the objects to concat is deprecated",
+        lower="3.1.99",
+    )
+
+
 def test_types_concat_none() -> None:
     """Test concatenation with None values."""
     series = pd.Series([7, -5, 10])
     df = pd.DataFrame({"a": [7, -5, 10]})
 
-    check(
-        assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
-    )
-    check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
-    )
-    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat([None, series]), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame),
+            pd.DataFrame,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
-    check(
-        assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
-        pd.Series,
-        np.integer,
-    )
-    check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
+    with pytest_warns_concat_none():
+        check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_concat_none():
+        check(
+            assert_type(
+                pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+    with pytest_warns_concat_none():
+        check(
+            assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
+            pd.DataFrame,
+        )
 
     def _0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(pd.concat({"a": None}), Never)
@@ -592,6 +619,266 @@ def test_isna() -> None:
         assert_type(nullable3, NAType | None)
 
 
+def test_isna_object() -> None:
+    check(
+        assert_type(
+            pd.isna(object()),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(object()),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, None)),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, None)),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, np.nan)),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, np.nan)),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, pd.DataFrame({"a": [1.0, np.nan]}))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, pd.DataFrame({"a": [1.0, np.nan]}))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, pd.Series([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, pd.Series([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.Series,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, pd.Index([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, pd.Index([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, pd.array([1, None], dtype="Int64"))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, pd.array([1, None], dtype="Int64"))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(cast(object, np.array([[1.0, np.nan]]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(cast(object, np.array([[1.0, np.nan]]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+
+def test_notna_object() -> None:
+    class PlainObject:
+        pass
+
+    check(
+        assert_type(
+            pd.notna(PlainObject),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.notnull(PlainObject()),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        bool,
+    )
+    check(
+        assert_type(
+            pd.notna(cast(object, pd.Series([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.notnull(cast(object, pd.DataFrame({"a": [1.0, np.nan]}))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_missing_array_protocol() -> None:
+    class ArrayObject:
+        def __init__(self, values: np_ndarray) -> None:
+            super().__init__()
+            self.values = values
+
+        def __array__(
+            self, dtype: np.dtype[Any] | None = None, copy: bool | None = None
+        ) -> np_ndarray:
+            return np.array(self.values, dtype=dtype, copy=copy)
+
+    check(
+        assert_type(
+            pd.isna(ArrayObject(np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(ArrayObject(np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+
+    check(
+        assert_type(
+            pd.isna(ArrayObject(np.array(1.0))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np.bool_,
+    )
+    check(
+        assert_type(
+            pd.isnull(ArrayObject(np.array(1.0))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np.bool_,
+    )
+
+    check(
+        assert_type(
+            pd.isna(ArrayObject(np.array(None, dtype=object))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.isnull(ArrayObject(np.array(None, dtype=object))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.notna(ArrayObject(np.array([1.0, np.nan]))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np_ndarray_bool,
+    )
+    check(
+        assert_type(
+            pd.notnull(ArrayObject(np.array(None, dtype=object))),
+            "bool | np.bool_ | np_ndarray_bool | pd.Series[bool] | pd.DataFrame",
+        ),
+        np.bool_,
+    )
+
+
+def test_isnull_narrowing() -> None:
+    values: list[str | NAType | NaTType | None] = ["value", None, pd.NA, pd.NaT]
+    value = values[0]
+    if pd.isnull(value):
+        check(assert_type(value, NAType | NaTType | None), object)
+    else:
+        check(assert_type(value, str), str)
+
+
+def test_notnull_narrowing() -> None:
+    values: list[str | NAType | NaTType | None] = ["value", None, pd.NA, pd.NaT]
+    value = values[0]
+    if pd.notnull(value):
+        check(assert_type(value, str), str)
+    else:
+        check(assert_type(value, NAType | NaTType | None), object)
+
+
 # GH 55
 def test_read_xml() -> None:
     if TYPE_CHECKING:  # Skip running pytest
@@ -635,7 +922,7 @@ def test_unique() -> None:
         np.datetime64,
     )
 
-    zoned_timestamps = [ts.tz_localize("US/Eastern") for ts in unzoned_timestamps]
+    zoned_timestamps = [ts.tz_localize("America/New_York") for ts in unzoned_timestamps]
     check(
         assert_type(
             pd.unique(pd.Series(zoned_timestamps)), np_1darray | ExtensionArray
@@ -766,6 +1053,10 @@ def test_to_numeric_scalar() -> None:
     check(assert_type(pd.to_numeric(1, downcast="unsigned"), float), int)
     check(assert_type(pd.to_numeric(1, downcast="float"), float), int)
     check(assert_type(pd.to_numeric(1, downcast="integer"), float), int)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = pd.to_numeric(pd.Period("2020-01"))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        _1 = pd.to_numeric(pd.Interval(0, 1))  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_to_numeric_array_like() -> None:
@@ -2603,3 +2894,17 @@ def test_argmin_and_argmax_return() -> None:
     i1 = df.a.abs().argmax()
     check(assert_type(i, np.int64), np.int64)
     check(assert_type(i1, np.int64), np.int64)
+
+
+def _ndframe_len(obj: NDFrame) -> None:
+    check(assert_type(len(obj), int), int)
+
+
+def test_ndframe_len() -> None:
+    """`len()` works on `NDFrame`, the base of `Series` and `DataFrame` (#1986)."""
+    s = pd.Series([1, 2, 3])
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(assert_type(len(s), int), int)
+    check(assert_type(len(df), int), int)
+    _ndframe_len(s)
+    _ndframe_len(df)

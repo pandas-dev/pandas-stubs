@@ -26,6 +26,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_dt_alias_pandas4,
 )
 from tests._typing import (
     np_1darray,
@@ -71,7 +72,7 @@ def test_types_init() -> None:
     check(assert_type(pd.Timestamp(1515590000.1, unit="s"), pd.Timestamp), pd.Timestamp)
     check(
         assert_type(
-            pd.Timestamp(1515590000.1, unit="s", tz="US/Pacific"), pd.Timestamp
+            pd.Timestamp(1515590000.1, unit="s", tz="America/Los_Angeles"), pd.Timestamp
         ),
         pd.Timestamp,
     )
@@ -85,7 +86,7 @@ def test_types_init() -> None:
     )
     check(
         assert_type(
-            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="US/Pacific"),
+            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="America/Los_Angeles"),
             pd.Timestamp,
         ),
         pd.Timestamp,
@@ -338,33 +339,15 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.microsecond, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.nanosecond, "pd.Series[int]"), pd.Series, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(s0.dt.dayofweek, "pd.Series[int]"), pd.Series, np.integer)
 
     check(assert_type(s0.dt.day_of_week, "pd.Series[int]"), pd.Series, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(s0.dt.weekday, "pd.Series[int]"), pd.Series, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(s0.dt.dayofyear, "pd.Series[int]"), pd.Series, np.integer)
 
     check(assert_type(s0.dt.day_of_year, "pd.Series[int]"), pd.Series, np.integer)
@@ -377,13 +360,7 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.is_year_end, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s0.dt.is_leap_year, "pd.Series[bool]"), pd.Series, np.bool_)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, np.integer)
 
     check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, np.integer)
@@ -392,7 +369,6 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "return a BaseOffset object instead of a string from Series.dt.freq",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(assert_type(s0.dt.freq, str | None), str)
@@ -420,13 +396,16 @@ def test_series_dt_accessors() -> None:
     )
     check(
         assert_type(
-            s0.dt.tz_localize(pytz.timezone("US/Eastern")), "pd.Series[pd.Timestamp]"
+            s0.dt.tz_localize(pytz.timezone("America/New_York")),
+            "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(s0_local.dt.tz_convert("EST"), "pd.Series[pd.Timestamp]"),
+        assert_type(
+            s0_local.dt.tz_convert("America/Panama"), "pd.Series[pd.Timestamp]"
+        ),
         pd.Series,
         pd.Timestamp,
     )
@@ -447,7 +426,7 @@ def test_series_dt_accessors() -> None:
     )
     check(
         assert_type(
-            s0_local.dt.tz_convert(pytz.timezone("US/Eastern")),
+            s0_local.dt.tz_convert(pytz.timezone("America/New_York")),
             "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
@@ -699,33 +678,15 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.microsecond, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.nanosecond, "pd.Index[int]"), pd.Index, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.int32)
 
     check(assert_type(i0.day_of_week, "pd.Index[int]"), pd.Index, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.int32)
 
     check(assert_type(i0.day_of_year, "pd.Index[int]"), pd.Index, np.int32)
@@ -738,18 +699,15 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_year_end, np_1darray_bool), np_1darray_bool)
     check(assert_type(i0.is_leap_year, np_1darray_bool), np_1darray_bool)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.int32)
 
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.tz, dt.tzinfo | None), type(None))
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
+    check(assert_type(i0.asi8, np_1darray_int64), np_1darray_int64, np.int64)
+    check(assert_type(i0.mean(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(i0.mean(skipna=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(
@@ -761,13 +719,18 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(ilocal, pd.DatetimeIndex), pd.DatetimeIndex)
     check(assert_type(i0.tz_localize(pytz.UTC), pd.DatetimeIndex), pd.DatetimeIndex)
     check(
-        assert_type(i0.tz_localize(pytz.timezone("US/Central")), pd.DatetimeIndex),
+        assert_type(i0.tz_localize(pytz.timezone("America/Chicago")), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
-    check(assert_type(ilocal.tz_convert("EST"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(ilocal.tz_convert("America/Panama"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
     check(assert_type(ilocal.tz_convert(pytz.UTC), pd.DatetimeIndex), pd.DatetimeIndex)
     check(
-        assert_type(ilocal.tz_convert(pytz.timezone("US/Pacific")), pd.DatetimeIndex),
+        assert_type(
+            ilocal.tz_convert(pytz.timezone("America/Los_Angeles")), pd.DatetimeIndex
+        ),
         pd.DatetimeIndex,
     )
     check(assert_type(ilocal.tz, dt.tzinfo | None), dt.tzinfo)
@@ -843,6 +806,9 @@ def test_timedeltaindex_accessors() -> None:
     check(assert_type(i0.as_unit("ms"), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(i0.as_unit("us"), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(i0.as_unit("ns"), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.asi8, np_1darray_int64), np_1darray_int64, np.int64)
+    check(assert_type(i0.mean(), pd.Timedelta), pd.Timedelta)
+    check(assert_type(i0.mean(skipna=False), pd.Timedelta), pd.Timedelta)
 
 
 def test_periodindex_accessors() -> None:
@@ -858,48 +824,25 @@ def test_periodindex_accessors() -> None:
     check(assert_type(i0.minute, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.second, "pd.Index[int]"), pd.Index, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.dayofweek, "pd.Index[int]"), pd.Index, np.integer)
 
     check(assert_type(i0.day_of_week, "pd.Index[int]"), pd.Index, np.integer)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.weekday, "pd.Index[int]"), pd.Index, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.integer)
 
     check(assert_type(i0.day_of_year, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.quarter, "pd.Index[int]"), pd.Index, np.integer)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.integer)
 
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
+    check(assert_type(i0.asi8, np_1darray_int64), np_1darray_int64, np.int64)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
     check(assert_type(i0.asfreq("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(assert_type(i0.end_time, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
@@ -1255,10 +1198,10 @@ def test_index_types_to_numpy() -> None:
 
 def test_to_timedelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated"):
         check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated"):
         check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
@@ -2044,7 +1987,7 @@ def test_timestamp_to_list_add() -> None:
     tslist = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
     sseries = pd.Series(tslist)
-    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated"):
         check(
             assert_type(sseries + pd.Timedelta(1, "d"), "pd.Series[pd.Timestamp]"),
             pd.Series,

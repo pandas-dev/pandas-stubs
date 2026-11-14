@@ -38,6 +38,10 @@ def test_option_tools() -> None:
     check(assert_type(pd.get_option("display.width"), Any), int)
     with pd.option_context("display.width", 120):
         assert pd.get_option("display.width") == 120
+    with pd.option_context({"display.width": 100}):
+        assert pd.get_option("display.width") == 100
+    with pd.option_context({"display.width": 100, "display.precision": 3}):
+        assert pd.get_option("display.precision") == 3
 
 
 def test_set_option_overload() -> None:

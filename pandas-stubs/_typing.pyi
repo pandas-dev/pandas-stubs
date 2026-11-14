@@ -137,10 +137,11 @@ _IndexIterScalar: TypeAlias = (
     | Timedelta
 )
 # This is wider than what is in pandas
-Scalar: TypeAlias = (
-    _IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
-)
+ScalarNoComplex: TypeAlias = _IndexIterScalar | np.integer | np.floating
+Scalar: TypeAlias = ScalarNoComplex | complex | np.complexfloating
 ScalarOrNA: TypeAlias = Scalar | NAType | NaTType | None
+ExtScalar: TypeAlias = Scalar | np.bool_ | Period | Interval
+ExtScalarOrNA: TypeAlias = ExtScalar | NAType | NaTType | None
 IntStrT = TypeVar("IntStrT", int, str)
 
 # timestamp and timedelta convertible types
@@ -162,6 +163,7 @@ TimestampNonexistent: TypeAlias = (
 TimedeltaConvertibleTypes: TypeAlias = (
     Timedelta | datetime.timedelta | np.timedelta64 | np.integer | float | str
 )
+NaTStrings: TypeAlias = Literal["", "NaT", "nat", "NAT", "nan", "NaN", "NAN"]
 
 Timezone: TypeAlias = str | tzinfo  # Not used in pandas or the stubs
 
@@ -602,7 +604,8 @@ ValueKeyFunc: TypeAlias = Callable[[Series], Series | AnyArrayLike] | None
 IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
-# More specific than what is in pandas
+# A string `func` resolves via getattr (pandas.core.apply._apply_str), so it
+# stays an open `str`; GroupBy.transform uses the closed TransformReductionListType.
 AggFuncTypeBase: TypeAlias = Callable[P, Any] | str | np.ufunc
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase[P]]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
@@ -623,6 +626,47 @@ AggFuncType: TypeAlias = (
     AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]] | AggFuncTypeDict[HashableT, P]
 )
 
+# String `func` names a window method (pandas/core/window/{rolling,ewm}.py), a
+# closed set. EWM has only EWMAggName and rejects callables.
+EWMAggName: TypeAlias = Literal["corr", "cov", "mean", "std", "sum", "var"]
+RollingOnlyAggName: TypeAlias = Literal[
+    "count",
+    "first",
+    "kurt",
+    "last",
+    "max",
+    "median",
+    "min",
+    "nunique",
+    "quantile",
+    "rank",
+    "sem",
+    "skew",
+]
+# Scalar `func` for Rolling/Expanding.aggregate. Weighted Window inherits it
+# but only has sum/mean/var/std.
+WindowAggFuncTypeBase: TypeAlias = (
+    Callable[P, Any] | EWMAggName | RollingOnlyAggName | np.ufunc
+)
+# List/dict elements stay open `str` so stored variables still match;
+# SequenceNotStr keeps a bare `str` out of the list branch.
+WindowAggFuncTypeSeriesToFrame: TypeAlias = (
+    SequenceNotStr[AggFuncTypeBase[P]] | AggFuncTypeDictSeries[HashableT, P]
+)
+WindowAggFuncTypeFrame: TypeAlias = (
+    WindowAggFuncTypeBase[P]
+    | SequenceNotStr[AggFuncTypeBase[P]]
+    | AggFuncTypeDictFrame[HashableT, P]
+)
+# List/dict forms of EWM.aggregate: list/tuple, not SequenceNotStr, because
+# mypy does not check SequenceNotStr elements of an inline list (GH #1609).
+EWMAggFuncTypeSeriesToFrame: TypeAlias = (
+    list[str] | tuple[str, ...] | Mapping[HashableT, str]
+)
+EWMAggFuncTypeFrame: TypeAlias = (
+    EWMAggName | list[str] | tuple[str, ...] | Mapping[HashableT, str | Sequence[str]]
+)
+
 # Not used in stubs
 # AggObjType = Union[
 #     "Series",
@@ -639,11 +683,6 @@ AnyStr_co = TypeVar("AnyStr_co", str, bytes, covariant=True)
 AnyStr_contra = TypeVar("AnyStr_contra", str, bytes, contravariant=True)
 
 class BaseBuffer(Protocol):
-    @property
-    def mode(self) -> str:
-        # for _get_filepath_or_buffer
-        ...
-
     def seek(self, offset: int, whence: int = ..., /) -> int:
         # with one argument: gzip.GzipFile, bz2.BZ2File
         # with two arguments: zip.ZipFile, read_sas
@@ -976,6 +1015,7 @@ np_1darray_float: TypeAlias = np_1darray[np.floating]
 np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
+np_2darray_object: TypeAlias = np_2darray[np.object_]
 
 NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
@@ -1147,6 +1187,14 @@ ReplaceValue: TypeAlias = (
     | Mapping[HashableT0, ScalarT0]
     | Series
     | None
+)
+
+_IndexReplaceScalar: TypeAlias = ScalarOrNA | PandasScalar | Pattern[str]
+IndexReplaceValue: TypeAlias = (
+    _IndexReplaceScalar
+    | Sequence[_IndexReplaceScalar]
+    | Mapping[HashableT0, _IndexReplaceScalar]
+    | Series
 )
 
 JsonFrameOrient: TypeAlias = Literal[

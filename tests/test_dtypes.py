@@ -22,7 +22,10 @@ from pandas.api.typing import (
     NaTType,
     NAType,
 )
-from pandas.api.typing.aliases import Scalar
+from pandas.api.typing.aliases import (
+    IntervalClosedType,
+    Scalar,
+)
 from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
@@ -62,9 +65,13 @@ def test_datetimetz_dtype() -> None:
     assert assert_type(dttz_dt.name, str) == "datetime64[ns, UTC]"
     check(assert_type(dttz_dt.na_value, NaTType), NaTType)
 
-    assert assert_type(pd.DatetimeTZDtype("s", "PRC").unit, TimeUnit) == "s"
-    assert assert_type(pd.DatetimeTZDtype("ms", "CST6CDT").unit, TimeUnit) == "ms"
-    assert assert_type(pd.DatetimeTZDtype("us", "HST").unit, TimeUnit) == "us"
+    assert assert_type(pd.DatetimeTZDtype("s", "Asia/Shanghai").unit, TimeUnit) == "s"
+    assert (
+        assert_type(pd.DatetimeTZDtype("ms", "America/Chicago").unit, TimeUnit) == "ms"
+    )
+    assert (
+        assert_type(pd.DatetimeTZDtype("us", "Pacific/Honolulu").unit, TimeUnit) == "us"
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         pd.DatetimeTZDtype()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
@@ -91,7 +98,6 @@ def test_period_dtype() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         "is deprecated for offsets that are not DateOffse",
-        lower="3.0.99",
         upper="3.99.99",
     ):
         check(
@@ -120,6 +126,89 @@ def test_interval_dtype() -> None:
     check(
         assert_type(pd.IntervalDtype(np.datetime64), pd.IntervalDtype), pd.IntervalDtype
     )
+    check(
+        assert_type(
+            pd.IntervalDtype("int64", closed="left"),
+            "pd.IntervalDtype[Literal['left']]",
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("int64", closed="right"),
+            "pd.IntervalDtype[Literal['right']]",
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("int64", closed="both"),
+            "pd.IntervalDtype[Literal['both']]",
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("int64", closed="neither"),
+            "pd.IntervalDtype[Literal['neither']]",
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed=None), pd.IntervalDtype),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("interval[int64, right]"),
+            pd.IntervalDtype,
+        ),
+        pd.IntervalDtype,
+    )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed="left").closed, Literal["left"]),
+        str,
+    )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed="right").closed, Literal["right"]),
+        str,
+    )
+    check(
+        assert_type(pd.IntervalDtype("int64", closed="both").closed, Literal["both"]),
+        str,
+    )
+    check(
+        assert_type(
+            pd.IntervalDtype("int64", closed="neither").closed,
+            Literal["neither"],
+        ),
+        str,
+    )
+    check(assert_type(i_dt.closed, IntervalClosedType | None), type(None))
+    dt = pd.IntervalDtype("int64", closed="both")
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(
+                [0, 1, 2],
+                closed="both",
+                dtype=dt,
+            ),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.array(
+                [pd.Interval(0, 1, closed="both")],
+                dtype=dt,
+            ),
+            "pd.arrays.IntervalArray",
+        ),
+        pd.arrays.IntervalArray,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.IntervalDtype("int64", closed="bad")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
 
 def test_int64_dtype() -> None:

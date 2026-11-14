@@ -18,13 +18,16 @@ from pandas._typing import (
     ArrayLike,
     AstypeArg,
     AxisInt,
+    DropKeep,
     Dtype,
     InterpolateOptions,
     ListLike,
+    NaPosition,
     Renamer,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
+    SortKind,
     TakeIndexer,
     np_1darray,
     np_1darray_bool,
@@ -72,12 +75,21 @@ class ExtensionArray:
     def argsort(
         self, *, ascending: bool = ..., kind: str = ..., **kwargs: Any
     ) -> np_1darray: ...
+    def count(self) -> int: ...
+    def sort(
+        self,
+        *,
+        ascending: bool = True,
+        kind: SortKind = "quicksort",
+        na_position: NaPosition = "last",
+    ) -> None: ...
     def fillna(
         self, value: object | ArrayLike, limit: int | None = None, copy: bool = True
     ) -> Self: ...
     def dropna(self) -> Self: ...
     def shift(self, periods: int = 1, fill_value: object | None = None) -> Self: ...
     def unique(self) -> Self: ...
+    def duplicated(self, keep: DropKeep = "first") -> np_1darray_bool: ...
     @overload
     def searchsorted(
         self,
@@ -112,6 +124,7 @@ class ExtensionArray:
     def view(self, dtype: Dtype) -> ArrayLike: ...
     def ravel(self, order: Literal["C", "F", "A", "K"] | None = "C") -> Self: ...
     def tolist(self) -> list[Any]: ...
+    def item(self, index: int | None = None) -> Any: ...
     def _reduce(
         self, name: str, *, skipna: bool = True, keepdims: bool = False, **kwargs: Any
     ) -> object: ...

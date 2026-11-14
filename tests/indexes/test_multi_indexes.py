@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Hashable
 from typing import assert_type
 
 import numpy as np
@@ -8,6 +9,7 @@ from pandas.api.typing import FrozenList
 
 from tests import check
 from tests._typing import (
+    np_1darray,
     np_1darray_bool,
     np_1darray_int8,
     np_1darray_intp,
@@ -18,6 +20,13 @@ def test_multiindex_unique() -> None:
     mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]])
     check(assert_type(mi.unique(), pd.MultiIndex), pd.MultiIndex)
     check(assert_type(mi.unique(level=0), pd.Index), pd.Index)
+
+
+def test_multiindex_array() -> None:
+    mi = pd.MultiIndex.from_tuples([(1, "a"), (2, "b")])
+    check(assert_type(mi.__array__(), np_1darray), np_1darray, tuple)
+    check(assert_type(mi.__array__(dtype="O"), np_1darray), np_1darray, tuple)
+    check(assert_type(mi.__array__(copy=True), np_1darray), np_1darray, tuple)
 
 
 def test_multiindex_set_levels() -> None:
@@ -90,3 +99,8 @@ def test_multiindex_get_loc_level() -> None:
     res_0, res_1 = mi.get_loc_level(1, level=0)
     check(assert_type(res_0, int | slice | np_1darray_bool), np_1darray_bool)
     check(assert_type(res_1, pd.Index), pd.Index)
+
+
+def test_multiindex_to_list() -> None:
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]])
+    check(assert_type(mi.to_list(), list[tuple[Hashable, ...]]), list, tuple)

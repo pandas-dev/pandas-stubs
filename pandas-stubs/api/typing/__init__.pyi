@@ -4,22 +4,20 @@ from pandas.core.groupby import (
     SeriesGroupBy as SeriesGroupBy,
 )
 from pandas.core.indexes.frozen import FrozenList as FrozenList
-
-# TODO: these six *Groupby names are renamed to *GroupBy in pandas 3.1 (pandas-dev/pandas-stubs#1948)
 from pandas.core.resample import (
-    DatetimeIndexResamplerGroupby as DatetimeIndexResamplerGroupby,
-    PeriodIndexResamplerGroupby as PeriodIndexResamplerGroupby,
+    DatetimeIndexResamplerGroupBy as DatetimeIndexResamplerGroupBy,
+    PeriodIndexResamplerGroupBy as PeriodIndexResamplerGroupBy,
     Resampler as Resampler,
-    TimedeltaIndexResamplerGroupby as TimedeltaIndexResamplerGroupby,
+    TimedeltaIndexResamplerGroupBy as TimedeltaIndexResamplerGroupBy,
     TimeGrouper as TimeGrouper,
 )
 from pandas.core.window import (
     Expanding as Expanding,
-    ExpandingGroupby as ExpandingGroupby,
+    ExpandingGroupBy as ExpandingGroupBy,
     ExponentialMovingWindow as ExponentialMovingWindow,
-    ExponentialMovingWindowGroupby as ExponentialMovingWindowGroupby,
+    ExponentialMovingWindowGroupBy as ExponentialMovingWindowGroupBy,
     Rolling as Rolling,
-    RollingGroupby as RollingGroupby,
+    RollingGroupBy as RollingGroupBy,
     Window as Window,
 )
 

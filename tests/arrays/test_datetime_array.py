@@ -25,12 +25,11 @@ from pandas.core.arrays.string_ import BaseStringArray
 import pytest
 
 from pandas._libs.tslibs.nattype import NaTType
-from pandas.errors import Pandas4Warning
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
+    pytest_warns_dt_alias_pandas4,
 )
 from tests._typing import (
     NumpyTimestampDtypeArg,
@@ -276,31 +275,13 @@ def test_properties() -> None:
     check(assert_type(arr.microsecond, np_1darray_int32), np_1darray_int32, np.int32)
     check(assert_type(arr.nanosecond, np_1darray_int32), np_1darray_int32, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(arr.dayofweek, np_1darray_int32), np_1darray_int32, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(arr.weekday, np_1darray_int32), np_1darray_int32, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(arr.dayofyear, np_1darray_int32), np_1darray_int32, np.int32)
 
     check(assert_type(arr.day_of_week, np_1darray_int32), np_1darray_int32, np.int32)
@@ -309,13 +290,7 @@ def test_properties() -> None:
     check(assert_type(arr.quarter, np_1darray_int32), np_1darray_int32, np.int32)
     check(assert_type(arr.days_in_month, np_1darray_int32), np_1darray_int32, np.int32)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(
             assert_type(arr.daysinmonth, np_1darray_int32), np_1darray_int32, np.int32
         )
@@ -365,3 +340,11 @@ def test_constructor() -> None:
     check(assert_type(pd.array(pd.Index([dt])), DatetimeArray), DatetimeArray)
 
     check(assert_type(pd.array(pd.Series([dt])), DatetimeArray), DatetimeArray)
+
+
+def test_item() -> None:
+    arr = pd.array([pd.Timestamp("2026-01-01")])
+    check(assert_type(arr.item(), pd.Timestamp | NaTType), pd.Timestamp)
+    check(assert_type(arr.item(0), pd.Timestamp | NaTType), pd.Timestamp)
+    nat = pd.array([pd.Timestamp("2026-01-01"), pd.NaT])[1:]
+    check(assert_type(nat.item(), pd.Timestamp | NaTType), NaTType)

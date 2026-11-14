@@ -25,21 +25,35 @@ def test_types_select() -> None:
 
 
 def test_types_iloc_iat() -> None:
-    s = pd.Series(data={"row1": 1, "row2": 2})
+    s = pd.Series([1, 2], index=["row1", "row2"])
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
-    s.iat[0]
+    check(assert_type(s.iat[0], int), np.integer)
     s.iat[0] = 999
     s2.loc[0]
     s2.iat[0]
     s2.iat[0] = None
 
+    period_series = pd.Series([pd.Period("2020-01")])
+    check(assert_type(period_series.iat[0], pd.Period), pd.Period)
+    interval_series = pd.Series([pd.Interval(0, 1)])
+    check(assert_type(interval_series.iat[0], "pd.Interval[int]"), pd.Interval)
+    missing_series = pd.Series([None], dtype=object)
+    check(assert_type(missing_series.iloc[0], Any), type(None))
+    check(assert_type(missing_series.iat[0], Any), type(None))
+
     if TYPE_CHECKING_INVALID_USAGE:
         s.iat[0, 0]  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        st = {"a"}
+        dc = {"a": 1}
+        _4 = s2.iloc[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _5 = s2.iloc[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        s2.iloc[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        s2.iloc[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
 
 
 def test_types_loc_at() -> None:
-    s = pd.Series(data={"row1": 1, "row2": 2})
+    s = pd.Series([1, 2], index=["row1", "row2"])
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
     s.at["row1"]
@@ -48,6 +62,38 @@ def test_types_loc_at() -> None:
     s2.at[1]
     s2.at[1] = 99
 
+    check(assert_type(s.at["row1"], int), np.integer)
+
+    period_series = pd.Series([pd.Period("2020-01")])
+    check(assert_type(period_series.at[0], pd.Period), pd.Period)
+    interval_series = pd.Series([pd.Interval(0, 1)])
+    check(assert_type(interval_series.at[0], "pd.Interval[int]"), pd.Interval)
+    missing_series = pd.Series([None], dtype=object)
+    check(assert_type(missing_series.at[0], Any), type(None))
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        st = {"a"}
+        dc = {"a": 1}
+        _2 = s2.loc[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _3 = s2.loc[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        s2.loc[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        s2.loc[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+
+
+def test_scalar_indexers_preserve_series_type() -> None:
+    # GH 2080
+    strings = pd.Series(["value"], index=["row"])
+    check(assert_type(strings.at["row"], str), str)
+    check(assert_type(strings.iat[0], str), str)
+
+    timestamps = pd.Series([pd.Timestamp("2026-01-01")])
+    check(assert_type(timestamps.at[0], pd.Timestamp), pd.Timestamp)
+    check(assert_type(timestamps.iat[0], pd.Timestamp), pd.Timestamp)
+
+    multiindex = pd.MultiIndex.from_tuples([("row", 1)])
+    indexed = pd.Series(["value"], index=multiindex)
+    check(assert_type(indexed.at["row", 1], str), str)
+
 
 def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
@@ -55,6 +101,14 @@ def test_types_getitem() -> None:
     s2 = pd.Series([0, 1, 2, 3])
     check(assert_type(s2[0], int), np.integer)
     check(assert_type(s[:2], pd.Series), pd.Series)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        st = {"a"}
+        dc = {"a": 1}
+        _0 = s2[st]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        _1 = s2[dc]  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue, reportUnknownVariableType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
+        s2[st] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
+        s2[dc] = 1  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
 
 
 def test_types_getitem_by_timestamp() -> None:
@@ -141,6 +195,24 @@ def test_series_multiindex_getitem() -> None:
         [1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["x", "y"]])
     )
     _s1: pd.Series = s["a", :]
+
+
+def test_iloc_getitem_list() -> None:
+    # GH 1971
+    indices = [0, 1, 2, 3]
+
+    values_s = pd.Series(np.arange(10), name="a")
+
+    check(assert_type(values_s.iloc[indices], pd.Series), pd.Series)
+
+
+def test_iloc_setitem_list() -> None:
+    # GH 1971
+    indices = [0, 1, 2, 3]
+
+    values_s = pd.Series(np.arange(10), name="a")
+
+    values_s.iloc[indices] = -1
 
 
 def test_iloc_getitem_ndarray() -> None:

@@ -7,6 +7,7 @@ from typing import (
     Literal,
     assert_type,
 )
+from zoneinfo import ZoneInfo
 
 import dateutil.tz
 import numpy as np
@@ -22,10 +23,10 @@ from pandas._libs.tslibs.timedeltas import Components
 from pandas.errors import Pandas4Warning
 
 from tests import (
-    NP_GTE_25,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_dt_alias_pandas4,
 )
 from tests._typing import (
     np_1darray_bool,
@@ -471,9 +472,9 @@ def test_timedelta_construction() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # These should be type errors now as they are not in TimeDeltaUnitChoices
-        pd.Timedelta(1, unit="Y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        pd.Timedelta(1, unit="y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        pd.Timedelta(1, unit="M")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.Timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.Timedelta(1, unit="y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.Timedelta(1, unit="M")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
@@ -509,26 +510,8 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
-    # TODO: pandas-dev/pandas#66608 remove the conditional warning
-    if NP_GTE_25:
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            r"The 'generic' unit for NumPy timedelta is deprecated",
-            lower="3.0.0",
-            upper="3.0.99",
-        ):
-            check(assert_type(td.view(np.int64), object), np.int64)
-
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            r"The 'generic' unit for NumPy timedelta is deprecated",
-            lower="3.0.0",
-            upper="3.0.99",
-        ):
-            check(assert_type(td.view("i8"), object), np.int64)
-    else:
-        check(assert_type(td.view(np.int64), object), np.int64)
-        check(assert_type(td.view("i8"), object), np.int64)
+    check(assert_type(td.view(np.int64), object), np.int64)
+    check(assert_type(td.view("i8"), object), np.int64)
 
     check(assert_type(td.as_unit("s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.as_unit("ms"), pd.Timedelta), pd.Timedelta)
@@ -943,26 +926,30 @@ def test_timedelta_cmp_array() -> None:
         assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
+    # TODO: remove these ignores once the upstream Any comparison fix is released.
+    # https://github.com/facebook/pyrefly/commit/537055a0069c7a0f2287a90b3b00ad3b8c14184e
     eq_rhs_nd1 = check(assert_type(arr_nd == td, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != td, Any), np_ndarray_bool)
-    assert (eq_rhs_nd1 != ne_rhs_nd1).all()
+    assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_2d1 = check(assert_type(arr_2d == td, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != td, Any), np_2darray[np.bool])
-    assert (eq_rhs_2d1 != ne_rhs_2d1).all()
+    assert (eq_rhs_2d1 != ne_rhs_2d1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_1d1 = check(assert_type(arr_1d == td, Any), np_1darray_bool)
     ne_rhs_1d1 = check(assert_type(arr_1d != td, Any), np_1darray_bool)
-    assert (eq_rhs_1d1 != ne_rhs_1d1).all()
+    assert (eq_rhs_1d1 != ne_rhs_1d1).all()  # pyrefly: ignore[unknown-attribute-access]
 
 
 def test_timestamp_construction() -> None:
     check(assert_type(pd.Timestamp("2000-1-1"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.Timestamp(pd.NaT), NaTType), NaTType)
+    check(assert_type(pd.Timestamp(None), NaTType), NaTType)
     check(
-        assert_type(pd.Timestamp("2000-1-1", tz="US/Pacific"), pd.Timestamp),
+        assert_type(pd.Timestamp("2000-1-1", tz="America/Los_Angeles"), pd.Timestamp),
         pd.Timestamp,
     )
     check(
         assert_type(
-            pd.Timestamp("2000-1-1", tz=pytz.timezone("US/Eastern")), pd.Timestamp
+            pd.Timestamp("2000-1-1", tz=pytz.timezone("America/New_York")), pd.Timestamp
         ),
         pd.Timestamp,
     )
@@ -1025,6 +1012,41 @@ def test_timestamp_construction() -> None:
     )
 
 
+def test_nat_string_constructors() -> None:
+    check(assert_type(pd.Timestamp(""), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NaT"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("nat"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NAT"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("nan"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NaN"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NAN"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("2020-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.Timedelta(""), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NaT"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("nat"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NAT"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("nan"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NaN"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NAN"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Period("", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NaT", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("nat", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NAT", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("nan", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NaN", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NAN", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period(pd.NaT, freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period(None), NaTType), NaTType)
+    check(assert_type(pd.Period(None, freq="D"), NaTType), NaTType)
+    check(
+        assert_type(pd.Period(None, "D", year=2012, day=1, month=1), pd.Period),
+        pd.Period,
+    )
+    check(assert_type(pd.Period("2020-01-01", freq="D"), pd.Period), pd.Period)
+
+
 def test_timestamp_dunder_methods() -> None:
     ts = pd.Timestamp(year=2026, month=8, day=15, hour=7, tz="Europe/Berlin")
 
@@ -1042,33 +1064,15 @@ def test_timestamp_properties() -> None:
     check(assert_type(ts.asm8, np.datetime64), np.datetime64)
     check(assert_type(ts.day_of_week, int), int)
     check(assert_type(ts.day_of_year, int), int)
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(ts.dayofweek, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(ts.dayofyear, int), int)
 
     check(assert_type(ts.days_in_month, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(ts.daysinmonth, int), int)
 
     check(assert_type(ts.is_leap_year, bool), bool)
@@ -1391,15 +1395,17 @@ def test_timestamp_cmp_array() -> None:
         assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
+    # TODO: remove these ignores once the upstream Any comparison fix is released.
+    # https://github.com/facebook/pyrefly/commit/537055a0069c7a0f2287a90b3b00ad3b8c14184e
     eq_rhs_nd1 = check(assert_type(arr_nd == ts, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != ts, Any), np_ndarray_bool)
-    assert (eq_rhs_nd1 != ne_rhs_nd1).all()
+    assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_2d1 = check(assert_type(arr_2d == ts, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != ts, Any), np_2darray[np.bool])
-    assert (eq_rhs_2d1 != ne_rhs_2d1).all()
+    assert (eq_rhs_2d1 != ne_rhs_2d1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_1d1 = check(assert_type(arr_1d == ts, Any), np_1darray_bool)
     ne_rhs_1d1 = check(assert_type(arr_1d != ts, Any), np_1darray_bool)
-    assert (eq_rhs_1d1 != ne_rhs_1d1).all()
+    assert (eq_rhs_1d1 != ne_rhs_1d1).all()  # pyrefly: ignore[unknown-attribute-access]
 
 
 def test_timestamp_types_init() -> None:
@@ -1416,7 +1422,7 @@ def test_timestamp_types_init() -> None:
     check(assert_type(pd.Timestamp(1515590000.1, unit="s"), pd.Timestamp), pd.Timestamp)
     check(
         assert_type(
-            pd.Timestamp(1515590000.1, unit="s", tz="US/Pacific"), pd.Timestamp
+            pd.Timestamp(1515590000.1, unit="s", tz="America/Los_Angeles"), pd.Timestamp
         ),
         pd.Timestamp,
     )
@@ -1430,7 +1436,7 @@ def test_timestamp_types_init() -> None:
     )
     check(
         assert_type(
-            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="US/Pacific"),
+            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="America/Los_Angeles"),
             pd.Timestamp,
         ),
         pd.Timestamp,
@@ -1445,12 +1451,19 @@ def test_timestamp_misc_methods() -> None:
 
     check(assert_type(pd.Timestamp.fromtimestamp(432.54), pd.Timestamp), pd.Timestamp)
     check(
-        assert_type(pd.Timestamp.fromtimestamp(432.54, tz="US/Pacific"), pd.Timestamp),
+        assert_type(pd.Timestamp.fromtimestamp(ts=432.54), pd.Timestamp), pd.Timestamp
+    )
+    check(
+        assert_type(
+            pd.Timestamp.fromtimestamp(432.54, tz="America/Los_Angeles"), pd.Timestamp
+        ),
         pd.Timestamp,
     )
     check(assert_type(pd.Timestamp.fromordinal(700000), pd.Timestamp), pd.Timestamp)
     check(
-        assert_type(pd.Timestamp.fromordinal(700000, tz="US/Pacific"), pd.Timestamp),
+        assert_type(
+            pd.Timestamp.fromordinal(700000, tz="America/Los_Angeles"), pd.Timestamp
+        ),
         pd.Timestamp,
     )
 
@@ -1462,52 +1475,76 @@ def test_timestamp_misc_methods() -> None:
         minute=21,
         second=21,
         microsecond=12,
+        nanosecond=5,
         tzinfo=dateutil.tz.UTC,
         fold=0,
     )
     check(assert_type(ts2, pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts.tz_localize("US/Pacific", False), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts.tz_localize("US/Pacific", True), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts.tz_localize(1, True), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts.tz_localize("US/Pacific", "NaT"), pd.Timestamp), pd.Timestamp)
     check(
-        assert_type(ts.tz_localize("US/Pacific", "raise"), pd.Timestamp), pd.Timestamp
+        assert_type(
+            ts.replace(2027, 2, 2, 12, 21, 21, 12, 5, ZoneInfo("Antarctica/Palmer"), 0),
+            pd.Timestamp,
+        ),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts.tz_localize("America/Los_Angeles", False), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts.tz_localize("America/Los_Angeles", True), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(ts.tz_localize(1, True), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(ts.tz_localize("America/Los_Angeles", "NaT"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts.tz_localize("America/Los_Angeles", "raise"), pd.Timestamp),
+        pd.Timestamp,
     )
 
     check(
         assert_type(
-            ts.tz_localize("US/Pacific", nonexistent="shift_forward"), pd.Timestamp
+            ts.tz_localize("America/Los_Angeles", nonexistent="shift_forward"),
+            pd.Timestamp,
         ),
         pd.Timestamp,
     )
     check(
         assert_type(
-            ts.tz_localize("US/Pacific", nonexistent="shift_backward"), pd.Timestamp
+            ts.tz_localize("America/Los_Angeles", nonexistent="shift_backward"),
+            pd.Timestamp,
         ),
         pd.Timestamp,
     )
     check(
         assert_type(
-            ts.tz_localize("US/Pacific", nonexistent="NaT"), pd.Timestamp | NaTType
+            ts.tz_localize("America/Los_Angeles", nonexistent="NaT"),
+            pd.Timestamp | NaTType,
         ),
         pd.Timestamp,
     )
     check(
         assert_type(
             pd.Timestamp(2025, 3, 9, 2, 30, 0).tz_localize(
-                "US/Eastern", nonexistent="NaT"
+                "America/New_York", nonexistent="NaT"
             ),
             pd.Timestamp | NaTType,
         ),
         NaTType,
     )
     check(
-        assert_type(ts.tz_localize("US/Pacific", nonexistent="raise"), pd.Timestamp),
+        assert_type(
+            ts.tz_localize("America/Los_Angeles", nonexistent="raise"), pd.Timestamp
+        ),
         pd.Timestamp,
     )
     check(
         assert_type(
-            ts.tz_localize("US/Pacific", nonexistent=pd.Timedelta("1D")), pd.Timestamp
+            ts.tz_localize("America/Los_Angeles", nonexistent=pd.Timedelta("1D")),
+            pd.Timestamp,
         ),
         pd.Timestamp,
     )
@@ -1657,33 +1694,15 @@ def test_period_properties() -> None:
     check(assert_type(p.day_of_week, int), int)
     check(assert_type(p.day_of_year, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(p.dayofweek, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(p.dayofyear, int), int)
 
     check(assert_type(p.days_in_month, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(p.daysinmonth, int), int)
 
     check(assert_type(p.end_time, pd.Timestamp), pd.Timestamp)
@@ -1698,13 +1717,7 @@ def test_period_properties() -> None:
     check(assert_type(p.start_time, pd.Timestamp), pd.Timestamp)
     check(assert_type(p.week, int), int)
 
-    with pytest_warns_bounded(
-        Pandas4Warning,
-        "is deprecated and will be removed in a future version.",
-        lower="3.0.99",
-        upper="3.99.99",
-        upper_exception=AttributeError,
-    ):
+    with pytest_warns_dt_alias_pandas4():
         check(assert_type(p.weekday, int), int)
 
     check(assert_type(p.weekofyear, int), int)
@@ -1730,12 +1743,7 @@ def test_period_add_subtract() -> None:
     # offset_index is tested below
     offset_index = p - as_period_index
     # https://github.com/pandas-dev/pandas/issues/50162 dtype=object
-    # TODO: remove the ignore astral-sh/ty#4195
-    check(
-        assert_type(p + offset_index, pd.Index),  # ty: ignore[type-assertion-failure]
-        pd.Index,
-        pd.Period,
-    )
+    check(assert_type(p + offset_index, pd.Index), pd.Index, pd.Period)
 
     check(assert_type(p + as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p + as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
@@ -1903,15 +1911,17 @@ def test_period_cmp_array() -> None:
     assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
+    # TODO: remove these ignores once the upstream Any comparison fix is released.
+    # https://github.com/facebook/pyrefly/commit/537055a0069c7a0f2287a90b3b00ad3b8c14184e
     eq_rhs_nd1 = check(assert_type(arr_nd == p, Any), np_ndarray_bool)
     ne_rhs_nd1 = check(assert_type(arr_nd != p, Any), np_ndarray_bool)
-    assert (eq_rhs_nd1 != ne_rhs_nd1).all()
+    assert (eq_rhs_nd1 != ne_rhs_nd1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_2d1 = check(assert_type(arr_2d == p, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != p, Any), np_2darray[np.bool])
-    assert (eq_rhs_2d1 != ne_rhs_2d1).all()
+    assert (eq_rhs_2d1 != ne_rhs_2d1).all()  # pyrefly: ignore[unknown-attribute-access]
     eq_rhs_1d1 = check(assert_type(arr_1d == p, Any), np_1darray_bool)
     ne_rhs_1d1 = check(assert_type(arr_1d != p, Any), np_1darray_bool)
-    assert (eq_rhs_1d1 != ne_rhs_1d1).all()
+    assert (eq_rhs_1d1 != ne_rhs_1d1).all()  # pyrefly: ignore[unknown-attribute-access]
 
 
 def test_period_methods() -> None:
@@ -1943,6 +1953,13 @@ def test_period_methods() -> None:
 def test_offset_dunder_methods() -> None:
     do = pd.DateOffset()
     check(assert_type(do.__hash__(), int), int)
+
+
+def test_nat_value() -> None:
+    # GH 2001
+    check(assert_type(pd.NaT.value, int), int)
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.NaT.value = 1  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue] # pyrefly: ignore[read-only] # ty: ignore[invalid-assignment]
 
 
 def test_nattype_dunder_methods() -> None:

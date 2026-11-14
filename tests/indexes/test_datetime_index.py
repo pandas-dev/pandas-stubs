@@ -13,37 +13,8 @@ from tests import (
     pytest_warns_bounded,
 )
 from tests._typing import (
-    np_1darray_bool,
     np_1darray_intp,
 )
-
-
-def test_index_relops() -> None:
-    # GH 265
-    data = check(
-        assert_type(
-            pd.date_range("2022-01-01", "2022-01-31", freq="D"), pd.DatetimeIndex
-        ),
-        pd.DatetimeIndex,
-    )
-    x = pd.Timestamp("2022-01-17")
-    idx = check(
-        assert_type(pd.Index(data, name="date"), pd.DatetimeIndex), pd.DatetimeIndex
-    )
-    check(assert_type(data[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x >= idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x > idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
-
-    ind = pd.Index([1, 2, 3])
-    check(assert_type(ind <= 2, np_1darray_bool), np_1darray_bool)
-    check(assert_type(ind < 2, np_1darray_bool), np_1darray_bool)
-    check(assert_type(ind >= 2, np_1darray_bool), np_1darray_bool)
-    check(assert_type(ind > 2, np_1darray_bool), np_1darray_bool)
 
 
 def test_datetime_index_constructor() -> None:
@@ -67,7 +38,6 @@ def test_datetime_index_constructor() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
         r"The 'ambiguous' keyword in DatetimeIndex is deprecated and will be removed",
-        lower="3.0.99",
     ):
         check(
             assert_type(
@@ -101,6 +71,29 @@ def test_datetimeindex_shift() -> None:
     check(assert_type(ind.shift(1), pd.DatetimeIndex), pd.DatetimeIndex)
 
 
+def test_datetime_index_boolean_indexing() -> None:
+    left = check(
+        assert_type(
+            pd.date_range("2022-01-01", "2022-01-31", freq="D"), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    x = pd.Timestamp("2022-01-17")
+    idx = check(
+        assert_type(pd.Index(left, name="date"), pd.DatetimeIndex), pd.DatetimeIndex
+    )
+
+    check(assert_type(left[idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
+
+    check(assert_type(left[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[x > idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(left[x >= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+
+
 def test_datetimeindex_indexer_at_time() -> None:
     dti = pd.date_range("2023-01-01", "2023-02-01")
     check(assert_type(dti.indexer_at_time("10:00"), np_1darray_intp), np_1darray_intp)
@@ -126,4 +119,7 @@ def test_datetimeindex_indexer_between_time() -> None:
 
 def test_datetimeindex_snap() -> None:
     dti = pd.date_range("2023-01-01", "2023-02-01")
-    check(assert_type(dti.snap("MS"), pd.DatetimeIndex), pd.DatetimeIndex)
+    with pytest_warns_bounded(
+        Pandas4Warning, "snap is deprecated", lower="3.1.99", upper="3.99.99"
+    ):
+        check(assert_type(dti.snap("MS"), pd.DatetimeIndex), pd.DatetimeIndex)  # type: ignore[deprecated] # pyright: ignore[reportDeprecated] # pyrefly: ignore[deprecated] # ty: ignore[deprecated]
