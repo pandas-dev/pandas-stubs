@@ -394,6 +394,66 @@ def test_types_df_scalar_comparison() -> None:
     check(assert_type(df_td.ge(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
 
 
+def test_types_df_extended_scalar_comparison() -> None:
+    df_period = pd.DataFrame({"col": pd.period_range("2026-01", periods=2, freq="M")})
+    check(
+        assert_type(df_period.eq(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.ne(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.lt(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.le(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.gt(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.ge(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    df_interval = pd.DataFrame({"col": [pd.Interval(0, 1), pd.Interval(1, 2)]})
+    check(assert_type(df_interval.eq(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.ne(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.lt(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.le(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.gt(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.ge(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+
+    df_ts = pd.DataFrame({"col": pd.to_datetime(["2026-01-01", "2026-01-02"])})
+    check(assert_type(df_ts.eq(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.ne(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.lt(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.le(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.gt(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.ge(pd.NaT), pd.DataFrame), pd.DataFrame)
+
+    df_nullable = pd.DataFrame({"col": pd.array([1, 2], dtype="Int64")})
+    check(assert_type(df_nullable.eq(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.ne(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.lt(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.le(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.gt(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.ge(pd.NA), pd.DataFrame), pd.DataFrame)
+
+    df_bool = pd.DataFrame({"col": [False, True]})
+    check(assert_type(df_bool.eq(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.ne(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.lt(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.le(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.gt(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.ge(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+
+
 def test_types_df_complex_scalar_comparison() -> None:
     df = pd.DataFrame({"col": [1j, 2j]})
     check(assert_type(df.eq(1j), pd.DataFrame), pd.DataFrame)
