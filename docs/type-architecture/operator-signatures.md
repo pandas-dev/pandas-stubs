@@ -21,6 +21,22 @@ spell their operand unions inline, and named methods may have a different set of
 parameters from the matching dunder. Check the declaration you are editing instead of
 assuming alias coverage.
 
+### Float ordering
+
+`Index[float]` ordering accepts real numeric scalars, sequences, ndarrays and
+numeric Index operands, including mixed bool, int and float element types. Its
+result is a one-dimensional boolean ndarray. Series/Index comparisons are typed
+through Series and return `Series[bool]` at runtime. The focused ordering tests
+live in `tests/indexes/float/test_relops.py` and
+`tests/series/float/test_relops.py`.
+
+NumPy's own comparison signatures can accept an operand that pandas' direct
+dunder rejects. A negative direct-dunder test therefore does not establish that
+an ordinary expression is rejected. NumPy-left comparisons with a Series can
+also be inferred as boolean ndarrays while returning a Series at runtime. Keep
+both the inferred type and the runtime container assertions in those tests, and
+record these limitations when assessing comparison coverage.
+
 ## Dunder parameters
 
 Binary dunders use a positional-only `other` parameter:
