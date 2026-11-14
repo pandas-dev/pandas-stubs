@@ -25,6 +25,13 @@ def left_i() -> pd.Series:
     return check(assert_type(lo, pd.Series), pd.Series, np.integer)
 
 
+@pytest.fixture
+def left_td() -> pd.Series:
+    """Left operand"""
+    lo = pd.DataFrame({"a": [timedelta(hours=h, minutes=1) for h in range(3)]})["a"]
+    return check(assert_type(lo, pd.Series), pd.Series, pd.Timedelta)
+
+
 def test_floordiv_py_scalar(left_i: pd.Series) -> None:
     """Test pd.Series[int] // Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
@@ -36,7 +43,7 @@ def test_floordiv_py_scalar(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
         _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        # _05 = left_i // d  # This invalid one cannot be detected by static type checking
 
     check(assert_type(b // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(i // left_i, pd.Series), pd.Series, np.integer)
@@ -52,7 +59,7 @@ def test_floordiv_py_scalar(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
         left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        left_i.floordiv(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        # left_i.floordiv(d)  # This invalid one cannot be detected by static type checking
 
     check(assert_type(left_i.rfloordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
@@ -278,3 +285,18 @@ def test_floordiv_pd_series(left_i: pd.Series) -> None:
         pd.Series,
         pd.Timedelta,
     )
+
+
+def test_floordiv_td_scalar(left_td: pd.Series) -> None:
+    """Test pd.Series[Any] (Timedelta) // timedelta scalars. GH 1904."""
+    d = timedelta(seconds=1)
+    d64 = np.timedelta64(1, "s")
+    td = pd.Timedelta(seconds=1)
+
+    check(assert_type(left_td // d, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left_td // d64, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left_td // td, "pd.Series[int]"), pd.Series, np.integer)
+
+    check(assert_type(left_td.floordiv(d), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left_td.floordiv(d64), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left_td.floordiv(td), "pd.Series[int]"), pd.Series, np.integer)
