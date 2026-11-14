@@ -18,6 +18,7 @@ from tests import (
 )
 from tests._typing import (
     PandasStrDtypeArg,
+    np_1darray,
     np_ndarray_object,
 )
 from tests.dtypes import PANDAS_STRING_ARGS
@@ -128,3 +129,10 @@ def test_assign() -> None:
     arr[0] = "11"
     arr[:1] = ["12"]
     arr[np.array([True, False])] = ["333"]
+
+
+def test_string_array() -> None:
+    """Test __array__ method for StringArray."""
+    arr = StringArray(np.array(["a", "b"], dtype=object))
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, str)
+    check(assert_type(arr.__array__(dtype=object), np_1darray), np_1darray, str)

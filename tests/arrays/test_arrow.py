@@ -10,6 +10,7 @@ from typing import (
     assert_type,
 )
 
+import numpy as np
 import pandas as pd
 from pandas.arrays import (
     ArrowExtensionArray,
@@ -19,6 +20,7 @@ import pyarrow as pa
 import pytest
 
 from tests import check
+from tests._typing import np_1darray
 
 
 @pytest.mark.parametrize(
@@ -241,3 +243,13 @@ def test_constructor_mixed_int_str_data_float_pyarrow_runtime_failure() -> None:
     # inferred an int64 array from the first element.
     with pytest.raises(pa.ArrowInvalid):
         pd.array([1, "1"], "float64[pyarrow]")
+
+
+def test_arrow_array() -> None:
+    """Test __array__ method for ArrowExtensionArray."""
+    arr = ArrowExtensionArray(pa.array([1, 2, 3]))
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, np.int64)
+    check(
+        assert_type(arr.__array__(dtype=np.float64), np_1darray), np_1darray, np.float64
+    )
+    check(assert_type(arr.__array__(dtype="f8"), np_1darray), np_1darray, np.float64)
