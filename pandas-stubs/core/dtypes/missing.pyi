@@ -18,9 +18,9 @@ from typing_extensions import (
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (
-    Scalar,
+    ExtScalarOrNA,
+    ExtScalarT,
     ScalarT,
-    ScalarT0,
     ShapeT,
     np_1darray_bool,
     np_ndarray,
@@ -41,7 +41,7 @@ def isna(obj: np_ndarray[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
 @overload
 def isna(obj: list[Any]) -> np_ndarray_bool: ...
 @overload
-def isna(obj: Scalar | NaTType | NAType | None) -> TypeIs[NaTType | NAType | None]: ...
+def isna(obj: ExtScalarOrNA) -> TypeIs[NaTType | NAType | None]: ...
 @overload
 def isna(
     obj: _ObjectT,  # pyright: ignore[reportInvalidTypeVarUse]
@@ -60,7 +60,7 @@ def notna(obj: np_ndarray[ShapeT]) -> np_ndarray_bool[ShapeT]: ...
 @overload
 def notna(obj: list[Any]) -> np_ndarray_bool: ...
 @overload
-def notna(obj: ScalarT0 | NaTType | NAType | None) -> TypeIs[ScalarT0]: ...
+def notna(obj: ExtScalarT | NaTType | NAType | None) -> TypeIs[ExtScalarT]: ...
 @overload
 def notna(
     obj: _ObjectT,  # pyright: ignore[reportInvalidTypeVarUse]
