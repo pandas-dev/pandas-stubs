@@ -318,6 +318,10 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     def __getitem__(self, key: Scalar, /) -> Series | _T: ...
     @overload
     def __getitem__(
+        self, idx: tuple[slice, tuple[Scalar, Scalar, *tuple[Scalar, ...]]], /
+    ) -> Series: ...
+    @overload
+    def __getitem__(
         self,
         key: (
             tuple[Scalar, slice]
@@ -350,7 +354,6 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         ),
         /,
     ) -> _T: ...
-
     # Keep in sync with `DataFrame.__setitem__`
     @overload
     def __setitem__(

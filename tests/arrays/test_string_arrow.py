@@ -28,24 +28,31 @@ def test_construction_dtype(
 ) -> None:
     dtype_notna = target_dtype if data else None
     check(
-        assert_type(pd.array([*data], dtype), ArrowStringArray),
+        assert_type(pd.array([*data], dtype), "ArrowStringArray[NAType | float]"),
         ArrowStringArray,
         dtype_notna,
     )
     check(
-        assert_type(pd.array([*data, *data], dtype), ArrowStringArray),
+        assert_type(
+            pd.array([*data, *data], dtype), "ArrowStringArray[NAType | float]"
+        ),
         ArrowStringArray,
         dtype_notna,
     )
 
     dtype_na = target_dtype if data else NAType
     check(
-        assert_type(pd.array([*data, np.nan], dtype), ArrowStringArray),
+        assert_type(
+            pd.array([*data, np.nan], dtype), "ArrowStringArray[NAType | float]"
+        ),
         ArrowStringArray,
         dtype_na,
     )
     check(
-        assert_type(pd.array([*data, *data, np.nan], dtype), ArrowStringArray),
+        assert_type(
+            pd.array([*data, *data, np.nan], dtype),
+            "ArrowStringArray[NAType | float]",
+        ),
         ArrowStringArray,
         dtype_na,
     )
@@ -120,3 +127,30 @@ def test_dtype() -> None:
     arr = pd.array(["a"], "string[pyarrow]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['pyarrow']]"), pd.StringDtype)
     assert assert_type(arr.dtype.storage, Literal["pyarrow"]) == "pyarrow"
+
+
+def test_item() -> None:
+    na_arr = pd.array([None], pd.StringDtype("pyarrow"))
+
+    check(assert_type(na_arr[0], str | NAType), NAType)
+    check(assert_type(na_arr[:1], ArrowStringArray), ArrowStringArray)
+    check(assert_type(na_arr.dtype.na_value, NAType), NAType)
+
+    nan_arr = pd.array([None], pd.StringDtype("pyarrow", na_value=np.nan))
+
+    check(assert_type(nan_arr[0], str | float), float)
+    check(
+        assert_type(nan_arr[:1], "ArrowStringArray[float]"),
+        ArrowStringArray,
+    )
+    check(assert_type(nan_arr.dtype.na_value, float), float)
+
+    explicit_na_arr = pd.array([None], pd.StringDtype("pyarrow", na_value=pd.NA))
+    check(assert_type(explicit_na_arr[0], str | NAType), NAType)
+    check(assert_type(explicit_na_arr[:1], ArrowStringArray), ArrowStringArray)
+    check(assert_type(explicit_na_arr.dtype.na_value, NAType), NAType)
+
+    if TYPE_CHECKING:
+        assert_type(na_arr.item(), str | NAType)
+        assert_type(nan_arr.item(0), str | float)
+        assert_type(explicit_na_arr.item(0), str | NAType)

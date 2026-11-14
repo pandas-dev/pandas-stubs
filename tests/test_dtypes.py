@@ -303,7 +303,9 @@ def test_sparse_dtype_fill_value_subtype_compatibility() -> None:
 def test_string_dtype(
     storage: Literal["python", "pyarrow"] | None, na_value: NAType | float
 ) -> None:
-    s_dts = [pd.StringDtype(storage, na_value)]
+    s_dts: list[pd.StringDtype[Literal["python", "pyarrow"] | None, NAType | float]] = [
+        pd.StringDtype(storage, na_value)
+    ]
     if storage is None:
         s_dts.append(pd.StringDtype(na_value=na_value))
         if na_value is pd.NA:
@@ -320,6 +322,23 @@ def test_string_dtype(
         assert_type(pd.StringDtype(None), pd.StringDtype)
         assert_type(pd.StringDtype("pyarrow"), pd.StringDtype[Literal["pyarrow"]])
         assert_type(pd.StringDtype("python"), pd.StringDtype[Literal["python"]])
+        assert_type(pd.StringDtype(na_value=np.nan), pd.StringDtype[None, float])
+        assert_type(
+            pd.StringDtype("python", na_value=np.nan),
+            pd.StringDtype[Literal["python"], float],
+        )
+        assert_type(
+            pd.StringDtype("pyarrow", na_value=np.nan),
+            pd.StringDtype[Literal["pyarrow"], float],
+        )
+        assert_type(
+            pd.StringDtype("python", na_value=pd.NA),
+            pd.StringDtype[Literal["python"], NAType],
+        )
+        assert_type(
+            pd.StringDtype("pyarrow", na_value=pd.NA),
+            pd.StringDtype[Literal["pyarrow"], NAType],
+        )
 
         assert_type(pd.StringDtype().storage, Literal["python", "pyarrow"])
         assert_type(pd.StringDtype(None).storage, Literal["python", "pyarrow"])
