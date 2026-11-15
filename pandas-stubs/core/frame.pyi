@@ -113,7 +113,7 @@ from pandas._typing import (
     CovariantList,
     DropKeep,
     Dtype,
-    ExtScalar,
+    ExtScalarOrNA,
     FilePath,
     FillnaOptions,
     FloatFormatType,
@@ -394,6 +394,10 @@ class _GetItemHack:
     ) -> Self: ...
     @overload
     def __getitem__(self, key: Hashable, /) -> Series: ...
+
+_CompareScalarNoComplex: TypeAlias = (
+    ScalarNoComplex | np.bool_ | Period | Interval | NAType | NaTType
+)
 
 # Same element types for every DataFrame.clip bound form
 _ClipBound: TypeAlias = (
@@ -2169,7 +2173,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def droplevel(self, level: Level | list[Level], axis: Axis = 0) -> Self: ...
     def eq(
         self,
-        other: ExtScalar | NAType | NaTType | ListLike | DataFrame,
+        other: ExtScalarOrNA | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2221,16 +2225,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def ge(
         self,
-        other: (
-            ScalarNoComplex
-            | np.bool_
-            | Period
-            | Interval
-            | NAType
-            | NaTType
-            | ListLike
-            | DataFrame
-        ),
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2246,16 +2241,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def get(self, key: Hashable, default: _T) -> Series | _T: ...
     def gt(
         self,
-        other: (
-            ScalarNoComplex
-            | np.bool_
-            | Period
-            | Interval
-            | NAType
-            | NaTType
-            | ListLike
-            | DataFrame
-        ),
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2295,31 +2281,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def last_valid_index(self) -> Scalar: ...
     def le(
         self,
-        other: (
-            ScalarNoComplex
-            | np.bool_
-            | Period
-            | Interval
-            | NAType
-            | NaTType
-            | ListLike
-            | DataFrame
-        ),
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
     def lt(
         self,
-        other: (
-            ScalarNoComplex
-            | np.bool_
-            | Period
-            | Interval
-            | NAType
-            | NaTType
-            | ListLike
-            | DataFrame
-        ),
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2427,7 +2395,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     multiply = mul
     def ne(
         self,
-        other: ExtScalar | NAType | NaTType | ListLike | DataFrame,
+        other: ExtScalarOrNA | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...

@@ -395,6 +395,10 @@ def test_types_df_scalar_comparison() -> None:
 
 
 def test_types_df_extended_scalar_comparison() -> None:
+    df = pd.DataFrame({"col": [1.0, None]})
+    check(assert_type(df.eq(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.ne(None), pd.DataFrame), pd.DataFrame)
+
     df_period = pd.DataFrame({"col": pd.period_range("2026-01", periods=2, freq="M")})
     check(
         assert_type(df_period.eq(pd.Period("2026-02", freq="M")), pd.DataFrame),
