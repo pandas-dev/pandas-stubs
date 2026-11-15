@@ -396,7 +396,7 @@ class _GetItemHack:
     def __getitem__(self, key: Hashable, /) -> Series: ...
 
 _CompareScalarNoComplex: TypeAlias = (
-    ScalarNoComplex | np.bool_ | Period | Interval | NAType | NaTType
+    ScalarNoComplex | np.bool_ | Period | Interval | NAType | NaTType | None
 )
 
 # Same element types for every DataFrame.clip bound form
