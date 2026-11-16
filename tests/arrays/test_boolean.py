@@ -21,7 +21,10 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import PandasBooleanDtypeArg
+from tests._typing import (
+    PandasBooleanDtypeArg,
+    np_1darray,
+)
 from tests.dtypes import PANDAS_BOOL_ARGS
 from tests.utils import powerset
 
@@ -170,3 +173,12 @@ def test_construct_array_type() -> None:
 def test_item() -> None:
     check(assert_type(pd.array([True]).item(), np.bool | NAType), np.bool)
     check(assert_type(pd.array([None], "boolean").item(), np.bool | NAType), NAType)
+
+
+def test_boolean_array() -> None:
+    """Test __array__ method for BooleanArray."""
+    arr = BooleanArray(np.array([True, False]), np.array([False, False]))
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, np.bool_)
+    check(
+        assert_type(arr.__array__(dtype=np.float64), np_1darray), np_1darray, np.float64
+    )

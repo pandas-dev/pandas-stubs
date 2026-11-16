@@ -12,3 +12,11 @@ Instructions for working with the code are found here:
 - [How to test the project](tests.md)
 - [How to make a release](release_procedure.md)
 - [Type architecture](type-architecture/README.md)
+
+## After a review round
+
+When you have addressed a round of review comments:
+
+1. If your branch conflicts with `main`, merge the latest `main` of pandas-dev/pandas-stubs into it and push. Once review has started, merge rather than rebase: a rebase rewrites the history, and reviewers' comments lose their link to the code.
+2. Wait until CI is green.
+3. Re-request review from each reviewer whose comments you addressed (the re-request button next to their name in the PR's reviewer list).

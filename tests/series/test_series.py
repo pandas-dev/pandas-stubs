@@ -72,6 +72,7 @@ from tests._typing import (
     np_1darray_object,
     np_1darray_str,
     np_1darray_td,
+    np_ndarray,
 )
 from tests.dtypes import (
     ASTYPE_BOOL_ARGS,
@@ -987,7 +988,7 @@ def test_types_bool_removed() -> None:
     # `bool()` was removed from `NDFrame` in pandas 2.1
     s = pd.Series([1])
     if TYPE_CHECKING_INVALID_USAGE:
-        s.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        s.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_types_scalar_arithmetic() -> None:
@@ -2090,6 +2091,19 @@ def test_dtype_type() -> None:
     s3 = pd.Series([1, 2, 3])
     check(assert_type(s3.dtype, DtypeObj), np.dtype)
     check(assert_type(s3.dtype.kind, _DTypeKind), str)
+
+
+def test_series_array() -> None:
+    s = pd.Series([1, 2, 3])
+    check(assert_type(s.__array__(), np_1darray), np_1darray, np.integer)
+    check(assert_type(s.__array__("f8"), np_1darray), np_1darray, np.float64)
+    check(
+        assert_type(s.__array__(np.dtype(np.float64)), np_1darray),
+        np_1darray,
+        np.float64,
+    )
+    check(assert_type(s.__array__(copy=True), np_1darray), np_1darray, np.integer)
+    check(assert_type(np.asarray(s, "f8"), np_ndarray), np.ndarray, np.float64)
 
 
 def test_types_to_numpy() -> None:

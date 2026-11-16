@@ -472,9 +472,9 @@ def test_timedelta_construction() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # These should be type errors now as they are not in TimeDeltaUnitChoices
-        pd.Timedelta(1, unit="Y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        pd.Timedelta(1, unit="y")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        pd.Timedelta(1, unit="M")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.Timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.Timedelta(1, unit="y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.Timedelta(1, unit="M")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
         pd.to_timedelta(1, unit="Y")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
@@ -1010,6 +1010,41 @@ def test_timestamp_construction() -> None:
         ),
         pd.Timestamp,
     )
+
+
+def test_nat_string_constructors() -> None:
+    check(assert_type(pd.Timestamp(""), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NaT"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("nat"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NAT"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("nan"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NaN"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("NAN"), NaTType), NaTType)
+    check(assert_type(pd.Timestamp("2020-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.Timedelta(""), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NaT"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("nat"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NAT"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("nan"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NaN"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("NAN"), NaTType), NaTType)
+    check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Period("", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NaT", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("nat", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NAT", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("nan", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NaN", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period("NAN", freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period(pd.NaT, freq="D"), NaTType), NaTType)
+    check(assert_type(pd.Period(None), NaTType), NaTType)
+    check(assert_type(pd.Period(None, freq="D"), NaTType), NaTType)
+    check(
+        assert_type(pd.Period(None, "D", year=2012, day=1, month=1), pd.Period),
+        pd.Period,
+    )
+    check(assert_type(pd.Period("2020-01-01", freq="D"), pd.Period), pd.Period)
 
 
 def test_timestamp_dunder_methods() -> None:
@@ -1895,13 +1930,25 @@ def test_period_methods() -> None:
     check(assert_type(p3.to_timestamp("D", "E"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "start"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "end"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "Finish"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "Begin"), pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(
+        Pandas4Warning, r"how='Finish' is deprecated", lower="3.1.99"
+    ):
+        check(assert_type(p3.to_timestamp("D", "Finish"), pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(
+        Pandas4Warning, r"how='Begin' is deprecated", lower="3.1.99"
+    ):
+        check(assert_type(p3.to_timestamp("D", "Begin"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "End"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "e"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "finish"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "begin"), pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(
+        Pandas4Warning, r"how='finish' is deprecated", lower="3.1.99"
+    ):
+        check(assert_type(p3.to_timestamp("D", "finish"), pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(
+        Pandas4Warning, r"how='begin' is deprecated", lower="3.1.99"
+    ):
+        check(assert_type(p3.to_timestamp("D", "begin"), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(p3.asfreq("D", "S"), pd.Period), pd.Period)
     check(assert_type(p3.asfreq(Day(), "E"), pd.Period), pd.Period)

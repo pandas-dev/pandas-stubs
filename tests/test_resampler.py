@@ -36,7 +36,7 @@ DF = DataFrame({"col1": S, "col2": S})
 
 def s2scalar(val: Series) -> float:
     # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
-    return val.mean()  # ty: ignore[unsound-return-statement]
+    return val.mean()  # ty: ignore[unsound-return]
 
 
 def test_iter() -> None:
@@ -92,7 +92,7 @@ def test_filling() -> None:
 def test_fillna() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        DF.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_aggregate() -> None:
@@ -266,7 +266,7 @@ def test_filling_series() -> None:
 def test_fillna_series() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        S.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        S.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_aggregate_series() -> None:

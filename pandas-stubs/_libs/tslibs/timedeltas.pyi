@@ -27,6 +27,7 @@ from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     Frequency,
     Just,
+    NaTStrings,
     ShapeT,
     TimeUnit,
     np_1darray_bool,
@@ -100,9 +101,33 @@ class Timedelta(timedelta):
         Timedelta
     ]
     value: int
+    @overload
+    def __new__(  # type: ignore[misc, overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        cls,
+        value: NaTStrings,
+        unit: TimeDeltaUnitChoices | None = None,
+        *,
+        days: float | np.integer | np.floating = ...,
+        seconds: float | np.integer | np.floating = ...,
+        microseconds: float | np.integer | np.floating = ...,
+        milliseconds: float | np.integer | np.floating = ...,
+        minutes: float | np.integer | np.floating = ...,
+        nanoseconds: float | np.integer | np.floating = ...,
+        hours: float | np.integer | np.floating = ...,
+        weeks: float | np.integer | np.floating = ...,
+    ) -> NaTType: ...
+    @overload
     def __new__(
         cls,
-        value: str | float | Timedelta | Tick | timedelta | np.timedelta64 = ...,
+        value: (
+            str  # noqa: PYI041 int is not float inside overloads
+            | int
+            | float
+            | Timedelta
+            | Tick
+            | timedelta
+            | np.timedelta64
+        ) = ...,
         unit: TimeDeltaUnitChoices | None = None,
         *,
         days: float | np.integer | np.floating = ...,
