@@ -16,7 +16,10 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import PyArrowStrDtypeArg
+from tests._typing import (
+    PyArrowStrDtypeArg,
+    np_1darray,
+)
 from tests.dtypes import PYARROW_STRING_ARGS
 from tests.utils import powerset
 
@@ -120,3 +123,10 @@ def test_dtype() -> None:
     arr = pd.array(["a"], "string[pyarrow]")
     check(assert_type(arr.dtype, "pd.StringDtype[Literal['pyarrow']]"), pd.StringDtype)
     assert assert_type(arr.dtype.storage, Literal["pyarrow"]) == "pyarrow"
+
+
+def test_string_arrow_array() -> None:
+    """Test __array__ method for ArrowStringArray."""
+    arr = ArrowStringArray(pa.array(["a", "b"]))
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, str)
+    check(assert_type(arr.__array__(dtype=object), np_1darray), np_1darray, str)
