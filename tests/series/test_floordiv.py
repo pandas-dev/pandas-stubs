@@ -86,7 +86,7 @@ def test_floordiv_py_sequence(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
         _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
-        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation]
+        # _05 = left_i // d  # This invalid one cannot be detected by static type checking
 
     check(assert_type(b // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(i // left_i, pd.Series), pd.Series, np.integer)
@@ -102,7 +102,7 @@ def test_floordiv_py_sequence(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
         left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
-        left_i.floordiv(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue] # pyrefly: ignore[no-matching-overload]
+        # left_i.floordiv(d)  # This invalid one cannot be detected by static type checking
 
     check(assert_type(left_i.rfloordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
