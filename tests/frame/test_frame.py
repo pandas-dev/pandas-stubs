@@ -191,14 +191,14 @@ def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
     if TYPE_CHECKING_INVALID_USAGE:
-        df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append({("a", 1): [1, 2, 3], "b": df2}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append({1: [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append({1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append(pd.Series([5, 6]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append(pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append({("a", 1): [1, 2, 3], "b": df2}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append({1: [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append({1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append(pd.Series([5, 6]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append(pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_types_to_csv(tmp_path: Path) -> None:
@@ -530,7 +530,7 @@ def test_assign() -> None:
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
         # ty thinks Series[str] is not a subtype of Series[Any]
-        return df["a"]  # ty: ignore[unsound-return-statement]
+        return df["a"]  # ty: ignore[unsound-return]
 
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
@@ -1794,7 +1794,7 @@ def test_types_bool_removed() -> None:
     # `bool()` was removed from `NDFrame` in pandas 2.1
     df = pd.DataFrame(data={"col1": [1]})
     if TYPE_CHECKING_INVALID_USAGE:
-        df.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_types_melt() -> None:
