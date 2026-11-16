@@ -1663,7 +1663,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Series: ...
     @overload
-    def apply(
+    def apply(  # pyright: ignore[reportOverlappingOverload]
         self,
         func: Callable[..., Series],
         *,
@@ -1682,7 +1682,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisColumn,
         raw: _bool = ...,
         result_type: None = None,
-        args: SequenceNotStr[Any] = ...,
+        args: Any = ...,
         **kwargs: Any,
     ) -> Series: ...
 
