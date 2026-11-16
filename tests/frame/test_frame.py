@@ -192,14 +192,14 @@ def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
     if TYPE_CHECKING_INVALID_USAGE:
-        df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append({("a", 1): [1, 2, 3], "b": df2}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append({1: [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append({1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append(pd.Series([5, 6]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
-        df.append(pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append({("a", 1): [1, 2, 3], "b": df2}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append({1: [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append({1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append(pd.Series([5, 6]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+        df.append(pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True)  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_types_to_csv(tmp_path: Path) -> None:
@@ -393,6 +393,74 @@ def test_types_df_scalar_comparison() -> None:
     check(assert_type(df_td.le(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
     check(assert_type(df_td.gt(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
     check(assert_type(df_td.ge(np.timedelta64(2, "D")), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_df_extended_scalar_comparison() -> None:
+    df = pd.DataFrame({"col": [1.0, None]})
+    check(assert_type(df.eq(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.ne(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.lt(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.le(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.gt(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.ge(None), pd.DataFrame), pd.DataFrame)
+
+    df_period = pd.DataFrame({"col": pd.period_range("2026-01", periods=2, freq="M")})
+    check(
+        assert_type(df_period.eq(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.ne(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.lt(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.le(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.gt(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_period.ge(pd.Period("2026-02", freq="M")), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    df_interval = pd.DataFrame({"col": [pd.Interval(0, 1), pd.Interval(1, 2)]})
+    check(assert_type(df_interval.eq(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.ne(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.lt(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.le(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.gt(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_interval.ge(pd.Interval(0, 1)), pd.DataFrame), pd.DataFrame)
+
+    df_ts = pd.DataFrame({"col": pd.to_datetime(["2026-01-01", "2026-01-02"])})
+    check(assert_type(df_ts.eq(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.ne(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.lt(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.le(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.gt(pd.NaT), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_ts.ge(pd.NaT), pd.DataFrame), pd.DataFrame)
+
+    df_nullable = pd.DataFrame({"col": pd.array([1, 2], dtype="Int64")})
+    check(assert_type(df_nullable.eq(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.ne(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.lt(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.le(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.gt(pd.NA), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_nullable.ge(pd.NA), pd.DataFrame), pd.DataFrame)
+
+    df_bool = pd.DataFrame({"col": [False, True]})
+    check(assert_type(df_bool.eq(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.ne(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.lt(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.le(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.gt(np.bool_(True)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df_bool.ge(np.bool_(True)), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_df_complex_scalar_comparison() -> None:
@@ -644,6 +712,18 @@ def test_types_df_ordering_reflected() -> None:
     check(assert_type(pd.Index([2, 3]) >= df, pd.DataFrame), pd.DataFrame)
 
 
+def test_types_df_ordering_none() -> None:
+    df = pd.DataFrame({"col": [1, 2]})
+    check(assert_type(df < None, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df <= None, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df > None, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df >= None, pd.DataFrame), pd.DataFrame)
+    check(assert_type(None < df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(None <= df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(None > df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(None >= df, pd.DataFrame), pd.DataFrame)
+
+
 def test_types_df_ordering_complex_scalar() -> None:
     df = pd.DataFrame({"col": [1, 2]})
     if TYPE_CHECKING_INVALID_USAGE:
@@ -711,7 +791,7 @@ def test_assign() -> None:
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
         # ty thinks Series[str] is not a subtype of Series[Any]
-        return df["a"]  # ty: ignore[unsound-return-statement]
+        return df["a"]  # ty: ignore[unsound-return]
 
     def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
@@ -1893,6 +1973,64 @@ def test_types_apply() -> None:
         np.integer,
     )
 
+    # pandas-dev/pandas-stubs#2105
+    check(
+        assert_type(
+            df.apply(returns_scalar, axis=1, raw=False, result_type=None, args=()),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(
+            df.apply(returns_scalar, axis="columns", raw=True), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(df.apply(returns_listlike_of_3, axis=1, raw=False), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_dict, axis="columns", raw=False), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            df.apply(func=returns_series, axis="columns", raw=False), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.apply(returns_series, axis=1, raw=False, result_type="reduce"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.apply(gethead, axis="columns", args=(1,)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.apply(returns_series, 1, False, result_type="expand"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.apply(returns_scalar, False, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_scalar, False, axis="columns")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_listlike_of_3, False, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_dict, False, axis="columns")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, False, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, False, axis="columns")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, False, axis=1, result_type="reduce")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, False, axis="columns", result_type="reduce")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
 
 def test_types_map() -> None:
     # GH774
@@ -1909,7 +2047,7 @@ def test_types_bool_removed() -> None:
     # `bool()` was removed from `NDFrame` in pandas 2.1
     df = pd.DataFrame(data={"col1": [1]})
     if TYPE_CHECKING_INVALID_USAGE:
-        df.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        df.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_types_melt() -> None:

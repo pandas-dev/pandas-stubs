@@ -65,7 +65,7 @@ GB_S = cast(
 
 def s2scalar(val: Series) -> float:
     # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
-    return val.mean()  # ty: ignore[unsound-return-statement]
+    return val.mean()  # ty: ignore[unsound-return]
 
 
 def test_frame_groupby_resample() -> None:
@@ -151,7 +151,7 @@ def test_frame_groupby_resample() -> None:
 
     # fillna (deprecated)
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_DF.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        GB_DF.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
     # aggregate / apply
     check(
@@ -370,7 +370,7 @@ def test_series_groupby_resample() -> None:
 
     # fillna (deprecated)
     if TYPE_CHECKING_INVALID_USAGE:
-        GB_S.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        GB_S.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
     # aggregate
     check(

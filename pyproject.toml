@@ -39,7 +39,7 @@ dev = [
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright==1.1.411",
-  "ty>=0.0.100",
+  "ty>=0.0.104",
   # TODO: lift the cap once pyrefly 1.5 accepts the reflected-operand `Never` overloads
   "pyrefly>=1.4.0,<1.5",
   "poethepoet>=0.16.5",
@@ -438,7 +438,7 @@ missing-super-call = false
 python-platform = "all"
 
 [tool.ty.rules]
-unsound-return-statement = "error"
+unsound-return = "error"
 
 [tool.ty.analysis]
 respect-type-ignore-comments = false

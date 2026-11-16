@@ -668,7 +668,7 @@ def test_groupby_apply() -> None:
 
     def sum_mean(x: pd.DataFrame) -> float:
         # TODO: remove ty ignore astral-sh/ty#4360 astral-sh/ty#4135
-        return x.sum().mean()  # ty: ignore[unsound-return-statement]
+        return x.sum().mean()  # ty: ignore[unsound-return]
 
     check(assert_type(df_gb.apply(sum_mean), pd.Series), pd.Series)
 

@@ -21,7 +21,7 @@ def test_day_type() -> None:
     check(assert_type(Day(), Day), Day)
     _day_is_offset: BaseOffset = Day()
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.Timedelta(Day())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        pd.Timedelta(Day())  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         _day_is_not_tick: Tick = Day()  # type: ignore[assignment] # pyright: ignore[reportAssignmentType] # pyrefly: ignore[bad-assignment] # ty: ignore[invalid-assignment]
 
 
