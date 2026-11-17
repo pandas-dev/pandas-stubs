@@ -1959,6 +1959,9 @@ def test_period_methods() -> None:
     check(assert_type(pd.Period.now(Day()), pd.Period), pd.Period)
 
     check(assert_type(p3.strftime("%Y-%m-%d"), str), str)
+    check(assert_type(p3.__format__("%Y-%m"), str), str)
+    check(assert_type(format(p3, "%Y-%m"), str), str)
+    check(assert_type(f"{p3:%Y-%m}", str), str)
     check(assert_type(hash(p3), int), int)
 
 
