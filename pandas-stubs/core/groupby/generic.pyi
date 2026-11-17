@@ -53,6 +53,10 @@ from pandas._typing import (
 AggScalar: TypeAlias = str | Callable[..., Any]
 
 class NamedAgg:
+    column: Hashable
+    aggfunc: AggScalar
+    args: tuple[Any, ...]
+    kwargs: dict[str, Any]
     def __init__(
         self,
         column: Hashable,
@@ -60,10 +64,6 @@ class NamedAgg:
         *args: Any,
         **kwargs: Any,
     ) -> None: ...
-    @property
-    def column(self) -> str: ...
-    @property
-    def aggfunc(self) -> AggScalar: ...
 
 class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
