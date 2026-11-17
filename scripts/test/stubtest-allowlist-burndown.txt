@@ -251,8 +251,6 @@ pandas.core.groupby.generic.DataFrameGroupBy.apply
 pandas.core.groupby.generic.DataFrameGroupBy.boxplot
 pandas.core.groupby.generic.DataFrameGroupBy.dtypes
 pandas.core.groupby.generic.DataFrameGroupBy.transform
-pandas.core.groupby.generic.NamedAgg.aggfunc
-pandas.core.groupby.generic.NamedAgg.column
 pandas.core.groupby.generic.SeriesGroupBy.describe
 pandas.core.groupby.groupby.GroupBy.__init__
 pandas.core.groupby.groupby.GroupBy.apply

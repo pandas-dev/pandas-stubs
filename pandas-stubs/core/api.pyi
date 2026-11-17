@@ -75,3 +75,5 @@ from pandas.core.dtypes.missing import (
 
 from pandas.io.formats.format import set_eng_float_format as set_eng_float_format
 from pandas.tseries.offsets import DateOffset as DateOffset
+
+NamedFunc = NamedAgg

@@ -90,6 +90,7 @@ import xarray as xr
 from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S2,
     AggFuncTypeBase,
@@ -112,6 +113,7 @@ from pandas._typing import (
     CovariantList,
     DropKeep,
     Dtype,
+    ExtScalarOrNA,
     FilePath,
     FillnaOptions,
     FloatFormatType,
@@ -317,6 +319,12 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __getitem__(self, key: Scalar, /) -> Series | _T: ...
     @overload
+    def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, idx: tuple[slice, tuple[Scalar]], /
+    ) -> _T: ...
+    @overload
+    def __getitem__(self, idx: tuple[slice, tuple[Scalar, ...]], /) -> Series: ...
+    @overload
     def __getitem__(
         self,
         key: (
@@ -350,7 +358,6 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         ),
         /,
     ) -> _T: ...
-
     # Keep in sync with `DataFrame.__setitem__`
     @overload
     def __setitem__(
@@ -395,6 +402,10 @@ class _GetItemHack:
     ) -> Self: ...
     @overload
     def __getitem__(self, key: Hashable, /) -> Series: ...
+
+_CompareScalarNoComplex: TypeAlias = (
+    ScalarNoComplex | np.bool_ | Period | Interval | NAType | NaTType | None
+)
 
 # Same element types for every DataFrame.clip bound form
 _ClipBound: TypeAlias = (
@@ -1652,7 +1663,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Series: ...
     @overload
-    def apply(
+    def apply(  # pyright: ignore[reportOverlappingOverload]
         self,
         func: Callable[..., Series],
         *,
@@ -1662,6 +1673,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Self: ...
+    @overload
+    def apply(
+        self,
+        # TODO: remove S2 when python/mypy#21768 is resolved
+        func: Callable[..., S2 | _T],
+        *,
+        axis: AxisColumn,
+        raw: _bool = ...,
+        result_type: None = None,
+        args: SequenceNotStr[Any] = ...,
+        **kwargs: Any,
+    ) -> Series: ...
 
     # apply() overloads with keyword axis=1 and keyword result_type
     @overload
@@ -2017,6 +2040,30 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # methods
     @final
     def abs(self) -> Self: ...
+    @override
+    def __lt__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __le__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __gt__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __ge__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
     def __add__(self, other: Any, /) -> Self: ...
     def add(
         self,
@@ -2231,7 +2278,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def droplevel(self, level: Level | list[Level], axis: Axis = 0) -> Self: ...
     def eq(
         self,
-        other: Scalar | ListLike | DataFrame,
+        other: ExtScalarOrNA | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2283,7 +2330,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def ge(
         self,
-        other: ScalarNoComplex | ListLike | DataFrame,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2299,7 +2346,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def get(self, key: Hashable, default: _T) -> Series | _T: ...
     def gt(
         self,
-        other: ScalarNoComplex | ListLike | DataFrame,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2339,13 +2386,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def last_valid_index(self) -> Scalar: ...
     def le(
         self,
-        other: ScalarNoComplex | ListLike | DataFrame,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
     def lt(
         self,
-        other: ScalarNoComplex | ListLike | DataFrame,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...
@@ -2453,7 +2500,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     multiply = mul
     def ne(
         self,
-        other: Scalar | ListLike | DataFrame,
+        other: ExtScalarOrNA | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
     ) -> Self: ...

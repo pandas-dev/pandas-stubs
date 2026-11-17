@@ -24,7 +24,10 @@ from tests import (
     check,
     exception_on_platform,
 )
-from tests._typing import PandasFloatDtypeArg
+from tests._typing import (
+    PandasFloatDtypeArg,
+    np_1darray,
+)
 from tests.dtypes import PANDAS_FLOAT_ARGS
 from tests.utils import powerset
 
@@ -144,3 +147,12 @@ def test_item() -> None:
         np.float32,
     )
     check(assert_type(pd.array([None], "Float64").item(), np.floating | NAType), NAType)
+
+
+def test_floating_array() -> None:
+    """Test __array__ method for FloatingArray."""
+    arr = FloatingArray(np.array([1.0, 2.0]), np.array([False, False]))
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, np.float64)
+    check(
+        assert_type(arr.__array__(dtype=np.float64), np_1darray), np_1darray, np.float64
+    )

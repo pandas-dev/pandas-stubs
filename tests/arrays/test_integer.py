@@ -26,6 +26,7 @@ from tests import (
 from tests._typing import (
     PandasIntDtypeArg,
     PandasUIntDtypeArg,
+    np_1darray,
 )
 from tests.dtypes import (
     PANDAS_INT_ARGS,
@@ -169,3 +170,12 @@ def test_item() -> None:
     check(assert_type(pd.array([1]).item(), np.integer | NAType), np.int64)
     check(assert_type(pd.array([1], "Int8").item(0), np.integer | NAType), np.int8)
     check(assert_type(pd.array([None], "Int64").item(), np.integer | NAType), NAType)
+
+
+def test_integer_array() -> None:
+    """Test __array__ method for IntegerArray."""
+    arr = IntegerArray(np.array([1, 2]), np.array([False, False]))
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, np.int64)
+    check(
+        assert_type(arr.__array__(dtype=np.float64), np_1darray), np_1darray, np.float64
+    )

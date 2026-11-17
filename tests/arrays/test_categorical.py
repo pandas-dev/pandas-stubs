@@ -471,3 +471,12 @@ def test_categorical_ordering_comparison() -> None:
     check(assert_type(cat <= s_plain, "pd.Series[bool]"), pd.Series)
     check(assert_type(cat > s_plain, "pd.Series[bool]"), pd.Series)
     check(assert_type(cat >= s_plain, "pd.Series[bool]"), pd.Series)
+
+
+def test_categorical_array() -> None:
+    """Test __array__ method for Categorical."""
+    arr = Categorical([1, 2, 1])
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, np.int64)
+    check(
+        assert_type(arr.__array__(dtype=np.float64), np_1darray), np_1darray, np.float64
+    )

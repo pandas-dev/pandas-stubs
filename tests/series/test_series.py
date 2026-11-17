@@ -1008,7 +1008,7 @@ def test_types_bool_removed() -> None:
     # `bool()` was removed from `NDFrame` in pandas 2.1
     s = pd.Series([1])
     if TYPE_CHECKING_INVALID_USAGE:
-        s.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[call-non-callable]
+        s.bool()  # type: ignore[operator] # pyright: ignore[reportCallIssue] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_types_scalar_arithmetic() -> None:
