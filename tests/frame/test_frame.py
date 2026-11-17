@@ -2786,7 +2786,7 @@ def test_frame_array_shape() -> None:
     check(assert_type(df.__array__("f8"), np_2darray), np_2darray)
     check(assert_type(df.__array__(np.dtype(np.float64)), np_2darray), np_2darray)
     check(assert_type(df.__array__(copy=True), np_2darray), np_2darray)
-    check(assert_type(np.asarray(df, "f8"), np_ndarray), np.ndarray)
+    check(assert_type(np.asarray(df, "f8"), np_ndarray), np_ndarray)
 
 
 def test_to_markdown(tmp_path: Path) -> None:

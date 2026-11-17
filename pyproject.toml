@@ -217,7 +217,13 @@ ignore = [
 ]
 
 
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"numpy.ndarray".msg = "Use the shape-typed aliases in pandas._typing (np_1darray*, np_2darray*, np_ndarray*)."
+"numpy.typing.NDArray".msg = "Use the shape-typed aliases in pandas._typing (np_1darray*, np_2darray*, np_ndarray*)."
+
+
 [tool.ruff.lint.per-file-ignores]
+"pandas-stubs/_typing.pyi" = ["TID251"]
 "*.pyi" = [
   # The following rules are ignored permanently for good reasons
   "A002",   # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
@@ -239,6 +245,7 @@ ignore = [
   "S603", # https://docs.astral.sh/ruff/rules/subprocess-without-shell-equals-true/
 ]
 "tests/*" = [
+  "TID251", # Runtime array checks and numpy input annotations
   # The following rules are ignored permanently for good reasons
   "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
   "ARG",     # https://docs.astral.sh/ruff/rules/#flake8-unused-arguments-arg
