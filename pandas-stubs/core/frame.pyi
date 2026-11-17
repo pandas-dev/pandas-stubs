@@ -1663,7 +1663,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Series: ...
     @overload
-    def apply(
+    def apply(  # pyright: ignore[reportOverlappingOverload]
         self,
         func: Callable[..., Series],
         *,
@@ -1673,6 +1673,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Self: ...
+    @overload
+    def apply(
+        self,
+        # TODO: remove S2 when python/mypy#21768 is resolved
+        func: Callable[..., S2 | _T],
+        *,
+        axis: AxisColumn,
+        raw: _bool = ...,
+        result_type: None = None,
+        args: Any = ...,
+        **kwargs: Any,
+    ) -> Series: ...
 
     # apply() overloads with keyword axis=1 and keyword result_type
     @overload
@@ -2028,6 +2040,30 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # methods
     @final
     def abs(self) -> Self: ...
+    @override
+    def __lt__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __le__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __gt__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __ge__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
     def __add__(self, other: Any, /) -> Self: ...
     def add(
         self,
