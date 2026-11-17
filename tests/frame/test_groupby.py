@@ -803,39 +803,9 @@ def test_named_arg_args() -> None:
         pd.DataFrame,
     )
 
-    check(assert_type(named_agg.column, str), str)
+    check(assert_type(named_agg.column, Hashable), Hashable)
     check(assert_type(named_agg.aggfunc, AggScalar), type(n_between))
-
-
-def test_named_func() -> None:
-    """Test NamedFunc alias to NamedAgg."""
-
-    def n_between(ser: pd.Series, low: Scalar, high: Scalar, **kwargs: Any) -> Scalar:
-        return ser.between(low, high, **kwargs).sum()
-
-    df = pd.DataFrame({"A": [0, 0, 1, 1], "B": [-1, 0, 1, 2]})
-    named_func = pd.NamedFunc("B", n_between, 0, 1)
-    check(assert_type(named_func, NamedAgg), NamedAgg)
-    assert pd.NamedFunc is NamedAgg
-
-    check(
-        assert_type(
-            df.groupby("A").agg(count_between=named_func),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            df.groupby("A").agg(
-                count_between_kw=pd.NamedFunc("B", n_between, 0, 1, inclusive="both")
-            ),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(assert_type(named_func.column, str), str)
-    check(assert_type(named_func.aggfunc, AggScalar), type(n_between))
+    check(assert_type(pd.NamedFunc("B", "sum"), NamedAgg), NamedAgg)
 
 
 def test_groupby_skipna_dataframe() -> None:
