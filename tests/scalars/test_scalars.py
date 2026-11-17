@@ -507,6 +507,12 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.round(dt.timedelta(seconds=1)), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.isoformat(), str), str)
     check(assert_type(td.to_numpy(), np.timedelta64), np.timedelta64)
+    check(assert_type(td.to_numpy(dtype=None), np.timedelta64), np.timedelta64)
+    check(assert_type(td.to_numpy(copy=False), np.timedelta64), np.timedelta64)
+    check(
+        assert_type(td.to_numpy(dtype=None, copy=False), np.timedelta64),
+        np.timedelta64,
+    )
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
@@ -1448,6 +1454,12 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts, pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts.to_numpy(), np.datetime64), np.datetime64)
+    check(assert_type(ts.to_numpy(dtype=None), np.datetime64), np.datetime64)
+    check(assert_type(ts.to_numpy(copy=False), np.datetime64), np.datetime64)
+    check(
+        assert_type(ts.to_numpy(dtype=None, copy=False), np.datetime64),
+        np.datetime64,
+    )
 
     check(assert_type(pd.Timestamp.fromtimestamp(432.54), pd.Timestamp), pd.Timestamp)
     check(

@@ -35,6 +35,7 @@ from pandas._libs.tslibs import (
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     NaTStrings,
+    NpDtype,
     PeriodFrequency,
     ShapeT,
     TimestampNonexistent,
@@ -409,7 +410,9 @@ class Timestamp(datetime, SupportsIndex):
     def quarter(self) -> int: ...
     @property
     def week(self) -> int: ...
-    def to_numpy(self) -> np.datetime64: ...
+    def to_numpy(
+        self, dtype: NpDtype | None = None, copy: bool = False
+    ) -> np.datetime64: ...
     @property
     def days_in_month(self) -> int: ...
     # TODO: remove daysinmonth once pandas removes it; use days_in_month (pandas-dev/pandas#64729)
