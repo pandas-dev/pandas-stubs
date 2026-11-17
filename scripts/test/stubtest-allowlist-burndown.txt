@@ -50,14 +50,12 @@ pandas._libs.tslibs.timestamps.Timestamp.replace
 pandas._libs.tslibs.timestamps.Timestamp.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.utcfromtimestamp
 pandas._testing.assert_categorical_equal
-pandas._testing.assert_datetime_array_equal
 pandas._testing.assert_extension_array_equal
 pandas._testing.assert_frame_equal
 pandas._testing.assert_index_equal
 pandas._testing.assert_interval_array_equal
 pandas._testing.assert_produces_warning
 pandas._testing.assert_series_equal
-pandas._testing.assert_timedelta_array_equal
 pandas._typing.AggFuncTypeDict
 pandas._typing.AlignJoin
 pandas._typing.AnyAll
