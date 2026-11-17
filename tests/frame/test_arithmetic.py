@@ -90,7 +90,10 @@ def test_types_dot() -> None:
     df1 = pd.DataFrame([[0, 1, -2, -1], [1, 1, 1, 1]])
     df2 = pd.DataFrame([[0, 1], [1, 2], [-1, -1], [2, 0]])
     s1 = pd.Series([1, 1, 2, 1])
-    n1_nd = cast("npt.NDArray[np.float64]", np.ones((4, 2)))  # erased shape type
+    # erased shape types
+    n1_nd = cast("npt.NDArray[np.float64]", np.ones((4, 2)))
+    n2_nd = cast("npt.NDArray[np.float64]", np.ones(4))
+    n3_nd = cast("npt.NDArray[np.float64]", np.ones(2))
 
     check(assert_type(df1 @ df2, pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.dot(df2), pd.DataFrame), pd.DataFrame)
@@ -111,8 +114,8 @@ def test_types_dot() -> None:
     check(assert_type(df1.__rmatmul__(np.ones(2)), pd.Series), pd.Series)
     check(assert_type(df1.dot(s1), pd.Series), pd.Series)
 
-    # pyrefly and ty infer `Unknown` here
-    # pyright and mypy select the first `tuple[Never, ...]` overloads
+    # pyrefly / ty infer `Unknown` (pyrefly-org/pyrefly#4910, astral-sh/ty#665)
+    # mypy / pyright use the 1st overload (python/mypy#15630, microsoft/pyright#10232)
     check(
         # pyrefly:ignore[assert-type]
         assert_type(
@@ -133,6 +136,27 @@ def test_types_dot() -> None:
             df1.__rmatmul__(n1_nd), pd.DataFrame | pd.Series
         ),  # ty:ignore[type-assertion-failure]
         pd.DataFrame,
+    )
+    check(
+        # pyrefly:ignore[assert-type]
+        assert_type(
+            df1 @ n2_nd, pd.DataFrame | pd.Series
+        ),  # ty:ignore[type-assertion-failure]
+        pd.Series,
+    )
+    check(
+        # pyrefly:ignore[assert-type]
+        assert_type(
+            df1.dot(n2_nd), pd.DataFrame | pd.Series
+        ),  # ty:ignore[type-assertion-failure]
+        pd.Series,
+    )
+    check(
+        # pyrefly:ignore[assert-type]
+        assert_type(
+            df1.__rmatmul__(n3_nd), pd.DataFrame | pd.Series
+        ),  # ty:ignore[type-assertion-failure]
+        pd.Series,
     )
 
     list_like = [[0, 1], [1, 2], [-1, -1], [2, 0]]
