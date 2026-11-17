@@ -2028,6 +2028,30 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # methods
     @final
     def abs(self) -> Self: ...
+    @override
+    def __lt__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __le__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __gt__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __ge__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
     def __add__(self, other: Any, /) -> Self: ...
     def add(
         self,
