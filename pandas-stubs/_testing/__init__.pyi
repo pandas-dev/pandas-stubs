@@ -80,13 +80,11 @@ def assert_datetime_array_equal(
     left: DatetimeArray,
     right: DatetimeArray,
     obj: str = "DatetimeArray",
-    check_freq: bool = True,
 ) -> None: ...
 def assert_timedelta_array_equal(
     left: TimedeltaArray,
     right: TimedeltaArray,
     obj: str = "TimedeltaArray",
-    check_freq: bool = True,
 ) -> None: ...
 def assert_extension_array_equal(
     left: ExtensionArray,
