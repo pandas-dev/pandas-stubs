@@ -1197,10 +1197,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rfloordiv__(self, other: np_ndarray_complex | np_ndarray_dt, /) -> Never: ...
     @overload
     def __rfloordiv__(
-        self: Index[int] | Index[float], other: np_ndarray_td, /
-    ) -> Never: ...
-    @overload
-    def __rfloordiv__(
         self: Index[bool] | Index[complex], other: np_ndarray, /
     ) -> Never: ...
     @overload
