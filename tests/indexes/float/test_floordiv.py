@@ -91,9 +91,10 @@ def test_floordiv_numpy_array(left: "pd.Index[float]") -> None:
         assert_type(left // s, Never)
         assert_type(left // d, Never)
 
-    # `numpy` typing gives the corresponding `ndarray`s in the static type
-    # checking, where our `__rfloordiv__` cannot override. At runtime, they lead to
-    # errors or pd.Index.
+    # TODO: numpy/numpy#33367 (numpy 2.6) lets `ndarray` defer to `__rfloordiv__` of
+    # types with `__array_ufunc__`, which the `Index` stubs do not declare yet. Until
+    # then, numpy's typing gives `ndarray`s here; at runtime these are errors or
+    # pd.Index.
     check(assert_type(b // left, "npt.NDArray[np.int8]"), pd.Index, np.floating)
     check(assert_type(i // left, np_ndarray_int64), pd.Index, np.floating)
     check(assert_type(f // left, "npt.NDArray[np.float64]"), pd.Index, np.floating)

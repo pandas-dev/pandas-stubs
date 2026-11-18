@@ -130,9 +130,9 @@ def test_floordiv_numpy_array(left: "pd.Series[float]") -> None:
         assert_type(left // s, Never)
         assert_type(left // d, Never)
 
-    # `numpy` typing gives the corresponding `ndarray`s in the static type
-    # checking, where our `__rfloordiv__` cannot override. At runtime, they lead to
-    # errors or pd.Series.
+    # TODO: numpy/numpy#33367 (numpy 2.6) lets `ndarray` defer to our `__rfloordiv__`.
+    # Until then, numpy's typing gives `ndarray`s here; at runtime these are errors
+    # or pd.Series.
     check(b // left, pd.Series, np.floating)
     check(i // left, pd.Series, np.floating)
     check(f // left, pd.Series, np.floating)
