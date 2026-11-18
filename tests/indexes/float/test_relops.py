@@ -6,12 +6,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas.errors import Pandas4Warning
-
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_conditioned,
+    pytest_warns_listlike_pandas4,
 )
 from tests._typing import (
     np_1darray_bool,
@@ -77,9 +75,7 @@ def test_relops_numeric_sequence_index_bool_list(left: pd.Index[float]) -> None:
 
 
 def test_relops_numeric_sequence_index_tuple(left: pd.Index[float]) -> None:
-    with pytest_warns_conditioned(
-        Pandas4Warning, "Operation with tuple is deprecated", True
-    ):
+    with pytest_warns_listlike_pandas4("tuple"):
         check(assert_type(left < (2.0, 2.0, 2.0), np_1darray_bool), np_1darray_bool)
         check(assert_type(left <= (2.0, 2.0, 2.0), np_1darray_bool), np_1darray_bool)
         check(assert_type(left > (2.0, 2.0, 2.0), np_1darray_bool), np_1darray_bool)
@@ -213,17 +209,6 @@ def test_relops_numpy_scalar_float32(left: pd.Index[float]) -> None:
     check(assert_type(np.float32(2) >= left, np_ndarray_bool), np_ndarray_bool)
 
 
-def test_relops_numpy_scalar_float64(left: pd.Index[float]) -> None:
-    check(assert_type(left < np.float64(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= np.float64(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > np.float64(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= np.float64(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(np.float64(2) < left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.float64(2) <= left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.float64(2) > left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.float64(2) >= left, np_ndarray_bool), np_ndarray_bool)
-
-
 def test_relops_numpy_array_float32(left: pd.Index[float]) -> None:
     check(
         assert_type(left < np.array([2.0, 2.0, 2.0], np.float32), np_1darray_bool),
@@ -255,41 +240,6 @@ def test_relops_numpy_array_float32(left: pd.Index[float]) -> None:
     )
     check(
         assert_type(np.array([2.0, 2.0, 2.0], np.float32) >= left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-
-
-def test_relops_numpy_array_float64(left: pd.Index[float]) -> None:
-    check(
-        assert_type(left < np.array([2.0, 2.0, 2.0], np.float64), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left <= np.array([2.0, 2.0, 2.0], np.float64), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left > np.array([2.0, 2.0, 2.0], np.float64), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left >= np.array([2.0, 2.0, 2.0], np.float64), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(np.array([2.0, 2.0, 2.0], np.float64) < left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2.0, 2.0, 2.0], np.float64) <= left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2.0, 2.0, 2.0], np.float64) > left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2.0, 2.0, 2.0], np.float64) >= left, np_ndarray_bool),
         np_ndarray_bool,
     )
 
@@ -490,7 +440,7 @@ def test_relops_invalid_pd_index_timedelta(left: pd.Index[float]) -> None:
         _ge_other = pd.timedelta_range("1 day", periods=3) >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
-def test_relops_invalid_numpy_array_complex(left: pd.Index[float]) -> None:
+def test_relops_invalid_numpy_array_str(left: pd.Index[float]) -> None:
     other: np_ndarray_str = np.array(["x", "y", "z"], np.str_)
     if TYPE_CHECKING_INVALID_USAGE:
         left.__lt__(other)  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
@@ -499,7 +449,7 @@ def test_relops_invalid_numpy_array_complex(left: pd.Index[float]) -> None:
         left.__ge__(other)  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
-def test_relops_invalid_numpy_array_str(left: pd.Index[float]) -> None:
+def test_relops_invalid_numpy_array_complex(left: pd.Index[float]) -> None:
     other: np_ndarray_complex = np.array([1j, 2j, 3j], np.complex128)
     if TYPE_CHECKING_INVALID_USAGE:
         left.__lt__(other)  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]

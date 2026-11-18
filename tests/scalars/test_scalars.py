@@ -1930,13 +1930,25 @@ def test_period_methods() -> None:
     check(assert_type(p3.to_timestamp("D", "E"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "start"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "end"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "Finish"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "Begin"), pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(
+        Pandas4Warning, r"how='Finish' is deprecated", lower="3.1.99"
+    ):
+        check(assert_type(p3.to_timestamp("D", "Finish"), pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(
+        Pandas4Warning, r"how='Begin' is deprecated", lower="3.1.99"
+    ):
+        check(assert_type(p3.to_timestamp("D", "Begin"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "End"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "e"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "finish"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "begin"), pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(
+        Pandas4Warning, r"how='finish' is deprecated", lower="3.1.99"
+    ):
+        check(assert_type(p3.to_timestamp("D", "finish"), pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(
+        Pandas4Warning, r"how='begin' is deprecated", lower="3.1.99"
+    ):
+        check(assert_type(p3.to_timestamp("D", "begin"), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(p3.asfreq("D", "S"), pd.Period), pd.Period)
     check(assert_type(p3.asfreq(Day(), "E"), pd.Period), pd.Period)

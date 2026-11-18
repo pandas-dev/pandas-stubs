@@ -152,6 +152,16 @@ FloatNotNumpy16DtypeArg: TypeAlias = (
     | PyArrowFloatDtypeArg
 )
 
+_FloatIndexOrderingOperand: TypeAlias = (
+    float
+    | NumpyRealScalar
+    | Sequence[float | NumpyRealScalar]
+    | np_ndarray_bool
+    | np_ndarray_anyint
+    | np_ndarray_float
+    | IndexReal
+)
+
 class InvalidIndexError(Exception): ...
 
 class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
@@ -657,15 +667,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @override
     def __le__(  # pyrefly: ignore[bad-override]
         self: Index[float],
-        other: (
-            float
-            | NumpyRealScalar
-            | Sequence[float | NumpyRealScalar]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | IndexReal
-        ),
+        other: _FloatIndexOrderingOperand,
         /,
     ) -> np_1darray_bool: ...
     @overload
@@ -676,15 +678,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @override
     def __ge__(  # pyrefly: ignore[bad-override]
         self: Index[float],
-        other: (
-            float
-            | NumpyRealScalar
-            | Sequence[float | NumpyRealScalar]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | IndexReal
-        ),
+        other: _FloatIndexOrderingOperand,
         /,
     ) -> np_1darray_bool: ...
     @overload
@@ -695,15 +689,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @override
     def __lt__(  # pyrefly: ignore[bad-override]
         self: Index[float],
-        other: (
-            float
-            | NumpyRealScalar
-            | Sequence[float | NumpyRealScalar]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | IndexReal
-        ),
+        other: _FloatIndexOrderingOperand,
         /,
     ) -> np_1darray_bool: ...
     @overload
@@ -714,15 +700,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @override
     def __gt__(  # pyrefly: ignore[bad-override]
         self: Index[float],
-        other: (
-            float
-            | NumpyRealScalar
-            | Sequence[float | NumpyRealScalar]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | IndexReal
-        ),
+        other: _FloatIndexOrderingOperand,
         /,
     ) -> np_1darray_bool: ...
     @overload

@@ -26,6 +26,7 @@ from tests._typing import (
     BuiltinNotStrObjDtypeArg,
     BuiltinObjectDtypeArg,
     NumpyNotTimeDtypeArg,
+    np_1darray,
     np_ndarray,
 )
 from tests.dtypes import (
@@ -286,3 +287,13 @@ def test_constructor(creator: Callable[..., np_ndarray | NumpyExtensionArray]) -
         _tuple = NumpyExtensionArray((1,))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         _i = NumpyExtensionArray(pd.Index([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         _s = NumpyExtensionArray(pd.Series([1]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+
+def test_numpy_array() -> None:
+    """Test __array__ method for NumpyExtensionArray."""
+    arr = NumpyExtensionArray(np.array([1, 2, 3]))
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, np.int64)
+    check(
+        assert_type(arr.__array__(dtype=np.float64), np_1darray), np_1darray, np.float64
+    )
+    check(assert_type(arr.__array__(dtype="f8"), np_1darray), np_1darray, np.float64)

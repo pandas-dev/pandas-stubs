@@ -237,6 +237,14 @@ def pytest_warns_inplace_pandas4(
     )
 
 
+def pytest_warns_listlike_pandas4(
+    kind: Literal["tuple", "range"],
+) -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning, f"Operation with {kind} is deprecated", upper="3.99.99"
+    )
+
+
 def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception] | None:
     if (WINDOWS or MAC) and dtype in {"f16", "float128", "c32", "complex256"}:
         return TypeError
