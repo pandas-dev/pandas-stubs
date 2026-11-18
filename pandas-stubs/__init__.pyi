@@ -33,6 +33,7 @@ from pandas.core.api import (
     IntervalIndex as IntervalIndex,
     MultiIndex as MultiIndex,
     NamedAgg as NamedAgg,
+    NamedFunc as NamedFunc,
     NaT as NaT,
     Period as Period,
     PeriodDtype as PeriodDtype,
