@@ -746,6 +746,29 @@ def test_interval_index_breaks() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+    arr = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(arr),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(np.array([1.0, 2.0, 3.0], dtype=np.float32)),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        arr_2d: np_ndarray[tuple[int, int], np.float64] = np.array(
+            [[1.0, 2.0], [3.0, 4.0]]
+        )
+        pd.IntervalIndex.from_breaks(arr_2d)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
     np_ndarray_dt64 = np.array(
         [
             np.datetime64("2000-01-01"),
@@ -861,6 +884,32 @@ def test_interval_index_arrays() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+    arr = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(arr, arr),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                np.array([1.0, 2.0, 3.0], dtype=np.float32),
+                np.array([2.0, 3.0, 4.0], dtype=np.float32),
+            ),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        arr_2d: np_ndarray[tuple[int, int], np.float64] = np.array(
+            [[1.0, 2.0], [3.0, 4.0]]
+        )
+        pd.IntervalIndex.from_arrays(arr_2d, arr_2d)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
     left_dt64_arr: np_ndarray_dt = np.array(
         [
             np.datetime64("2000-01-01"),

@@ -4,7 +4,6 @@ from collections.abc import (
 )
 import datetime as dt
 from typing import (
-    Any,
     Literal,
     Never,
     TypeAlias,
@@ -36,35 +35,35 @@ from pandas._typing import (
     IntervalClosedType,
     IntervalT,
     MaskType,
+    np_1darray,
     np_1darray_bool,
-    np_ndarray,
+    np_1darray_dt,
+    np_1darray_float,
+    np_1darray_int64,
+    np_1darray_intp,
+    np_1darray_td,
     np_ndarray_anyint,
     np_ndarray_bool,
-    np_ndarray_dt,
-    np_ndarray_float,
-    np_ndarray_int64,
-    np_ndarray_intp,
-    np_ndarray_td,
 )
 
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 
 _EdgesInt: TypeAlias = (
     Sequence[int]
-    | np_ndarray_int64
-    | np_ndarray[tuple[Any, ...], np.int32]
-    | np_ndarray_intp
+    | np_1darray_int64
+    | np_1darray[np.int32]
+    | np_1darray_intp
     | pd.Series[int]
     | Index[int]
 )
 _EdgesFloat: TypeAlias = (
-    Sequence[float] | np_ndarray_float | pd.Series[float] | Index[float]
+    Sequence[float] | np_1darray_float | pd.Series[float] | Index[float]
 )
 _EdgesTimestamp: TypeAlias = (
-    Sequence[DatetimeLike] | np_ndarray_dt | pd.Series[pd.Timestamp] | pd.DatetimeIndex
+    Sequence[DatetimeLike] | np_1darray_dt | pd.Series[pd.Timestamp] | pd.DatetimeIndex
 )
 _EdgesTimedelta: TypeAlias = (
-    Sequence[pd.Timedelta] | np_ndarray_td | pd.Series[pd.Timedelta] | pd.TimedeltaIndex
+    Sequence[pd.Timedelta] | np_1darray_td | pd.Series[pd.Timedelta] | pd.TimedeltaIndex
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
