@@ -2223,3 +2223,19 @@ def test_to_flat_index() -> None:
 
     mi = pd.MultiIndex.from_tuples([("a", 1), ("b", 2)])
     check(assert_type(mi.to_flat_index(), pd.Index), pd.Index, tuple)
+
+
+def test_index_array_ufunc() -> None:
+    """Test `Index.__array_ufunc__`.
+
+    Since numpy/numpy#33367 (numpy 2.6), the typing of `ndarray` binary operators
+    defers to the reflected operators of types that declare `__array_ufunc__`.
+    """
+    idx = pd.Index([1, 2, 3])
+    check(
+        assert_type(idx.__array_ufunc__(np.add, "__call__", idx, 1), Any),
+        pd.Index,
+        np.int64,
+    )
+    # TODO: numpy/numpy#33367 (numpy 2.6): assert that `np.array([1, 2, 3]) + idx`
+    # is `pd.Index[int]`. With older numpy it is typed as `ndarray`.
