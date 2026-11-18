@@ -32,7 +32,6 @@ pandas._libs.sparse.BlockIndex.__init__
 pandas._libs.sparse.IntIndex.__init__
 pandas._libs.sparse.SparseIndex.__init__
 pandas._libs.tslibs.conversion.OutOfBoundsTimedelta
-pandas._libs.tslibs.nattype.NaTType.asm8
 pandas._libs.tslibs.nattype.NaTType.unit
 pandas._libs.tslibs.offsets.ApplyTypeError
 pandas._libs.tslibs.offsets.BusinessHour.rollback

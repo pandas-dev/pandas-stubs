@@ -1974,6 +1974,12 @@ def test_nat_value() -> None:
         pd.NaT.value = 1  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue] # pyrefly: ignore[read-only] # ty: ignore[invalid-assignment]
 
 
+def test_nat_asm8() -> None:
+    check(assert_type(pd.NaT.asm8, np.datetime64), np.datetime64)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = pd.NaT.asm8()  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
+
+
 def test_nattype_dunder_methods() -> None:
     # GH 827
     check(assert_type(pd.NaT.__hash__(), int), int)
