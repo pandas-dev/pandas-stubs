@@ -43,11 +43,9 @@ pandas._libs.tslibs.offsets.YearEnd.__new__
 pandas._libs.tslibs.period.Period.asfreq
 pandas._libs.tslibs.period.Period.now
 pandas._libs.tslibs.period.Period.to_timestamp
-pandas._libs.tslibs.timedeltas.Timedelta.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.__index__
 pandas._libs.tslibs.timestamps.Timestamp.astimezone
 pandas._libs.tslibs.timestamps.Timestamp.replace
-pandas._libs.tslibs.timestamps.Timestamp.to_numpy
 pandas._libs.tslibs.timestamps.Timestamp.utcfromtimestamp
 pandas._testing.assert_categorical_equal
 pandas._testing.assert_extension_array_equal
