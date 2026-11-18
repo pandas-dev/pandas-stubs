@@ -513,6 +513,9 @@ def test_timedelta_properties_methods() -> None:
         assert_type(td.to_numpy(dtype=None, copy=False), np.timedelta64),
         np.timedelta64,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = td.to_numpy(dtype="int64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _1 = td.to_numpy(copy=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
@@ -1460,6 +1463,9 @@ def test_timestamp_misc_methods() -> None:
         assert_type(ts.to_numpy(dtype=None, copy=False), np.datetime64),
         np.datetime64,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        _2 = ts.to_numpy(dtype="int64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _3 = ts.to_numpy(copy=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
     check(assert_type(pd.Timestamp.fromtimestamp(432.54), pd.Timestamp), pd.Timestamp)
     check(

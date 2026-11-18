@@ -35,7 +35,6 @@ from pandas._libs.tslibs import (
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     NaTStrings,
-    NpDtype,
     PeriodFrequency,
     ShapeT,
     TimestampNonexistent,
@@ -411,7 +410,7 @@ class Timestamp(datetime, SupportsIndex):
     @property
     def week(self) -> int: ...
     def to_numpy(
-        self, dtype: NpDtype | None = None, copy: bool = False
+        self, dtype: None = None, copy: Literal[False] = False
     ) -> np.datetime64: ...
     @property
     def days_in_month(self) -> int: ...

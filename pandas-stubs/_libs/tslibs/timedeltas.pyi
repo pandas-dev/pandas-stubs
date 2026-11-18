@@ -28,7 +28,6 @@ from pandas._typing import (
     Frequency,
     Just,
     NaTStrings,
-    NpDtype,
     ShapeT,
     TimeUnit,
     np_1darray_bool,
@@ -390,7 +389,7 @@ class Timedelta(timedelta):
     def __hash__(self) -> int: ...
     def isoformat(self) -> str: ...
     def to_numpy(
-        self, dtype: NpDtype | None = None, copy: bool = False
+        self, dtype: None = None, copy: Literal[False] = False
     ) -> np.timedelta64: ...
     @property
     def components(self) -> Components: ...
