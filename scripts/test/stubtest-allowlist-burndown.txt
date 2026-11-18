@@ -22,7 +22,6 @@
 # `poe stubtest --no_allowlist` to skip both lists.
 #
 # Tracking: pandas-dev/pandas-stubs#1964
-pandas._config.config.describe_option
 pandas._config.config.option_context
 pandas._libs.arrays.NDArrayBacked.__init__
 pandas._libs.arrays.NDArrayBacked.repeat
