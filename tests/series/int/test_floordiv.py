@@ -141,6 +141,11 @@ def test_floordiv_numpy_array(left: "pd.Series[int]") -> None:
         assert_type(c // left, Any)
         assert_type(s // left, Any)
     check(assert_type(d // left, np_ndarray_int64), pd.Series, pd.Timedelta)
+    check(
+        assert_type(left.__rfloordiv__(d), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
 
     check(assert_type(left.floordiv(b), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left.floordiv(i), "pd.Series[int]"), pd.Series, np.integer)

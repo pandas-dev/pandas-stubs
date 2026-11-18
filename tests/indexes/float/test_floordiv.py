@@ -105,6 +105,11 @@ def test_floordiv_numpy_array(left: "pd.Index[float]") -> None:
         pd.TimedeltaIndex,
         pd.Timedelta,
     )
+    check(
+        assert_type(left.__rfloordiv__(d), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
 
 
 def test_floordiv_pd_index(left: "pd.Index[float]") -> None:
