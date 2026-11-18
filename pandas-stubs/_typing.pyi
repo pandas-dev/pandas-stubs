@@ -999,7 +999,7 @@ np_ndarray_dt: TypeAlias = np_ndarray[ShapeT, np.datetime64]
 np_ndarray_td: TypeAlias = np_ndarray[ShapeT, np.timedelta64]
 np_ndarray_object: TypeAlias = np_ndarray[ShapeT, np.object_]
 
-# Numpy arrays with known shape (Do not use as argument types, only as return types)
+# Numpy arrays with known shape (as argument types only where pandas requires that shape)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
 np_1darray_str: TypeAlias = np_1darray[np.str_]
 np_1darray_bytes: TypeAlias = np_1darray[np.bytes_]

@@ -43,6 +43,7 @@ from tests._typing import (
     np_1darray_bool,
     np_1darray_int64,
     np_1darray_intp,
+    np_2darray,
     np_ndarray,
     np_ndarray_dt,
 )
@@ -424,7 +425,7 @@ def test_index_array() -> None:
     )
 
     check(assert_type(idx.__array__(copy=True), np_1darray), np_1darray, np.integer)
-    check(assert_type(np.asarray(idx, "f8"), np_ndarray), np.ndarray, np.float64)
+    check(assert_type(np.asarray(idx, "f8"), np_ndarray), np_ndarray, np.float64)
 
 
 def test_types_to_numpy() -> None:
@@ -746,6 +747,16 @@ def test_interval_index_breaks() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        arr_2d: np_2darray[np.floating] = np.array([[1.0, 2.0], [3.0, 4.0]])
+        pd.IntervalIndex.from_breaks(arr_2d)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        int_2d: np_2darray[np.integer] = np.array([[1, 2], [3, 4]])
+        dt_2d: np_2darray[np.datetime64] = np.array(
+            [[np.datetime64("2000-01-01"), np.datetime64("2001-01-01")]]
+        )
+        pd.IntervalIndex.from_breaks(int_2d)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.IntervalIndex.from_breaks(dt_2d)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
     np_ndarray_dt64 = np.array(
         [
             np.datetime64("2000-01-01"),
@@ -861,6 +872,16 @@ def test_interval_index_arrays() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        arr_2d: np_2darray[np.floating] = np.array([[1.0, 2.0], [3.0, 4.0]])
+        pd.IntervalIndex.from_arrays(arr_2d, arr_2d)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        int_2d: np_2darray[np.integer] = np.array([[1, 2], [3, 4]])
+        dt_2d: np_2darray[np.datetime64] = np.array(
+            [[np.datetime64("2000-01-01"), np.datetime64("2001-01-01")]]
+        )
+        pd.IntervalIndex.from_arrays(int_2d, int_2d)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        pd.IntervalIndex.from_arrays(dt_2d, dt_2d)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
     left_dt64_arr: np_ndarray_dt = np.array(
         [
             np.datetime64("2000-01-01"),
@@ -1920,9 +1941,9 @@ def test_index_view() -> None:
     # mypy and pyright differ here in what they report:
     # - mypy: ndarray[Any, Any]"
     # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
-    check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
+    check(assert_type(ind.view(np.ndarray), np.ndarray), np_ndarray)  # type: ignore[assert-type] # noqa: TID251
 
-    class MyArray(np.ndarray): ...
+    class MyArray(np.ndarray): ...  # noqa: TID251
 
     check(assert_type(ind.view(MyArray), MyArray), MyArray)
 
@@ -2047,7 +2068,7 @@ def test_get_loc_bool_array() -> None:
     idx = pd.Index(["a", "b", "a", "c"])
     check(
         assert_type(idx.get_loc("a"), int | slice | np_1darray_bool),
-        np.ndarray,
+        np_1darray_bool,
         np.bool_,
     )
 
@@ -2068,7 +2089,9 @@ def test_multiindex_get_loc() -> None:
     # (non-sorted level causes a mask to be returned)
     mi_unsorted = pd.MultiIndex.from_arrays([["a", "b", "a"], ["d", "e", "f"]])
     loc_mask = mi_unsorted.get_loc("a")
-    check(assert_type(loc_mask, int | slice | np_1darray_bool), np.ndarray, np.bool_)
+    check(
+        assert_type(loc_mask, int | slice | np_1darray_bool), np_1darray_bool, np.bool_
+    )
 
 
 def test_index_from_tuples() -> None:

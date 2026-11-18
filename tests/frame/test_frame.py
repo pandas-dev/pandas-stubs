@@ -1752,7 +1752,7 @@ def test_types_apply() -> None:
     def make_row(row: pd.Series) -> Row:
         return Row(a=row["a"], b=row["b"])
 
-    def make_row_raw(values: np.ndarray) -> Row:
+    def make_row_raw(values: np.ndarray) -> Row:  # noqa: TID251
         return Row(a=int(values[0]), b=int(values[1]))
 
     def make_row_extra(row: pd.Series, extra: int) -> Row:
@@ -2786,7 +2786,7 @@ def test_frame_array_shape() -> None:
     check(assert_type(df.__array__("f8"), np_2darray), np_2darray)
     check(assert_type(df.__array__(np.dtype(np.float64)), np_2darray), np_2darray)
     check(assert_type(df.__array__(copy=True), np_2darray), np_2darray)
-    check(assert_type(np.asarray(df, "f8"), np_ndarray), np.ndarray)
+    check(assert_type(np.asarray(df, "f8"), np_ndarray), np_ndarray)
 
 
 def test_to_markdown(tmp_path: Path) -> None:
