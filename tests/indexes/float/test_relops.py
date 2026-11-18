@@ -41,403 +41,241 @@ def test_relops_invalid_py_scalar(left: pd.Index[float]) -> None:
         _c_ge = 1j >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
-def test_relops_numeric_sequence_index_float_list(left: pd.Index[float]) -> None:
-    check(assert_type(left < [2.0, 2.0, 2.0], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= [2.0, 2.0, 2.0], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > [2.0, 2.0, 2.0], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= [2.0, 2.0, 2.0], np_1darray_bool), np_1darray_bool)
-    check(assert_type([2.0, 2.0, 2.0] < left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([2.0, 2.0, 2.0] <= left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([2.0, 2.0, 2.0] > left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([2.0, 2.0, 2.0] >= left, np_1darray_bool), np_1darray_bool)
+def test_relops_py_sequence_float(left: pd.Index[float]) -> None:
+    values = [2.0, 2.0, 2.0]
+    check(assert_type(left < values, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left <= values, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left > values, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left >= values, np_1darray_bool), np_1darray_bool)
+    check(assert_type(values < left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(values <= left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(values > left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(values >= left, np_1darray_bool), np_1darray_bool)
 
 
-def test_relops_numeric_sequence_index_int_list(left: pd.Index[float]) -> None:
-    check(assert_type(left < [2, 2, 2], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= [2, 2, 2], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > [2, 2, 2], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= [2, 2, 2], np_1darray_bool), np_1darray_bool)
-    check(assert_type([2, 2, 2] < left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([2, 2, 2] <= left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([2, 2, 2] > left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([2, 2, 2] >= left, np_1darray_bool), np_1darray_bool)
+def test_relops_py_sequence_int(left: pd.Index[float]) -> None:
+    values = [2, 2, 2]
+    check(assert_type(left < values, np_1darray_bool), np_1darray_bool)
+    check(assert_type(values < left, np_1darray_bool), np_1darray_bool)
 
 
-def test_relops_numeric_sequence_index_bool_list(left: pd.Index[float]) -> None:
-    check(assert_type(left < [True, False, True], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= [True, False, True], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > [True, False, True], np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= [True, False, True], np_1darray_bool), np_1darray_bool)
-    check(assert_type([True, False, True] < left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([True, False, True] <= left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([True, False, True] > left, np_1darray_bool), np_1darray_bool)
-    check(assert_type([True, False, True] >= left, np_1darray_bool), np_1darray_bool)
+def test_relops_py_sequence_bool(left: pd.Index[float]) -> None:
+    values = [True, False, True]
+    check(assert_type(left < values, np_1darray_bool), np_1darray_bool)
+    check(assert_type(values < left, np_1darray_bool), np_1darray_bool)
 
 
-def test_relops_numeric_sequence_index_tuple(left: pd.Index[float]) -> None:
+def test_relops_py_sequence_tuple(left: pd.Index[float]) -> None:
+    values = (2.0, 2.0, 2.0)
     with pytest_warns_listlike_pandas4("tuple"):
-        check(assert_type(left < (2.0, 2.0, 2.0), np_1darray_bool), np_1darray_bool)
-        check(assert_type(left <= (2.0, 2.0, 2.0), np_1darray_bool), np_1darray_bool)
-        check(assert_type(left > (2.0, 2.0, 2.0), np_1darray_bool), np_1darray_bool)
-        check(assert_type(left >= (2.0, 2.0, 2.0), np_1darray_bool), np_1darray_bool)
-        check(assert_type((2.0, 2.0, 2.0) < left, np_1darray_bool), np_1darray_bool)
-        check(assert_type((2.0, 2.0, 2.0) <= left, np_1darray_bool), np_1darray_bool)
-        check(assert_type((2.0, 2.0, 2.0) > left, np_1darray_bool), np_1darray_bool)
-        check(assert_type((2.0, 2.0, 2.0) >= left, np_1darray_bool), np_1darray_bool)
+        check(assert_type(left < values, np_1darray_bool), np_1darray_bool)
+        check(assert_type(values < left, np_1darray_bool), np_1darray_bool)
 
 
-def test_relops_numeric_sequence_index_int_index(left: pd.Index[float]) -> None:
-    check(assert_type(left < pd.Index([2, 2, 2]), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= pd.Index([2, 2, 2]), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > pd.Index([2, 2, 2]), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= pd.Index([2, 2, 2]), np_1darray_bool), np_1darray_bool)
-    check(assert_type(pd.Index([2, 2, 2]) < left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(pd.Index([2, 2, 2]) <= left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(pd.Index([2, 2, 2]) > left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(pd.Index([2, 2, 2]) >= left, np_1darray_bool), np_1darray_bool)
+def test_relops_pd_index_int(left: pd.Index[float]) -> None:
+    index = pd.Index([2, 2, 2])
+    check(assert_type(left < index, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left <= index, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left > index, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left >= index, np_1darray_bool), np_1darray_bool)
+    check(assert_type(index < left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(index <= left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(index > left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(index >= left, np_1darray_bool), np_1darray_bool)
 
 
-def test_relops_numeric_sequence_index_bool_index(left: pd.Index[float]) -> None:
-    check(
-        assert_type(left < pd.Index([True, False, True]), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left <= pd.Index([True, False, True]), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left > pd.Index([True, False, True]), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left >= pd.Index([True, False, True]), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(pd.Index([True, False, True]) < left, np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(pd.Index([True, False, True]) <= left, np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(pd.Index([True, False, True]) > left, np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(pd.Index([True, False, True]) >= left, np_1darray_bool),
-        np_1darray_bool,
-    )
+def test_relops_pd_index_bool(left: pd.Index[float]) -> None:
+    index = pd.Index([True, False, True])
+    check(assert_type(left < index, np_1darray_bool), np_1darray_bool)
+    check(assert_type(index < left, np_1darray_bool), np_1darray_bool)
 
 
-def test_relops_numeric_sequence_index_range(left: pd.Index[float]) -> None:
-    check(assert_type(left < pd.RangeIndex(3), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= pd.RangeIndex(3), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > pd.RangeIndex(3), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= pd.RangeIndex(3), np_1darray_bool), np_1darray_bool)
-    check(assert_type(pd.RangeIndex(3) < left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(pd.RangeIndex(3) <= left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(pd.RangeIndex(3) > left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(pd.RangeIndex(3) >= left, np_1darray_bool), np_1darray_bool)
+def test_relops_range_index(left: pd.Index[float]) -> None:
+    index = pd.RangeIndex(3)
+    check(assert_type(left < index, np_1darray_bool), np_1darray_bool)
+    check(assert_type(index < left, np_1darray_bool), np_1darray_bool)
 
 
 def test_relops_py_scalar_float(left: pd.Index[float]) -> None:
-    check(assert_type(left < 2.0, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= 2.0, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > 2.0, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= 2.0, np_1darray_bool), np_1darray_bool)
-    check(assert_type(2.0 < left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(2.0 <= left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(2.0 > left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(2.0 >= left, np_1darray_bool), np_1darray_bool)
+    other = 2.0
+    check(assert_type(left < other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left <= other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left > other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left >= other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other < left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other <= left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other > left, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other >= left, np_1darray_bool), np_1darray_bool)
 
 
 def test_relops_py_scalar_int(left: pd.Index[float]) -> None:
-    check(assert_type(left < 2, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= 2, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > 2, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= 2, np_1darray_bool), np_1darray_bool)
-    check(assert_type(2 < left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(2 <= left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(2 > left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(2 >= left, np_1darray_bool), np_1darray_bool)
+    other = 2
+    check(assert_type(left < other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other < left, np_1darray_bool), np_1darray_bool)
 
 
 def test_relops_py_scalar_bool(left: pd.Index[float]) -> None:
-    check(assert_type(left < True, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= True, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > True, np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= True, np_1darray_bool), np_1darray_bool)
-    check(assert_type(True < left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(True <= left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(True > left, np_1darray_bool), np_1darray_bool)
-    check(assert_type(True >= left, np_1darray_bool), np_1darray_bool)
+    other = True
+    check(assert_type(left < other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other < left, np_1darray_bool), np_1darray_bool)
 
 
 def test_relops_numpy_scalar_bool(left: pd.Index[float]) -> None:
-    check(assert_type(left < np.bool_(True), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= np.bool_(True), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > np.bool_(True), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= np.bool_(True), np_1darray_bool), np_1darray_bool)
-    check(assert_type(np.bool_(True) < left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.bool_(True) <= left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.bool_(True) > left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.bool_(True) >= left, np_ndarray_bool), np_ndarray_bool)
+    other = np.bool_(True)
+    check(assert_type(left < other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other < left, np_ndarray_bool), np_ndarray_bool)
 
 
 def test_relops_numpy_scalar_int64(left: pd.Index[float]) -> None:
-    check(assert_type(left < np.int64(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= np.int64(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > np.int64(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= np.int64(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(np.int64(2) < left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.int64(2) <= left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.int64(2) > left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.int64(2) >= left, np_ndarray_bool), np_ndarray_bool)
+    other = np.int64(2)
+    check(assert_type(left < other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other < left, np_ndarray_bool), np_ndarray_bool)
 
 
 def test_relops_numpy_scalar_float32(left: pd.Index[float]) -> None:
-    check(assert_type(left < np.float32(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left <= np.float32(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left > np.float32(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(left >= np.float32(2), np_1darray_bool), np_1darray_bool)
-    check(assert_type(np.float32(2) < left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.float32(2) <= left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.float32(2) > left, np_ndarray_bool), np_ndarray_bool)
-    check(assert_type(np.float32(2) >= left, np_ndarray_bool), np_ndarray_bool)
+    other = np.float32(2)
+    check(assert_type(left < other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left <= other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left > other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left >= other, np_1darray_bool), np_1darray_bool)
+    check(assert_type(other < left, np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(other <= left, np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(other > left, np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(other >= left, np_ndarray_bool), np_ndarray_bool)
 
 
 def test_relops_numpy_array_float32(left: pd.Index[float]) -> None:
-    check(
-        assert_type(left < np.array([2.0, 2.0, 2.0], np.float32), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left <= np.array([2.0, 2.0, 2.0], np.float32), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left > np.array([2.0, 2.0, 2.0], np.float32), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left >= np.array([2.0, 2.0, 2.0], np.float32), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(np.array([2.0, 2.0, 2.0], np.float32) < left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2.0, 2.0, 2.0], np.float32) <= left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2.0, 2.0, 2.0], np.float32) > left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2.0, 2.0, 2.0], np.float32) >= left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
+    array = np.array([2.0, 2.0, 2.0], np.float32)
+    check(assert_type(left < array, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left <= array, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left > array, np_1darray_bool), np_1darray_bool)
+    check(assert_type(left >= array, np_1darray_bool), np_1darray_bool)
+    check(assert_type(array < left, np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(array <= left, np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(array > left, np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(array >= left, np_ndarray_bool), np_ndarray_bool)
 
 
 def test_relops_numpy_array_int64(left: pd.Index[float]) -> None:
-    check(
-        assert_type(left < np.array([2, 2, 2], np.int64), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left <= np.array([2, 2, 2], np.int64), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left > np.array([2, 2, 2], np.int64), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left >= np.array([2, 2, 2], np.int64), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(np.array([2, 2, 2], np.int64) < left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2, 2, 2], np.int64) <= left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2, 2, 2], np.int64) > left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([2, 2, 2], np.int64) >= left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
+    array = np.array([2, 2, 2], np.int64)
+    check(assert_type(left < array, np_1darray_bool), np_1darray_bool)
+    check(assert_type(array < left, np_ndarray_bool), np_ndarray_bool)
 
 
 def test_relops_numpy_array_bool(left: pd.Index[float]) -> None:
-    check(
-        assert_type(left < np.array([True, False, True], np.bool_), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left <= np.array([True, False, True], np.bool_), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left > np.array([True, False, True], np.bool_), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(left >= np.array([True, False, True], np.bool_), np_1darray_bool),
-        np_1darray_bool,
-    )
-    check(
-        assert_type(np.array([True, False, True], np.bool_) < left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([True, False, True], np.bool_) <= left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([True, False, True], np.bool_) > left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
-    check(
-        assert_type(np.array([True, False, True], np.bool_) >= left, np_ndarray_bool),
-        np_ndarray_bool,
-    )
+    array = np.array([True, False, True], np.bool_)
+    check(assert_type(left < array, np_1darray_bool), np_1darray_bool)
+    check(assert_type(array < left, np_ndarray_bool), np_ndarray_bool)
 
 
-def test_relops_pd_index(left: pd.Index[float]) -> None:
-    check(
-        assert_type(left < pd.Index([2.0, 2.0, 2.0]), np_1darray_bool), np_1darray_bool
-    )
-    check(
-        assert_type(left <= pd.Index([2.0, 2.0, 2.0]), np_1darray_bool), np_1darray_bool
-    )
-    check(
-        assert_type(left > pd.Index([2.0, 2.0, 2.0]), np_1darray_bool), np_1darray_bool
-    )
-    check(
-        assert_type(left >= pd.Index([2.0, 2.0, 2.0]), np_1darray_bool), np_1darray_bool
-    )
+def test_relops_pd_index_float(left: pd.Index[float]) -> None:
+    index = pd.Index([2.0, 2.0, 2.0])
+    check(assert_type(left < index, np_1darray_bool), np_1darray_bool)
+    check(assert_type(index < left, np_1darray_bool), np_1darray_bool)
 
 
-def test_relops_invalid_incompatible_scalar_str(left: pd.Index[float]) -> None:
+def test_relops_invalid_py_scalar_str(left: pd.Index[float]) -> None:
+    other = "x"
     if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < "x"  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= "x"  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > "x"  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= "x"  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = "x" < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = "x" <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = "x" > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = "x" >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_left = left < other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_left = left <= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_left = left > other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_left = left >= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_other = other < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_other = other <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_other = other > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_other = other >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
-def test_relops_invalid_incompatible_scalar_timestamp(left: pd.Index[float]) -> None:
+def test_relops_invalid_timestamp(left: pd.Index[float]) -> None:
+    other = pd.Timestamp("2020-01-01")
     if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < pd.Timestamp("2020-01-01")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= pd.Timestamp("2020-01-01")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > pd.Timestamp("2020-01-01")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= pd.Timestamp("2020-01-01")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = pd.Timestamp("2020-01-01") < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = pd.Timestamp("2020-01-01") <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = pd.Timestamp("2020-01-01") > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = pd.Timestamp("2020-01-01") >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_left = left < other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_left = left <= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_left = left > other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_left = left >= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_other = other < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_other = other <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_other = other > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_other = other >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
-def test_relops_invalid_incompatible_scalar_timedelta(left: pd.Index[float]) -> None:
+def test_relops_invalid_timedelta(left: pd.Index[float]) -> None:
+    other = pd.Timedelta("1 day")
     if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < pd.Timedelta("1 day")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= pd.Timedelta("1 day")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > pd.Timedelta("1 day")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= pd.Timedelta("1 day")  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = pd.Timedelta("1 day") < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = pd.Timedelta("1 day") <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = pd.Timedelta("1 day") > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = pd.Timedelta("1 day") >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_left = left < other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_left = left <= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_left = left > other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_left = left >= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_other = other < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_other = other <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_other = other > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_other = other >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_relops_invalid_py_sequence_str(left: pd.Index[float]) -> None:
-    other: list[str] = ["x", "y", "z"]
+    values: list[str] = ["x", "y", "z"]
     if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = other < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = other <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = other > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = other >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_left = left < values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_left = left <= values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_left = left > values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_left = left >= values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_other = values < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_other = values <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_other = values > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_other = values >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_relops_invalid_py_sequence_complex(left: pd.Index[float]) -> None:
-    other: list[complex] = [1j, 2j, 3j]
+    values: list[complex] = [1j, 2j, 3j]
     if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = other < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = other <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = other > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = other >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_left = left < values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_left = left <= values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_left = left > values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_left = left >= values  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_other = values < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_other = values <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_other = values > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_other = values >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_relops_invalid_pd_index_str(left: pd.Index[float]) -> None:
-    other: pd.Index[str] = pd.Index(["x", "y", "z"])
+    index: pd.Index[str] = pd.Index(["x", "y", "z"])
     if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= other  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = other < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = other <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = other > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = other >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_left = left < index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_left = left <= index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_left = left > index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_left = left >= index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_other = index < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_other = index <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_other = index > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_other = index >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
-def test_relops_invalid_pd_index_complex(left: pd.Index[float]) -> None:
+def test_relops_invalid_datetime_index(left: pd.Index[float]) -> None:
+    index = pd.date_range("2020-01-01", periods=3)
     if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < pd.Index([1j, 2j, 3j])  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= pd.Index([1j, 2j, 3j])  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > pd.Index([1j, 2j, 3j])  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= pd.Index([1j, 2j, 3j])  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = pd.Index([1j, 2j, 3j]) < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = pd.Index([1j, 2j, 3j]) <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = pd.Index([1j, 2j, 3j]) > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = pd.Index([1j, 2j, 3j]) >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_left = left < index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_left = left <= index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_left = left > index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_left = left >= index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_other = index < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_other = index <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_other = index > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_other = index >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
-def test_relops_invalid_pd_index_timestamp(left: pd.Index[float]) -> None:
+def test_relops_invalid_timedelta_index(left: pd.Index[float]) -> None:
+    index = pd.timedelta_range("1 day", periods=3)
     if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < pd.date_range("2020-01-01", periods=3)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= pd.date_range("2020-01-01", periods=3)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > pd.date_range("2020-01-01", periods=3)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= pd.date_range("2020-01-01", periods=3)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = pd.date_range("2020-01-01", periods=3) < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = pd.date_range("2020-01-01", periods=3) <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = pd.date_range("2020-01-01", periods=3) > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = pd.date_range("2020-01-01", periods=3) >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-
-
-def test_relops_invalid_pd_index_timedelta(left: pd.Index[float]) -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
-        _lt_left = left < pd.timedelta_range("1 day", periods=3)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_left = left <= pd.timedelta_range("1 day", periods=3)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_left = left > pd.timedelta_range("1 day", periods=3)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_left = left >= pd.timedelta_range("1 day", periods=3)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _lt_other = pd.timedelta_range("1 day", periods=3) < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _le_other = pd.timedelta_range("1 day", periods=3) <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _gt_other = pd.timedelta_range("1 day", periods=3) > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
-        _ge_other = pd.timedelta_range("1 day", periods=3) >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_left = left < index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_left = left <= index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_left = left > index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_left = left >= index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _lt_other = index < left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _le_other = index <= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _gt_other = index > left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
+        _ge_other = index >= left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType] # pyrefly: ignore[unsupported-operation] # ty: ignore[unsupported-operator]
 
 
 def test_relops_invalid_numpy_array_str(left: pd.Index[float]) -> None:
