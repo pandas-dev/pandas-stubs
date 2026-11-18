@@ -55,7 +55,10 @@ def test_multiindex_set_codes() -> None:
 def test_multiindex_view() -> None:
     mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]])
     check(assert_type(mi.view(), pd.MultiIndex), pd.MultiIndex)
-    check(assert_type(mi.view(np.ndarray), pd.MultiIndex), pd.MultiIndex)
+    check(
+        assert_type(mi.view(np.ndarray), pd.MultiIndex),  # noqa: TID251
+        pd.MultiIndex,
+    )
 
 
 def test_multiindex_remove_unused_levels() -> None:

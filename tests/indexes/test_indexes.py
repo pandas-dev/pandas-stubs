@@ -1941,9 +1941,9 @@ def test_index_view() -> None:
     # mypy and pyright differ here in what they report:
     # - mypy: ndarray[Any, Any]"
     # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
-    check(assert_type(ind.view(np.ndarray), np.ndarray), np_ndarray)  # type: ignore[assert-type]
+    check(assert_type(ind.view(np.ndarray), np.ndarray), np_ndarray)  # type: ignore[assert-type] # noqa: TID251
 
-    class MyArray(np.ndarray): ...
+    class MyArray(np.ndarray): ...  # noqa: TID251
 
     check(assert_type(ind.view(MyArray), MyArray), MyArray)
 

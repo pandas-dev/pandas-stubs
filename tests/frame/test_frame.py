@@ -1752,7 +1752,7 @@ def test_types_apply() -> None:
     def make_row(row: pd.Series) -> Row:
         return Row(a=row["a"], b=row["b"])
 
-    def make_row_raw(values: np.ndarray) -> Row:
+    def make_row_raw(values: np.ndarray) -> Row:  # noqa: TID251
         return Row(a=int(values[0]), b=int(values[1]))
 
     def make_row_extra(row: pd.Series, extra: int) -> Row:

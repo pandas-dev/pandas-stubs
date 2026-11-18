@@ -164,7 +164,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
     ) -> Self:
         return cls(values)
 
-    _HANDLED_TYPES = (decimal.Decimal, numbers.Number, np.ndarray)
+    _HANDLED_TYPES = (decimal.Decimal, numbers.Number, np.ndarray)  # noqa: TID251
 
     @override
     def to_numpy(

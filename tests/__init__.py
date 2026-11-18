@@ -53,12 +53,12 @@ def check(
     index_to_check_for_type: Literal[0, -1] = 0,
 ) -> T:
     __tracebackhide__ = True
-    if klass is np.ndarray:
+    if klass is np.ndarray:  # noqa: TID251
         raise RuntimeError("use an np_*darray alias from tests._typing")
     origin = get_origin(klass)
     if not isinstance(actual, origin or klass):
         raise RuntimeError(f"Expected type '{klass}' but got '{type(actual)}'")
-    if origin is np.ndarray:
+    if origin is np.ndarray:  # noqa: TID251
         # Check shape and dtype
         args = get_args(klass)
         shape_type = args[0] if len(args) >= 1 else None
