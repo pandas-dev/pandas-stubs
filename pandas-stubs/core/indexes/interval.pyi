@@ -35,10 +35,10 @@ from pandas._typing import (
     IntervalClosedType,
     IntervalT,
     MaskType,
-    np_1darray,
     np_1darray_bool,
     np_1darray_dt,
     np_1darray_float,
+    np_1darray_int32,
     np_1darray_int64,
     np_1darray_intp,
     np_1darray_td,
@@ -51,7 +51,7 @@ from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 _EdgesInt: TypeAlias = (
     Sequence[int]
     | np_1darray_int64
-    | np_1darray[np.int32]
+    | np_1darray_int32
     | np_1darray_intp
     | pd.Series[int]
     | Index[int]
