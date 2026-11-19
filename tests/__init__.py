@@ -53,10 +53,12 @@ def check(
     index_to_check_for_type: Literal[0, -1] = 0,
 ) -> T:
     __tracebackhide__ = True
+    if klass is np.ndarray:  # noqa: TID251
+        raise RuntimeError("use an np_*darray alias from tests._typing")
     origin = get_origin(klass)
     if not isinstance(actual, origin or klass):
         raise RuntimeError(f"Expected type '{klass}' but got '{type(actual)}'")
-    if origin is np.ndarray:
+    if origin is np.ndarray:  # noqa: TID251
         # Check shape and dtype
         args = get_args(klass)
         shape_type = args[0] if len(args) >= 1 else None
@@ -234,6 +236,14 @@ def pytest_warns_inplace_pandas4(
 ) -> AbstractContextManager[Any]:
     return pytest_warns_bounded(
         Pandas4Warning, f"The inplace keyword in {cls}", upper="3.99"
+    )
+
+
+def pytest_warns_listlike_pandas4(
+    kind: Literal["tuple", "range"],
+) -> AbstractContextManager[Any]:
+    return pytest_warns_bounded(
+        Pandas4Warning, f"Operation with {kind} is deprecated", upper="3.99.99"
     )
 
 

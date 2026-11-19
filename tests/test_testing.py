@@ -41,6 +41,36 @@ def test_assert_frame_equal() -> None:
         assert_frame_equal(df1, df2, check_datetimelike_compat=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
 
 
+def test_assert_datetime_array_equal() -> None:
+    from pandas._testing import assert_datetime_array_equal
+    from pandas.core.arrays.datetimes import DatetimeArray
+
+    dta1 = pd.array([pd.Timestamp("2020-01-01")])
+    dta2 = pd.array([pd.Timestamp("2020-01-01")])
+    assert isinstance(dta1, DatetimeArray)
+    assert isinstance(dta2, DatetimeArray)
+    assert_datetime_array_equal(dta1, dta2)
+    assert_datetime_array_equal(dta1, dta2, obj="CustomName")
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_datetime_array_equal(dta1, dta2, check_freq=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
+
+def test_assert_timedelta_array_equal() -> None:
+    from pandas._testing import assert_timedelta_array_equal
+    from pandas.core.arrays.timedeltas import TimedeltaArray
+
+    tda1 = pd.array([pd.Timedelta("1 day")])
+    tda2 = pd.array([pd.Timedelta("1 day")])
+    assert isinstance(tda1, TimedeltaArray)
+    assert isinstance(tda2, TimedeltaArray)
+    assert_timedelta_array_equal(tda1, tda2)
+    assert_timedelta_array_equal(tda1, tda2, obj="CustomName")
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_timedelta_array_equal(tda1, tda2, check_freq=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+
+
 def test_assert_index_equal() -> None:
     i1 = pd.date_range("2024-01-01", periods=3, freq="D")
     i2 = pd.DatetimeIndex(["2024-01-01", "2024-01-02", "2024-01-03"])

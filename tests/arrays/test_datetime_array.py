@@ -348,3 +348,12 @@ def test_item() -> None:
     check(assert_type(arr.item(0), pd.Timestamp | NaTType), pd.Timestamp)
     nat = pd.array([pd.Timestamp("2026-01-01"), pd.NaT])[1:]
     check(assert_type(nat.item(), pd.Timestamp | NaTType), NaTType)
+
+
+def test_datetime_array() -> None:
+    """Test __array__ method for DatetimeArray."""
+    arr = pd.array([datetime(2024, 1, 1)])
+    check(assert_type(arr.__array__(), np_1darray), np_1darray, np.datetime64)
+    check(
+        assert_type(arr.__array__(dtype=object), np_1darray), np_1darray, pd.Timestamp
+    )

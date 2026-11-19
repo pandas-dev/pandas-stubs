@@ -319,6 +319,12 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __getitem__(self, key: Scalar, /) -> Series | _T: ...
     @overload
+    def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, idx: tuple[slice, tuple[Scalar]], /
+    ) -> _T: ...
+    @overload
+    def __getitem__(self, idx: tuple[slice, tuple[Scalar, ...]], /) -> Series: ...
+    @overload
     def __getitem__(
         self,
         key: (
@@ -352,7 +358,6 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         ),
         /,
     ) -> _T: ...
-
     # Keep in sync with `DataFrame.__setitem__`
     @overload
     def __setitem__(
@@ -485,6 +490,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def itertuples(
         self, index: _bool = ..., name: None = None
     ) -> Iterator[tuple[Any, ...]]: ...
+    @overload  # workaround for overload bugs in mypy and pyright
+    def dot(
+        self,
+        other: np_ndarray[tuple[Never, Never, Never]],
+    ) -> Self | Series: ...
     @overload
     def dot(
         self,
@@ -495,6 +505,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
     ) -> Series: ...
+    @overload  # workaround for overload bugs in mypy and pyright
+    def __matmul__(
+        self,
+        other: np_ndarray[tuple[Never, Never, Never]],
+        /,
+    ) -> Self | Series: ...
     @overload
     def __matmul__(
         self,
@@ -507,6 +523,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: Series | ExtensionArray | np_1darray | Sequence[SupportsSelfMul[Any]],
         /,
     ) -> Series: ...
+    @overload  # workaround for overload bugs in mypy and pyright
+    def __rmatmul__(
+        self,
+        other: np_ndarray[tuple[Never, Never, Never]],
+        /,
+    ) -> Self | Series: ...
     @overload
     def __rmatmul__(
         self,
@@ -1658,7 +1680,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Series: ...
     @overload
-    def apply(
+    def apply(  # pyright: ignore[reportOverlappingOverload]
         self,
         func: Callable[..., Series],
         *,
@@ -1668,6 +1690,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Self: ...
+    @overload
+    def apply(
+        self,
+        # TODO: remove S2 when python/mypy#21768 is resolved
+        func: Callable[..., S2 | _T],
+        *,
+        axis: AxisColumn,
+        raw: _bool = ...,
+        result_type: None = None,
+        args: Any = ...,
+        **kwargs: Any,
+    ) -> Series: ...
 
     # apply() overloads with keyword axis=1 and keyword result_type
     @overload
@@ -2023,6 +2057,30 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # methods
     @final
     def abs(self) -> Self: ...
+    @override
+    def __lt__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __le__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __gt__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
+    @override
+    def __ge__(
+        self,
+        other: _CompareScalarNoComplex | ListLike | DataFrame,
+        /,
+    ) -> Self: ...
     def __add__(self, other: Any, /) -> Self: ...
     def add(
         self,

@@ -310,6 +310,20 @@ def test_indexslice_getitem_multiindex_columns() -> None:
     df = pd.DataFrame.from_records(
         [list(range(6)), [k * 10 + 1 for k in range(6)]], columns=mic
     )
+    df_with_string = pd.DataFrame(
+        [[1, 2, 3, 4]],
+        columns=pd.MultiIndex.from_product([["a", "b"], ["a", "b"]]),
+    )
+    df_three_levels = pd.DataFrame(
+        [list(range(8))],
+        columns=pd.MultiIndex.from_product([["a", "b"], [1, 2], ["x", "y"]]),
+    )
+    df_four_levels = pd.DataFrame(
+        [list(range(16))],
+        columns=pd.MultiIndex.from_product(
+            [["a", "b"], [1, 2], ["x", "y"], ["i", "j"]]
+        ),
+    )
 
     # TODO: astral-sh/ty#4695 remove when ty fixes the slice-tuple alternative on Python 3.11
     check(
@@ -331,7 +345,27 @@ def test_indexslice_getitem_multiindex_columns() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(df.loc[:, pd.IndexSlice["a", 3]], pd.DataFrame | pd.Series),
+        assert_type(df_with_string.loc[:, pd.IndexSlice[:, "a"]], pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.loc[:, pd.IndexSlice["a", 3]], pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df_three_levels.loc[:, pd.IndexSlice["a", 1, :]], pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.loc[:, ("a", 1)], pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df_three_levels.loc[:, ("a", 1, "x")], pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df_four_levels.loc[:, ("a", 1, "x", "i")], pd.Series),
         pd.Series,
     )
 
@@ -637,7 +671,7 @@ def test_loc_iterable(col: Hashable, typ: type) -> None:
         assert_type(df.loc[:, [1]], pd.DataFrame)
 
         assert_type(df.loc[:, (None,)], pd.DataFrame)
-        assert_type(df.loc[:, (1,)], pd.DataFrame | pd.Series)
+        assert_type(df.loc[:, (1,)], pd.DataFrame)
 
         assert_type(df.loc[:, deque([None])], pd.DataFrame)
         assert_type(df.loc[:, deque([1])], pd.DataFrame)
@@ -715,10 +749,13 @@ def test_npint_loc_indexer() -> None:
 
     df = pd.DataFrame({"x": [1, 2, 3]}, index=np.array([10, 20, 30], dtype="uint64"))
 
-    def get_NDArray(df: pd.DataFrame, key: npt.NDArray[np.uint64]) -> pd.DataFrame:
+    def get_NDArray(
+        df: pd.DataFrame,
+        key: npt.NDArray[np.uint64],  # noqa: TID251
+    ) -> pd.DataFrame:
         return df.loc[key]
 
-    a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
+    a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")  # noqa: TID251
     check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
 
 

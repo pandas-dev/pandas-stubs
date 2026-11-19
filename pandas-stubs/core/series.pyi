@@ -2664,10 +2664,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __rfloordiv__(self, other: np_ndarray_complex | np_ndarray_dt, /) -> Never: ...
     @overload
     def __rfloordiv__(
-        self: Series[int] | Series[float], other: np_ndarray_td, /
-    ) -> Never: ...
-    @overload
-    def __rfloordiv__(
         self: Series[bool] | Series[complex], other: np_ndarray, /
     ) -> Never: ...
     @overload
