@@ -749,10 +749,13 @@ def test_npint_loc_indexer() -> None:
 
     df = pd.DataFrame({"x": [1, 2, 3]}, index=np.array([10, 20, 30], dtype="uint64"))
 
-    def get_NDArray(df: pd.DataFrame, key: npt.NDArray[np.uint64]) -> pd.DataFrame:
+    def get_NDArray(
+        df: pd.DataFrame,
+        key: npt.NDArray[np.uint64],  # noqa: TID251
+    ) -> pd.DataFrame:
         return df.loc[key]
 
-    a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
+    a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")  # noqa: TID251
     check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
 
 

@@ -507,6 +507,15 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.round(dt.timedelta(seconds=1)), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.isoformat(), str), str)
     check(assert_type(td.to_numpy(), np.timedelta64), np.timedelta64)
+    check(assert_type(td.to_numpy(dtype=None), np.timedelta64), np.timedelta64)
+    check(assert_type(td.to_numpy(copy=False), np.timedelta64), np.timedelta64)
+    check(
+        assert_type(td.to_numpy(dtype=None, copy=False), np.timedelta64),
+        np.timedelta64,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = td.to_numpy(dtype="int64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _1 = td.to_numpy(copy=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
     check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
     check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
     check(assert_type(td.total_seconds(), float), float)
@@ -1448,6 +1457,15 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts, pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts.to_numpy(), np.datetime64), np.datetime64)
+    check(assert_type(ts.to_numpy(dtype=None), np.datetime64), np.datetime64)
+    check(assert_type(ts.to_numpy(copy=False), np.datetime64), np.datetime64)
+    check(
+        assert_type(ts.to_numpy(dtype=None, copy=False), np.datetime64),
+        np.datetime64,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        _2 = ts.to_numpy(dtype="int64")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        _3 = ts.to_numpy(copy=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
 
     check(assert_type(pd.Timestamp.fromtimestamp(432.54), pd.Timestamp), pd.Timestamp)
     check(
@@ -1974,6 +1992,12 @@ def test_nat_value() -> None:
     check(assert_type(pd.NaT.value, int), int)
     if TYPE_CHECKING_INVALID_USAGE:
         pd.NaT.value = 1  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue] # pyrefly: ignore[read-only] # ty: ignore[invalid-assignment]
+
+
+def test_nat_asm8() -> None:
+    check(assert_type(pd.NaT.asm8, np.datetime64), np.datetime64)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = pd.NaT.asm8()  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType] # pyrefly: ignore[not-callable] # ty: ignore[not-callable]
 
 
 def test_nattype_dunder_methods() -> None:

@@ -17,7 +17,7 @@ from pandas.core.series import Series
 
 from pandas._typing import (
     HashableT,
-    np_ndarray_object,
+    np_2darray_object,
 )
 
 _Color: TypeAlias = str | Sequence[float]
@@ -41,7 +41,7 @@ def scatter_matrix(
     hist_kwds: dict[str, Any] | None = None,
     range_padding: float = 0.05,
     **kwargs: Any,
-) -> np_ndarray_object: ...
+) -> np_2darray_object: ...
 def radviz(
     frame: DataFrame,
     class_column: Hashable,

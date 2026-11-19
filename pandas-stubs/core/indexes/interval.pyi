@@ -13,7 +13,6 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from pandas import Index
 from pandas._stubs_only import (
@@ -37,32 +36,34 @@ from pandas._typing import (
     IntervalT,
     MaskType,
     np_1darray_bool,
+    np_1darray_dt,
+    np_1darray_float,
+    np_1darray_int32,
+    np_1darray_int64,
+    np_1darray_intp,
+    np_1darray_td,
     np_ndarray_anyint,
     np_ndarray_bool,
-    np_ndarray_dt,
-    np_ndarray_int64,
-    np_ndarray_intp,
-    np_ndarray_td,
 )
 
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 
 _EdgesInt: TypeAlias = (
     Sequence[int]
-    | np_ndarray_int64
-    | npt.NDArray[np.int32]
-    | np_ndarray_intp
+    | np_1darray_int64
+    | np_1darray_int32
+    | np_1darray_intp
     | pd.Series[int]
     | Index[int]
 )
 _EdgesFloat: TypeAlias = (
-    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | Index[float]
+    Sequence[float] | np_1darray_float | pd.Series[float] | Index[float]
 )
 _EdgesTimestamp: TypeAlias = (
-    Sequence[DatetimeLike] | np_ndarray_dt | pd.Series[pd.Timestamp] | pd.DatetimeIndex
+    Sequence[DatetimeLike] | np_1darray_dt | pd.Series[pd.Timestamp] | pd.DatetimeIndex
 )
 _EdgesTimedelta: TypeAlias = (
-    Sequence[pd.Timedelta] | np_ndarray_td | pd.Series[pd.Timedelta] | pd.TimedeltaIndex
+    Sequence[pd.Timedelta] | np_1darray_td | pd.Series[pd.Timedelta] | pd.TimedeltaIndex
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta

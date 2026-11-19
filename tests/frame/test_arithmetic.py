@@ -91,9 +91,9 @@ def test_types_dot() -> None:
     df2 = pd.DataFrame([[0, 1], [1, 2], [-1, -1], [2, 0]])
     s1 = pd.Series([1, 1, 2, 1])
     # erased shape types
-    n1_nd = cast("npt.NDArray[np.float64]", np.ones((4, 2)))
-    n2_nd = cast("npt.NDArray[np.float64]", np.ones(4))
-    n3_nd = cast("npt.NDArray[np.float64]", np.ones(2))
+    n1_nd = cast("npt.NDArray[np.float64]", np.ones((4, 2)))  # noqa: TID251
+    n2_nd = cast("npt.NDArray[np.float64]", np.ones(4))  # noqa: TID251
+    n3_nd = cast("npt.NDArray[np.float64]", np.ones(2))  # noqa: TID251
 
     check(assert_type(df1 @ df2, pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.dot(df2), pd.DataFrame), pd.DataFrame)

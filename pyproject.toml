@@ -217,7 +217,16 @@ ignore = [
 ]
 
 
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"numpy.ndarray".msg = "Use the shape-typed aliases in pandas._typing (np_1darray*, np_2darray*, np_ndarray*)."
+"numpy.typing.NDArray".msg = "Use the shape-typed aliases in pandas._typing (np_1darray*, np_2darray*, np_ndarray*)."
+
+
 [tool.ruff.lint.per-file-ignores]
+"pandas-stubs/_typing.pyi" = [
+  # The following rules are ignored permanently for good reasons
+  "TID251", # Defines the np_*darray* aliases, so numpy.ndarray can be banned everywhere else
+]
 "*.pyi" = [
   # The following rules are ignored permanently for good reasons
   "A002",   # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/

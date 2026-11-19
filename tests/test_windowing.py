@@ -476,26 +476,28 @@ def test_rolling_window() -> None:
 
 def test_indexer_variable_offset() -> None:
     indexer = VariableOffsetWindowIndexer(index=IDX, offset=pd.offsets.BDay(1))
-    check(
+    bounds = check(
         assert_type(
             indexer.get_window_bounds(2, None, None),
             tuple[np_1darray_intp, np_1darray_intp],
         ),
         tuple,
-        np.ndarray,
     )
+    for bound in bounds:
+        check(assert_type(bound, np_1darray_intp), np_1darray_intp)
 
 
 def test_indexer_fixed_forward() -> None:
     indexer = FixedForwardWindowIndexer([1, float("nan")], 2)
-    check(
+    bounds = check(
         assert_type(
             indexer.get_window_bounds(2, None, None),
             tuple[np_1darray_intp, np_1darray_intp],
         ),
         tuple,
-        np.ndarray,
     )
+    for bound in bounds:
+        check(assert_type(bound, np_1darray_intp), np_1darray_intp)
 
 
 def test_groupby_kurt() -> None:
