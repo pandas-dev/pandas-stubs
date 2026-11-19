@@ -1944,6 +1944,8 @@ def test_period_cmp_array() -> None:
 
 def test_period_methods() -> None:
     p3 = pd.Period("2007-01", freq="M")
+    check(assert_type(p3.to_timestamp(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(p3.asfreq("D"), pd.Period), pd.Period)
     check(assert_type(p3.to_timestamp("D", "S"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "E"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "start"), pd.Timestamp), pd.Timestamp)
