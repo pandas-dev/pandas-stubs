@@ -913,14 +913,14 @@ def test_types_unique() -> None:
 def test_types_apply() -> None:
     s = pd.Series([-10, 2, 2, 3.4, 10, 10])
 
-    def square(x: float) -> float:
+    def square(x: float, _extra: int = 0) -> float:
         return x**2
 
     check(assert_type(s.apply(square), pd.Series), pd.Series, float)
     check(assert_type(s.apply(np.exp), pd.Series), pd.Series, float)
     check(assert_type(s.apply(str), pd.Series), pd.Series, str)
 
-    def makeseries(x: float) -> pd.Series:
+    def makeseries(x: float, _extra: int = 0) -> pd.Series:
         return pd.Series([x, 2 * x])
 
     check(assert_type(s.apply(makeseries), pd.DataFrame), pd.DataFrame)
@@ -932,7 +932,7 @@ def test_types_apply() -> None:
 
     check(assert_type(s.apply(retseries).tolist(), list[Any]), list)
 
-    def retlist(x: float) -> list[float]:
+    def retlist(x: float, _extra: int = 0) -> list[float]:
         return [x]
 
     check(assert_type(s.apply(retlist), pd.Series), pd.Series, list)
@@ -944,6 +944,26 @@ def test_types_apply() -> None:
     check(assert_type(ss.apply(get_depth), pd.Series), pd.Series, np.integer)
 
     check(assert_type(s.apply(lambda _: pd.NA), pd.Series), pd.Series, NAType)
+
+    def makeoffset(x: float, extra: int) -> BaseOffset:
+        return pd.offsets.Day(int(x) + extra)
+
+    for args in ((1,), [1]):
+        check(assert_type(s.apply(square, args=args), pd.Series), pd.Series, float)
+        check(assert_type(s.apply(retlist, args=args), pd.Series), pd.Series, list)
+        check(assert_type(s.apply(makeseries, args=args), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(s.apply(makeoffset, args), "pd.Series[BaseOffset]"),
+            pd.Series,
+            BaseOffset,
+        )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.apply(square, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.apply(makeoffset, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.apply(makeseries, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.apply(square, args="abc")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.apply(square, args=b"abc")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_element_wise_arithmetic() -> None:

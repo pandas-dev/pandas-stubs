@@ -1566,7 +1566,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Self: ...
     @overload
@@ -1577,7 +1577,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Series[S2]: ...
     # Since non-scalar type T is not supported in Series[T],
@@ -1589,7 +1589,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = None,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Series: ...
 
@@ -1601,7 +1601,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         func: Callable[..., S2 | NAType],
         axis: Axis = 0,
         raw: _bool = ...,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         *,
         result_type: Literal["expand", "reduce"],
         **kwargs: Any,
@@ -1612,7 +1612,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         func: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping[Any, Any]],
         axis: Axis = 0,
         raw: _bool = ...,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         *,
         result_type: Literal["expand"],
         **kwargs: Any,
@@ -1623,7 +1623,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         func: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
         axis: Axis = 0,
         raw: _bool = ...,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         *,
         result_type: Literal["reduce"],
         **kwargs: Any,
@@ -1636,7 +1636,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         ],
         axis: Axis = 0,
         raw: _bool = ...,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         *,
         result_type: Literal["broadcast"],
         **kwargs: Any,
@@ -1649,7 +1649,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         func: Callable[..., Series],
         axis: AxisIndex = 0,
         raw: _bool = ...,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         *,
         result_type: Literal["reduce"],
         **kwargs: Any,
@@ -1664,7 +1664,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         raw: _bool = ...,
         result_type: None = None,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Series[S2]: ...
@@ -1675,7 +1675,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         raw: _bool = ...,
         result_type: None = None,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Series: ...
@@ -1686,7 +1686,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         raw: _bool = ...,
         result_type: None = None,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Self: ...
@@ -1699,7 +1699,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisColumn,
         raw: _bool = ...,
         result_type: None = None,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Series: ...
 
@@ -1710,7 +1710,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         func: Callable[..., Series],
         *,
         raw: _bool = ...,
-        args: Any = ...,
+        args: SequenceNotStr[Any] = ...,
         axis: AxisColumn,
         result_type: Literal["reduce"],
         **kwargs: Any,
