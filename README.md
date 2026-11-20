@@ -74,6 +74,22 @@ we can fix the code:
 decimals = pd.Series({'TSLA': 2, 'AMZN': 1})
 ```
 
+### Strict type checking and optional Excel engines
+
+Excel APIs such as `DataFrame.to_excel` refer to workbook types from several
+optional engines. For example, pandas can write an `.xlsx` file with `openpyxl`,
+but Pyright or basedpyright in strict mode can still report
+`reportUnknownMemberType` when it cannot resolve types for the other engines.
+This can happen even when the call runs successfully with the selected engine.
+
+Check missing import diagnostics in the environment used by your type checker.
+Enable `reportMissingModuleSource` to also see when the checker can find stubs
+for an imported module but cannot find the module itself. For `to_excel`,
+installing `xlsxwriter` and `odfpy` alongside `openpyxl` in that environment can
+resolve the writer types. For `read_excel`, the checker may also need reader
+packages such as `pyxlsb`. Install the engines your application uses in its
+runtime environment.
+
 ## Versioning
 
 The version number of `pandas-stubs` follows the format **`x.y.z.yymmdd`**, where:
