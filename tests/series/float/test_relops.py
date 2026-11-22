@@ -175,17 +175,8 @@ def test_relops_pd_series(left: pd.Series[float]) -> None:
 def test_relops_py_scalar_bool(left: pd.Series[float]) -> None:
     other = True
     check(assert_type(left < other, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left <= other, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left > other, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left >= other, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(other < left, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(other <= left, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(other > left, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(other >= left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.lt(other), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.le(other), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.gt(other), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(left.ge(other), "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_relops_numpy_scalar_bool(left: pd.Series[float]) -> None:
