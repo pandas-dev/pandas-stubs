@@ -300,3 +300,18 @@ def test_floordiv_td_scalar(left_td: pd.Series) -> None:
     check(assert_type(left_td.floordiv(d), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left_td.floordiv(d64), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left_td.floordiv(td), "pd.Series[int]"), pd.Series, np.integer)
+
+
+def test_floordiv_td_sequence(left_td: pd.Series) -> None:
+    """Test pd.Series[Any] (Timedelta) // timedelta sequences. GH 1904."""
+    d = [timedelta(seconds=s + 1) for s in range(3)]
+    d64 = [np.timedelta64(s + 1, "s") for s in range(3)]
+    td = [pd.Timedelta(seconds=s + 1) for s in range(3)]
+
+    check(assert_type(left_td // d, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left_td // d64, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left_td // td, "pd.Series[int]"), pd.Series, np.integer)
+
+    check(assert_type(left_td.floordiv(d), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left_td.floordiv(d64), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left_td.floordiv(td), "pd.Series[int]"), pd.Series, np.integer)
