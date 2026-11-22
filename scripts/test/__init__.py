@@ -18,6 +18,7 @@ _BURNDOWN_ALLOWLIST: Final = "scripts/test/stubtest-allowlist-burndown.txt"
 _SRC_STEPS = [
     _step.ty_src,
     _step.pyrefly_src,
+    _step.zuban_src,
     _step.mypy_src,
     _step.pyright_src,
     _step.pytest,
@@ -30,11 +31,12 @@ _DIST_STEPS = [
     _step.rename_src,
     _step.ty_dist,
     _step.pyrefly_dist,
+    _step.zuban_dist,
     _step.pyright_dist,
     _step.mypy_dist,
 ]
 
-TypeChecker = Literal["mypy", "pyright", "pyrefly", "ty"]
+TypeChecker = Literal["mypy", "pyright", "pyrefly", "ty", "zuban"]
 
 
 def run_tests(
