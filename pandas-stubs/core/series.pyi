@@ -1394,21 +1394,21 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | NAType
             | None,
         ],
-        args: tuple[Any, ...] = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def apply(
         self,
         func: Callable[..., BaseOffset],
-        args: tuple[Any, ...] = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Series[BaseOffset]: ...
     @overload
     def apply(
         self,
         func: Callable[..., Series],
-        args: tuple[Any, ...] = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> DataFrame: ...
     @final
