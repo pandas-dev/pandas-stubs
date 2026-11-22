@@ -10,6 +10,7 @@ Here are the most important options. Fore more details, please use `poe --help`.
   - Run only pyright: `poe pyright`
   - Run only pyrefly: `poe pyrefly`
   - Run only ty: `poe ty`
+  - Run only zuban: `poe zuban`
   - Run runtime tests (excluding architecture tests): `poe pytest`
   - Run operand hierarchy architecture tests: `poe pytest_architecture`
   - Run only pre-commit: `poe style`

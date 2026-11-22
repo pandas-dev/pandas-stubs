@@ -68,7 +68,7 @@ When generating documentation or writing PR descriptions, format all GitHub refe
 
 ## Testing Philosophy: Static Type Checking Focus (The 4-Checker Paradigm)
 
-This project prioritizes **static type checking** over runtime error testing and enforces a 4-checker CI pipeline: `mypy`, `pyright`, `pyrefly`, and `ty`.
+This project prioritizes **static type checking** over runtime error testing and enforces a 4-checker CI pipeline: `mypy`, `pyright`, `pyrefly`, and `ty`. `zuban` is being added gradually (see the note on `zuban` below).
 
 When designing stubs and tests:
 
@@ -122,6 +122,8 @@ def test_multiindex_from_product_forbid_strings() -> None:
 `# pyright: ignore[reportUnusedFunction]` silences pyright's unused-function diagnostic. When in doubt, the wrapper is always safe.
 
 **Note on `ty`**: `ty` is being gradually integrated into `pandas-stubs`, fully parallel with the other three type checkers. It is currently in beta; we actively report bugs to `astral-sh/ty` (and similarly to `mypy`, `pyright`, and `pyrefly`).
+
+**Note on `zuban`**: `zuban` runs in CI on every file not listed in `[tool.zuban] exclude` in `pyproject.toml`; remove a file's entry once `zuban` passes on it. `zuban` also honours `# type: ignore[<code>]`, so a line ignored for mypy with the same code is hidden from `zuban` too. When only `zuban` reports an error, append `# zuban: ignore[<code>]` at the end of the ignore chain. `zuban` does not report unused ignores (zubanls/zuban#300).
 
 ### Do NOT use pytest.raises for type checking
 
