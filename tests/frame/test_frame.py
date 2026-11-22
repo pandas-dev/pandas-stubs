@@ -1122,9 +1122,18 @@ def test_types_shift() -> None:
     check(assert_type(df.shift(freq=Week(4)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.shift(freq=YearEnd(2)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.shift(freq=None, fill_value=None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift([1, 2]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift([1, 2], fill_value=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift((1, 2), freq="1D"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift([1, 2], suffix="_x"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.shift(periods=[0, 1], suffix="_x", fill_value=0), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         df.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        df.shift(1, suffix="_x")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_types_rank() -> None:
