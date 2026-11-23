@@ -523,6 +523,7 @@ exclude = [
   "tests.indexes.datetimeindex.test_sub.py",
   "tests.indexes.float.test_add.py",
   "tests.indexes.float.test_dtypes.py",
+  "tests.indexes.float.test_relops.py",
   "tests.indexes.float.test_sub.py",
   "tests.indexes.int.test_add.py",
   "tests.indexes.int.test_sub.py",
