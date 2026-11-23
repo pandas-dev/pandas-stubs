@@ -1394,21 +1394,21 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | NAType
             | None,
         ],
-        args: tuple[Any, ...] = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def apply(
         self,
         func: Callable[..., BaseOffset],
-        args: tuple[Any, ...] = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> Series[BaseOffset]: ...
     @overload
     def apply(
         self,
         func: Callable[..., Series],
-        args: tuple[Any, ...] = ...,
+        args: SequenceNotStr[Any] = ...,
         **kwargs: Any,
     ) -> DataFrame: ...
     @final
@@ -2550,7 +2550,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __floordiv__(
-        self: Series[Timedelta], other: ArrayIndexSeriesTimedeltaNoSeq, /
+        self: Series[Timedelta],
+        other: ScalarArrayIndexSeriesTimedelta,
+        /,
     ) -> Series[int]: ...
     @overload
     def __floordiv__(
@@ -2633,7 +2635,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def floordiv(
         self: Series[Timedelta],
-        other: ArrayIndexSeriesTimedeltaNoSeq,
+        other: ScalarArrayIndexSeriesTimedelta,
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
@@ -2662,10 +2664,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def __rfloordiv__(self, other: np_ndarray_complex | np_ndarray_dt, /) -> Never: ...
-    @overload
-    def __rfloordiv__(
-        self: Series[int] | Series[float], other: np_ndarray_td, /
-    ) -> Never: ...
     @overload
     def __rfloordiv__(
         self: Series[bool] | Series[complex], other: np_ndarray, /

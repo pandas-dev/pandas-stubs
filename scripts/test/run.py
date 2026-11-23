@@ -27,6 +27,15 @@ _CHECKER_COMMANDS: Final = {
         _PYTHON_VERSION,
     ],
     "ty": ["ty", "check", "--python-version", _PYTHON_VERSION],
+    "zuban": [
+        "zuban",
+        "check",
+        "--mode",
+        "default",
+        "--strict",
+        "--python-version",
+        _PYTHON_VERSION,
+    ],
 }
 
 

@@ -54,6 +54,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_complex_pandas4,
     pytest_warns_excel_pandas4,
     pytest_warns_inplace_pandas4,
     pytest_warns_listlike_pandas4,
@@ -655,14 +656,22 @@ def test_types_df_ordering_listlike() -> None:
     check(assert_type(df > pd.array([2, 3]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df >= pd.array([2, 3]), pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(df < [2j, 3j], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df <= [2j, 3j], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df > [2j, 3j], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df >= [2j, 3j], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df < np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df <= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df > np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df >= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df < [2j, 3j], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df <= [2j, 3j], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df > [2j, 3j], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df >= [2j, 3j], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df < np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df <= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df > np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df >= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_df_ordering_reflected() -> None:
@@ -1725,22 +1734,22 @@ def test_types_unique() -> None:
 def test_types_apply() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4], "col3": [5, 6]})
 
-    def returns_scalar(_: pd.Series) -> int:
+    def returns_scalar(_: pd.Series, _extra: int = 0) -> int:
         return 2
 
     def returns_scalar_na(x: pd.Series) -> int | NAType:
         return 2 if (x < 5).all() else pd.NA
 
-    def returns_series(x: pd.Series) -> pd.Series:
+    def returns_series(x: pd.Series, _extra: int = 0) -> pd.Series:
         return x**2
 
-    def returns_listlike_of_2(_: pd.Series) -> tuple[int, int]:
+    def returns_listlike_of_2(_: pd.Series, _extra: int = 0) -> tuple[int, int]:
         return (7, 8)
 
-    def returns_listlike_of_3(_: pd.Series) -> tuple[int, int, int]:
+    def returns_listlike_of_3(_: pd.Series, _extra: int = 0) -> tuple[int, int, int]:
         return (7, 8, 9)
 
-    def returns_dict(_: pd.Series) -> dict[str, int]:
+    def returns_dict(_: pd.Series, _extra: int = 0) -> dict[str, int]:
         return {"col4": 7, "col5": 8}
 
     # GH 1001
@@ -1752,7 +1761,7 @@ def test_types_apply() -> None:
     def make_row(row: pd.Series) -> Row:
         return Row(a=row["a"], b=row["b"])
 
-    def make_row_raw(values: np.ndarray) -> Row:
+    def make_row_raw(values: np.ndarray) -> Row:  # noqa: TID251
         return Row(a=int(values[0]), b=int(values[1]))
 
     def make_row_extra(row: pd.Series, extra: int) -> Row:
@@ -1866,11 +1875,12 @@ def test_types_apply() -> None:
         pd.Series,
         Row,
     )
-    check(
-        assert_type(rows.apply(make_row_extra, axis=1, args=[1]), pd.Series),
-        pd.Series,
-        Row,
-    )
+    for args in ((1,), [1]):
+        check(
+            assert_type(rows.apply(make_row_extra, axis=1, args=args), pd.Series),
+            pd.Series,
+            Row,
+        )
 
     # Check various return types for result_type="expand" with axis=1
     check(
@@ -2065,6 +2075,95 @@ def test_types_apply() -> None:
         pd.DataFrame,
     )
 
+    for args in ((1,), [1]):
+        check(
+            assert_type(df.apply(returns_scalar, args=args), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(df.apply(returns_series, args=args), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(df.apply(returns_listlike_of_3, args=args), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(assert_type(df.apply(returns_dict, args=args), pd.Series), pd.Series)
+        check(
+            assert_type(
+                df.apply(returns_scalar, result_type="expand", args=args),
+                "pd.Series[int]",
+            ),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(
+                df.apply(returns_listlike_of_3, result_type="expand", args=args),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                df.apply(returns_listlike_of_3, result_type="reduce", args=args),
+                pd.Series,
+            ),
+            pd.Series,
+        )
+        check(
+            assert_type(
+                df.apply(returns_scalar, result_type="broadcast", args=args),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                df.apply(returns_series, result_type="reduce", args=args), pd.Series
+            ),
+            pd.Series,
+        )
+        check(
+            assert_type(df.apply(returns_scalar, axis=1, args=args), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(df.apply(returns_listlike_of_3, axis=1, args=args), pd.Series),
+            pd.Series,
+        )
+        check(
+            assert_type(df.apply(returns_series, axis=1, args=args), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                df.apply(returns_series, axis=1, result_type="reduce", args=args),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                df.apply(returns_scalar, raw=True, args=args), "pd.Series[int]"
+            ),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(
+                df.apply(returns_scalar, axis="columns", raw=True, args=args),
+                "pd.Series[int]",
+            ),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(df.apply(gethead, 0, False, None, args), pd.DataFrame),
+            pd.DataFrame,
+        )
+
     def make_object(_: pd.Series) -> object:
         return object()
 
@@ -2077,6 +2176,23 @@ def test_types_apply() -> None:
         df.apply(returns_series, False, axis="columns")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.apply(returns_series, False, axis=1, result_type="reduce")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.apply(returns_series, False, axis="columns", result_type="reduce")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_scalar, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_listlike_of_3, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_dict, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_scalar, result_type="expand", args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_listlike_of_3, result_type="expand", args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_listlike_of_3, result_type="reduce", args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_scalar, result_type="broadcast", args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, result_type="reduce", args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_scalar, axis=1, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_listlike_of_3, axis=1, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, axis=1, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(returns_series, axis=1, result_type="reduce", args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(gethead, args="abc")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        df.apply(gethead, args=b"abc")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+
+        rows.apply(make_row_extra, axis=1, args=1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.apply(make_object, axis=2)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.apply(make_object, axis=1, result_type="invalid")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
         df.apply(make_object, axis=1, raw="invalid")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
@@ -2786,7 +2902,7 @@ def test_frame_array_shape() -> None:
     check(assert_type(df.__array__("f8"), np_2darray), np_2darray)
     check(assert_type(df.__array__(np.dtype(np.float64)), np_2darray), np_2darray)
     check(assert_type(df.__array__(copy=True), np_2darray), np_2darray)
-    check(assert_type(np.asarray(df, "f8"), np_ndarray), np.ndarray)
+    check(assert_type(np.asarray(df, "f8"), np_ndarray), np_ndarray)
 
 
 def test_to_markdown(tmp_path: Path) -> None:

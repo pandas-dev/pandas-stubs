@@ -40,6 +40,7 @@ dev = [
   "pytest>=8.4.2",
   "pyright==1.1.411",
   "ty>=0.0.104",
+  "zuban>=0.10.2",
   # TODO: lift the cap once pyrefly 1.5 accepts the reflected-operand `Never` overloads
   "pyrefly>=1.4.0,<1.5",
   "poethepoet>=0.16.5",
@@ -121,6 +122,14 @@ script = "scripts.test:run_tests(dist=True, type_checker='ty')"
 [tool.poe.tasks.ty_all]
 help = "Run ty on 'tests' (using the local stubs) and on the local stubs with all rules raising errors"
 script = "scripts.test.run:checker_src(checker='ty', all_rules=True)"
+
+[tool.poe.tasks.zuban]
+help = "Run zuban on 'tests' (using the local stubs) and on the local stubs"
+script = "scripts.test.run:checker_src(checker='zuban')"
+
+[tool.poe.tasks.zuban_dist]
+help = "Run zuban on 'tests' using the installed stubs"
+script = "scripts.test:run_tests(dist=True, type_checker='zuban')"
 
 [tool.poe.tasks.pyrefly]
 help = "Run pyrefly on 'tests' (using the local stubs) and on the local stubs"
@@ -217,7 +226,16 @@ ignore = [
 ]
 
 
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"numpy.ndarray".msg = "Use the shape-typed aliases in pandas._typing (np_1darray*, np_2darray*, np_ndarray*)."
+"numpy.typing.NDArray".msg = "Use the shape-typed aliases in pandas._typing (np_1darray*, np_2darray*, np_ndarray*)."
+
+
 [tool.ruff.lint.per-file-ignores]
+"pandas-stubs/_typing.pyi" = [
+  # The following rules are ignored permanently for good reasons
+  "TID251", # Defines the np_*darray* aliases, so numpy.ndarray can be banned everywhere else
+]
 "*.pyi" = [
   # The following rules are ignored permanently for good reasons
   "A002",   # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
@@ -459,4 +477,99 @@ exclude = [
   "tests/**/*truediv.py",
   "tests/**/*mul.py",
   "tests/**/*floordiv.py",
+]
+
+# zuban checks every file not listed here.
+# Remove a file's entry once zuban passes on it.
+# The regex covers test files that all fail; list the rest as paths once one of them passes.
+# tests/indexes/float/test_dtypes.py, tests/indexes/test_add.py and tests/series/float/test_dtypes.py
+# pass only when the stubs are checked in the same run, so `poe zuban_dist` needs them excluded.
+# tests/arrays/test_datetime_array.py fails only with numpy < 2.5 (Python 3.11).
+# "." stands for the path separator: on Windows zuban matches these against "\" paths.
+[tool.zuban]
+exclude = [
+  ".test_(mul|truediv|floordiv|groupby|indexing)\\.py$",
+  "pandas-stubs._libs.missing.pyi",
+  "pandas-stubs._libs.tslibs.period.pyi",
+  "pandas-stubs._libs.tslibs.timedeltas.pyi",
+  "pandas-stubs._libs.tslibs.timestamps.pyi",
+  "pandas-stubs.core.arrays._mixins.pyi",
+  "pandas-stubs.core.arrays.boolean.pyi",
+  "pandas-stubs.core.arrays.timedeltas.pyi",
+  "pandas-stubs.core.col.pyi",
+  "pandas-stubs.core.frame.pyi",
+  "pandas-stubs.core.indexes.base.pyi",
+  "pandas-stubs.core.indexes.datetimelike.pyi",
+  "pandas-stubs.core.indexes.datetimes.pyi",
+  "pandas-stubs.core.indexes.period.pyi",
+  "pandas-stubs.core.indexes.timedeltas.pyi",
+  "pandas-stubs.core.resample.pyi",
+  "pandas-stubs.core.series.pyi",
+  "tests.arrays.test_categorical.py",
+  "tests.arrays.test_datetime_array.py",
+  "tests.arrays.test_extension_array.py",
+  "tests.arrays.test_floating.py",
+  "tests.arrays.test_string_.py",
+  "tests.arrays.test_string_arrow.py",
+  "tests.extension.decimal.array.py",
+  "tests.frame.test_arithmetic.py",
+  "tests.frame.test_frame.py",
+  "tests.indexes.bool.test_add.py",
+  "tests.indexes.bool.test_sub.py",
+  "tests.indexes.complex.test_add.py",
+  "tests.indexes.complex.test_relops.py",
+  "tests.indexes.complex.test_sub.py",
+  "tests.indexes.datetimeindex.test_add.py",
+  "tests.indexes.datetimeindex.test_sub.py",
+  "tests.indexes.float.test_add.py",
+  "tests.indexes.float.test_dtypes.py",
+  "tests.indexes.float.test_relops.py",
+  "tests.indexes.float.test_sub.py",
+  "tests.indexes.int.test_add.py",
+  "tests.indexes.int.test_sub.py",
+  "tests.indexes.periodindex.test_add.py",
+  "tests.indexes.str.test_add.py",
+  "tests.indexes.test_add.py",
+  "tests.indexes.test_indexes.py",
+  "tests.indexes.test_sub.py",
+  "tests.indexes.timedeltaindex.test_add.py",
+  "tests.indexes.timedeltaindex.test_sub.py",
+  "tests.scalars.period.test_add.py",
+  "tests.scalars.test_interval.py",
+  "tests.scalars.test_scalars.py",
+  "tests.series.bool.test_add.py",
+  "tests.series.bool.test_sub.py",
+  "tests.series.complex.test_add.py",
+  "tests.series.complex.test_relops.py",
+  "tests.series.complex.test_sub.py",
+  "tests.series.float.test_add.py",
+  "tests.series.float.test_dtypes.py",
+  "tests.series.float.test_relops.py",
+  "tests.series.float.test_sub.py",
+  "tests.series.int.test_add.py",
+  "tests.series.int.test_relops.py",
+  "tests.series.int.test_sub.py",
+  "tests.series.str.test_add.py",
+  "tests.series.test_add.py",
+  "tests.series.test_properties.py",
+  "tests.series.test_series.py",
+  "tests.series.test_sub.py",
+  "tests.series.timedelta.test_add.py",
+  "tests.series.timedelta.test_relops.py",
+  "tests.series.timedelta.test_sub.py",
+  "tests.series.timestamp.test_add.py",
+  "tests.series.timestamp.test_relops.py",
+  "tests.series.timestamp.test_sub.py",
+  "tests.test_api_typing.py",
+  "tests.test_config.py",
+  "tests.test_dtypes.py",
+  "tests.test_io.py",
+  "tests.test_natype.py",
+  "tests.test_pandas.py",
+  "tests.test_plotting.py",
+  "tests.test_resampler.py",
+  "tests.test_styler.py",
+  "tests.test_timefuncs.py",
+  "tests.test_utility.py",
+  "tests.test_windowing.py",
 ]

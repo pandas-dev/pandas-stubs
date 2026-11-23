@@ -63,8 +63,8 @@ from pandas._typing import (
     TimestampConvertibleTypes,
     WindowingEngine,
     WindowingEngineKwargs,
+    np_1darray_int64,
     np_ndarray_dt,
-    np_ndarray_int64,
 )
 
 from pandas.plotting import PlotAccessor
@@ -359,7 +359,7 @@ class BaseGroupBy(GroupByIndexingMixin, Generic[NDFrameT]):
     def ngroups(self) -> int: ...
     @final
     @property
-    def indices(self) -> dict[Hashable, Index | np_ndarray_int64 | list[int]]: ...
+    def indices(self) -> dict[Hashable, Index | np_1darray_int64 | list[int]]: ...
     @overload
     def pipe(
         self,

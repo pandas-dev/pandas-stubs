@@ -19,6 +19,10 @@ pyrefly_src_all = Step(
     name="Run pyrefly on 'tests' (using the local stubs) and on the local stubs with preset 'all'",
     run=partial(run.checker_src, "pyrefly", all_rules=True),
 )
+zuban_src = Step(
+    name="Run zuban on 'tests' (using the local stubs) and on the local stubs",
+    run=partial(run.checker_src, "zuban"),
+)
 pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
     run=partial(run.checker_src, "pyright"),
@@ -46,6 +50,10 @@ mypy_dist = Step(
 pyright_dist = Step(
     name="Run pyright on 'tests' using the installed stubs",
     run=partial(run.checker_dist, "pyright"),
+)
+zuban_dist = Step(
+    name="Run zuban on 'tests' using the installed stubs",
+    run=partial(run.checker_dist, "zuban"),
 )
 pyrefly_dist = Step(
     name="Run pyrefly on 'tests' using the installed stubs",

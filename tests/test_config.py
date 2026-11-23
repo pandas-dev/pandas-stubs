@@ -33,6 +33,19 @@ def test_option_tools() -> None:
     )
     check(assert_type(pd.describe_option("display.width", False), str), str)
     check(assert_type(pd.describe_option("display.width", True), None), type(None))
+    check(assert_type(pd.describe_option(), None), type(None))
+    check(assert_type(pd.describe_option(pat="display.width"), None), type(None))
+    check(assert_type(pd.describe_option(_print_desc=False), str), str)
+    check(
+        assert_type(pd.describe_option(pat="display.width", _print_desc=False), str),
+        str,
+    )
+    check(assert_type(pd.describe_option("display.width", _print_desc=False), str), str)
+
+    def _f(b: bool) -> None:
+        assert_type(pd.describe_option("display.width", b), str | None)
+
+    _f(False)
     check(assert_type(pd.options, Options), DictWrapper)
     check(assert_type(pd.options.display, Display), DictWrapper)
     check(assert_type(pd.get_option("display.width"), Any), int)

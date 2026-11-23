@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import (
     Callable,
+    Hashable,
     Iterator,
 )
 import datetime as dt
@@ -43,6 +44,7 @@ from tests import (
     check,
     pytest_warns_bounded,
 )
+from tests._typing import np_1darray_int64
 
 if TYPE_CHECKING:
     from pandas.core.groupby.groupby import ResamplerGroupBy  # noqa: F401
@@ -1336,3 +1338,19 @@ def test_groupby_cumulative() -> None:
         GB_S.cumsum(False, True, 0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[bad-argument-count] # ty: ignore[too-many-positional-arguments]
         GB_DF.cummin(0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
         GB_DF.cummax(0)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+
+
+def test_groupby_indices() -> None:
+    df = DataFrame({"a": [1, 1, 2], "b": [3, 4, 5]})
+    indices = check(
+        assert_type(
+            df.groupby("a").indices,
+            dict[Hashable, Index | np_1darray_int64 | list[int]],
+        ),
+        dict,
+    )
+    for positions in indices.values():
+        check(
+            assert_type(positions, Index | np_1darray_int64 | list[int]),
+            np_1darray_int64,
+        )

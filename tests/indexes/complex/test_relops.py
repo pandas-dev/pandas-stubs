@@ -76,15 +76,15 @@ def test_relops_invalid_numpy_array(left: pd.Index[complex]) -> None:
     complex_array = np.array([1j, 2j], np.complex128)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.__lt__(real_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        left.__le__(real_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        left.__gt__(real_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        left.__ge__(real_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        left.__lt__(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.__le__(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.__gt__(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.__ge__(real_array)  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
-        left.__lt__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        left.__le__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        left.__gt__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
-        left.__ge__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[bad-argument-type] # ty: ignore[invalid-argument-type]
+        left.__lt__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.__le__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.__gt__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        left.__ge__(complex_array)  # type: ignore[misc,operator] # pyright: ignore[reportAttributeAccessIssue,reportUnknownMemberType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_relops_invalid_pd_index(left: pd.Index[complex]) -> None:

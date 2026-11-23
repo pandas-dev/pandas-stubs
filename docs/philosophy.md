@@ -215,6 +215,7 @@ for them.
 - If `pyright` reports an error, please use `# pyright: ignore[<error code>]`
 - If `pyrefly` reports an error, please use `# pyrefly: ignore[<error code>]`
 - If `ty` reports an error, please use `# ty: ignore[<error code>]`
+- If `zuban` reports an error that `# type: ignore[<error code>]` does not already cover, please use `# zuban: ignore[<error code>]`, placed last
 
 If type checkers report errors, for example, inside a `TYPE_CHECKING_INVALID_USAGE`
 block, please ensure that the comment for mypy comes first:
