@@ -480,9 +480,18 @@ def test_types_shift() -> None:
         pd.Series,
         np.floating,
     )
+    check(assert_type(s.shift([1, 2]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.shift(periods=[0, -1]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.shift([1, 2], fill_value=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.shift((1, 2), freq="1D"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.shift([1, 2], suffix="_x"), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
         s.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
+        s.shift([1, 2], freq="1D", fill_value=0)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.shift(["a", "b"])  # type: ignore[list-item] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.shift("ab")  # type: ignore[arg-type] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
+        s.shift(1, suffix="_x")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_series_pct_change() -> None:
