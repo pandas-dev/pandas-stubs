@@ -171,13 +171,9 @@ class _DatetimeLikeOps(
 # type of the series, we don't know which kind of series was ...ed
 # in to the dt accessor
 
+# The concrete index classes inherit these methods, so using them here creates a cycle.
 _DTTimestampTimedeltaReturnType = TypeVar(
-    "_DTTimestampTimedeltaReturnType",
-    bound=Series
-    | Series[Timestamp]
-    | Series[Timedelta]
-    | DatetimeIndex
-    | TimedeltaIndex,
+    "_DTTimestampTimedeltaReturnType", bound=Series | Index
 )
 
 class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
