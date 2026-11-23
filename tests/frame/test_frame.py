@@ -54,6 +54,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
+    pytest_warns_complex_pandas4,
     pytest_warns_excel_pandas4,
     pytest_warns_inplace_pandas4,
     pytest_warns_listlike_pandas4,
@@ -655,14 +656,22 @@ def test_types_df_ordering_listlike() -> None:
     check(assert_type(df > pd.array([2, 3]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df >= pd.array([2, 3]), pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(df < [2j, 3j], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df <= [2j, 3j], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df > [2j, 3j], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df >= [2j, 3j], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df < np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df <= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df > np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df >= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df < [2j, 3j], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df <= [2j, 3j], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df > [2j, 3j], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df >= [2j, 3j], pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df < np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df <= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df > np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_complex_pandas4():
+        check(assert_type(df >= np.array([2j, 3j]), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_df_ordering_reflected() -> None:
