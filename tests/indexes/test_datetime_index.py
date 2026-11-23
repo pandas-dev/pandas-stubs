@@ -102,15 +102,21 @@ def test_datetimeindex_indexer_at_time() -> None:
 
 def test_datetimeindex_indexer_between_time() -> None:
     dti = pd.date_range("2023-01-01", "2023-02-01")
-    check(
-        assert_type(
-            dti.indexer_between_time(
-                "10:00", time(11), include_start=False, include_end=True
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The 'include_start' and 'include_end' keywords",
+        lower="3.1.99",
+        upper="3.99.99",
+    ):
+        check(
+            assert_type(
+                dti.indexer_between_time(
+                    "10:00", time(11), include_start=False, include_end=True
+                ),
+                np_1darray_intp,
             ),
             np_1darray_intp,
-        ),
-        np_1darray_intp,
-    )
+        )
     check(
         assert_type(dti.indexer_between_time(time(10), "11:00"), np_1darray_intp),
         np_1darray_intp,
