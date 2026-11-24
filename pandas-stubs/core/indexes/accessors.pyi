@@ -171,13 +171,11 @@ class _DatetimeLikeOps(
 # type of the series, we don't know which kind of series was ...ed
 # in to the dt accessor
 
+# Using DatetimeIndex or TimedeltaIndex in the bound makes Pyright's inference depend
+# on file order because both inherit from _DatetimeRoundingMethods
+# (microsoft/pyright#6009).
 _DTTimestampTimedeltaReturnType = TypeVar(
-    "_DTTimestampTimedeltaReturnType",
-    bound=Series
-    | Series[Timestamp]
-    | Series[Timedelta]
-    | DatetimeIndex
-    | TimedeltaIndex,
+    "_DTTimestampTimedeltaReturnType", bound=Series | Index
 )
 
 class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
