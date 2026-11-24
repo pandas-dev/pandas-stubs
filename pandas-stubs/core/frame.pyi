@@ -1064,24 +1064,49 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def shift(
         self,
-        periods: int | Sequence[int] = ...,
+        periods: int = 1,
         freq: BaseOffset | dt.timedelta | _str | None = ...,
         axis: Axis | None = None,
     ) -> Self: ...
     @overload
     def shift(
         self,
-        periods: int | Sequence[int] = ...,
+        periods: int = 1,
         axis: Axis | None = None,
         fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
     @overload
     def shift(
         self,
-        periods: int | Sequence[int] = ...,
+        periods: int = 1,
         freq: None = None,
         axis: Axis | None = None,
         fill_value: None = None,
+    ) -> Self: ...
+    @overload
+    def shift(
+        self,
+        periods: Sequence[int],
+        freq: BaseOffset | dt.timedelta | _str | None = ...,
+        axis: Axis | None = None,
+        suffix: _str | None = None,
+    ) -> Self: ...
+    @overload
+    def shift(
+        self,
+        periods: Sequence[int],
+        axis: Axis | None = None,
+        fill_value: Scalar | NAType | None = ...,
+        suffix: _str | None = None,
+    ) -> Self: ...
+    @overload
+    def shift(
+        self,
+        periods: Sequence[int],
+        freq: None = None,
+        axis: Axis | None = None,
+        fill_value: None = None,
+        suffix: _str | None = None,
     ) -> Self: ...
     @overload
     def set_index(
