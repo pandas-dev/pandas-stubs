@@ -110,7 +110,7 @@ class NDFrame:
     @final
     def to_excel(
         self,
-        excel_writer: FilePath | WriteExcelBuffer | ExcelWriter,
+        excel_writer: FilePath | WriteExcelBuffer | ExcelWriter[Any],
         *,
         sheet_name: _str = "Sheet1",
         na_rep: _str = "",
