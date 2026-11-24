@@ -618,6 +618,43 @@ def test_isna() -> None:
     if not pd.notna(nullable3):
         assert_type(nullable3, NAType | None)
 
+    scalar = pd.Series([pd.Period("2026-01", freq="M")]).iat[0]
+    check(assert_type(pd.isna(scalar), bool), bool)
+    check(assert_type(pd.notna(scalar), bool), bool)
+    check(assert_type(pd.isnull(scalar), bool), bool)
+    check(assert_type(pd.notnull(scalar), bool), bool)
+
+    for nullable_period in (pd.Period("2026-01", freq="M"), None):
+        if pd.notna(nullable_period):
+            check(assert_type(nullable_period, pd.Period), pd.Period)
+        if not pd.isna(nullable_period):
+            check(assert_type(nullable_period, pd.Period), pd.Period)
+        if pd.isna(nullable_period):
+            check(assert_type(nullable_period, None), type(None))
+        if not pd.notna(nullable_period):
+            check(assert_type(nullable_period, None), type(None))
+
+    for nullable_interval in (pd.Interval(0, 1), None):
+        if pd.notna(nullable_interval):
+            check(assert_type(nullable_interval, "pd.Interval[int]"), pd.Interval)
+        if not pd.isna(nullable_interval):
+            check(assert_type(nullable_interval, "pd.Interval[int]"), pd.Interval)
+        if pd.isna(nullable_interval):
+            check(assert_type(nullable_interval, None), type(None))
+        if not pd.notna(nullable_interval):
+            check(assert_type(nullable_interval, None), type(None))
+
+    bools: list[np.bool_ | None] = [np.False_, None]
+    for nullable_bool in bools:
+        if pd.notna(nullable_bool):
+            check(assert_type(nullable_bool, np.bool_), np.bool_)
+        if not pd.isna(nullable_bool):
+            check(assert_type(nullable_bool, np.bool_), np.bool_)
+        if pd.isna(nullable_bool):
+            check(assert_type(nullable_bool, None), type(None))
+        if not pd.notna(nullable_bool):
+            check(assert_type(nullable_bool, None), type(None))
+
 
 def test_isna_object() -> None:
     check(

@@ -36,13 +36,18 @@ def test_types_iloc_iat() -> None:
 
     period_series = pd.Series([pd.Period("2020-01")])
     check(assert_type(period_series.iat[0], pd.Period), pd.Period)
+    period_series.iat[0] = period_series.iat[0]
     interval_series = pd.Series([pd.Interval(0, 1)])
     check(assert_type(interval_series.iat[0], "pd.Interval[int]"), pd.Interval)
+    interval_series.iat[0] = interval_series.iat[0]
+    bool_series = pd.Series([True])
+    bool_series.iat[0] = np.bool_(False)
     missing_series = pd.Series([None], dtype=object)
     check(assert_type(missing_series.iloc[0], Any), type(None))
     check(assert_type(missing_series.iat[0], Any), type(None))
 
     if TYPE_CHECKING_INVALID_USAGE:
+        s.iat[0] = [1, 2]  # type: ignore[assignment] # pyright: ignore[reportArgumentType] # pyrefly: ignore[unsupported-operation] # ty: ignore[invalid-assignment]
         s.iat[0, 0]  # type: ignore[index] # pyright: ignore[reportArgumentType] # pyrefly: ignore[bad-index] # ty: ignore[invalid-argument-type]
         st = {"a"}
         dc = {"a": 1}
@@ -66,8 +71,12 @@ def test_types_loc_at() -> None:
 
     period_series = pd.Series([pd.Period("2020-01")])
     check(assert_type(period_series.at[0], pd.Period), pd.Period)
+    period_series.at[0] = period_series.at[0]
     interval_series = pd.Series([pd.Interval(0, 1)])
     check(assert_type(interval_series.at[0], "pd.Interval[int]"), pd.Interval)
+    interval_series.at[0] = interval_series.at[0]
+    bool_series = pd.Series([True])
+    bool_series.at[0] = np.bool_(False)
     missing_series = pd.Series([None], dtype=object)
     check(assert_type(missing_series.at[0], Any), type(None))
 

@@ -38,7 +38,6 @@ from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from numpy import typing as npt
 from pandas import (
-    Interval,
     Period,
     Timedelta,
     Timestamp,
@@ -238,19 +237,17 @@ _LocSetItemKey: TypeAlias = (
     | slice
 )
 _SetItemValueNotDataFrame: TypeAlias = (
-    ScalarOrNA
-    | Sequence[ScalarOrNA]
-    | Sequence[Sequence[ScalarOrNA]]
-    | Mapping[Any, ScalarOrNA]
+    ExtScalarOrNA
+    | Sequence[ExtScalarOrNA]
+    | Sequence[Sequence[ExtScalarOrNA]]
+    | Mapping[Any, ExtScalarOrNA]
     | ArrayLike
     | IndexOpsMixin
 )
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
-    def __getitem__(
-        self, key: tuple[int, int], /
-    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
+    def __getitem__(self, key: tuple[int, int], /) -> ExtScalarOrNA: ...
     @overload
     def __getitem__(self, key: IndexingInt, /) -> Series: ...
     @overload
@@ -296,7 +293,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             int | str | tuple[Scalar, ...],
         ],
         /,
-    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
+    ) -> ExtScalarOrNA: ...
     @overload
     def __getitem__(
         self,
@@ -373,20 +370,20 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
 
 class _iAtIndexerFrame(_iAtIndexer):
     @override
-    def __getitem__(self, key: tuple[int, int], /) -> ScalarOrNA | np.bool_ | Period | Interval: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
+    def __getitem__(self, key: tuple[int, int], /) -> ExtScalarOrNA: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
-        self, key: tuple[int, int], value: ScalarOrNA, /
+        self, key: tuple[int, int], value: ExtScalarOrNA, /
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
     @override
     def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
         self, key: tuple[Hashable, Hashable], /
-    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
+    ) -> ExtScalarOrNA: ...
     @override
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[incompatible-method-override]
-        self, key: tuple[Hashable, Hashable], value: ScalarOrNA, /
+        self, key: tuple[Hashable, Hashable], value: ExtScalarOrNA, /
     ) -> None: ...
 
 class _GetItemHack:
@@ -2956,6 +2953,4 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
 @type_check_only
 class PandasNamedTuple(tuple[Any, ...]):
-    def __getattr__(
-        self, field: str, /
-    ) -> ScalarOrNA | np.bool_ | Period | Interval: ...
+    def __getattr__(self, field: str, /) -> ExtScalarOrNA: ...
