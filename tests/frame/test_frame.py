@@ -1139,6 +1139,9 @@ def test_types_shift() -> None:
         assert_type(df.shift(periods=[0, 1], suffix="_x", fill_value=0), pd.DataFrame),
         pd.DataFrame,
     )
+    periods = np.array([1, 2], dtype=np.int64)
+    check(assert_type(df.shift(periods), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(periods, fill_value=0), pd.DataFrame), pd.DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
         df.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]

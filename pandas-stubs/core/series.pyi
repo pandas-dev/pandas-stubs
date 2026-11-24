@@ -1527,7 +1527,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def shift(
         self,
-        periods: Sequence[int],
+        periods: Sequence[int] | np_ndarray_anyint,
         freq: BaseOffset | timedelta | _str | None = None,
         axis: Axis = 0,
         suffix: _str | None = None,
@@ -1535,7 +1535,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def shift(
         self,
-        periods: Sequence[int],
+        periods: Sequence[int] | np_ndarray_anyint,
         axis: Axis = 0,
         fill_value: Scalar | NAType | None = ...,
         suffix: _str | None = None,
@@ -1543,7 +1543,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def shift(
         self,
-        periods: Sequence[int],
+        periods: Sequence[int] | np_ndarray_anyint,
         freq: None = None,
         axis: Axis = 0,
         fill_value: None = None,

@@ -64,6 +64,7 @@ from pandas._typing import (
     WindowingEngine,
     WindowingEngineKwargs,
     np_1darray_int64,
+    np_ndarray_anyint,
     np_ndarray_dt,
 )
 
@@ -298,7 +299,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @overload
     def shift(
         self,
-        periods: int | Sequence[int] = 1,
+        periods: int = 1,
         freq: None = None,
         fill_value: Scalar | None = None,
         suffix: str | None = ...,
@@ -306,11 +307,27 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @overload
     def shift(
         self,
-        periods: int | Sequence[int] = 1,
+        periods: int = 1,
         freq: Frequency | None = ...,
         *,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
+    @overload
+    def shift(
+        self,
+        periods: Sequence[int] | np_ndarray_anyint,
+        freq: None = None,
+        fill_value: Scalar | None = None,
+        suffix: str | None = ...,
+    ) -> DataFrame: ...
+    @overload
+    def shift(
+        self,
+        periods: Sequence[int] | np_ndarray_anyint,
+        freq: Frequency | None = ...,
+        *,
+        suffix: str | None = ...,
+    ) -> DataFrame: ...
     @final
     def diff(self, periods: int = 1) -> NDFrameT: ...
     @final
