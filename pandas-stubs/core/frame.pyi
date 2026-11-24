@@ -1086,7 +1086,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def shift(
         self,
-        periods: Sequence[int],
+        periods: Sequence[int] | np_ndarray_anyint,
         freq: BaseOffset | dt.timedelta | _str | None = ...,
         axis: Axis | None = None,
         suffix: _str | None = None,
@@ -1094,7 +1094,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def shift(
         self,
-        periods: Sequence[int],
+        periods: Sequence[int] | np_ndarray_anyint,
         axis: Axis | None = None,
         fill_value: Scalar | NAType | None = ...,
         suffix: _str | None = None,
@@ -1102,7 +1102,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def shift(
         self,
-        periods: Sequence[int],
+        periods: Sequence[int] | np_ndarray_anyint,
         freq: None = None,
         axis: Axis | None = None,
         fill_value: None = None,
