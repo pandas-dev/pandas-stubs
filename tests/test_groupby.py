@@ -1272,6 +1272,9 @@ def test_groupby_shift() -> None:
     check(assert_type(GB_DF.shift(1, "D"), DataFrame), DataFrame)
     check(assert_type(GB_DF.shift(1, None, 4), DataFrame), DataFrame)
     check(assert_type(GB_DF.shift([1, 2], "D", suffix="lag"), DataFrame), DataFrame)
+    periods = np.array([1, 2], dtype=np.int64)
+    check(assert_type(GB_DF.shift(periods), DataFrame), DataFrame)
+    check(assert_type(GB_S.shift(periods), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
         GB_DF.shift(freq="1D", fill_value=4)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType] # pyrefly: ignore[no-matching-overload] # ty: ignore[invalid-argument-type]
