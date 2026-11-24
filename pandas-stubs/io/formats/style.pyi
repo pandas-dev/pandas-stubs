@@ -13,12 +13,8 @@ from typing import (
 )
 
 from matplotlib.colors import Colormap
-from openpyxl.workbook.workbook import Workbook as OpenXlWorkbook
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
-from xlsxwriter import (  # pyright: ignore[reportMissingTypeStubs]
-    Workbook as XlsxWorkbook,
-)
 
 from pandas._typing import (
     Axis,
@@ -87,9 +83,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def to_excel(
         self,
-        excel_writer: (
-            FilePath | WriteExcelBuffer | ExcelWriter[OpenXlWorkbook | XlsxWorkbook]
-        ),
+        excel_writer: FilePath | WriteExcelBuffer | ExcelWriter[Any],
         sheet_name: str = "Sheet1",
         na_rep: str = "",
         float_format: str | None = None,
