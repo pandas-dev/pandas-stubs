@@ -45,6 +45,7 @@ from pandas._typing import (
     NsmallestNlargestKeep,
     P,
     Scalar,
+    SequenceNotStr,
     TakeIndexer,
     WindowingEngine,
     WindowingEngineKwargs,
@@ -53,7 +54,7 @@ from pandas._typing import (
 
 AggScalar: TypeAlias = str | Callable[..., Any]
 _ApplyScalarReturn: TypeAlias = (
-    Scalar | list[Any] | tuple[Any, ...] | Mapping[Hashable, Any]
+    Scalar | SequenceNotStr[Any] | range | Mapping[Hashable, Any]
 )
 
 class NamedAgg:

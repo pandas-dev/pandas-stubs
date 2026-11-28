@@ -688,6 +688,11 @@ def test_groupby_apply() -> None:
 
     check(assert_type(df_gb.apply(sum_to_list), pd.Series), pd.Series)
 
+    def to_range(x: pd.DataFrame) -> range:
+        return range(len(x))
+
+    check(assert_type(df_gb.apply(to_range), pd.Series), pd.Series)
+
     def sum_to_series(x: pd.DataFrame) -> pd.Series:
         return x.sum()
 
