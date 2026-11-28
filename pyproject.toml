@@ -39,7 +39,7 @@ dev = [
   "pyarrow>=10.0.1",
   "pytest>=8.4.2",
   "pyright==1.1.411",
-  "ty>=0.0.104",
+  "ty>=0.0.109",
   "zuban>=0.10.2",
   # TODO: lift the cap once pyrefly 1.5 accepts the reflected-operand `Never` overloads
   "pyrefly>=1.4.0,<1.5",
