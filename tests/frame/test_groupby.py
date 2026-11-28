@@ -678,6 +678,10 @@ def test_groupby_apply() -> None:
     # TODO: revert to the original once astral-sh/ty#4135 are fixed
     lfunc: Callable[[pd.DataFrame], float] = lambda _: 1.0  # x: x.sum().mean()
     check(assert_type(df_gb.apply(lfunc), pd.Series), pd.Series)
+    check(
+        assert_type(df_gb.apply(lambda _: 1, include_groups=False), pd.Series),
+        pd.Series,
+    )
 
     def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()

@@ -79,6 +79,10 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def __getattr__(self, attr: str, /) -> Any: ...
     @overload
     def apply(
+        self, func: Callable[[NDFrameT], Any], *, include_groups: Literal[False]
+    ) -> NDFrameT: ...
+    @overload
+    def apply(
         self,
         func: Callable[Concatenate[NDFrameT, ...], Any],
         *args: Any,

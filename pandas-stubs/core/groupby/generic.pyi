@@ -222,6 +222,13 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @override
     def apply(
         self,
+        func: Callable[[DataFrame], _ApplyScalarReturn],
+        *,
+        include_groups: Literal[False],
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
         func: Callable[Concatenate[DataFrame, ...], _ApplyScalarReturn],
         *args: Any,
         include_groups: Literal[False],
@@ -234,6 +241,10 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> Series: ...
+    @overload
+    def apply(
+        self, func: Callable[[DataFrame], Series], *, include_groups: Literal[False]
+    ) -> Series | DataFrame: ...
     @overload
     def apply(
         self,
@@ -249,6 +260,10 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> Series | DataFrame: ...
+    @overload
+    def apply(
+        self, func: Callable[[DataFrame], DataFrame], *, include_groups: Literal[False]
+    ) -> DataFrame: ...
     @overload
     def apply(
         self,
