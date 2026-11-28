@@ -421,6 +421,15 @@ def test_series_groupby_resample() -> None:
         Series,
         float,
     )
+    check(
+        assert_type(
+            GB_S.apply(lambda x: x.resample("ME").interpolate(), include_groups=False),
+            "Series[float]",
+        ),
+        Series,
+        float,
+    )
+    check(assert_type(GB_S.apply("sum"), "Series[float]"), Series, float)
 
     # pipe
     def g(val: Resampler[Series]) -> float:
@@ -470,6 +479,7 @@ def test_series_groupby_resample() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         GB_S.resample("ME", axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue] # pyrefly: ignore[unexpected-keyword] # ty: ignore[unknown-argument]
+        GB_S.apply(lambda x: x.resample("ME").interpolate(), include_groups=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_frame_groupby_rolling() -> None:

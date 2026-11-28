@@ -3,6 +3,7 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
+    Mapping,
     Sequence,
 )
 from typing import (
@@ -44,6 +45,7 @@ from pandas._typing import (
     NsmallestNlargestKeep,
     P,
     Scalar,
+    SequenceNotStr,
     TakeIndexer,
     WindowingEngine,
     WindowingEngineKwargs,
@@ -51,6 +53,9 @@ from pandas._typing import (
 )
 
 AggScalar: TypeAlias = str | Callable[..., Any]
+_ApplyScalarReturn: TypeAlias = (
+    Scalar | SequenceNotStr[Any] | range | Mapping[Hashable, Any]
+)
 
 class NamedAgg:
     column: Hashable
@@ -214,16 +219,41 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
-    @overload
+    @overload  # type: ignore[override]
     @override
     def apply(
         self,
-        func: Callable[
-            Concatenate[DataFrame, P], Scalar | list[Any] | dict[Hashable, Any]
-        ],
+        func: Callable[[DataFrame], _ApplyScalarReturn],
+        *,
+        include_groups: Literal[False],
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        func: Callable[Concatenate[DataFrame, ...], _ApplyScalarReturn],
+        *args: Any,
+        include_groups: Literal[False],
+        **kwargs: Any,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        func: Callable[Concatenate[DataFrame, P], _ApplyScalarReturn],
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> Series: ...
+    @overload
+    def apply(
+        self, func: Callable[[DataFrame], Series], *, include_groups: Literal[False]
+    ) -> Series | DataFrame: ...
+    @overload
+    def apply(
+        self,
+        func: Callable[Concatenate[DataFrame, ...], Series],
+        *args: Any,
+        include_groups: Literal[False],
+        **kwargs: Any,
+    ) -> Series | DataFrame: ...
     @overload
     def apply(
         self,
@@ -233,10 +263,30 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> Series | DataFrame: ...
     @overload
     def apply(
+        self, func: Callable[[DataFrame], DataFrame], *, include_groups: Literal[False]
+    ) -> DataFrame: ...
+    @overload
+    def apply(
         self,
-        func: Callable[Concatenate[DataFrame, P], DataFrame] | str,
+        func: Callable[Concatenate[DataFrame, ...], DataFrame],
+        *args: Any,
+        include_groups: Literal[False],
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def apply(
+        self,
+        func: Callable[Concatenate[DataFrame, P], DataFrame],
         *args: P.args,
         **kwargs: P.kwargs,
+    ) -> DataFrame: ...
+    @overload
+    def apply(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        func: str,
+        *args: Any,
+        include_groups: Literal[False] = False,
+        **kwargs: Any,
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload

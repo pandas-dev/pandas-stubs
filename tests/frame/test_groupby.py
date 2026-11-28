@@ -671,21 +671,39 @@ def test_groupby_apply() -> None:
         return x.sum().mean()  # ty: ignore[unsound-return]
 
     check(assert_type(df_gb.apply(sum_mean), pd.Series), pd.Series)
+    check(
+        assert_type(df_gb.apply(sum_mean, include_groups=False), pd.Series), pd.Series
+    )
 
     # TODO: revert to the original once astral-sh/ty#4135 are fixed
     lfunc: Callable[[pd.DataFrame], float] = lambda _: 1.0  # x: x.sum().mean()
     check(assert_type(df_gb.apply(lfunc), pd.Series), pd.Series)
+    check(
+        assert_type(df_gb.apply(lambda _: 1, include_groups=False), pd.Series),
+        pd.Series,
+    )
 
     def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()
 
     check(assert_type(df_gb.apply(sum_to_list), pd.Series), pd.Series)
 
+    def to_range(x: pd.DataFrame) -> range:
+        return range(len(x))
+
+    check(assert_type(df_gb.apply(to_range), pd.Series), pd.Series)
+
     def sum_to_series(x: pd.DataFrame) -> pd.Series:
         return x.sum()
 
     check(
         assert_type(df_gb.apply(sum_to_series), pd.Series | pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            df_gb.apply(sum_to_series, include_groups=False), pd.Series | pd.DataFrame
+        ),
+        pd.DataFrame,
     )
 
     def same_len(x: pd.DataFrame) -> pd.Series:
@@ -702,6 +720,19 @@ def test_groupby_apply() -> None:
         ),
         pd.DataFrame,
     )
+    check(
+        assert_type(
+            df.groupby("col1").apply(sample_to_df, include_groups=False), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df_gb.apply("sum", include_groups=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df_gb.apply(sample_to_df, include_groups=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue] # pyrefly: ignore[no-matching-overload] # ty: ignore[no-matching-overload]
 
 
 def test_series_groupby_and_value_counts() -> None:
