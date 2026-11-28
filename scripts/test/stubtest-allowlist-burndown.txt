@@ -238,13 +238,11 @@ pandas.core.generic.NDFrame.to_hdf
 pandas.core.generic.NDFrame.to_markdown
 pandas.core.generic.NDFrame.xs
 pandas.core.groupby.generic.DataFrameGroupBy.agg
-pandas.core.groupby.generic.DataFrameGroupBy.apply
 pandas.core.groupby.generic.DataFrameGroupBy.boxplot
 pandas.core.groupby.generic.DataFrameGroupBy.dtypes
 pandas.core.groupby.generic.DataFrameGroupBy.transform
 pandas.core.groupby.generic.SeriesGroupBy.describe
 pandas.core.groupby.groupby.GroupBy.__init__
-pandas.core.groupby.groupby.GroupBy.apply
 pandas.core.groupby.groupby.GroupBy.cumprod
 pandas.core.groupby.groupby.GroupBy.cumsum
 pandas.core.groupby.groupby.GroupBy.mean
