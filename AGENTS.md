@@ -176,13 +176,15 @@ For a deprecated method, also add `@deprecated` (see `docs/philosophy.md`, "Depr
 
 ## Validation After Editing
 
-**REQUIRED:** After editing stubs or tests, run the following command to validate your changes:
+**REQUIRED:** After editing stubs or tests, run the following commands to validate your changes:
 
 ```bash
 poetry run poe test_all
+poetry run poe stubtest
 ```
 
 All checks must pass before submitting changes. These commands verify:
 
 - Type stubs are correctly annotated (`mypy`, `pyright`, `pyrefly`, `ty`)
 - Tests execute successfully at runtime (`pytest`)
+- Stubs match the pandas runtime, and no allowlist entry is stale (`stubtest`). `test_all` does not run it. Run it on Python 3.15, as CI does: the burn-down allowlist is pinned to that version. When a stub change fixes a mismatch, delete its entry from `scripts/test/stubtest-allowlist-burndown.txt`.
