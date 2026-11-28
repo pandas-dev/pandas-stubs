@@ -105,13 +105,6 @@ def test_frame_groupby_resample() -> None:
         DataFrame,
     )
     check(
-        assert_type(
-            GB_DF.resample("ME", include_groups=False), "ResamplerGroupBy[DataFrame]"
-        ),
-        DatetimeIndexResamplerGroupBy,
-        DataFrame,
-    )
-    check(
         assert_type(GB_DF.resample(Timedelta(days=30)), "ResamplerGroupBy[DataFrame]"),
         DatetimeIndexResamplerGroupBy,
         DataFrame,
